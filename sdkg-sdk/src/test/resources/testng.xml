@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="clientTest" parallel="classes" thread-count="5"
+	data-provider-thread-count="20">
+	<test name="${envName}" parallel="methods" thread-count="5">
+		<parameter name="envName" value="${envName}"></parameter>
+		<classes>
+			<class name="com.fastjrun.share.sdk.client.AppVersionGenericClientTest" />
+			<class name="com.fastjrun.share.sdk.client.UserGenericClientTest" />
+			<class name="com.fastjrun.share.sdk.client.UserAppClientTest" />
+			<class name="com.fastjrun.share.sdk.client.AppVersionAppClientTest" />
+			<class name="com.fastjrun.share.sdk.client.ArticleApiClientTest" />
+			<class name="com.fastjrun.share.sdk.client.UserApiClientTest" />
+		</classes>
+	</test>
+</suite>
