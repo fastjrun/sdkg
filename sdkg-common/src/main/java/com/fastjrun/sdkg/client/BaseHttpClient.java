@@ -17,7 +17,7 @@ import net.sf.json.JSONObject;
 
 public abstract class BaseHttpClient extends BaseClient {
 
-    JSONObject processInternal(String reqStr, String urlReq, String method,
+    protected JSONObject processInternal(String reqStr, String urlReq, String method,
             Map<String, String> requestProperties) {
         String line = "";
         PrintWriter out = null;
