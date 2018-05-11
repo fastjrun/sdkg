@@ -232,7 +232,7 @@ public class SDKGenerator extends PacketGenerator {
 						for (int index = 0; index < headVariables.size(); index++) {
 							RestField headVariable = headVariables.get(index);
 							JClass jClass = cm.ref(headVariable.getDatatype());
-							method.param(jClass, headVariable.getName());
+							method.param(jClass, headVariable.getNameAlias());
 						}
 					}
 					List<RestField> pathVariables = restServiceMethod.getPathVariables();
@@ -338,7 +338,7 @@ public class SDKGenerator extends PacketGenerator {
 					for (int index = 0; index < headVariables.size(); index++) {
 						RestField pathVariable = headVariables.get(index);
 						methodBlk.invoke(requestPropertiesJvar, "put").arg(JExpr.lit(pathVariable.getName()))
-								.arg(JExpr.ref(pathVariable.getName()));
+								.arg(JExpr.ref(pathVariable.getNameAlias()));
 					}
 				}
 				if (requestBodyClassName != null && !requestBodyClassName.equals("")) {
@@ -435,24 +435,24 @@ public class SDKGenerator extends PacketGenerator {
 					if (headVariables != null && headVariables.size() > 0) {
 						for (int index = 0; index < headVariables.size(); index++) {
 							RestField headVariable = headVariables.get(index);
-							jInvocation.arg(JExpr.ref(headVariable.getName()));
-							methodParamInJsonObject.put(headVariable.getName(), headVariable.getDatatype());
+							jInvocation.arg(JExpr.ref(headVariable.getNameAlias()));
+							methodParamInJsonObject.put(headVariable.getNameAlias(), headVariable.getDatatype());
 							JClass jType = cmTest.ref(headVariable.getDatatype());
 							if (jType.name().endsWith("Boolean")) {
-								methodTestBlk.decl(jType, headVariable.getName(), jType.staticInvoke("valueOf").arg(
-										reqParamsJsonJVar.invoke("getBoolean").arg(JExpr.lit(headVariable.getName()))));
+								methodTestBlk.decl(jType, headVariable.getNameAlias(), jType.staticInvoke("valueOf").arg(
+										reqParamsJsonJVar.invoke("getBoolean").arg(JExpr.lit(headVariable.getNameAlias()))));
 							} else if (jType.name().endsWith("Integer")) {
-								methodTestBlk.decl(jType, headVariable.getName(), jType.staticInvoke("valueOf").arg(
-										reqParamsJsonJVar.invoke("getInt").arg(JExpr.lit(headVariable.getName()))));
+								methodTestBlk.decl(jType, headVariable.getNameAlias(), jType.staticInvoke("valueOf").arg(
+										reqParamsJsonJVar.invoke("getInt").arg(JExpr.lit(headVariable.getNameAlias()))));
 							} else if (jType.name().endsWith("Long")) {
-								methodTestBlk.decl(jType, headVariable.getName(), jType.staticInvoke("valueOf").arg(
-										reqParamsJsonJVar.invoke("getLong").arg(JExpr.lit(headVariable.getName()))));
+								methodTestBlk.decl(jType, headVariable.getNameAlias(), jType.staticInvoke("valueOf").arg(
+										reqParamsJsonJVar.invoke("getLong").arg(JExpr.lit(headVariable.getNameAlias()))));
 							} else if (jType.name().endsWith("Double")) {
-								methodTestBlk.decl(jType, headVariable.getName(), jType.staticInvoke("valueOf").arg(
-										reqParamsJsonJVar.invoke("getDouble").arg(JExpr.lit(headVariable.getName()))));
+								methodTestBlk.decl(jType, headVariable.getNameAlias(), jType.staticInvoke("valueOf").arg(
+										reqParamsJsonJVar.invoke("getDouble").arg(JExpr.lit(headVariable.getNameAlias()))));
 							} else {
-								methodTestBlk.decl(jType, headVariable.getName(), jType.staticInvoke("valueOf").arg(
-										reqParamsJsonJVar.invoke("getString").arg(JExpr.lit(headVariable.getName()))));
+								methodTestBlk.decl(jType, headVariable.getNameAlias(), jType.staticInvoke("valueOf").arg(
+										reqParamsJsonJVar.invoke("getString").arg(JExpr.lit(headVariable.getNameAlias()))));
 							}
 
 						}

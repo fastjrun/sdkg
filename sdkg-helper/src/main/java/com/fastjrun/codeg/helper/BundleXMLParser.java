@@ -273,6 +273,8 @@ public class BundleXMLParser {
                                         if (tagName.equals("headvariable")) {
                                             String fieldName = element
                                                     .attr("name");
+                                            String fieldNameAlias = element
+                                                    .attr("nameAlias");
                                             String datatype = element
                                                     .attr("dataType");
                                             String length = element
@@ -283,6 +285,7 @@ public class BundleXMLParser {
                                                     .attr("remark");
                                             RestField field = new RestField();
                                             field.setName(fieldName);
+                                            field.setNameAlias(fieldNameAlias);
                                             field.setDatatype(datatype);
                                             field.setLength(length);
                                             field.setCanBeNull(Boolean
