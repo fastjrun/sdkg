@@ -3,6 +3,7 @@
 pom.xml.versionsBackup
 .project
 sdkg-sdk/src/test/data/*
+sdkg-helper/Example/*
 /.settings
 */*.log
 */*.log.*
