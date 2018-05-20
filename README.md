@@ -1,5 +1,5 @@
-# sdkg
-### 接口sdk生成Maven插件
+## sdkg（快嘉接口sdk生成Maven插件）
+### 功能说明
 - 根据自定义接口文档生成接口sdk代码，该代码可以直接用于实际项目中
 - 根据自定义接口文档生成基于testng框架的接口测试用例代码，该代码可直接用于研发过程的联调、自动化测试和冒烟测试
 
@@ -9,7 +9,8 @@
 - SDK示例工程使用testng框架的参数化方法和maven的profile实现测试用例代码和数据分离，并可支持多套环境
 - SDK示例工程使用testng框架的参数化方法可以支持对同一个测试用例灌入多组测试数据
 - 使用build-helper-maven-plugin
-- SDK示例工程使用build-helper-maven-plugin插件演示了一组拓展api的玩法？
+- SDK示例工程使用build-helper-maven-plugin插件演示了一组拓展api的玩法
+- single-sdk-archetype是一个接口SDK的脚手架，可以用来重新初始化一个接口SDK项目
 
 
 ### 常见问题
