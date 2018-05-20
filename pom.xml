@@ -88,6 +88,7 @@
 		<module>sdkg-common</module>
 		<module>sdkg-helper</module>
 		<module>sdkg-sdk</module>
+		<module>single-sdk-archetype</module>
 	</modules>
 	<properties>
 		<mycompany-nexus>http://www.mycompany.com</mycompany-nexus>
