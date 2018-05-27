@@ -17,3 +17,22 @@
 - 测试参数中如果有中文，注意修改dos窗口代码页为utf-8，参考命令chcp 65001
 - 测试参数中如果有中文，eclipse中直接执行testng测试用例会报错，参考报错信息如下：
 - Software caused connection abort: socket write error
+
+### 基于sdkg命令生成代码参考示例
+```
+mvn clean package -Dsdkg.skip=false 
+mvn clean package -Dsdkg.skip=false -Dsdkg.author=崔 
+mvn clean package -Dsdkg.skip=false -Dsdkg.skipAuthor=true
+
+mvn clean package -Dsdkg.skip=false -Dsdkg.skipAuthor=true -Dsdkg.skipCopyright=true
+
+
+mvn clean package -Dsdkg.skip=false -Dsdkg.skipAuthor=true -Dsdkg.skipCopyright=true -Dsdkg.skipNotice=true
+
+
+mvn clean package -Dsdkg.skip=false -Dsdkg.company=阿里居
+
+mvn clean package -Dsdkg.skip=false -Dsdkg.company=阿里居 -Dsdkg.year_codeg_time=2057
+
+mvn clean package -Dsdkg.skip=false -Dsdkg.notice=这段代码不是我写的
+```
