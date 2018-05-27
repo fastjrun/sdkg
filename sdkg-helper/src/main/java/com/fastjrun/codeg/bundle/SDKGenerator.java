@@ -13,6 +13,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 
 import com.fastjrun.codeg.CodeGException;
+import com.fastjrun.codeg.CodeGenerator;
 import com.fastjrun.codeg.bundle.common.RestController;
 import com.fastjrun.codeg.bundle.common.RestField;
 import com.fastjrun.codeg.bundle.common.RestObject;
@@ -78,12 +79,14 @@ public class SDKGenerator extends PacketGenerator {
 			Properties restProp = new Properties();
 			JDefinedClass clientClass = cm._class(this.packageNamePrefix + "client." + rest.getClientName());
 
-			JDefinedClass clientTestClass = cmTest
-					._class(this.packageNamePrefix + "client." + rest.getClientName() + "Test");
-			JDocComment jdocClientClass = clientClass.javadoc();
-			jdocClientClass.addXdoclet("author fastjrun");
+			this.addClassDeclaration(clientClass);
 			clientClass._extends(cm.ref(rest.getClientParent()));
 
+			JDefinedClass clientTestClass = cmTest
+					._class(this.packageNamePrefix + "client." + rest.getClientName() + "Test");
+
+			this.addClassDeclaration(clientTestClass);
+			
 			JFieldVar logVar = clientTestClass.field(JMod.NONE + JMod.FINAL,
 					cmTest.ref("org.apache.logging.log4j.Logger"), "log",
 					cmTest.ref("org.apache.logging.log4j.LogManager").staticInvoke("getLogger")
@@ -439,20 +442,25 @@ public class SDKGenerator extends PacketGenerator {
 							methodParamInJsonObject.put(headVariable.getNameAlias(), headVariable.getDatatype());
 							JClass jType = cmTest.ref(headVariable.getDatatype());
 							if (jType.name().endsWith("Boolean")) {
-								methodTestBlk.decl(jType, headVariable.getNameAlias(), jType.staticInvoke("valueOf").arg(
-										reqParamsJsonJVar.invoke("getBoolean").arg(JExpr.lit(headVariable.getNameAlias()))));
+								methodTestBlk.decl(jType, headVariable.getNameAlias(),
+										jType.staticInvoke("valueOf").arg(reqParamsJsonJVar.invoke("getBoolean")
+												.arg(JExpr.lit(headVariable.getNameAlias()))));
 							} else if (jType.name().endsWith("Integer")) {
-								methodTestBlk.decl(jType, headVariable.getNameAlias(), jType.staticInvoke("valueOf").arg(
-										reqParamsJsonJVar.invoke("getInt").arg(JExpr.lit(headVariable.getNameAlias()))));
+								methodTestBlk.decl(jType, headVariable.getNameAlias(),
+										jType.staticInvoke("valueOf").arg(reqParamsJsonJVar.invoke("getInt")
+												.arg(JExpr.lit(headVariable.getNameAlias()))));
 							} else if (jType.name().endsWith("Long")) {
-								methodTestBlk.decl(jType, headVariable.getNameAlias(), jType.staticInvoke("valueOf").arg(
-										reqParamsJsonJVar.invoke("getLong").arg(JExpr.lit(headVariable.getNameAlias()))));
+								methodTestBlk.decl(jType, headVariable.getNameAlias(),
+										jType.staticInvoke("valueOf").arg(reqParamsJsonJVar.invoke("getLong")
+												.arg(JExpr.lit(headVariable.getNameAlias()))));
 							} else if (jType.name().endsWith("Double")) {
-								methodTestBlk.decl(jType, headVariable.getNameAlias(), jType.staticInvoke("valueOf").arg(
-										reqParamsJsonJVar.invoke("getDouble").arg(JExpr.lit(headVariable.getNameAlias()))));
+								methodTestBlk.decl(jType, headVariable.getNameAlias(),
+										jType.staticInvoke("valueOf").arg(reqParamsJsonJVar.invoke("getDouble")
+												.arg(JExpr.lit(headVariable.getNameAlias()))));
 							} else {
-								methodTestBlk.decl(jType, headVariable.getNameAlias(), jType.staticInvoke("valueOf").arg(
-										reqParamsJsonJVar.invoke("getString").arg(JExpr.lit(headVariable.getNameAlias()))));
+								methodTestBlk.decl(jType, headVariable.getNameAlias(),
+										jType.staticInvoke("valueOf").arg(reqParamsJsonJVar.invoke("getString")
+												.arg(JExpr.lit(headVariable.getNameAlias()))));
 							}
 
 						}
