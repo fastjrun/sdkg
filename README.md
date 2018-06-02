@@ -14,9 +14,10 @@
 
 
 ### 常见问题
-- 测试参数中如果有中文，注意修改dos窗口代码页为utf-8，参考命令chcp 65001
-- 测试参数中如果有中文，eclipse中直接执行testng测试用例会报错，参考报错信息如下：
-- Software caused connection abort: socket write error
+- 测试参数中如果有中文(unicode)，注意修改dos窗口代码页为utf-8，参考命令chcp 65001；修改后将dos窗口字体修改为True Type字体"Lucida Console"
+- 测试参数中如果有中文(unicode)，eclipse中直接执行testng测试用例会报错，参考报错信息如下：
+` Software caused connection abort: socket write error`
+
 
 ### 基于sdkg命令生成代码参考示例
 ```
