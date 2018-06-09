@@ -236,16 +236,12 @@ public class BundleXMLParser {
                                                     .attr("dataType");
                                             String length = element
                                                     .attr("length");
-                                            String canBeNull = element
-                                                    .attr("canBeNull");
                                             String parameterRemark = element
                                                     .attr("remark");
                                             RestField field = new RestField();
                                             field.setName(fieldName);
                                             field.setDatatype(datatype);
                                             field.setLength(length);
-                                            field.setCanBeNull(Boolean
-                                                    .parseBoolean(canBeNull));
                                             field.setRemark(parameterRemark);
                                             field.setIndex(index);
                                             pathVariables.add(field);
@@ -279,8 +275,6 @@ public class BundleXMLParser {
                                                     .attr("dataType");
                                             String length = element
                                                     .attr("length");
-                                            String canBeNull = element
-                                                    .attr("canBeNull");
                                             String parameterRemark = element
                                                     .attr("remark");
                                             RestField field = new RestField();
@@ -288,8 +282,6 @@ public class BundleXMLParser {
                                             field.setNameAlias(fieldNameAlias);
                                             field.setDatatype(datatype);
                                             field.setLength(length);
-                                            field.setCanBeNull(Boolean
-                                                    .parseBoolean(canBeNull));
                                             field.setRemark(parameterRemark);
                                             field.setIndex(index);
                                             headVariables.add(field);
