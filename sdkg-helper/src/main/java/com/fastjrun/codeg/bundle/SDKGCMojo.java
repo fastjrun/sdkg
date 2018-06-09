@@ -84,6 +84,9 @@ public class SDKGCMojo extends AbstractMojo {
 
 	public void execute() throws MojoExecutionException {
 
+		if (skip)
+			return;
+
 		getLog().info(bundleFiles);
 
 		getLog().info(packagePrefix);
@@ -93,9 +96,6 @@ public class SDKGCMojo extends AbstractMojo {
 		getLog().info(author);
 
 		getLog().info(appName);
-
-		if (skip)
-			return;
 
 		SDKGenerator sdkGenerator = new SDKGenerator();
 		sdkGenerator.setModuleName(sdkDir);
