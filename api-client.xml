@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bundle>
+<bundle xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	name="快嘉接口定义规范"
+	xsi:noNamespaceSchemaLocation="https://fastjrun.github.io/res/fastjrun-schema.xsd">
 	<packets>
-		<packet class="packet.api.RegistserRestRequestBody" parent="com.fastjrun.sdkg.packet.BaseRequestBody">
+		<packet class="packet.api.RegistserRestRequestBody" parent="com.fastjrun.packet.BaseRequestBody">
 			<field name="loginId" dataType="String" length="12" canBeNull="false"
 				remark="登录名" />
 			<field name="loginpwd" dataType="String" length="64" canBeNull="false"
@@ -13,15 +15,15 @@
 			<field name="mobileNo" dataType="String" length="20" canBeNull="true"
 				remark="手机号" />
 			<field name="email" dataType="String" length="30" canBeNull="true"
-				remark="手机号" />
+				remark="邮箱" />
 		</packet>
-		<packet class="packet.api.LoginRestRequestBody" parent="com.fastjrun.sdkg.packet.BaseRequestBody">
+		<packet class="packet.api.LoginRestRequestBody" parent="com.fastjrun.packet.BaseRequestBody">
 			<field name="loginName" dataType="String" length="12"
 				canBeNull="false" remark="登录名" />
 			<field name="loginpwd" dataType="String" length="64" canBeNull="false"
 				remark="密码" />
 		</packet>
-		<packet class="packet.api.LoginRestResponseBody" parent="com.fastjrun.sdkg.packet.BaseResponseBody">
+		<packet class="packet.api.LoginRestResponseBody" parent="com.fastjrun.packet.BaseResponseBody">
 			<field name="uuid" dataType="String" length="64" canBeNull="false"
 				remark="登录凭证" />
 			<field name="sex" dataType="String" length="1" canBeNull="true"
@@ -33,11 +35,11 @@
 			<field name="email" dataType="String" length="30" canBeNull="true"
 				remark="邮箱" />
 		</packet>
-		<packet class="packet.api.AutoLoginRestRequestBody" parent="com.fastjrun.sdkg.packet.BaseRequestBody">
+		<packet class="packet.api.AutoLoginRestRequestBody" parent="com.fastjrun.packet.BaseRequestBody">
 			<field name="uuidOld" dataType="String" length="64" canBeNull="false"
 				remark="旧登录凭证" />
 		</packet>
-		<packet class="packet.api.ArticleListResponseBody" parent="com.fastjrun.sdkg.packet.BaseResponseBody">
+		<packet class="packet.api.ArticleListResponseBody" parent="com.fastjrun.packet.BaseResponseBody">
 			<list name="list" class="packet.api.Article">
 				<field name="id" dataType="Long" length="64" canBeNull="false"
 					remark="文章Id" />
@@ -50,7 +52,7 @@
 	</packets>
 	<apiControllers>
 		<apiController name="UserApiController" path="/api/user/"
-			clientName="UserApiClient" clientParent="com.fastjrun.sdkg.client.BaseApiClient"
+			clientName="UserApiClient" clientParent="com.fastjrun.client.BaseApiClient"
 			remark="用户管理接口" tags="第三方接口">
 			<service name="userService" class="UserServiceRestApi">
 				<method name="register" version="" path="register" remark="注册">
@@ -85,10 +87,10 @@
 			</service>
 		</apiController>
 		<apiController name="ArticleApiController" path="/api/article/"
-			clientName="ArticleApiClient" clientParent="com.fastjrun.sdkg.client.BaseApiClient"
+			clientName="ArticleApiClient" clientParent="com.fastjrun.client.BaseApiClient"
 			remark="版本接口" tags="第三方接口">
 			<service name="articleService" class="ArticleServiceRestApi">
-				<method name="check" version="" path="check" method="Get"
+				<method name="check" version="" path="check" method="GET"
 					remark="是否有新文章检测" />
 				<method name="latests" version="" path="latests" remark="最近版本列表">
 					<response>
