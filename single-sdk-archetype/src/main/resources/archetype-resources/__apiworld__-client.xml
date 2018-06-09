@@ -2,7 +2,7 @@
 <bundle>
 	<packets>
 		<packet class="packet.api.RegistserRestRequestBody"
-			parent="com.fastjrun.sdkg.packet.BaseRequestBody">
+			parent="com.fastjrun.packet.BaseRequestBody">
 			<field name="loginId" dataType="String" length="12"
 				canBeNull="false" remark="登录名" />
 			<field name="loginpwd" dataType="String" length="64"
@@ -17,14 +17,14 @@
 				canBeNull="true" remark="手机号" />
 		</packet>
 		<packet class="packet.api.LoginRestRequestBody"
-			parent="com.fastjrun.sdkg.packet.BaseRequestBody">
+			parent="com.fastjrun.packet.BaseRequestBody">
 			<field name="loginName" dataType="String" length="12"
 				canBeNull="false" remark="登录名" />
 			<field name="loginpwd" dataType="String" length="64"
 				canBeNull="false" remark="密码" />
 		</packet>
 		<packet class="packet.api.LoginRestResponseBody"
-			parent="com.fastjrun.sdkg.packet.BaseResponseBody">
+			parent="com.fastjrun.packet.BaseResponseBody">
 			<field name="uuid" dataType="String" length="64"
 				canBeNull="false" remark="登录凭证" />
 			<field name="sex" dataType="String" length="1" canBeNull="true"
@@ -37,12 +37,12 @@
 				canBeNull="true" remark="邮箱" />
 		</packet>
 		<packet class="packet.api.AutoLoginRestRequestBody"
-			parent="com.fastjrun.sdkg.packet.BaseRequestBody">
+			parent="com.fastjrun.packet.BaseRequestBody">
 			<field name="uuidOld" dataType="String" length="64"
 				canBeNull="false" remark="旧登录凭证" />
 		</packet>
 		<packet class="packet.api.ArticleListResponseBody"
-			parent="com.fastjrun.sdkg.packet.BaseResponseBody">
+			parent="com.fastjrun.packet.BaseResponseBody">
 			<list name="list" class="packet.api.Article">
 				<field name="id" dataType="Long" length="64" canBeNull="false"
 					remark="文章Id" />
@@ -53,7 +53,7 @@
 			</list>
 		</packet>
 		<packet class="packet.app.RegistserRestRequestBody"
-			parent="com.fastjrun.sdkg.packet.BaseRequestBody">
+			parent="com.fastjrun.packet.BaseRequestBody">
 			<field name="loginId" dataType="String" length="12"
 				canBeNull="false" remark="登录名" />
 			<field name="loginpwd" dataType="String" length="64"
@@ -68,14 +68,14 @@
 				canBeNull="true" remark="手机号" />
 		</packet>
 		<packet class="packet.app.LoginRestRequestBody"
-			parent="com.fastjrun.sdkg.packet.BaseRequestBody">
+			parent="com.fastjrun.packet.BaseRequestBody">
 			<field name="loginName" dataType="String" length="12"
 				canBeNull="false" remark="登录名" />
 			<field name="loginpwd" dataType="String" length="64"
 				canBeNull="false" remark="密码" />
 		</packet>
 		<packet class="packet.app.LoginRestResponseBody"
-			parent="com.fastjrun.sdkg.packet.BaseResponseBody">
+			parent="com.fastjrun.packet.BaseResponseBody">
 			<field name="uuid" dataType="String" length="64"
 				canBeNull="false" remark="登录凭证" />
 			<field name="sex" dataType="String" length="1" canBeNull="true"
@@ -88,12 +88,12 @@
 				canBeNull="true" remark="邮箱" />
 		</packet>
 		<packet class="packet.app.AutoLoginRestRequestBody"
-			parent="com.fastjrun.sdkg.packet.BaseRequestBody">
+			parent="com.fastjrun.packet.BaseRequestBody">
 			<field name="uuidOld" dataType="String" length="64"
 				canBeNull="false" remark="旧登录凭证" />
 		</packet>
 		<packet class="packet.app.VersionListResponseBody"
-			parent="com.fastjrun.sdkg.packet.BaseResponseBody">
+			parent="com.fastjrun.packet.BaseResponseBody">
 			<list name="list" class="packet.app.Version">
 				<field name="id" dataType="Long" length="64" canBeNull="false"
 					remark="版本Id" />
@@ -104,7 +104,7 @@
 			</list>
 		</packet>
 		<packet class="packet.generic.RegistserRestRequestBody"
-			parent="com.fastjrun.sdkg.packet.BaseRequestBody">
+			parent="com.fastjrun.packet.BaseRequestBody">
 			<field name="loginId" dataType="String" length="12"
 				canBeNull="false" remark="登录名" />
 			<field name="loginpwd" dataType="String" length="64"
@@ -119,14 +119,14 @@
 				canBeNull="true" remark="手机号" />
 		</packet>
 		<packet class="packet.generic.LoginRestRequestBody"
-			parent="com.fastjrun.sdkg.packet.BaseRequestBody">
+			parent="com.fastjrun.packet.BaseRequestBody">
 			<field name="loginName" dataType="String" length="12"
 				canBeNull="false" remark="登录名" />
 			<field name="loginpwd" dataType="String" length="64"
 				canBeNull="false" remark="密码" />
 		</packet>
 		<packet class="packet.generic.LoginRestResponseBody"
-			parent="com.fastjrun.sdkg.packet.BaseResponseBody">
+			parent="com.fastjrun.packet.BaseResponseBody">
 			<field name="uuid" dataType="String" length="64"
 				canBeNull="false" remark="登录凭证" />
 			<field name="sex" dataType="String" length="1" canBeNull="true"
@@ -139,12 +139,12 @@
 				canBeNull="true" remark="邮箱" />
 		</packet>
 		<packet class="packet.generic.AutoLoginRestRequestBody"
-			parent="com.fastjrun.sdkg.packet.BaseRequestBody">
+			parent="com.fastjrun.packet.BaseRequestBody">
 			<field name="uuidOld" dataType="String" length="64"
 				canBeNull="false" remark="旧登录凭证" />
 		</packet>
 		<packet class="packet.generic.VersionListResponseBody"
-			parent="com.fastjrun.sdkg.packet.BaseResponseBody">
+			parent="com.fastjrun.packet.BaseResponseBody">
 			<list name="list" class="packet.generic.Version">
 				<field name="id" dataType="Long" length="64" canBeNull="false"
 					remark="版本Id" />
@@ -158,7 +158,7 @@
 	<apiControllers>
 		<apiController name="UserApiController"
 			path="/api/user/" clientName="UserApiClient"
-			clientParent="com.fastjrun.sdkg.client.BaseApiClient" remark="用户管理接口"
+			clientParent="com.fastjrun.client.BaseApiClient" remark="用户管理接口"
 			tags="第三方接口">
 			<service name="userService" class="UserServiceRestApi">
 				<method name="register" version="" path="register"
@@ -202,7 +202,7 @@
 		</apiController>
 		<apiController name="ArticleApiController"
 			path="/api/article/" clientName="ArticleApiClient"
-			clientParent="com.fastjrun.sdkg.client.BaseApiClient" remark="版本接口"
+			clientParent="com.fastjrun.client.BaseApiClient" remark="版本接口"
 			tags="第三方接口">
 			<service name="articleService" class="ArticleServiceRestApi">
 				<method name="check" version="" path="check" method="Get"
@@ -220,7 +220,7 @@
 	<appControllers>
 		<appController name="UserAppController"
 			path="/app/user/" clientName="UserAppClient"
-			clientParent="com.fastjrun.sdkg.client.BaseAppClient" remark="用户管理接口"
+			clientParent="com.fastjrun.client.BaseAppClient" remark="用户管理接口"
 			tags="App接口">
 			<service name="userService" class="UserServiceRestApp">
 				<method name="register" version="v2" path="register"
@@ -264,7 +264,7 @@
 		</appController>
 		<appController name="AppVersionAppController"
 			path="/app/version/" clientName="AppVersionAppClient"
-			clientParent="com.fastjrun.sdkg.client.BaseAppClient" remark="版本接口"
+			clientParent="com.fastjrun.client.BaseAppClient" remark="版本接口"
 			tags="App接口">
 			<service name="versionService" class="VersionServiceRestApp">
 				<method name="check" version="" path="check" remark="版本检测"
@@ -282,7 +282,7 @@
 	<genericControllers>
 		<genericController name="UserGenericController"
 			path="/generic/user/" clientName="UserGenericClient"
-			clientParent="com.fastjrun.sdkg.client.BaseGenericClient"
+			clientParent="com.fastjrun.client.BaseGenericClient"
 			remark="用户管理接口" tags="基本接口">
 			<service name="userService" class="UserServiceRestGeneric">
 				<method name="register" version="" path="register"
@@ -308,7 +308,7 @@
 		<genericController
 			name="AppVersionGenericController" version=""
 			path="/generic/version/" clientName="AppVersionGenericClient"
-			clientParent="com.fastjrun.sdkg.client.BaseGenericClient"
+			clientParent="com.fastjrun.client.BaseGenericClient"
 			remark="版本接口" tags="基本接口">
 			<service name="versionService"
 				class="VersionServiceRestGeneric">
