@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bundle>
+<bundle xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	name="快嘉接口定义规范"
+	xsi:noNamespaceSchemaLocation="https://fastjrun.github.io/res/fastjrun-schema.xsd">
 	<packets>
 		<packet class="packet.api.RegistserRestRequestBody"
 			parent="com.fastjrun.packet.BaseRequestBody">
@@ -205,7 +207,7 @@
 			clientParent="com.fastjrun.client.BaseApiClient" remark="版本接口"
 			tags="第三方接口">
 			<service name="articleService" class="ArticleServiceRestApi">
-				<method name="check" version="" path="check" method="Get"
+				<method name="check" version="" path="check" method="GET"
 					remark="是否有新文章检测" />
 				<method name="latests" version="" path="latests"
 					remark="最近版本列表">
@@ -268,9 +270,9 @@
 			tags="App接口">
 			<service name="versionService" class="VersionServiceRestApp">
 				<method name="check" version="" path="check" remark="版本检测"
-					method="Get" />
+					method="GET" />
 				<method name="latests" version="" path="latests"
-					remark="最近版本列表" method="Get">
+					remark="最近版本列表" method="GET">
 					<response>
 						<object name="body"
 							class="packet.app.VersionListResponseBody" />
@@ -306,7 +308,7 @@
 			</service>
 		</genericController>
 		<genericController
-			name="AppVersionGenericController" version=""
+			name="AppVersionGenericController"
 			path="/generic/version/" clientName="AppVersionGenericClient"
 			clientParent="com.fastjrun.client.BaseGenericClient"
 			remark="版本接口" tags="基本接口">
@@ -327,7 +329,7 @@
 					<pathvariables>
 						<pathvariable name="appKey" dataType="String"
 							length="32" remark="分配客户端key" />
-						<pathVariable name="accessTime" dataType="Long"
+						<pathvariable name="accessTime" dataType="Long"
 							length="11" remark="访问时间戳" />
 					</pathvariables>
 					<response class="packet.generic.VersionListResponseBody" />
