@@ -281,7 +281,7 @@ public class SDKGenerator extends PacketGenerator {
 					methodBlk.invoke(sbUrlReqVar, "append").arg(JExpr.lit("/"));
 					JTryBlock jtry1 = methodBlk._try();
 					JVar md5HashVar = jtry1.body().decl(cm.ref("String"), "md5Hash",
-							cm.ref("com.fastjrun.sdkg.helper.EncryptHelper").staticInvoke("md5Digest")
+							cm.ref("com.fastjrun.helper.EncryptHelper").staticInvoke("md5Digest")
 									.arg(JExpr._this().invoke("getAccessKeySn").plus(txTimeVar)));
 					jtry1.body().invoke(sbUrlReqVar, "append").arg(md5HashVar);
 					JCatchBlock jTryCatchBlock = jtry1._catch(cm.ref("Exception"));
