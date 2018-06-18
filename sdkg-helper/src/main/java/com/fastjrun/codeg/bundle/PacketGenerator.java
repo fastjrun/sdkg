@@ -33,7 +33,7 @@ public abstract class PacketGenerator extends CodeGenerator {
 		this.bundleFiles = bundleFiles;
 	}
 
-	protected JClass processBody(RestObject body, JClass parentClass) {
+	protected JClass processBody(RestObject body, JClass parentClass, boolean isSwagger) {
 		try {
 			JDefinedClass dc = cm._class(this.packageNamePrefix + body.get_class());
 
@@ -44,7 +44,6 @@ public abstract class PacketGenerator extends CodeGenerator {
 			long hashCode = 0l;
 			hashCode += dc.getClass().getName().hashCode();
 			this.addClassDeclaration(dc);
-			
 
 			Map<String, RestField> fields = body.getFields();
 			JMethod toStringMethod = dc.method(JMod.PUBLIC, cm.ref("String"), "toString");
@@ -57,7 +56,7 @@ public abstract class PacketGenerator extends CodeGenerator {
 				int index = 0;
 				toStringMethodBlk.invoke(toStringSBVar, "append").arg(JExpr.lit("field ["));
 				for (RestField field : fields.values()) {
-					this.processField(index, field, dc, hashCode, toStringMethodBlk, toStringSBVar);
+					this.processField(index, field, isSwagger, dc, hashCode, toStringMethodBlk, toStringSBVar);
 					index++;
 				}
 				toStringMethodBlk.invoke(toStringSBVar, "append").arg(JExpr.lit("]"));
@@ -70,7 +69,7 @@ public abstract class PacketGenerator extends CodeGenerator {
 				for (String key : objects.keySet()) {
 					hashCode += key.hashCode();
 					RestObject object = objects.get(key);
-					this.processRO(key, object, hashCode, dc, index, toStringMethodBlk, toStringSBVar);
+					this.processRO(key, object, hashCode, isSwagger, dc, index, toStringMethodBlk, toStringSBVar);
 
 				}
 				toStringMethodBlk.invoke(toStringSBVar, "append").arg(JExpr.lit("]"));
@@ -83,7 +82,7 @@ public abstract class PacketGenerator extends CodeGenerator {
 				for (String key : lists.keySet()) {
 					hashCode += key.hashCode();
 					RestObject list = lists.get(key);
-					this.processList(list, dc, key, hashCode, index, toStringMethodBlk, toStringSBVar);
+					this.processList(list, isSwagger, dc, key, hashCode, index, toStringMethodBlk, toStringSBVar);
 
 				}
 				toStringMethodBlk.invoke(toStringSBVar, "append").arg(JExpr.lit("]"));
@@ -98,8 +97,8 @@ public abstract class PacketGenerator extends CodeGenerator {
 		}
 	}
 
-	private void processField(int index, RestField field, JDefinedClass dc, long hashCode, JBlock toStringMethodBlk,
-			JVar toStringSBVar) {
+	private void processField(int index, RestField field, boolean isSwagger, JDefinedClass dc, long hashCode,
+			JBlock toStringMethodBlk, JVar toStringSBVar) {
 
 		String fieldName = field.getName();
 		String dataType = field.getDatatype();
@@ -112,6 +111,10 @@ public abstract class PacketGenerator extends CodeGenerator {
 			jType = cm.ref(dataType);
 		}
 		JFieldVar fieldVar = dc.field(JMod.PRIVATE, jType, fieldName);
+		if (isSwagger) {
+			fieldVar.annotate(cm.ref("io.swagger.annotations.ApiModelProperty")).param("value", field.getRemark())
+					.param("required", JExpr.lit(!field.isCanBeNull()));
+		}
 		JDocComment jdoc = fieldVar.javadoc();
 		// 成员变量注释
 		jdoc.add(field.getRemark());
@@ -154,11 +157,11 @@ public abstract class PacketGenerator extends CodeGenerator {
 		}
 	}
 
-	private void processRO(String key, RestObject object, long hashCode, JDefinedClass dc, int index,
+	private void processRO(String key, RestObject object, long hashCode, boolean isSwagger, JDefinedClass dc, int index,
 			JBlock toStringMethodBlk, JVar toStringSBVar) {
-		JClass objectDc = this.processBody(object, null);
+		JClass objectDc = this.processBody(object, null,isSwagger);
 		hashCode += objectDc.hashCode();
-		JFieldVar fieldVar = dc.field(JMod.PRIVATE, objectDc, key);
+		dc.field(JMod.PRIVATE, objectDc, key);
 		JFieldRef nameRef = JExpr.refthis(key);
 		// javabean命名规范：属性第二字母大写，则setter和getter方法首字母和第二字母都大写
 
@@ -188,10 +191,10 @@ public abstract class PacketGenerator extends CodeGenerator {
 		toStringMethodBlk.invoke(toStringSBVar, "append").arg(nameRef);
 	}
 
-	private void processList(RestObject list, JDefinedClass dc, String key, long hashCode, int index,
+	private void processList(RestObject list, boolean isSwagger, JDefinedClass dc, String key, long hashCode, int index,
 			JBlock toStringMethodBlk, JVar toStringSBVar) {
-		JClass listDc = this.processBody(list, null);
-		JFieldVar fieldVar = dc.field(JMod.PRIVATE, cm.ref("java.util.List").narrow(listDc), key);
+		JClass listDc = this.processBody(list, null,isSwagger);
+		dc.field(JMod.PRIVATE, cm.ref("java.util.List").narrow(listDc), key);
 		JFieldRef nameRef = JExpr.refthis(key);
 
 		// javabean命名规范：属性第二字母大写，则setter和getter方法首字母和第二字母都大写

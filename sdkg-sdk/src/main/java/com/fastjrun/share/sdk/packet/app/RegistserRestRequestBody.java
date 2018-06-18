@@ -2,12 +2,14 @@
 package com.fastjrun.share.sdk.packet.app;
 
 import java.io.Serializable;
-import com.fastjrun.sdkg.packet.BaseRequestBody;
+import com.fastjrun.packet.BaseRequestBody;
 
 
 /**
+ * 注意：本内容仅限于公司内部传阅，禁止外泄以及用于其他的商业目的
  * 
- * @author fastjrun
+ * @Copyright 2018 快嘉框架. All rights reserved.
+ * @author cuiyingfeng
  */
 public class RegistserRestRequestBody
     extends BaseRequestBody

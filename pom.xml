@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
@@ -31,6 +32,11 @@
 				<artifactId>json-lib</artifactId>
 				<version>${json-lib.version}</version>
 				<classifier>jdk15</classifier>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-web</artifactId>
+				<version>${springframework.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -96,6 +102,7 @@
 		<mycompany-releases-url-suffix>/repository/maven-releases/</mycompany-releases-url-suffix>
 		<log4j2.version>2.11.0</log4j2.version>
 		<json-lib.version>2.4</json-lib.version>
+		<springframework.version>3.2.15.RELEASE</springframework.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 </project>

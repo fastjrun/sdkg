@@ -30,8 +30,9 @@ public class SDKGeneratorTest {
         String moduleName = "Example";
         SDKGenerator sdkGenerator = new SDKGenerator();
         sdkGenerator.setModuleName(moduleName);
-        sdkGenerator.setBundleFiles("../generic-client.xml".split(","));
-        sdkGenerator.setPackageNamePrefix("com.fastjrun.common.");
+        sdkGenerator.setBundleFiles("../openapi_app-client.xml".split(","));
+        sdkGenerator.setAuthor("崔莹峰");
+        sdkGenerator.setPackageNamePrefix("com.fastjrun.share.giz_openapi_apps.sdk.");
         sdkGenerator.setAppName("app");
         sdkGenerator.generate();
     }

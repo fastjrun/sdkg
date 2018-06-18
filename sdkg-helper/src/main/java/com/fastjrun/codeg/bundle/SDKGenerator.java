@@ -13,7 +13,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 
 import com.fastjrun.codeg.CodeGException;
-import com.fastjrun.codeg.CodeGenerator;
 import com.fastjrun.codeg.bundle.common.RestController;
 import com.fastjrun.codeg.bundle.common.RestField;
 import com.fastjrun.codeg.bundle.common.RestObject;
@@ -29,7 +28,6 @@ import com.sun.codemodel.JCatchBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JDocComment;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JFieldVar;
@@ -67,7 +65,7 @@ public class SDKGenerator extends PacketGenerator {
 	 * @param prefix
 	 *            App:为App提供接口;Api:为其他系统提供接口;Generic：普通接口
 	 */
-	private boolean processRest(RestController rest, Map<String, RestObject> restPacketMap, String prefix) {
+	private boolean processClient(RestController rest, Map<String, RestObject> restPacketMap, String prefix) {
 		try {
 			File outFile = new File(
 					this.moduleName + TESTDATANAME + File.separator + rest.getClientName() + ".properties");
@@ -75,7 +73,7 @@ public class SDKGenerator extends PacketGenerator {
 			if (outFile.exists()) {
 				outFile.delete();
 			}
-			FileWriter resFw = new FileWriter(outFile);
+			
 			Properties restProp = new Properties();
 			JDefinedClass clientClass = cm._class(this.packageNamePrefix + "client." + rest.getClientName());
 
@@ -86,7 +84,7 @@ public class SDKGenerator extends PacketGenerator {
 					._class(this.packageNamePrefix + "client." + rest.getClientName() + "Test");
 
 			this.addClassDeclaration(clientTestClass);
-			
+
 			JFieldVar logVar = clientTestClass.field(JMod.NONE + JMod.FINAL,
 					cmTest.ref("org.apache.logging.log4j.Logger"), "log",
 					cmTest.ref("org.apache.logging.log4j.LogManager").staticInvoke("getLogger")
@@ -533,25 +531,17 @@ public class SDKGenerator extends PacketGenerator {
 				restProp.put(sbMethod.toString(),
 						methodParamInJsonObject.toString().replaceAll("\n", "").replaceAll("\r", "").trim());
 			}
+			try {
+				FileWriter resFw = new FileWriter(outFile);
+				restProp.store(resFw, "ok");
+				resFw.close();
+			}catch (IOException e) {
+				throw new CodeGException("CG505", rest.getClientName() + " 测试数据模板文件生成失败:" + e.getMessage());
+			} 
+			
 
-			restProp.store(resFw, "ok");
-			resFw.close();
-
-			// 生成代码为UTF-8编码
-			CodeWriter src;
-			src = new FileCodeWriter(this.srcDir, "UTF-8");
-			// 自上而下地生成类、方法等
-			cm.build(src);
-
-			// 生成代码为UTF-8编码
-			CodeWriter srcTest;
-			srcTest = new FileCodeWriter(this.testSrcDir, "UTF-8");
-			// 自上而下地生成类、方法等
-			cmTest.build(srcTest);
 			return true;
 
-		} catch (IOException e) {
-			throw new CodeGException("CG505", rest.getClientName() + " create failed:" + e.getMessage());
 		} catch (JClassAlreadyExistsException e) {
 			throw new CodeGException("CG505", rest.getClientName() + " create failed:" + e.getMessage());
 		}
@@ -568,6 +558,21 @@ public class SDKGenerator extends PacketGenerator {
 
 		}
 
+		try {
+			// 生成代码为UTF-8编码
+			CodeWriter src;
+			src = new FileCodeWriter(this.srcDir, "UTF-8");
+			// 自上而下地生成类、方法等
+			cm.build(src);
+
+			// 生成代码为UTF-8编码
+			CodeWriter srcTest;
+			srcTest = new FileCodeWriter(this.testSrcDir, "UTF-8");
+			// 自上而下地生成类、方法等
+			cmTest.build(srcTest);
+		} catch (IOException e) {
+			throw new CodeGException("CG502", "code generating failed:" + e.getMessage());
+		}
 		return true;
 	}
 
@@ -577,8 +582,10 @@ public class SDKGenerator extends PacketGenerator {
 		List<Boolean> resList = new ArrayList<Boolean>();
 		for (RestObject restPacket : restPacketMap.values()) {
 			Callable<Boolean> task = new GeneratorPacketTask(this, restPacket);
+			FutureTask<Boolean> future = new FutureTask<Boolean>(task);
+			new Thread(future).start();
 			try {
-				task.call();
+				resList.add(future.get());
 			} catch (Exception e) {
 				log.error(restPacket.getName() + " create failed:" + e.getMessage());
 			}
@@ -616,10 +623,16 @@ public class SDKGenerator extends PacketGenerator {
 				log.error(rest.getClientName() + " create failed:" + e.getMessage());
 			}
 		}
-		for (int i = 0; i < resList.size(); i++) {
-			Boolean res = resList.get(i);
-			if (!res.booleanValue()) {
-				return false;
+		// 遍历任务的结果
+		boolean isFinished = false;
+		while (!isFinished) {
+			isFinished = true;
+			for (Boolean fs : resList) {
+				log.debug(fs);
+				if (!fs) {
+					isFinished = false;
+					break;
+				}
 			}
 		}
 		return true;
@@ -637,7 +650,7 @@ public class SDKGenerator extends PacketGenerator {
 		}
 
 		public Boolean call() {
-			JClass jclass = codeGenerator.processBody(body, cm.ref(body.getParent()));
+			JClass jclass = codeGenerator.processBody(body, cm.ref(body.getParent()),false);
 			if (jclass != null) {
 				return Boolean.TRUE;
 			} else {
@@ -666,7 +679,7 @@ public class SDKGenerator extends PacketGenerator {
 		}
 
 		public Boolean call() {
-			boolean res = codeGenerator.processRest(rest, restPacketMap, prefix);
+			boolean res = codeGenerator.processClient(rest, restPacketMap, prefix);
 			return Boolean.valueOf(res);
 		}
 
