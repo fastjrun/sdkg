@@ -546,6 +546,7 @@ public class BundleMockGenerator extends PacketGenerator {
 		if (roList != null && roList.size() > 0) {
 			int index = 0;
 			for (String indexName : roList.keySet()) {
+				index++;
 				RestObject roEntity = roList.get(indexName);
 				JClass roListEntityClass = cm.ref(this.packageNamePrefix + roEntity.get_class());
 				String varNamePrefix = listName + StringHelper.toUpperCaseFirstOne(
@@ -553,14 +554,15 @@ public class BundleMockGenerator extends PacketGenerator {
 				JVar listsVar = methodBlk.decl(cm.ref("java.util.List").narrow(roListEntityClass),
 						varNamePrefix + "List" + loopSeq,
 						JExpr._new(cm.ref("java.util.ArrayList").narrow(roListEntityClass)));
-				JVar iSizeVar = methodBlk.decl(cm.INT, "iSize" + String.valueOf(index++),
+				JVar iSizeVar = methodBlk.decl(cm.INT, "iSize" + String.valueOf(loopSeq) + String.valueOf(index),
 						mockHelperClass.staticInvoke("geInteger").arg(JExpr.lit(10)).invoke("intValue"));
 				JForLoop forLoop = methodBlk._for();
-				JVar iVar = forLoop.init(cm.INT, "i" + String.valueOf(index++) + loopSeq, JExpr.lit(0));
+				JVar iVar = forLoop.init(cm.INT, "i" + String.valueOf(loopSeq) + String.valueOf(index),
+						JExpr.lit(0));
 				forLoop.test(iVar.lt(iSizeVar));
 				forLoop.update(iVar.incr());
 				JBlock forBody = forLoop.body();
-				JVar ro2Var = composeResponseBodyList(loopSeq++, forBody, roEntity, indexName, roListEntityClass);
+				JVar ro2Var = composeResponseBodyList(loopSeq+1, forBody, roEntity, indexName, roListEntityClass);
 				forBody.invoke(listsVar, "add").arg(ro2Var);
 
 				methodBlk.invoke(reponseBodyVar, "set" + StringHelper.toUpperCaseFirstOne(indexName)).arg(listsVar);
