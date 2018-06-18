@@ -45,7 +45,7 @@
 		</dependency>
 	</dependencies>
 	<build>
-		<finalName>sdk-mock</finalName>
+		<finalName>api-mock</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
