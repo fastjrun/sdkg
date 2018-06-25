@@ -55,7 +55,7 @@ public class BundleMockGenerator extends PacketGenerator {
 
 			JDefinedClass dcServiceMock = cm._class("com.fastjrun.mock." + restService.get_class() + "Mock");
 			dcServiceMock._implements(dcService);
-			dcServiceMock.annotate(cm.ref("org.springframework.stereotype.Service"));
+			dcServiceMock.annotate(cm.ref("org.springframework.stereotype.Service")).param("value", StringHelper.toLowerCaseFirstOne(restService.get_class()));
 
 			this.addClassDeclaration(dcServiceMock);
 
