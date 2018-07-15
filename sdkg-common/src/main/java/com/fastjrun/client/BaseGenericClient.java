@@ -1,11 +1,8 @@
 package com.fastjrun.client;
 
-import java.util.Map;
 import java.util.ResourceBundle;
 
-import net.sf.json.JSONObject;
-
-public abstract class BaseGenericClient extends BaseHttpClient {
+public abstract class BaseGenericClient extends BaseHttpWithResHeadClient {
 
     protected String genericUrlPre;
 
@@ -17,16 +14,14 @@ public abstract class BaseGenericClient extends BaseHttpClient {
         this.genericUrlPre = genericUrlPre;
     }
 
+    @Override
     public void initSDKConfig(String apiworld) {
         ResourceBundle rb = ResourceBundle.getBundle(apiworld + "-sdk");
         this.genericUrlPre = rb.getString(apiworld + ".genericUrlPre");
     }
 
     @Override
-    protected JSONObject process(String reqStr, String urlReq, String method,
-            Map<String, String> requestProperties) {
-        JSONObject responseJsonObject = this.processInternal(reqStr, urlReq,
-                method, requestProperties);
-        return responseJsonObject;
+    protected String generateUrlSuffix() {
+        return "";
     }
 }

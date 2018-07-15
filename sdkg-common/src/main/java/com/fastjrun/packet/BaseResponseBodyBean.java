@@ -2,7 +2,7 @@ package com.fastjrun.packet;
 
 import com.fastjrun.common.AbstractEntity;
 
-public class BaseResponseBodyBean extends BaseResponseBody {
+public class BaseResponseBodyBean extends BaseBody {
 
     private AbstractEntity abstractEntity;
 

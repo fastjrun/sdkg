@@ -68,11 +68,11 @@ public class ArticleApiClientTest {
     @org.testng.annotations.Parameters({
         "reqParamsJsonStr"
     })
-    public void check(String reqParamsJsonStr) {
+    public void testCheck(String reqParamsJsonStr) {
+        log.info(reqParamsJsonStr);
         JSONObject reqParamsJson = JSONObject.fromObject(reqParamsJsonStr);
-        String accessKey = reqParamsJson.optString("accessKey");
         try {
-            articleApiClient.check(accessKey);
+            articleApiClient.check();
         } catch (Exception _x) {
             _x.printStackTrace();
         }
@@ -82,11 +82,11 @@ public class ArticleApiClientTest {
     @org.testng.annotations.Parameters({
         "reqParamsJsonStr"
     })
-    public void latests(String reqParamsJsonStr) {
+    public void testLatests(String reqParamsJsonStr) {
+        log.info(reqParamsJsonStr);
         JSONObject reqParamsJson = JSONObject.fromObject(reqParamsJsonStr);
-        String accessKey = reqParamsJson.optString("accessKey");
         try {
-            ArticleListResponseBody responseBody = articleApiClient.latests(accessKey);
+            ArticleListResponseBody responseBody = articleApiClient.latests();
             log.info(responseBody);
         } catch (Exception _x) {
             _x.printStackTrace();

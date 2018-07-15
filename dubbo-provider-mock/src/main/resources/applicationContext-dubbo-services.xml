@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+    <dubbo:service
+            interface="com.alibaba.testsdk.service.ArticleServiceRestApi"
+            ref="articleServiceRestApi"/>
+    <dubbo:service
+            interface="com.alibaba.testsdk.service.UserServiceRestApi"
+            ref="userServiceRestApi"/>
+    <dubbo:service
+            interface="com.alibaba.testsdk.service.UserServiceRestApp"
+            ref="userServiceRestApp"/>
+    <dubbo:service
+            interface="com.alibaba.testsdk.service.UserServiceRestGeneric"
+            ref="userServiceRestGeneric"/>
+    <dubbo:service
+            interface="com.alibaba.testsdk.service.VersionServiceRestApp"
+            ref="versionServiceRestApp"/>
+    <dubbo:service
+            interface="com.alibaba.testsdk.service.VersionServiceRestGeneric"
+            ref="versionServiceRestGeneric"/>
+    <dubbo:service
+            interface="com.alibaba.testsdk.service.UserServiceRPC"
+            ref="userServiceRPC"/>
+</beans>

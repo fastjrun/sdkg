@@ -1,6 +1,8 @@
 
 package com.fastjrun.share.sdk.packet.api;
 
+import java.io.Serializable;
+import com.fastjrun.packet.BaseBody;
 
 
 /**
@@ -9,7 +11,10 @@ package com.fastjrun.share.sdk.packet.api;
  * @Copyright 2018 快嘉框架. All rights reserved.
  * @author cuiyingfeng
  */
-public class Article {
+public class Article
+    extends BaseBody
+    implements Serializable
+{
 
     /**
      * 文章Id

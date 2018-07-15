@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import com.fastjrun.share.sdk.client.AppVersionGenericClient;
+import com.fastjrun.share.sdk.packet.generic.VersionListResponseBody;
 import net.sf.json.JSONObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -67,11 +68,12 @@ public class AppVersionGenericClientTest {
     @org.testng.annotations.Parameters({
         "reqParamsJsonStr"
     })
-    public void latests(String reqParamsJsonStr) {
+    public void testLatests(String reqParamsJsonStr) {
+        log.info(reqParamsJsonStr);
         JSONObject reqParamsJson = JSONObject.fromObject(reqParamsJsonStr);
         try {
-            com.fastjrun.share.sdk.packet.generic.VersionListResponseBody response = appVersionGenericClient.latests();
-            log.info(response);
+            VersionListResponseBody responseBody = appVersionGenericClient.latests();
+            log.info(responseBody);
         } catch (Exception _x) {
             _x.printStackTrace();
         }
@@ -81,15 +83,16 @@ public class AppVersionGenericClientTest {
     @org.testng.annotations.Parameters({
         "reqParamsJsonStr"
     })
-    public void latestsv2(String reqParamsJsonStr) {
+    public void testLatestsv2(String reqParamsJsonStr) {
+        log.info(reqParamsJsonStr);
         JSONObject reqParamsJson = JSONObject.fromObject(reqParamsJsonStr);
-        String appKey = String.valueOf(reqParamsJson.getString("appKey"));
-        Long accessTime = Long.valueOf(reqParamsJson.getLong("accessTime"));
-        Integer pageIndex = Integer.valueOf(reqParamsJson.getInt("pageIndex"));
-        Integer pageNum = Integer.valueOf(reqParamsJson.getInt("pageNum"));
+        String appKey = reqParamsJson.getString("appKey");
+        Long accessTime = reqParamsJson.getLong("accessTime");
+        Integer pageNum = reqParamsJson.getInt("pageNum");
+        Integer pageIndex = reqParamsJson.getInt("pageIndex");
         try {
-            com.fastjrun.share.sdk.packet.generic.VersionListResponseBody response = appVersionGenericClient.latestsv2(appKey, accessTime, pageIndex, pageNum);
-            log.info(response);
+            VersionListResponseBody responseBody = appVersionGenericClient.latestsv2(appKey, accessTime, pageNum, pageIndex);
+            log.info(responseBody);
         } catch (Exception _x) {
             _x.printStackTrace();
         }

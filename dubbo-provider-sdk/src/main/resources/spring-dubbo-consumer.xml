@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+    <dubbo:application name="demo-consumer"/>
+    <dubbo:registry address="zookeeper://zk.mycompany.com:22180"/>
+    <dubbo:reference
+            interface="com.alibaba.testsdk.service.ArticleServiceRestApi"
+            ref="articleServiceRestApi"/>
+    <dubbo:reference
+            interface="com.alibaba.testsdk.service.UserServiceRestApi"
+            ref="userServiceRestApi"/>
+    <dubbo:reference
+            interface="com.alibaba.testsdk.service.UserServiceRestApp"
+            ref="userServiceRestApp"/>
+    <dubbo:reference
+            interface="com.alibaba.testsdk.service.UserServiceRestGeneric"
+            ref="userServiceRestGeneric"/>
+    <dubbo:reference
+            interface="com.alibaba.testsdk.service.VersionServiceRestApp"
+            ref="versionServiceRestApp"/>
+    <dubbo:reference
+            interface="com.alibaba.testsdk.service.VersionServiceRestGeneric"
+            ref="versionServiceRestGeneric"/>
+</beans>

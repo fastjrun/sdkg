@@ -1,23 +1,16 @@
 package com.fastjrun.helper;
 
-import com.fastjrun.packet.BaseDefaultResponseBody;
-import com.fastjrun.packet.BaseResponse;
-import com.fastjrun.packet.BaseResponseHead;
+import com.fastjrun.packet.*;
 
 public class BaseResponseHelper {
 
-    public static BaseResponse<BaseDefaultResponseBody> getSuccessResult() {
-        BaseResponse<BaseDefaultResponseBody> response = new BaseResponse<BaseDefaultResponseBody>();
-        BaseResponseHead responseHead = new BaseResponseHead();
-        responseHead.setCode("0000");
-        responseHead.setMsg("ok");
-        response.setHead(responseHead);
-        return response;
+    public static BaseDefaultResponse<EmptyResponseBody> getSuccessResult() {
+        return getResult("0000","ok");
     }
 
-    public static BaseResponse<BaseDefaultResponseBody> getFailResult(String code, String msg) {
-        BaseResponse<BaseDefaultResponseBody> response = new BaseResponse<BaseDefaultResponseBody>();
-        BaseResponseHead responseHead = new BaseResponseHead();
+    public static BaseDefaultResponse<EmptyResponseBody> getResult(String code, String msg) {
+        BaseDefaultResponse<EmptyResponseBody> response = new BaseDefaultResponse<>();
+        BaseDefaultResponseHead responseHead = new BaseDefaultResponseHead();
         responseHead.setCode(code);
         responseHead.setMsg(msg);
         response.setHead(responseHead);

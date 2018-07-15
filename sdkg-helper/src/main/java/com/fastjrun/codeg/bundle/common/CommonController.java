@@ -9,6 +9,35 @@ public class CommonController {
     protected String tags;
     protected String clientParent;
 
+    protected String serviceName;
+
+    protected CommonService service;
+    protected ControllerType controllerType;
+
+    public ControllerType getControllerType() {
+        return controllerType;
+    }
+
+    public void setControllerType(ControllerType controllerType) {
+        this.controllerType = controllerType;
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
+    public CommonService getService() {
+        return service;
+    }
+
+    public void setService(CommonService service) {
+        this.service = service;
+    }
+
     public String getName() {
         return name;
     }
@@ -56,7 +85,16 @@ public class CommonController {
     public void setTags(String tags) {
         this.tags = tags;
     }
-    
-    
+
+    public enum ControllerType {
+        ControllerType_APP("App"), ControllerType_API("Api"), ControllerType_GENERIC("Generic"), ControllerType_RPC(
+                "PRC");
+        public String controllerType;
+
+        ControllerType(String controllerType) {
+            this.controllerType = controllerType;
+        }
+
+    }
 
 }

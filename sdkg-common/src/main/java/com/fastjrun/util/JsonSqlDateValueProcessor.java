@@ -1,10 +1,10 @@
 package com.fastjrun.util;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import net.sf.json.JsonConfig;
 import net.sf.json.processors.JsonValueProcessor;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class JsonSqlDateValueProcessor implements JsonValueProcessor {
 

@@ -1,0 +1,285 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="bundle">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="packets" minOccurs="0"/>
+                <xs:element ref="services" minOccurs="0"/>
+                <xs:element ref="apiControllers" minOccurs="0"/>
+                <xs:element ref="appControllers" minOccurs="0"/>
+                <xs:element ref="genericControllers" minOccurs="0"/>
+            </xs:sequence>
+            <xs:attribute name="name" type="xs:string" default="快嘉接口定义规范"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="packets">
+        <xs:complexType>
+            <xs:choice>
+                <xs:element name="packet" type="packet" minOccurs="0"
+                            maxOccurs="unbounded"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="packet">
+        <xs:sequence>
+            <xs:element name="field" type="field" minOccurs="0"
+                        maxOccurs="unbounded"/>
+            <xs:element name="list" type="listOrObject" minOccurs="0"
+                        maxOccurs="unbounded"/>
+            <xs:element name="object" type="listOrObject" minOccurs="0"
+                        maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="class" type="xs:string" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="field">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="dataType" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="Boolean"/>
+                    <xs:enumeration value="Integer"/>
+                    <xs:enumeration value="Long"/>
+                    <xs:enumeration value="Double"/>
+                    <xs:enumeration value="String"/>
+                    <xs:enumeration value="Boolean:List"/>
+                    <xs:enumeration value="Integer:List"/>
+                    <xs:enumeration value="Long:List"/>
+                    <xs:enumeration value="Double:List"/>
+                    <xs:enumeration value="String:List"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="length" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:positiveInteger">
+                    <xs:maxInclusive value="1000"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="canBeNull" type="xs:boolean" use="required"/>
+        <xs:attribute name="message" type="xs:string"/>
+        <xs:attribute name="remark" type="xs:string" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="listOrObject">
+        <xs:sequence>
+            <xs:element name="field" type="field" minOccurs="0"
+                        maxOccurs="unbounded"/>
+            <xs:element name="list" type="packet" minOccurs="0"
+                        maxOccurs="unbounded"/>
+            <xs:element name="object" type="packet" minOccurs="0"
+                        maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="class" type="xs:string" use="required"/>
+    </xs:complexType>
+    <xs:element name="services">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="simpleServices" minOccurs="0"/>
+                <xs:element ref="controllerServices" minOccurs="0"
+                            />
+                <xs:element ref="rpcServices" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="simpleServices">
+        <xs:complexType>
+            <xs:choice>
+                <xs:element name="service" type="simpleService"
+                            minOccurs="0" maxOccurs="unbounded"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="simpleService">
+        <xs:sequence>
+            <xs:element name="method" type="simpleMethod"
+                        maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="class" type="xs:string" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="simpleMethod">
+        <xs:sequence>
+            <xs:element name="request" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="parameter" type="simpleParameterRef"
+                                    minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <!-- 只允许javabean、或者List<基本类型和javabean> -->
+            <xs:element name="response" type="simpleParameterRef"
+                        minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="remark" type="xs:string" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="simpleParameterRef">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <!-- Primitive Type or dto(packetPrefix+this)in single or List:single -->
+        <xs:attribute name="dataType" type="xs:string" use="required"/>
+        <xs:attribute name="length">
+            <xs:simpleType>
+                <xs:restriction base="xs:positiveInteger">
+                    <xs:maxInclusive value="1000"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="canBeNull" type="xs:boolean"/>
+        <xs:attribute name="remark" type="xs:string"/>
+    </xs:complexType>
+    <xs:complexType name="bodyObject">
+        <xs:attribute name="class" type="xs:string" use="required"/>
+    </xs:complexType>
+    <xs:element name="controllerServices">
+        <xs:complexType>
+            <xs:choice>
+                <xs:element name="service" type="controllerService"
+                            minOccurs="0" maxOccurs="unbounded"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="controllerService">
+        <xs:sequence>
+            <xs:element name="method" type="controllerMethod" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="class" type="xs:string" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="controllerMethod">
+        <xs:sequence>
+            <xs:element name="parameters" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="parameter" type="commonParameter" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="pathVariables" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="pathVariable" type="commonParameter" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="headVariables" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="headVariable" type="commonParameter" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="request" type="bodyObject" minOccurs="0"/>
+            <xs:element name="response" type="bodyObject" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="version" type="xs:string" use="required"/>
+        <xs:attribute name="path" type="xs:string" use="required"/>
+        <xs:attribute name="remark" type="xs:string" use="required"/>
+        <xs:attribute name="method" type="methodType" default="POST"/>
+        <xs:attribute name="reqType" type="contentType" default="json"/>
+        <xs:attribute name="resType" type="contentType" default="json"/>
+    </xs:complexType>
+    <xs:simpleType name="methodType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="GET"/>
+            <xs:enumeration value="POST"/>
+            <xs:enumeration value="PUT"/>
+            <xs:enumeration value="DELETE"/>
+            <xs:enumeration value="PATCH"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="contentType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="json"/>
+            <xs:enumeration value="xml"/>
+            <xs:enumeration value="json,xml"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="commonParameter">
+        <!-- in header key can be java key word -->
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="nameAlias" type="xs:string"/>
+        <!-- primitype or dto(packetprefix+this)in single or List:single -->
+        <xs:attribute name="dataType" type="xs:string" use="required"/>
+        <xs:attribute name="length" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:positiveInteger">
+                    <xs:maxInclusive value="1000"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="canBeNull" type="xs:boolean"/>
+        <xs:attribute name="remark" type="xs:string" use="required"/>
+    </xs:complexType>
+    <xs:element name="rpcServices">
+        <xs:complexType>
+            <xs:choice>
+                <xs:element name="service" type="rpcService" minOccurs="0"
+                            maxOccurs="unbounded"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="rpcService">
+        <xs:sequence>
+            <xs:element name="method" type="rpcMethod"
+                        maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="class" type="xs:string" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="rpcMethod">
+        <xs:sequence>
+            <xs:element name="parameters" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="parameter" type="commonParameter" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="request" type="bodyObject" minOccurs="0"/>
+            <xs:element name="response" type="bodyObject" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="version" type="xs:string" use="required"/>
+        <xs:attribute name="remark" type="xs:string" use="required"/>
+    </xs:complexType>
+    <xs:element name="apiControllers">
+        <xs:complexType>
+            <xs:choice>
+                <xs:element name="controller" type="controller" maxOccurs="unbounded"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="appControllers">
+        <xs:complexType>
+            <xs:choice>
+                <xs:element name="controller" type="controller" maxOccurs="unbounded"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="genericControllers">
+        <xs:complexType>
+            <xs:choice>
+                <xs:element name="controller" type="controller" maxOccurs="unbounded"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="controller">
+        <xs:all>
+            <xs:element name="service">
+                <xs:complexType>
+                    <xs:attribute name="name" type="xs:string" use="required"/>
+                    <xs:attribute name="ref" type="xs:string"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:all>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="path" type="xs:string" use="required"/>
+        <xs:attribute name="clientName" type="xs:string" use="required"/>
+        <xs:attribute name="clientParent" type="xs:string"/>
+        <xs:attribute name="remark" type="xs:string" use="required"/>
+        <xs:attribute name="tags" type="xs:string" use="required"/>
+    </xs:complexType>
+</xs:schema>

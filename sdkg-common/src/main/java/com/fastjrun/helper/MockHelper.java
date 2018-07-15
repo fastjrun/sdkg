@@ -1,14 +1,14 @@
 package com.fastjrun.helper;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.math.RandomUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MockHelper {
-    
-    public final static String NUMERICANDALPHABETIC="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    public final static String NUMERICANDALPHABETIC = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
     public static String geStringWithUpperAlphabetic(int maxLength) {
         int length = RandomUtils.nextInt(maxLength);
@@ -27,7 +27,7 @@ public class MockHelper {
 
     public static String geStringWithAscii(int maxLength) {
         int length = RandomUtils.nextInt(maxLength);
-        return RandomStringUtils.random(length,NUMERICANDALPHABETIC);
+        return RandomStringUtils.random(length, NUMERICANDALPHABETIC);
     }
 
     public static String geStringWithNumeric(int maxLength) {
@@ -52,12 +52,12 @@ public class MockHelper {
 
     public static Double geDouble(int maxValue) {
 
-        return Double.valueOf(RandomUtils.nextDouble()*maxValue);
+        return Double.valueOf(RandomUtils.nextDouble() * maxValue);
     }
 
     public static Float geFloat(int maxValue) {
 
-        return Float.valueOf(RandomUtils.nextFloat()*maxValue);
+        return Float.valueOf(RandomUtils.nextFloat() * maxValue);
     }
 
     public static List<String> geStringListWithAscii(int maxSize) {

@@ -68,14 +68,11 @@ public class AppVersionAppClientTest {
     @org.testng.annotations.Parameters({
         "reqParamsJsonStr"
     })
-    public void check(String reqParamsJsonStr) {
+    public void testCheck(String reqParamsJsonStr) {
+        log.info(reqParamsJsonStr);
         JSONObject reqParamsJson = JSONObject.fromObject(reqParamsJsonStr);
-        String appKey = reqParamsJson.optString("appKey");
-        String appVersion = reqParamsJson.optString("appVersion");
-        String appSource = reqParamsJson.optString("appSource");
-        String deviceId = reqParamsJson.optString("deviceId");
         try {
-            appVersionAppClient.check(appKey, appVersion, appSource, deviceId);
+            appVersionAppClient.check();
         } catch (Exception _x) {
             _x.printStackTrace();
         }
@@ -85,14 +82,11 @@ public class AppVersionAppClientTest {
     @org.testng.annotations.Parameters({
         "reqParamsJsonStr"
     })
-    public void latests(String reqParamsJsonStr) {
+    public void testLatests(String reqParamsJsonStr) {
+        log.info(reqParamsJsonStr);
         JSONObject reqParamsJson = JSONObject.fromObject(reqParamsJsonStr);
-        String appKey = reqParamsJson.optString("appKey");
-        String appVersion = reqParamsJson.optString("appVersion");
-        String appSource = reqParamsJson.optString("appSource");
-        String deviceId = reqParamsJson.optString("deviceId");
         try {
-            VersionListResponseBody responseBody = appVersionAppClient.latests(appKey, appVersion, appSource, deviceId);
+            VersionListResponseBody responseBody = appVersionAppClient.latests();
             log.info(responseBody);
         } catch (Exception _x) {
             _x.printStackTrace();

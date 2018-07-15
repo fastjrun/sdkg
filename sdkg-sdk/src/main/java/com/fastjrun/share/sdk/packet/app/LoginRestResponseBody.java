@@ -2,7 +2,7 @@
 package com.fastjrun.share.sdk.packet.app;
 
 import java.io.Serializable;
-import com.fastjrun.packet.BaseResponseBody;
+import com.fastjrun.packet.BaseBody;
 
 
 /**
@@ -12,7 +12,7 @@ import com.fastjrun.packet.BaseResponseBody;
  * @author cuiyingfeng
  */
 public class LoginRestResponseBody
-    extends BaseResponseBody
+    extends BaseBody
     implements Serializable
 {
 

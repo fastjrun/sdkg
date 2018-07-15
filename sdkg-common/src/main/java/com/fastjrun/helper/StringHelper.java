@@ -55,7 +55,6 @@ public class StringHelper {
 
     /**
      * 将字符串中的非字符转换成字母X
-     * 
      */
     public static String toLetterOrDigit(String string) {
         StringBuffer sb = new StringBuffer();
@@ -71,7 +70,6 @@ public class StringHelper {
 
     /**
      * 将字符串中的非字母转换成字母
-     * 
      */
     public static String toLetter(String string) {
         StringBuffer sb = new StringBuffer();
@@ -80,46 +78,46 @@ public class StringHelper {
                 sb.append(string.charAt(i));
             } else if (Character.isDigit(string.charAt(i))) {
                 switch (string.charAt(i)) {
-                case '0': {
-                    sb.append("A");
-                    break;
-                }
-                case '1': {
-                    sb.append("B");
-                    break;
-                }
-                case '2': {
-                    sb.append("C");
-                    break;
-                }
-                case '3': {
-                    sb.append("D");
-                    break;
-                }
-                case '4': {
-                    sb.append("E");
-                    break;
-                }
-                case '5': {
-                    sb.append("F");
-                    break;
-                }
-                case '6': {
-                    sb.append("G");
-                    break;
-                }
-                case '7': {
-                    sb.append("H");
-                    break;
-                }
-                case '8': {
-                    sb.append("I");
-                    break;
-                }
-                case '9': {
-                    sb.append("J");
-                    break;
-                }
+                    case '0': {
+                        sb.append("A");
+                        break;
+                    }
+                    case '1': {
+                        sb.append("B");
+                        break;
+                    }
+                    case '2': {
+                        sb.append("C");
+                        break;
+                    }
+                    case '3': {
+                        sb.append("D");
+                        break;
+                    }
+                    case '4': {
+                        sb.append("E");
+                        break;
+                    }
+                    case '5': {
+                        sb.append("F");
+                        break;
+                    }
+                    case '6': {
+                        sb.append("G");
+                        break;
+                    }
+                    case '7': {
+                        sb.append("H");
+                        break;
+                    }
+                    case '8': {
+                        sb.append("I");
+                        break;
+                    }
+                    case '9': {
+                        sb.append("J");
+                        break;
+                    }
                 }
             } else {
                 sb.append("M");
@@ -172,40 +170,40 @@ public class StringHelper {
 
     public static byte char2byte(char ch) {
         switch (ch) {
-        case '0':
-            return 0x00;
-        case '1':
-            return 0x01;
-        case '2':
-            return 0x02;
-        case '3':
-            return 0x03;
-        case '4':
-            return 0x04;
-        case '5':
-            return 0x05;
-        case '6':
-            return 0x06;
-        case '7':
-            return 0x07;
-        case '8':
-            return 0x08;
-        case '9':
-            return 0x09;
-        case 'A':
-            return 0x0A;
-        case 'B':
-            return 0x0B;
-        case 'C':
-            return 0x0C;
-        case 'D':
-            return 0x0D;
-        case 'E':
-            return 0x0E;
-        case 'F':
-            return 0x0F;
-        default:
-            return 0x00;
+            case '0':
+                return 0x00;
+            case '1':
+                return 0x01;
+            case '2':
+                return 0x02;
+            case '3':
+                return 0x03;
+            case '4':
+                return 0x04;
+            case '5':
+                return 0x05;
+            case '6':
+                return 0x06;
+            case '7':
+                return 0x07;
+            case '8':
+                return 0x08;
+            case '9':
+                return 0x09;
+            case 'A':
+                return 0x0A;
+            case 'B':
+                return 0x0B;
+            case 'C':
+                return 0x0C;
+            case 'D':
+                return 0x0D;
+            case 'E':
+                return 0x0E;
+            case 'F':
+                return 0x0F;
+            default:
+                return 0x00;
         }
     }
 
@@ -213,7 +211,7 @@ public class StringHelper {
      * Converts a byte to hex digit and writes to the supplied buffer
      */
     private static void byte2hex(byte b, StringBuffer sb) {
-        char[] hexChars = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+        char[] hexChars = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
         int high = ((b & 0xf0) >> 4);
         int low = (b & 0x0f);
         sb.append(hexChars[high]);
@@ -222,10 +220,9 @@ public class StringHelper {
 
     /**
      * Converts a byte array to hex string
-     * 
+     *
      * @param bytes
-     * @param c
-     *            分隔符
+     * @param c     分隔符
      * @return 十六进制字符串
      */
     public static String toHexString(byte[] bytes, char c) {
@@ -242,7 +239,7 @@ public class StringHelper {
 
     /**
      * Converts a byte array to hex string
-     * 
+     *
      * @param bytes
      * @return 十六进制字符串
      */
@@ -257,7 +254,7 @@ public class StringHelper {
 
     /**
      * 判断字符串是否为空
-     * 
+     *
      * @param str
      * @return
      */
@@ -271,7 +268,6 @@ public class StringHelper {
 
     /**
      * 判断字符串是否不为空
-     * 
      */
     public static boolean isNotEmpty(String str) {
         if (str != null && !"".equals(str.trim())) {
@@ -290,7 +286,7 @@ public class StringHelper {
     }
 
     /**
-     * 
+     *
      */
     public static String trim(String string) {
         if (isEmpty(string)) {

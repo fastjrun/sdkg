@@ -10,6 +10,8 @@ import java.util.Properties;
 import java.util.Set;
 import com.fastjrun.share.sdk.client.UserAppClient;
 import com.fastjrun.share.sdk.packet.app.AutoLoginRestRequestBody;
+import com.fastjrun.share.sdk.packet.app.LoginRestRequestBody;
+import com.fastjrun.share.sdk.packet.app.LoginRestResponseBody;
 import com.fastjrun.share.sdk.packet.app.RegistserRestRequestBody;
 import net.sf.json.JSONObject;
 import org.apache.logging.log4j.LogManager;
@@ -69,9 +71,10 @@ public class UserAppClientTest {
     @org.testng.annotations.Parameters({
         "reqParamsJsonStr"
     })
-    public void registerv2(String reqParamsJsonStr) {
+    public void testRegisterv2(String reqParamsJsonStr) {
+        log.info(reqParamsJsonStr);
         JSONObject reqParamsJson = JSONObject.fromObject(reqParamsJsonStr);
-        JSONObject reqJsonRequest = reqParamsJson.getJSONObject("request");
+        JSONObject reqJsonRequest = reqParamsJson.getJSONObject("requestBody");
         RegistserRestRequestBody registserRestRequestBody = new RegistserRestRequestBody();
         String registserRestRequestBodyloginId = reqJsonRequest.getString("loginId");
         if ((!(registserRestRequestBodyloginId == null))&&(!registserRestRequestBodyloginId.equals(""))) {
@@ -97,12 +100,8 @@ public class UserAppClientTest {
         if ((!(registserRestRequestBodyemail == null))&&(!registserRestRequestBodyemail.equals(""))) {
             registserRestRequestBody.setEmail(registserRestRequestBodyemail);
         }
-        String appKey = reqParamsJson.optString("appKey");
-        String appVersion = reqParamsJson.optString("appVersion");
-        String appSource = reqParamsJson.optString("appSource");
-        String deviceId = reqParamsJson.optString("deviceId");
         try {
-            userAppClient.registerv2(registserRestRequestBody, appKey, appVersion, appSource, deviceId);
+            userAppClient.registerv2(registserRestRequestBody);
         } catch (Exception _x) {
             _x.printStackTrace();
         }
@@ -112,10 +111,11 @@ public class UserAppClientTest {
     @org.testng.annotations.Parameters({
         "reqParamsJsonStr"
     })
-    public void login(String reqParamsJsonStr) {
+    public void testLogin(String reqParamsJsonStr) {
+        log.info(reqParamsJsonStr);
         JSONObject reqParamsJson = JSONObject.fromObject(reqParamsJsonStr);
-        JSONObject reqJsonRequest = reqParamsJson.getJSONObject("request");
-        com.fastjrun.share.sdk.packet.app.LoginRestRequestBody loginRestRequestBody = new com.fastjrun.share.sdk.packet.app.LoginRestRequestBody();
+        JSONObject reqJsonRequest = reqParamsJson.getJSONObject("requestBody");
+        LoginRestRequestBody loginRestRequestBody = new LoginRestRequestBody();
         String loginRestRequestBodyloginpwd = reqJsonRequest.getString("loginpwd");
         if ((!(loginRestRequestBodyloginpwd == null))&&(!loginRestRequestBodyloginpwd.equals(""))) {
             loginRestRequestBody.setLoginpwd(loginRestRequestBodyloginpwd);
@@ -124,12 +124,8 @@ public class UserAppClientTest {
         if ((!(loginRestRequestBodyloginName == null))&&(!loginRestRequestBodyloginName.equals(""))) {
             loginRestRequestBody.setLoginName(loginRestRequestBodyloginName);
         }
-        String appKey = reqParamsJson.optString("appKey");
-        String appVersion = reqParamsJson.optString("appVersion");
-        String appSource = reqParamsJson.optString("appSource");
-        String deviceId = reqParamsJson.optString("deviceId");
         try {
-            com.fastjrun.share.sdk.packet.app.LoginRestResponseBody responseBody = userAppClient.login(loginRestRequestBody, appKey, appVersion, appSource, deviceId);
+            LoginRestResponseBody responseBody = userAppClient.login(loginRestRequestBody);
             log.info(responseBody);
         } catch (Exception _x) {
             _x.printStackTrace();
@@ -140,10 +136,11 @@ public class UserAppClientTest {
     @org.testng.annotations.Parameters({
         "reqParamsJsonStr"
     })
-    public void loginv1_1(String reqParamsJsonStr) {
+    public void testLoginv1_1(String reqParamsJsonStr) {
+        log.info(reqParamsJsonStr);
         JSONObject reqParamsJson = JSONObject.fromObject(reqParamsJsonStr);
-        JSONObject reqJsonRequest = reqParamsJson.getJSONObject("request");
-        com.fastjrun.share.sdk.packet.app.LoginRestRequestBody loginRestRequestBody = new com.fastjrun.share.sdk.packet.app.LoginRestRequestBody();
+        JSONObject reqJsonRequest = reqParamsJson.getJSONObject("requestBody");
+        LoginRestRequestBody loginRestRequestBody = new LoginRestRequestBody();
         String loginRestRequestBodyloginpwd = reqJsonRequest.getString("loginpwd");
         if ((!(loginRestRequestBodyloginpwd == null))&&(!loginRestRequestBodyloginpwd.equals(""))) {
             loginRestRequestBody.setLoginpwd(loginRestRequestBodyloginpwd);
@@ -152,12 +149,8 @@ public class UserAppClientTest {
         if ((!(loginRestRequestBodyloginName == null))&&(!loginRestRequestBodyloginName.equals(""))) {
             loginRestRequestBody.setLoginName(loginRestRequestBodyloginName);
         }
-        String appKey = reqParamsJson.optString("appKey");
-        String appVersion = reqParamsJson.optString("appVersion");
-        String appSource = reqParamsJson.optString("appSource");
-        String deviceId = reqParamsJson.optString("deviceId");
         try {
-            com.fastjrun.share.sdk.packet.app.LoginRestResponseBody responseBody = userAppClient.loginv1_1(loginRestRequestBody, appKey, appVersion, appSource, deviceId);
+            LoginRestResponseBody responseBody = userAppClient.loginv1_1(loginRestRequestBody);
             log.info(responseBody);
         } catch (Exception _x) {
             _x.printStackTrace();
@@ -168,20 +161,17 @@ public class UserAppClientTest {
     @org.testng.annotations.Parameters({
         "reqParamsJsonStr"
     })
-    public void autoLogin(String reqParamsJsonStr) {
+    public void testAutoLogin(String reqParamsJsonStr) {
+        log.info(reqParamsJsonStr);
         JSONObject reqParamsJson = JSONObject.fromObject(reqParamsJsonStr);
-        JSONObject reqJsonRequest = reqParamsJson.getJSONObject("request");
+        JSONObject reqJsonRequest = reqParamsJson.getJSONObject("requestBody");
         AutoLoginRestRequestBody autoLoginRestRequestBody = new AutoLoginRestRequestBody();
         String autoLoginRestRequestBodyuuidOld = reqJsonRequest.getString("uuidOld");
         if ((!(autoLoginRestRequestBodyuuidOld == null))&&(!autoLoginRestRequestBodyuuidOld.equals(""))) {
             autoLoginRestRequestBody.setUuidOld(autoLoginRestRequestBodyuuidOld);
         }
-        String appKey = reqParamsJson.optString("appKey");
-        String appVersion = reqParamsJson.optString("appVersion");
-        String appSource = reqParamsJson.optString("appSource");
-        String deviceId = reqParamsJson.optString("deviceId");
         try {
-            com.fastjrun.share.sdk.packet.app.LoginRestResponseBody responseBody = userAppClient.autoLogin(autoLoginRestRequestBody, appKey, appVersion, appSource, deviceId);
+            LoginRestResponseBody responseBody = userAppClient.autoLogin(autoLoginRestRequestBody);
             log.info(responseBody);
         } catch (Exception _x) {
             _x.printStackTrace();

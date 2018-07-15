@@ -45,9 +45,8 @@ public class Base64 {
 
     /**
      * Encode an array of bytes using Base64
-     * 
-     * @param data[]
-     *            The bytes to be encoded
+     *
+     * @param data[] The bytes to be encoded
      * @return A valid Base64 representation of the input
      */
     public static String encode(byte data[]) {
@@ -55,10 +54,19 @@ public class Base64 {
     }
 
     /**
+     * Decode an input String using Base64
+     *
+     * @param data The String to be decoded
+     * @return The appropriate byte array
+     */
+    public static byte[] decode(String data) {
+        return new Base64().internalDecode(data);
+    }
+
+    /**
      * Encode an array of bytes using Base64
-     * 
-     * @param data[]
-     *            The bytes to be encoded
+     *
+     * @param data[] The bytes to be encoded
      * @return A valid Base64 representation of the input
      */
     public String internalEncode(byte data[]) {
@@ -154,20 +162,8 @@ public class Base64 {
 
     /**
      * Decode an input String using Base64
-     * 
-     * @param data
-     *            The String to be decoded
-     * @return The appropriate byte array
-     */
-    public static byte[] decode(String data) {
-        return new Base64().internalDecode(data);
-    }
-
-    /**
-     * Decode an input String using Base64
-     * 
-     * @param data
-     *            The String to be decoded
+     *
+     * @param data The String to be decoded
      * @return The appropriate byte array
      */
     public byte[] internalDecode(String data) {
@@ -252,9 +248,8 @@ public class Base64 {
 
     /**
      * Convert a Base64 character to its 6 bit value as defined by the mapping.
-     * 
-     * @param c
-     *            Base64 character to decode
+     *
+     * @param c Base64 character to decode
      * @return int representation of 6 bit value
      */
     private int mapCharToInt(char c) {
@@ -283,9 +278,8 @@ public class Base64 {
 
     /**
      * Convert a byte between 0 and 63 to its Base64 character equivalent
-     * 
-     * @param b
-     *            Byte value to be converted
+     *
+     * @param b Byte value to be converted
      * @return Base64 char value
      */
     private char mapByteToChar(byte b) {
@@ -313,8 +307,7 @@ public class Base64 {
     }
 
     /**
-     * @param c
-     *            Character to be examined
+     * @param c Character to be examined
      * @return Whether or not the character is a Base64 character
      */
     private boolean isUsefulChar(char c) {
@@ -338,9 +331,8 @@ public class Base64 {
      * Convert a byte to an integer. Needed because in Java bytes are signed,
      * and for Base64 purposes they are not. If not done this way, when
      * converted to an int, 0xFF will become -127
-     * 
-     * @param b
-     *            Byte value to be converted
+     *
+     * @param b Byte value to be converted
      * @return Value as an integer, as if byte was unsigned
      */
     private int convertUnsignedByteToInt(byte b) {

@@ -3,7 +3,7 @@ package com.fastjrun.share.sdk.packet.generic;
 
 import java.io.Serializable;
 import java.util.List;
-import com.fastjrun.packet.BaseResponseBody;
+import com.fastjrun.packet.BaseBody;
 
 
 /**
@@ -13,7 +13,7 @@ import com.fastjrun.packet.BaseResponseBody;
  * @author cuiyingfeng
  */
 public class VersionListResponseBody
-    extends BaseResponseBody
+    extends BaseBody
     implements Serializable
 {
 
@@ -27,18 +27,35 @@ public class VersionListResponseBody
         sb.append("list [");
         sb.append("list");
         sb.append("=");
-        sb.append(this.list);
+        if (this.list!= null) {
+            for (int i = 0; (i<this.list.size()); i ++) {
+                Version version = this.list.get(i);
+                if (i == 0) {
+                    sb.append("[");
+                }
+                if (i > 0) {
+                    sb.append(",");
+                }
+                sb.append("list.");
+                sb.append(i);
+                sb.append("=");
+                sb.append(version);
+            }
+            sb.append("]");
+        } else {
+            sb.append("null");
+        }
         sb.append("]");
         sb.append("]");
         return sb.toString();
     }
 
-    public List<Version> getList() {
-        return this.list;
-    }
-
     public void setList(List<Version> list) {
         this.list = list;
+    }
+
+    public List<Version> getList() {
+        return this.list;
     }
 
 }

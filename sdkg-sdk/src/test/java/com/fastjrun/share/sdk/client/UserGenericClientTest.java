@@ -10,6 +10,8 @@ import java.util.Properties;
 import java.util.Set;
 import com.fastjrun.share.sdk.client.UserGenericClient;
 import com.fastjrun.share.sdk.packet.generic.AutoLoginRestRequestBody;
+import com.fastjrun.share.sdk.packet.generic.LoginRestRequestBody;
+import com.fastjrun.share.sdk.packet.generic.LoginRestResponseBody;
 import com.fastjrun.share.sdk.packet.generic.RegistserRestRequestBody;
 import net.sf.json.JSONObject;
 import org.apache.logging.log4j.LogManager;
@@ -69,9 +71,10 @@ public class UserGenericClientTest {
     @org.testng.annotations.Parameters({
         "reqParamsJsonStr"
     })
-    public void register(String reqParamsJsonStr) {
+    public void testRegister(String reqParamsJsonStr) {
+        log.info(reqParamsJsonStr);
         JSONObject reqParamsJson = JSONObject.fromObject(reqParamsJsonStr);
-        JSONObject reqJsonRequest = reqParamsJson.getJSONObject("request");
+        JSONObject reqJsonRequest = reqParamsJson.getJSONObject("requestBody");
         RegistserRestRequestBody registserRestRequestBody = new RegistserRestRequestBody();
         String registserRestRequestBodyloginId = reqJsonRequest.getString("loginId");
         if ((!(registserRestRequestBodyloginId == null))&&(!registserRestRequestBodyloginId.equals(""))) {
@@ -108,10 +111,11 @@ public class UserGenericClientTest {
     @org.testng.annotations.Parameters({
         "reqParamsJsonStr"
     })
-    public void login(String reqParamsJsonStr) {
+    public void testLogin(String reqParamsJsonStr) {
+        log.info(reqParamsJsonStr);
         JSONObject reqParamsJson = JSONObject.fromObject(reqParamsJsonStr);
-        JSONObject reqJsonRequest = reqParamsJson.getJSONObject("request");
-        com.fastjrun.share.sdk.packet.generic.LoginRestRequestBody loginRestRequestBody = new com.fastjrun.share.sdk.packet.generic.LoginRestRequestBody();
+        JSONObject reqJsonRequest = reqParamsJson.getJSONObject("requestBody");
+        LoginRestRequestBody loginRestRequestBody = new LoginRestRequestBody();
         String loginRestRequestBodyloginpwd = reqJsonRequest.getString("loginpwd");
         if ((!(loginRestRequestBodyloginpwd == null))&&(!loginRestRequestBodyloginpwd.equals(""))) {
             loginRestRequestBody.setLoginpwd(loginRestRequestBodyloginpwd);
@@ -121,8 +125,8 @@ public class UserGenericClientTest {
             loginRestRequestBody.setLoginName(loginRestRequestBodyloginName);
         }
         try {
-            com.fastjrun.share.sdk.packet.generic.LoginRestResponseBody response = userGenericClient.login(loginRestRequestBody);
-            log.info(response);
+            LoginRestResponseBody responseBody = userGenericClient.login(loginRestRequestBody);
+            log.info(responseBody);
         } catch (Exception _x) {
             _x.printStackTrace();
         }
@@ -132,10 +136,11 @@ public class UserGenericClientTest {
     @org.testng.annotations.Parameters({
         "reqParamsJsonStr"
     })
-    public void loginv1_1(String reqParamsJsonStr) {
+    public void testLoginv1_1(String reqParamsJsonStr) {
+        log.info(reqParamsJsonStr);
         JSONObject reqParamsJson = JSONObject.fromObject(reqParamsJsonStr);
-        JSONObject reqJsonRequest = reqParamsJson.getJSONObject("request");
-        com.fastjrun.share.sdk.packet.generic.LoginRestRequestBody loginRestRequestBody = new com.fastjrun.share.sdk.packet.generic.LoginRestRequestBody();
+        JSONObject reqJsonRequest = reqParamsJson.getJSONObject("requestBody");
+        LoginRestRequestBody loginRestRequestBody = new LoginRestRequestBody();
         String loginRestRequestBodyloginpwd = reqJsonRequest.getString("loginpwd");
         if ((!(loginRestRequestBodyloginpwd == null))&&(!loginRestRequestBodyloginpwd.equals(""))) {
             loginRestRequestBody.setLoginpwd(loginRestRequestBodyloginpwd);
@@ -145,8 +150,8 @@ public class UserGenericClientTest {
             loginRestRequestBody.setLoginName(loginRestRequestBodyloginName);
         }
         try {
-            com.fastjrun.share.sdk.packet.generic.LoginRestResponseBody response = userGenericClient.loginv1_1(loginRestRequestBody);
-            log.info(response);
+            LoginRestResponseBody responseBody = userGenericClient.loginv1_1(loginRestRequestBody);
+            log.info(responseBody);
         } catch (Exception _x) {
             _x.printStackTrace();
         }
@@ -156,17 +161,18 @@ public class UserGenericClientTest {
     @org.testng.annotations.Parameters({
         "reqParamsJsonStr"
     })
-    public void autoLogin(String reqParamsJsonStr) {
+    public void testAutoLogin(String reqParamsJsonStr) {
+        log.info(reqParamsJsonStr);
         JSONObject reqParamsJson = JSONObject.fromObject(reqParamsJsonStr);
-        JSONObject reqJsonRequest = reqParamsJson.getJSONObject("request");
+        JSONObject reqJsonRequest = reqParamsJson.getJSONObject("requestBody");
         AutoLoginRestRequestBody autoLoginRestRequestBody = new AutoLoginRestRequestBody();
         String autoLoginRestRequestBodyuuidOld = reqJsonRequest.getString("uuidOld");
         if ((!(autoLoginRestRequestBodyuuidOld == null))&&(!autoLoginRestRequestBodyuuidOld.equals(""))) {
             autoLoginRestRequestBody.setUuidOld(autoLoginRestRequestBodyuuidOld);
         }
         try {
-            com.fastjrun.share.sdk.packet.generic.LoginRestResponseBody response = userGenericClient.autoLogin(autoLoginRestRequestBody);
-            log.info(response);
+            LoginRestResponseBody responseBody = userGenericClient.autoLogin(autoLoginRestRequestBody);
+            log.info(responseBody);
         } catch (Exception _x) {
             _x.printStackTrace();
         }

@@ -4,9 +4,11 @@ package com.fastjrun.share.sdk.client;
 import java.util.HashMap;
 import java.util.Map;
 import com.fastjrun.client.BaseApiClient;
-import com.fastjrun.helper.EncryptHelper;
 import com.fastjrun.share.sdk.packet.api.AutoLoginRestRequestBody;
+import com.fastjrun.share.sdk.packet.api.LoginRestRequestBody;
+import com.fastjrun.share.sdk.packet.api.LoginRestResponseBody;
 import com.fastjrun.share.sdk.packet.api.RegistserRestRequestBody;
+import com.fastjrun.share.sdk.service.UserServiceRestApi;
 import net.sf.json.JSONObject;
 
 
@@ -18,58 +20,45 @@ import net.sf.json.JSONObject;
  */
 public class UserApiClient
     extends BaseApiClient
+    implements UserServiceRestApi
 {
 
 
-    public void register(RegistserRestRequestBody requestBody, String accessKey) {
+    /**
+     * 注册
+     * 
+     */
+    public void register(RegistserRestRequestBody requestBody) {
         StringBuilder sbUrlReq = new StringBuilder(this.apiUrlPre);
         sbUrlReq.append("/api/user/");
         sbUrlReq.append("register");
-        sbUrlReq.append("/");
-        sbUrlReq.append(accessKey);
-        sbUrlReq.append("/");
-        long txTime = System.currentTimeMillis();
-        sbUrlReq.append(txTime);
-        sbUrlReq.append("/");
-        try {
-            String md5Hash = EncryptHelper.md5Digest((this.getAccessKeySn()+ txTime));
-            sbUrlReq.append(md5Hash);
-        } catch (Exception e) {
-            this.log.warn("", e);
-        }
-        Map<java.lang.String, java.lang.String> requestProperties = new HashMap<java.lang.String, java.lang.String>();
-        requestProperties.put("Content-Type", "application/json");
+        sbUrlReq.append(this.generateUrlSuffix());
+        Map<String, String> requestProperties = new HashMap<String, String>();
+        requestProperties.put("Content-Type", "application/json;charset=UTF-8");
         requestProperties.put("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36");
         requestProperties.put("Accept", "*/*");
-        String requestStr = JSONObject.fromObject(requestBody).toString();
-        log.info(requestStr);
-        this.process(requestStr, sbUrlReq.toString(), "POST", requestProperties);
+        String requestBodyStr = JSONObject.fromObject(requestBody).toString();
+        log.info(requestBodyStr);
+        this.process(requestBodyStr, sbUrlReq.toString(), "POST", requestProperties);
     }
 
-    public com.fastjrun.share.sdk.packet.api.LoginRestResponseBody login(com.fastjrun.share.sdk.packet.api.LoginRestRequestBody requestBody, String accessKey) {
+    /**
+     * 登录
+     * 
+     */
+    public LoginRestResponseBody login(LoginRestRequestBody requestBody) {
         StringBuilder sbUrlReq = new StringBuilder(this.apiUrlPre);
         sbUrlReq.append("/api/user/");
         sbUrlReq.append("login");
-        sbUrlReq.append("/");
-        sbUrlReq.append(accessKey);
-        sbUrlReq.append("/");
-        long txTime = System.currentTimeMillis();
-        sbUrlReq.append(txTime);
-        sbUrlReq.append("/");
-        try {
-            String md5Hash = EncryptHelper.md5Digest((this.getAccessKeySn()+ txTime));
-            sbUrlReq.append(md5Hash);
-        } catch (Exception e) {
-            this.log.warn("", e);
-        }
-        Map<java.lang.String, java.lang.String> requestProperties = new HashMap<java.lang.String, java.lang.String>();
-        requestProperties.put("Content-Type", "application/json");
+        sbUrlReq.append(this.generateUrlSuffix());
+        Map<String, String> requestProperties = new HashMap<String, String>();
+        requestProperties.put("Content-Type", "application/json;charset=UTF-8");
         requestProperties.put("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36");
         requestProperties.put("Accept", "*/*");
-        String requestStr = JSONObject.fromObject(requestBody).toString();
-        log.info(requestStr);
-        JSONObject responseBody = this.process(requestStr, sbUrlReq.toString(), "POST", requestProperties);
-        com.fastjrun.share.sdk.packet.api.LoginRestResponseBody loginRestResponseBody = new com.fastjrun.share.sdk.packet.api.LoginRestResponseBody();
+        String requestBodyStr = JSONObject.fromObject(requestBody).toString();
+        log.info(requestBodyStr);
+        JSONObject responseBody = this.process(requestBodyStr, sbUrlReq.toString(), "POST", requestProperties);
+        LoginRestResponseBody loginRestResponseBody = new LoginRestResponseBody();
         String loginRestResponseBodynickName = responseBody.getString("nickName");
         if ((!(loginRestResponseBodynickName == null))&&(!loginRestResponseBodynickName.equals(""))) {
             loginRestResponseBody.setNickName(loginRestResponseBodynickName);
@@ -93,30 +82,23 @@ public class UserApiClient
         return loginRestResponseBody;
     }
 
-    public com.fastjrun.share.sdk.packet.api.LoginRestResponseBody loginv1_1(com.fastjrun.share.sdk.packet.api.LoginRestRequestBody requestBody, String accessKey) {
+    /**
+     * 登录v1.1
+     * 
+     */
+    public LoginRestResponseBody loginv1_1(LoginRestRequestBody requestBody) {
         StringBuilder sbUrlReq = new StringBuilder(this.apiUrlPre);
         sbUrlReq.append("/api/user/");
         sbUrlReq.append("login/v1_1");
-        sbUrlReq.append("/");
-        sbUrlReq.append(accessKey);
-        sbUrlReq.append("/");
-        long txTime = System.currentTimeMillis();
-        sbUrlReq.append(txTime);
-        sbUrlReq.append("/");
-        try {
-            String md5Hash = EncryptHelper.md5Digest((this.getAccessKeySn()+ txTime));
-            sbUrlReq.append(md5Hash);
-        } catch (Exception e) {
-            this.log.warn("", e);
-        }
-        Map<java.lang.String, java.lang.String> requestProperties = new HashMap<java.lang.String, java.lang.String>();
-        requestProperties.put("Content-Type", "application/json");
+        sbUrlReq.append(this.generateUrlSuffix());
+        Map<String, String> requestProperties = new HashMap<String, String>();
+        requestProperties.put("Content-Type", "application/json;charset=UTF-8");
         requestProperties.put("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36");
         requestProperties.put("Accept", "*/*");
-        String requestStr = JSONObject.fromObject(requestBody).toString();
-        log.info(requestStr);
-        JSONObject responseBody = this.process(requestStr, sbUrlReq.toString(), "POST", requestProperties);
-        com.fastjrun.share.sdk.packet.api.LoginRestResponseBody loginRestResponseBody = new com.fastjrun.share.sdk.packet.api.LoginRestResponseBody();
+        String requestBodyStr = JSONObject.fromObject(requestBody).toString();
+        log.info(requestBodyStr);
+        JSONObject responseBody = this.process(requestBodyStr, sbUrlReq.toString(), "POST", requestProperties);
+        LoginRestResponseBody loginRestResponseBody = new LoginRestResponseBody();
         String loginRestResponseBodynickName = responseBody.getString("nickName");
         if ((!(loginRestResponseBodynickName == null))&&(!loginRestResponseBodynickName.equals(""))) {
             loginRestResponseBody.setNickName(loginRestResponseBodynickName);
@@ -140,30 +122,23 @@ public class UserApiClient
         return loginRestResponseBody;
     }
 
-    public com.fastjrun.share.sdk.packet.api.LoginRestResponseBody autoLogin(AutoLoginRestRequestBody requestBody, String accessKey) {
+    /**
+     * 自动登录
+     * 
+     */
+    public LoginRestResponseBody autoLogin(AutoLoginRestRequestBody requestBody) {
         StringBuilder sbUrlReq = new StringBuilder(this.apiUrlPre);
         sbUrlReq.append("/api/user/");
         sbUrlReq.append("autoLogin");
-        sbUrlReq.append("/");
-        sbUrlReq.append(accessKey);
-        sbUrlReq.append("/");
-        long txTime = System.currentTimeMillis();
-        sbUrlReq.append(txTime);
-        sbUrlReq.append("/");
-        try {
-            String md5Hash = EncryptHelper.md5Digest((this.getAccessKeySn()+ txTime));
-            sbUrlReq.append(md5Hash);
-        } catch (Exception e) {
-            this.log.warn("", e);
-        }
-        Map<java.lang.String, java.lang.String> requestProperties = new HashMap<java.lang.String, java.lang.String>();
-        requestProperties.put("Content-Type", "application/json");
+        sbUrlReq.append(this.generateUrlSuffix());
+        Map<String, String> requestProperties = new HashMap<String, String>();
+        requestProperties.put("Content-Type", "application/json;charset=UTF-8");
         requestProperties.put("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36");
         requestProperties.put("Accept", "*/*");
-        String requestStr = JSONObject.fromObject(requestBody).toString();
-        log.info(requestStr);
-        JSONObject responseBody = this.process(requestStr, sbUrlReq.toString(), "POST", requestProperties);
-        com.fastjrun.share.sdk.packet.api.LoginRestResponseBody loginRestResponseBody = new com.fastjrun.share.sdk.packet.api.LoginRestResponseBody();
+        String requestBodyStr = JSONObject.fromObject(requestBody).toString();
+        log.info(requestBodyStr);
+        JSONObject responseBody = this.process(requestBodyStr, sbUrlReq.toString(), "POST", requestProperties);
+        LoginRestResponseBody loginRestResponseBody = new LoginRestResponseBody();
         String loginRestResponseBodynickName = responseBody.getString("nickName");
         if ((!(loginRestResponseBodynickName == null))&&(!loginRestResponseBodynickName.equals(""))) {
             loginRestResponseBody.setNickName(loginRestResponseBodynickName);

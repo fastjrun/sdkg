@@ -3,10 +3,9 @@ package com.fastjrun.common;
 /**
  * @author fastjrun
  * 响应码和响应消息封装类
- *
  */
 public class CodeException extends RuntimeException {
-    
+
     private static final long serialVersionUID = -8082188922111474558L;
 
     private String code;

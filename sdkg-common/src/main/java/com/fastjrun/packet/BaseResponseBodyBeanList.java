@@ -1,10 +1,10 @@
 package com.fastjrun.packet;
 
-import java.util.List;
-
 import com.fastjrun.common.AbstractEntity;
 
-public class BaseResponseBodyBeanList<T extends AbstractEntity> extends BaseResponseBody {
+import java.util.List;
+
+public class BaseResponseBodyBeanList<T extends AbstractEntity> extends BaseBody {
 
     private int totalCount;
 

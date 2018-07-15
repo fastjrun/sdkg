@@ -4,10 +4,10 @@ import java.util.ResourceBundle;
 
 public abstract class BaseAppClient extends BaseHttpWithResHeadClient {
 
-    private String appSource;
+    protected String appSource;
     protected String appVersion;
     protected String deviceId;
-    private String appKey;
+    protected String appKey;
 
     protected String appUrlPre;
 
@@ -51,6 +51,7 @@ public abstract class BaseAppClient extends BaseHttpWithResHeadClient {
         this.appUrlPre = appUrlPre;
     }
 
+    @Override
     public void initSDKConfig(String apiworld) {
         ResourceBundle rb = ResourceBundle.getBundle(apiworld + "-sdk");
         this.appKey = rb.getString(apiworld + ".appKey");
@@ -58,5 +59,18 @@ public abstract class BaseAppClient extends BaseHttpWithResHeadClient {
         this.appSource = rb.getString(apiworld + ".appSource");
         this.deviceId = rb.getString(apiworld + ".deviceId");
         this.appUrlPre = rb.getString(apiworld + ".appUrlPre");
+    }
+
+
+    @Override
+    protected String generateUrlSuffix() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("/").append(this.appKey);
+        sb.append("/").append(this.appVersion);
+        sb.append("/").append(this.appSource);
+        sb.append("/").append(this.deviceId);
+        long txTime = System.currentTimeMillis();
+        sb.append("/").append(txTime);
+        return sb.toString();
     }
 }

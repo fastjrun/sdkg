@@ -3,6 +3,11 @@
 pom.xml.versionsBackup
 .project
 api-mock/src/main/java/
+dubbo-provider-mock/src/main/java/
+grpc-mock
+dubbo-consumer-sdk/src/main/java/
+dubbo-consumer-sdk/src/test/java/
+dubbo-consumer-sdk/src/test/data/*
 sdkg-sdk/src/test/data/*
 sdkg-helper/Example/*
 /.settings
@@ -20,4 +25,5 @@ sdkg-helper/Example/*
 */*/.classpath
 */*/.project
 */*/pom.xml.versionsBackup
+.idea
 

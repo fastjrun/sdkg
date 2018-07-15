@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
 public class IOHelper {
-    
 
 
     public static byte[] read(InputStream inputStream) throws Exception {

@@ -7,11 +7,8 @@ import java.util.Date;
 
 public class TimeHelper {
     public final static String DF14 = "DF14";
-
-    private final static String FORMAT_DF14 = "yyyyMMddHHmmss";
-
     public final static String DF17 = "DF17";
-
+    private final static String FORMAT_DF14 = "yyyyMMddHHmmss";
     private final static String FORMAT_DF17 = "yyyyMMddHHmmssSSS";
 
     public static String getCurrentTime(String format) {
