@@ -26,4 +26,5 @@ sdkg-helper/Example/*
 */*/.project
 */*/pom.xml.versionsBackup
 .idea
+*.yml
 

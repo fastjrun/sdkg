@@ -22,13 +22,12 @@ import java.io.IOException;
 
 @Configuration
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
-@ComponentScan(basePackages = {"com.fastjrun.mock"})
 @EnableSwagger2
 public class FastjrunApplication {
     public static void main(String[] args) {
         SpringApplication.run(FastjrunApplication.class, args);
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
-                new String[]{"applicationContext-dubbo-provider.xml"});
+                new String[]{"applicationContext.xml"});
         context.start();
         // press any key to exit
         try {

@@ -13,6 +13,11 @@ public class Consumer {
         demoService.check();
         ArticleListResponseBody articleListResponseBody = demoService.latests();
         // show the result
+        System.out.println("hello world");
+        System.out.println("hello world");
+        System.out.println("hello world");
+        System.out.println("hello world");
+        System.out.println("hello world");
         System.out.println(articleListResponseBody);
         context.close();
     }
