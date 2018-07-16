@@ -2,7 +2,6 @@ package com.fastjrun.codeg;
 
 public class CodeGException extends RuntimeException {
 
-
     private static final long serialVersionUID = 8706215723970812529L;
 
     private String code;

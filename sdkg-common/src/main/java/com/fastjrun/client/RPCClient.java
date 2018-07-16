@@ -1,8 +1,5 @@
 package com.fastjrun.client;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 /*
  * *
  *  * 注意：本内容仅限于公司内部传阅，禁止外泄以及用于其他的商业目的
@@ -12,6 +9,6 @@ import org.apache.logging.log4j.Logger;
  *
  */
 
-public abstract class RPCClient extends BaseClient{
+public abstract class RPCClient extends BaseClient {
 
 }

@@ -19,8 +19,9 @@ public class SDKGCMojo extends CommonMogo {
 
     public void execute() throws MojoExecutionException {
 
-        if (skip)
+        if (skip) {
             return;
+        }
 
         getLog().info(bundleFiles);
 

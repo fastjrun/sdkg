@@ -1,11 +1,16 @@
 package com.fastjrun.helper;
 
-import javax.crypto.*;
-import javax.crypto.spec.DESKeySpec;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.MessageDigest;
+
+import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.CipherOutputStream;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESKeySpec;
 
 public class EncryptHelper {
 
@@ -15,7 +20,9 @@ public class EncryptHelper {
      * MD5数字签名
      *
      * @param src
+     *
      * @return
+     *
      * @throws Exception
      */
     public static String md5Digest(String src) throws Exception {
@@ -29,7 +36,9 @@ public class EncryptHelper {
      * BASE64编码
      *
      * @param src
+     *
      * @return
+     *
      * @throws Exception
      */
     public static String base64Encoder(String src) throws Exception {
@@ -41,7 +50,9 @@ public class EncryptHelper {
      * BASE64解码
      *
      * @param dest
+     *
      * @return
+     *
      * @throws Exception
      */
     public static String base64Decoder(String dest) throws Exception {
@@ -52,6 +63,7 @@ public class EncryptHelper {
      * 字节数组转化为大写16进制字符串
      *
      * @param b
+     *
      * @return
      */
     private static String byte2HexStr(byte[] b) {

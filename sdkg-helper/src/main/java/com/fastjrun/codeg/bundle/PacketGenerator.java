@@ -1,17 +1,30 @@
 package com.fastjrun.codeg.bundle;
 
-import com.fastjrun.codeg.CodeGException;
-import com.fastjrun.codeg.CodeGenerator;
-import com.fastjrun.codeg.bundle.common.PacketField;
-import com.fastjrun.codeg.bundle.common.PacketObject;
-import com.fastjrun.codeg.helper.StringHelper;
-import com.sun.codemodel.*;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
+
+import com.fastjrun.codeg.CodeGException;
+import com.fastjrun.codeg.CodeGenerator;
+import com.fastjrun.codeg.bundle.common.PacketField;
+import com.fastjrun.codeg.bundle.common.PacketObject;
+import com.fastjrun.codeg.helper.StringHelper;
+import com.sun.codemodel.JBlock;
+import com.sun.codemodel.JClass;
+import com.sun.codemodel.JClassAlreadyExistsException;
+import com.sun.codemodel.JConditional;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JDocComment;
+import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JFieldRef;
+import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JForLoop;
+import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JMod;
+import com.sun.codemodel.JType;
+import com.sun.codemodel.JVar;
 
 public abstract class PacketGenerator extends CodeGenerator {
 
@@ -74,8 +87,10 @@ public abstract class PacketGenerator extends CodeGenerator {
                 for (String key : objects.keySet()) {
                     hashCode += key.hashCode();
                     PacketObject object = objects.get(key);
-                    JClass jObjectClass=this.processRO(key, object, true, hashCode, isSwagger, dc, index, toStringMethodBlk, toStringSBVar);
-                    this.poClassMap.put(object.get_class(),jObjectClass);
+                    JClass jObjectClass =
+                            this.processRO(key, object, true, hashCode, isSwagger, dc, index, toStringMethodBlk,
+                                    toStringSBVar);
+                    this.poClassMap.put(object.get_class(), jObjectClass);
 
                 }
                 toStringMethodBlk.invoke(toStringSBVar, "append").arg(JExpr.lit("]"));
@@ -88,8 +103,10 @@ public abstract class PacketGenerator extends CodeGenerator {
                 for (String key : lists.keySet()) {
                     hashCode += key.hashCode();
                     PacketObject list = lists.get(key);
-                    JClass jListObject=this.processRO(key, list, false, hashCode, isSwagger, dc, index, toStringMethodBlk, toStringSBVar);
-                    this.poClassMap.put(list.get_class(),jListObject);
+                    JClass jListObject =
+                            this.processRO(key, list, false, hashCode, isSwagger, dc, index, toStringMethodBlk,
+                                    toStringSBVar);
+                    this.poClassMap.put(list.get_class(), jListObject);
                     index++;
 
                 }
@@ -111,7 +128,7 @@ public abstract class PacketGenerator extends CodeGenerator {
         String fieldName = field.getName();
         String dataType = field.getDatatype();
         hashCode += fieldName.hashCode();
-        JType jType ;
+        JType jType;
         if (dataType.endsWith(":List")) {
             String primitiveType = dataType.split(":")[0];
             jType = cm.ref("java.util.List").narrow(cm.ref(primitiveType));
@@ -180,9 +197,9 @@ public abstract class PacketGenerator extends CodeGenerator {
         }
         JFieldRef nameRef = JExpr.refthis(key);
 
-        JMethod setMethod ;
-        JVar jvar ;
-        JMethod getMethod ;
+        JMethod setMethod;
+        JVar jvar;
+        JMethod getMethod;
 
         if (isObject) {
             dc.field(JMod.PRIVATE, poDc, key);
@@ -251,7 +268,7 @@ public abstract class PacketGenerator extends CodeGenerator {
 
     }
 
-    protected boolean waitForCodeGFinished(Map<String, JClass> classMap){
+    protected boolean waitForCodeGFinished(Map<String, JClass> classMap) {
         // 遍历任务的结果
         boolean isFinished = false;
         while (!isFinished) {
@@ -265,7 +282,7 @@ public abstract class PacketGenerator extends CodeGenerator {
             }
         }
 
-        return  true;
+        return true;
     }
 
     class GeneratorPacketTask implements Callable<JClass> {

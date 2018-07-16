@@ -2,7 +2,7 @@ package com.fastjrun.client;
 
 import java.util.ResourceBundle;
 
-public abstract class BaseAppClient extends BaseHttpWithResHeadClient {
+public abstract class BaseAppClient extends BaseHttpClient {
 
     protected String appSource;
     protected String appVersion;
@@ -60,7 +60,6 @@ public abstract class BaseAppClient extends BaseHttpWithResHeadClient {
         this.deviceId = rb.getString(apiworld + ".deviceId");
         this.appUrlPre = rb.getString(apiworld + ".appUrlPre");
     }
-
 
     @Override
     protected String generateUrlSuffix() {

@@ -1,10 +1,10 @@
 package com.fastjrun.client;
 
-import com.fastjrun.helper.EncryptHelper;
-
 import java.util.ResourceBundle;
 
-public abstract class BaseApiClient extends BaseHttpWithResHeadClient {
+import com.fastjrun.helper.EncryptHelper;
+
+public abstract class BaseApiClient extends BaseHttpClient {
 
     protected String accessKey;
 
@@ -43,7 +43,6 @@ public abstract class BaseApiClient extends BaseHttpWithResHeadClient {
         this.accessKeySn = rb.getString(apiworld + ".accessKeySn");
         this.apiUrlPre = rb.getString(apiworld + ".apiUrlPre");
     }
-
 
     @Override
     protected String generateUrlSuffix() {

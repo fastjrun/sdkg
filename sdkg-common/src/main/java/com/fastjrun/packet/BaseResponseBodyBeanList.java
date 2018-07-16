@@ -1,8 +1,8 @@
 package com.fastjrun.packet;
 
-import com.fastjrun.common.AbstractEntity;
-
 import java.util.List;
+
+import com.fastjrun.common.AbstractEntity;
 
 public class BaseResponseBodyBeanList<T extends AbstractEntity> extends BaseBody {
 

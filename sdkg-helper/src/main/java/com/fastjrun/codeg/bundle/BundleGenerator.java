@@ -1,19 +1,37 @@
 package com.fastjrun.codeg.bundle;
 
-import com.fastjrun.codeg.CodeGException;
-import com.fastjrun.codeg.bundle.common.*;
-import com.fastjrun.codeg.bundle.common.CommonController.ControllerType;
-import com.fastjrun.codeg.helper.BundleXMLParser;
-import com.sun.codemodel.*;
-import com.sun.codemodel.writer.FileCodeWriter;
-import org.springframework.web.bind.annotation.RequestMethod;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
+
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.fastjrun.codeg.CodeGException;
+import com.fastjrun.codeg.bundle.common.CommonController;
+import com.fastjrun.codeg.bundle.common.CommonController.ControllerType;
+import com.fastjrun.codeg.bundle.common.CommonMethod;
+import com.fastjrun.codeg.bundle.common.CommonService;
+import com.fastjrun.codeg.bundle.common.PacketField;
+import com.fastjrun.codeg.bundle.common.PacketObject;
+import com.fastjrun.codeg.helper.BundleXMLParser;
+import com.sun.codemodel.CodeWriter;
+import com.sun.codemodel.JAnnotationArrayMember;
+import com.sun.codemodel.JAnnotationUse;
+import com.sun.codemodel.JBlock;
+import com.sun.codemodel.JClass;
+import com.sun.codemodel.JClassAlreadyExistsException;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JInvocation;
+import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JMod;
+import com.sun.codemodel.JType;
+import com.sun.codemodel.JVar;
+import com.sun.codemodel.writer.FileCodeWriter;
 
 public class BundleGenerator extends ServiceGenerator {
 
@@ -71,14 +89,14 @@ public class BundleGenerator extends ServiceGenerator {
                 String methodName = method.getName();
                 String methodPath = method.getPath();
                 if (methodPath == null || methodPath.equals("")) {
-                    methodPath = "/"+methodName;
+                    methodPath = "/" + methodName;
                 }
                 String methodRemark = method.getRemark();
                 String methodVersion = method.getVersion();
 
                 response = method.getResponse();
 
-                JClass responseBodyClass ;
+                JClass responseBodyClass;
                 if (response == null) {
                     responseBodyClass = cm.ref("com.fastjrun.packet.EmptyResponseBody");
                 } else {

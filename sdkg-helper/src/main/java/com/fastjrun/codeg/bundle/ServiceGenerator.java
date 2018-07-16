@@ -1,5 +1,11 @@
 package com.fastjrun.codeg.bundle;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
+
 import com.fastjrun.codeg.CodeGException;
 import com.fastjrun.codeg.bundle.common.CommonMethod;
 import com.fastjrun.codeg.bundle.common.CommonService;
@@ -7,13 +13,17 @@ import com.fastjrun.codeg.bundle.common.CommonService.ServiceType;
 import com.fastjrun.codeg.bundle.common.PacketField;
 import com.fastjrun.codeg.bundle.common.PacketObject;
 import com.fastjrun.codeg.helper.StringHelper;
-import com.sun.codemodel.*;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.FutureTask;
+import com.sun.codemodel.ClassType;
+import com.sun.codemodel.JBlock;
+import com.sun.codemodel.JClass;
+import com.sun.codemodel.JClassAlreadyExistsException;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JForLoop;
+import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JMod;
+import com.sun.codemodel.JType;
+import com.sun.codemodel.JVar;
 
 public abstract class ServiceGenerator extends PacketGenerator {
 
@@ -59,7 +69,7 @@ public abstract class ServiceGenerator extends PacketGenerator {
                         responseBodyClass = cm.VOID;
                     } else {
                         //TODO
-                        responseBodyClass=cm.VOID;
+                        responseBodyClass = cm.VOID;
                     }
 
                 } else {
@@ -69,7 +79,7 @@ public abstract class ServiceGenerator extends PacketGenerator {
                         responseBodyClass = poClassMap.get(_class);
                     } else {
                         //TODO
-                        responseBodyClass=poClassMap.get(_class);
+                        responseBodyClass = poClassMap.get(_class);
                     }
                 }
                 JMethod serviceMethod = dcService.method(JMod.NONE, responseBodyClass, methodName);
@@ -136,28 +146,28 @@ public abstract class ServiceGenerator extends PacketGenerator {
 
                     } else {
                         if (responseBodyClass != null && responseBodyClass != cm.VOID) {
-                                JVar reponseVar = serviceMockMethodBlock.decl(responseBodyClass, "reponse",
-                                        JExpr._new(responseBodyClass));
-                                if (responseBodyClass.name().endsWith("String")) {
-                                    serviceMockMethodBlock.assign(reponseVar,
-                                            mockHelperClass.staticInvoke("geStringListWithAscii").arg(JExpr.lit(10)));
-                                } else if (responseBodyClass.name().endsWith("Boolean")) {
-                                    serviceMockMethodBlock.assign(reponseVar,
-                                            mockHelperClass.staticInvoke("geBoolean").arg(JExpr.lit(10)));
-                                } else if (responseBodyClass.name().endsWith("Integer")) {
-                                    serviceMockMethodBlock.assign(reponseVar,
-                                            mockHelperClass.staticInvoke("geInteger").arg(JExpr.lit(10)));
-                                } else if (responseBodyClass.name().endsWith("Long")) {
-                                    serviceMockMethodBlock.assign(reponseVar,
-                                            mockHelperClass.staticInvoke("geLong").arg(JExpr.lit(10)));
-                                } else if (responseBodyClass.name().endsWith("Float")) {
-                                    serviceMockMethodBlock.assign(reponseVar,
-                                            mockHelperClass.staticInvoke("geFloat").arg(JExpr.lit(10)));
-                                } else if (responseBodyClass.name().endsWith("Double")) {
-                                    serviceMockMethodBlock.assign(reponseVar,
-                                            mockHelperClass.staticInvoke("geDouble").arg(JExpr.lit(10)));
-                                }
-                                serviceMockMethodBlock._return(reponseVar);
+                            JVar reponseVar = serviceMockMethodBlock.decl(responseBodyClass, "reponse",
+                                    JExpr._new(responseBodyClass));
+                            if (responseBodyClass.name().endsWith("String")) {
+                                serviceMockMethodBlock.assign(reponseVar,
+                                        mockHelperClass.staticInvoke("geStringListWithAscii").arg(JExpr.lit(10)));
+                            } else if (responseBodyClass.name().endsWith("Boolean")) {
+                                serviceMockMethodBlock.assign(reponseVar,
+                                        mockHelperClass.staticInvoke("geBoolean").arg(JExpr.lit(10)));
+                            } else if (responseBodyClass.name().endsWith("Integer")) {
+                                serviceMockMethodBlock.assign(reponseVar,
+                                        mockHelperClass.staticInvoke("geInteger").arg(JExpr.lit(10)));
+                            } else if (responseBodyClass.name().endsWith("Long")) {
+                                serviceMockMethodBlock.assign(reponseVar,
+                                        mockHelperClass.staticInvoke("geLong").arg(JExpr.lit(10)));
+                            } else if (responseBodyClass.name().endsWith("Float")) {
+                                serviceMockMethodBlock.assign(reponseVar,
+                                        mockHelperClass.staticInvoke("geFloat").arg(JExpr.lit(10)));
+                            } else if (responseBodyClass.name().endsWith("Double")) {
+                                serviceMockMethodBlock.assign(reponseVar,
+                                        mockHelperClass.staticInvoke("geDouble").arg(JExpr.lit(10)));
+                            }
+                            serviceMockMethodBlock._return(reponseVar);
                         }
 
                     }

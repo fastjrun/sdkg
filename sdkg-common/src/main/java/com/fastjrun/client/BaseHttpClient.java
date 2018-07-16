@@ -1,9 +1,5 @@
 package com.fastjrun.client;
 
-import com.fastjrun.common.CodeException;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -15,13 +11,18 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fastjrun.common.ClientException;
+import com.fastjrun.common.CodeMsgContants;
+
+import net.sf.json.JSONObject;
+
 public abstract class BaseHttpClient extends BaseClient {
 
-    protected JSONObject processInternal(String reqStr, String urlReq, String method,
-                                         Map<String, String> requestProperties) {
-        String line = "";
-        PrintWriter out = null;
-        BufferedReader in = null;
+    protected JSONObject parseResponseBody(String reqStr, String urlReq, String method,
+                                           Map<String, String> requestProperties) {
+        String line;
+        PrintWriter out;
+        BufferedReader in;
         String result = "";
 
         URL request;
@@ -58,39 +59,56 @@ public abstract class BaseHttpClient extends BaseClient {
             connection.disconnect();
             log.debug(result);
         } catch (MalformedURLException e) {
-            log.error("", e);
-            throw new CodeException("601", "网络异常" + e);
+            log.error("{}", e);
+            throw new ClientException(CodeMsgContants.CodeMsg.CLIENT_NETWORK_NOT_AVAILABLE);
         } catch (IOException e) {
-            log.error("", e);
-            throw new CodeException("601", "网络异常" + e);
+            log.error("{}", e);
+            throw new ClientException(CodeMsgContants.CodeMsg.CLIENT_NETWORK_NOT_AVAILABLE);
         }
         if (result.equals("")) {
-            throw new CodeException("602", "返回数据为空");
+            throw new ClientException(CodeMsgContants.CodeMsg.CLIENT_EMPTY_RESPONSE);
         }
-        JSONObject responseJsonObject = new JSONObject();
-        if (result.startsWith("{")) {
-            responseJsonObject = JSONObject.fromObject(result);
-        } else {
-            JSONArray jsonArray = JSONArray.fromObject(result);
-            responseJsonObject = new JSONObject();
-            responseJsonObject.put("defaultKey", jsonArray);
+        JSONObject responseJsonObject = JSONObject.fromObject(result);
+
+        JSONObject responseJsonHead = responseJsonObject.getJSONObject("head");
+        if (responseJsonHead == null) {
+            throw new ClientException(CodeMsgContants.CodeMsg.CLIENT_EMPTY_RESPONSE_HEAD);
+        }
+        String code = responseJsonHead.getString("code");
+        if (code == null || code.equals("")) {
+            throw new ClientException(CodeMsgContants.CodeMsg.CLIENT_EMPTY_RESPONSE_HEAD_CODE);
+        }
+        if (code.equals("0000")) {
+            JSONObject responseJsonBody = responseJsonObject.getJSONObject("body");
+            if(responseJsonBody!=null){
+                return responseJsonObject
+                        .getJSONObject("body");
+            }else{
+                return new JSONObject();
+            }
+
+
+        }
+        String msg = responseJsonHead.getString("msg");
+        if (msg == null) {
+            msg = "";
         }
 
-        return responseJsonObject;
+        log.error("code = {},msg = {}", code, msg);
+
+        throw new ClientException(CodeMsgContants.CodeMsg.CLIENT_SYSTEM_EXCEPTION);
     }
 
     protected JSONObject process(String reqStr, String urlReq, String method) {
         Map<String, String> requestProperties = new HashMap<String, String>();
         requestProperties.put("Content-Type", "application/json");
         requestProperties.put("User-Agent",
-                "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36");
+                "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 "
+                        + "Safari/537.36");
 
         requestProperties.put("Accept", "*/*");
-        return this.process(reqStr, urlReq, method, requestProperties);
+        return this.parseResponseBody(reqStr, urlReq, method, requestProperties);
     }
-
-    protected abstract JSONObject process(String reqStr, String urlReq, String httpMethod,
-                                          Map<String, String> requestProperties);
 
     protected abstract String generateUrlSuffix();
 }

@@ -1,8 +1,8 @@
 package com.fastjrun.codeg.helper;
 
-import org.junit.Test;
-
 import java.io.File;
+
+import org.junit.Test;
 
 public class IOHelperTest {
 
@@ -11,7 +11,6 @@ public class IOHelperTest {
         boolean res = IOHelper.deleteDir("src/test/data");
         System.out.println(res);
     }
-
 
     @Test
     public void testDelete() {

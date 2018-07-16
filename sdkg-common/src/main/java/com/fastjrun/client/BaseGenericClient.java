@@ -2,7 +2,7 @@ package com.fastjrun.client;
 
 import java.util.ResourceBundle;
 
-public abstract class BaseGenericClient extends BaseHttpWithResHeadClient {
+public abstract class BaseGenericClient extends BaseHttpClient {
 
     protected String genericUrlPre;
 

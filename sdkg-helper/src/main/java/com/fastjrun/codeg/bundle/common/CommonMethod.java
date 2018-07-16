@@ -123,5 +123,4 @@ public class CommonMethod {
         this.remark = remark;
     }
 
-
 }

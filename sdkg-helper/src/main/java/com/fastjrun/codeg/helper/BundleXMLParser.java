@@ -1,9 +1,11 @@
 package com.fastjrun.codeg.helper;
 
-import com.fastjrun.codeg.CodeGException;
-import com.fastjrun.codeg.bundle.common.*;
-import com.fastjrun.codeg.bundle.common.CommonController.ControllerType;
-import com.fastjrun.codeg.bundle.common.CommonService.ServiceType;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -11,7 +13,14 @@ import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 import org.springframework.http.MediaType;
 
-import java.util.*;
+import com.fastjrun.codeg.CodeGException;
+import com.fastjrun.codeg.bundle.common.CommonController;
+import com.fastjrun.codeg.bundle.common.CommonController.ControllerType;
+import com.fastjrun.codeg.bundle.common.CommonMethod;
+import com.fastjrun.codeg.bundle.common.CommonService;
+import com.fastjrun.codeg.bundle.common.CommonService.ServiceType;
+import com.fastjrun.codeg.bundle.common.PacketField;
+import com.fastjrun.codeg.bundle.common.PacketObject;
 
 public class BundleXMLParser {
 
@@ -168,7 +177,7 @@ public class BundleXMLParser {
                     commonController.setControllerType(ControllerType.ControllerType_RPC);
                     String name = eleService.attributeValue("name");
                     commonController.setName(StringHelper.toUpperCaseFirstOne(name) + "RPCController");
-                    commonController.setPath("/"+name);
+                    commonController.setPath("/" + name);
                     commonController.setRemark("rpc服务");
                     commonController.setClientName(StringHelper.toUpperCaseFirstOne(name) + "RPCClient");
                     commonController.setClientParent("");

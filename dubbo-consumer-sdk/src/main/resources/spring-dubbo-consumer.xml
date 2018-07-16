@@ -5,5 +5,5 @@
     <dubbo:application name="demo-consumer"/>
     <dubbo:registry address="zookeeper://zk.mycompany.com:2181"/>
     <dubbo:reference interface="com.alibaba.testsdk.service.ArticleServiceRestApi"
-            id="articleServiceRestApi"/>
+                     id="articleServiceRestApi"/>
 </beans>

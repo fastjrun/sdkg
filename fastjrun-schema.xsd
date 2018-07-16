@@ -77,7 +77,7 @@
             <xs:sequence>
                 <xs:element ref="simpleServices" minOccurs="0"/>
                 <xs:element ref="controllerServices" minOccurs="0"
-                            />
+                />
                 <xs:element ref="rpcServices" minOccurs="0"/>
             </xs:sequence>
         </xs:complexType>

@@ -78,7 +78,8 @@ public class PacketField {
 
     @Override
     public String toString() {
-        return "RestField [name=" + name + ", nameAlias=" + nameAlias + ", length=" + length + ", remark=" + remark + ", canBeNull=" + canBeNull
+        return "RestField [name=" + name + ", nameAlias=" + nameAlias + ", length=" + length + ", remark=" + remark
+                + ", canBeNull=" + canBeNull
                 + ", datatype=" + datatype + "]";
     }
 }

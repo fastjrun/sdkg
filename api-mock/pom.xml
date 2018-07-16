@@ -71,8 +71,8 @@
                             <goal>bundleMockgc</goal>
                         </goals>
                         <configuration>
-                            <bundleFiles>../app-client.xml,../generic-client.xml,../api-client.xml</bundleFiles>
-                            <bundleMockDir>.</bundleMockDir>
+                            <bundleFiles>app-client.xml,generic-client.xml,api-client.xml</bundleFiles>
+                            <bundleMockDir>api-mock</bundleMockDir>
                             <packagePrefix>com.alibaba.testsdk.</packagePrefix>
                         </configuration>
                     </execution>

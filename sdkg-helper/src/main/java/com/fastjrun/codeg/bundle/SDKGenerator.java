@@ -1,15 +1,5 @@
 package com.fastjrun.codeg.bundle;
 
-import com.fastjrun.codeg.CodeGException;
-import com.fastjrun.codeg.bundle.common.*;
-import com.fastjrun.codeg.bundle.common.CommonController.ControllerType;
-import com.fastjrun.codeg.helper.BundleXMLParser;
-import com.fastjrun.codeg.helper.StringHelper;
-import com.sun.codemodel.*;
-import com.sun.codemodel.writer.FileCodeWriter;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -20,6 +10,39 @@ import java.util.Properties;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 
+import com.fastjrun.codeg.CodeGException;
+import com.fastjrun.codeg.bundle.common.CommonController;
+import com.fastjrun.codeg.bundle.common.CommonController.ControllerType;
+import com.fastjrun.codeg.bundle.common.CommonMethod;
+import com.fastjrun.codeg.bundle.common.CommonService;
+import com.fastjrun.codeg.bundle.common.PacketField;
+import com.fastjrun.codeg.bundle.common.PacketObject;
+import com.fastjrun.codeg.helper.BundleXMLParser;
+import com.fastjrun.codeg.helper.StringHelper;
+import com.sun.codemodel.CodeWriter;
+import com.sun.codemodel.JAnnotationArrayMember;
+import com.sun.codemodel.JAnnotationUse;
+import com.sun.codemodel.JBlock;
+import com.sun.codemodel.JCatchBlock;
+import com.sun.codemodel.JClass;
+import com.sun.codemodel.JClassAlreadyExistsException;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JExpression;
+import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JForEach;
+import com.sun.codemodel.JForLoop;
+import com.sun.codemodel.JInvocation;
+import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JMod;
+import com.sun.codemodel.JTryBlock;
+import com.sun.codemodel.JType;
+import com.sun.codemodel.JVar;
+import com.sun.codemodel.writer.FileCodeWriter;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 public class SDKGenerator extends BundleGenerator {
 
     JClass jSONObjectClass = cmTest.ref("net.sf.json.JSONObject");
@@ -28,6 +51,7 @@ public class SDKGenerator extends BundleGenerator {
     Map<String, JClass> clientClassMap;
 
     private String appName;
+    private boolean supportDubbo = false;
 
     public String getAppName() {
         return appName;
@@ -36,8 +60,6 @@ public class SDKGenerator extends BundleGenerator {
     public void setAppName(String appName) {
         this.appName = appName;
     }
-
-    private boolean supportDubbo = false;
 
     public boolean isSupportDubbo() {
         return supportDubbo;
@@ -230,7 +252,8 @@ public class SDKGenerator extends BundleGenerator {
                         JExpr._new(cm.ref("java.util.HashMap").narrow(StringClass).narrow(StringClass)));
                 methodBlk.invoke(requestPropertiesJvar, "put").arg("Content-Type").arg(method.getReqType());
                 methodBlk.invoke(requestPropertiesJvar, "put").arg("User-Agent").arg(
-                        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36");
+                        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+                                + "Chrome/56.0.2924.87 Safari/537.36");
 
                 methodBlk.invoke(requestPropertiesJvar, "put").arg("Accept").arg("*/*");
 
@@ -247,8 +270,9 @@ public class SDKGenerator extends BundleGenerator {
                         methodParamInJsonObject.put(headVariable.getNameAlias(), headVariable.getDatatype());
                         JClass jType = cmTest.ref(headVariable.getDatatype());
                         if (jType.name().endsWith("Boolean")) {
-                            methodTestBlk.decl(jType, headVariable.getNameAlias(), reqParamsJsonJVar.invoke("getBoolean")
-                                    .arg(JExpr.lit(headVariable.getNameAlias())));
+                            methodTestBlk
+                                    .decl(jType, headVariable.getNameAlias(), reqParamsJsonJVar.invoke("getBoolean")
+                                            .arg(JExpr.lit(headVariable.getNameAlias())));
                         } else if (jType.name().endsWith("Integer")) {
                             methodTestBlk.decl(jType, headVariable.getNameAlias(), reqParamsJsonJVar.invoke("getInt")
                                     .arg(JExpr.lit(headVariable.getNameAlias())));
@@ -278,15 +302,20 @@ public class SDKGenerator extends BundleGenerator {
                         methodParamInJsonObject.put(pathVariable.getName(), pathVariable.getDatatype());
                         JClass jType = cmTest.ref(pathVariable.getDatatype());
                         if (jType.name().endsWith("Boolean")) {
-                            methodTestBlk.decl(jType, pathVariable.getName(), reqParamsJsonJVar.invoke("getBoolean").arg(JExpr.lit(pathVariable.getName())));
+                            methodTestBlk.decl(jType, pathVariable.getName(),
+                                    reqParamsJsonJVar.invoke("getBoolean").arg(JExpr.lit(pathVariable.getName())));
                         } else if (jType.name().endsWith("Integer")) {
-                            methodTestBlk.decl(jType, pathVariable.getName(), reqParamsJsonJVar.invoke("getInt").arg(JExpr.lit(pathVariable.getName())));
+                            methodTestBlk.decl(jType, pathVariable.getName(),
+                                    reqParamsJsonJVar.invoke("getInt").arg(JExpr.lit(pathVariable.getName())));
                         } else if (jType.name().endsWith("Long")) {
-                            methodTestBlk.decl(jType, pathVariable.getName(), reqParamsJsonJVar.invoke("getLong").arg(JExpr.lit(pathVariable.getName())));
+                            methodTestBlk.decl(jType, pathVariable.getName(),
+                                    reqParamsJsonJVar.invoke("getLong").arg(JExpr.lit(pathVariable.getName())));
                         } else if (jType.name().endsWith("Double")) {
-                            methodTestBlk.decl(jType, pathVariable.getName(), reqParamsJsonJVar.invoke("getDouble").arg(JExpr.lit(pathVariable.getName())));
+                            methodTestBlk.decl(jType, pathVariable.getName(),
+                                    reqParamsJsonJVar.invoke("getDouble").arg(JExpr.lit(pathVariable.getName())));
                         } else {
-                            methodTestBlk.decl(jType, pathVariable.getName(), reqParamsJsonJVar.invoke("getString").arg(JExpr.lit(pathVariable.getName())));
+                            methodTestBlk.decl(jType, pathVariable.getName(),
+                                    reqParamsJsonJVar.invoke("getString").arg(JExpr.lit(pathVariable.getName())));
                         }
 
                     }
@@ -309,15 +338,20 @@ public class SDKGenerator extends BundleGenerator {
                         methodParamInJsonObject.put(parameter.getName(), parameter.getDatatype());
                         JClass jType = cmTest.ref(parameter.getDatatype());
                         if (jType.name().endsWith("Boolean")) {
-                            methodTestBlk.decl(jType, parameter.getName(), reqParamsJsonJVar.invoke("getBoolean").arg(JExpr.lit(parameter.getName())));
+                            methodTestBlk.decl(jType, parameter.getName(),
+                                    reqParamsJsonJVar.invoke("getBoolean").arg(JExpr.lit(parameter.getName())));
                         } else if (jType.name().endsWith("Integer")) {
-                            methodTestBlk.decl(jType, parameter.getName(), reqParamsJsonJVar.invoke("getInt").arg(JExpr.lit(parameter.getName())));
+                            methodTestBlk.decl(jType, parameter.getName(),
+                                    reqParamsJsonJVar.invoke("getInt").arg(JExpr.lit(parameter.getName())));
                         } else if (jType.name().endsWith("Long")) {
-                            methodTestBlk.decl(jType, parameter.getName(), reqParamsJsonJVar.invoke("getLong").arg(JExpr.lit(parameter.getName())));
+                            methodTestBlk.decl(jType, parameter.getName(),
+                                    reqParamsJsonJVar.invoke("getLong").arg(JExpr.lit(parameter.getName())));
                         } else if (jType.name().endsWith("Double")) {
-                            methodTestBlk.decl(jType, parameter.getName(), reqParamsJsonJVar.invoke("getDouble").arg(JExpr.lit(parameter.getName())));
+                            methodTestBlk.decl(jType, parameter.getName(),
+                                    reqParamsJsonJVar.invoke("getDouble").arg(JExpr.lit(parameter.getName())));
                         } else {
-                            methodTestBlk.decl(jType, parameter.getName(), reqParamsJsonJVar.invoke("getString").arg(JExpr.lit(parameter.getName())));
+                            methodTestBlk.decl(jType, parameter.getName(),
+                                    reqParamsJsonJVar.invoke("getString").arg(JExpr.lit(parameter.getName())));
                         }
                     }
                 }
@@ -331,14 +365,14 @@ public class SDKGenerator extends BundleGenerator {
                     methodBlk.invoke(logVar, "info").arg(requestBodyStrVar);
                     if (jResponseClass != cm.VOID) {
                         JVar responseJsonBodyVar = methodBlk.decl(jSONObjectClass, "responseBody",
-                                JExpr.invoke(JExpr._this(), "process").arg(requestBodyStrVar)
+                                JExpr.invoke(JExpr._this(), "parseResponseBody").arg(requestBodyStrVar)
                                         .arg(JExpr.invoke(sbUrlReqVar, "toString"))
                                         .arg(method.getHttpMethod().toUpperCase()).arg(requestPropertiesJvar));
                         JVar bodyVar = this.composeResponseBody(responseJsonBodyVar, methodBlk, response,
                                 jResponseClass);
                         methodBlk._return(bodyVar);
                     } else {
-                        methodBlk.invoke(JExpr._this(), "process").arg(requestBodyStrVar)
+                        methodBlk.invoke(JExpr._this(), "parseResponseBody").arg(requestBodyStrVar)
                                 .arg(JExpr.invoke(sbUrlReqVar, "toString")).arg(method.getHttpMethod().toUpperCase())
                                 .arg(requestPropertiesJvar);
                     }
@@ -354,14 +388,14 @@ public class SDKGenerator extends BundleGenerator {
                 } else {
                     if (jResponseClass != cm.VOID) {
                         JVar responseJsonBodyVar = methodBlk.decl(jSONObjectClass, "responseBody",
-                                JExpr.invoke(JExpr._this(), "process").arg(JExpr.lit(""))
+                                JExpr.invoke(JExpr._this(), "parseResponseBody").arg(JExpr.lit(""))
                                         .arg(JExpr.invoke(sbUrlReqVar, "toString"))
                                         .arg(method.getHttpMethod().toUpperCase()).arg(requestPropertiesJvar));
                         JVar bodyVar = this.composeResponseBody(responseJsonBodyVar, methodBlk, response,
                                 jResponseClass);
                         methodBlk._return(bodyVar);
                     } else {
-                        methodBlk.invoke(JExpr._this(), "process").arg(JExpr.lit(""))
+                        methodBlk.invoke(JExpr._this(), "parseResponseBody").arg(JExpr.lit(""))
                                 .arg(JExpr.invoke(sbUrlReqVar, "toString")).arg(method.getHttpMethod().toUpperCase())
                                 .arg(requestPropertiesJvar);
                     }
@@ -508,13 +542,17 @@ public class SDKGenerator extends BundleGenerator {
                 } else {
                     JVar fieldValueVar = null;
                     if (jType.name().endsWith("Boolean")) {
-                        fieldValueVar = methodTestBlk.decl(jType, varNamePrefix + fieldName, reqJsonJVar.invoke("getBoolean").arg(fieldName));
+                        fieldValueVar = methodTestBlk.decl(jType, varNamePrefix + fieldName,
+                                reqJsonJVar.invoke("getBoolean").arg(fieldName));
                     } else if (jType.name().endsWith("Integer")) {
-                        fieldValueVar = methodTestBlk.decl(jType, varNamePrefix + fieldName, reqJsonJVar.invoke("getInt").arg(fieldName));
+                        fieldValueVar = methodTestBlk
+                                .decl(jType, varNamePrefix + fieldName, reqJsonJVar.invoke("getInt").arg(fieldName));
                     } else if (jType.name().endsWith("Long")) {
-                        fieldValueVar = methodTestBlk.decl(jType, varNamePrefix + fieldName, reqJsonJVar.invoke("getLong").arg(fieldName));
+                        fieldValueVar = methodTestBlk
+                                .decl(jType, varNamePrefix + fieldName, reqJsonJVar.invoke("getLong").arg(fieldName));
                     } else if (jType.name().endsWith("Double")) {
-                        fieldValueVar = methodTestBlk.decl(jType, varNamePrefix + fieldName, reqJsonJVar.invoke("getDouble").arg(fieldName));
+                        fieldValueVar = methodTestBlk
+                                .decl(jType, varNamePrefix + fieldName, reqJsonJVar.invoke("getDouble").arg(fieldName));
                     } else {
                         fieldValueVar = methodTestBlk.decl(jType, varNamePrefix + fieldName,
                                 reqJsonJVar.invoke("getString").arg(fieldName));
@@ -843,13 +881,17 @@ public class SDKGenerator extends BundleGenerator {
                 } else {
 
                     if (jType.name().endsWith("Boolean")) {
-                        fieldValueVar = methodBlk.decl(jType, varNamePrefix + fieldName, joVar.invoke("getBoolean").arg(fieldName));
+                        fieldValueVar = methodBlk
+                                .decl(jType, varNamePrefix + fieldName, joVar.invoke("getBoolean").arg(fieldName));
                     } else if (jType.name().endsWith("Integer")) {
-                        fieldValueVar = methodBlk.decl(jType, varNamePrefix + fieldName, joVar.invoke("getInt").arg(fieldName));
+                        fieldValueVar =
+                                methodBlk.decl(jType, varNamePrefix + fieldName, joVar.invoke("getInt").arg(fieldName));
                     } else if (jType.name().endsWith("Long")) {
-                        fieldValueVar = methodBlk.decl(jType, varNamePrefix + fieldName, joVar.invoke("getLong").arg(fieldName));
+                        fieldValueVar = methodBlk
+                                .decl(jType, varNamePrefix + fieldName, joVar.invoke("getLong").arg(fieldName));
                     } else if (jType.name().endsWith("Double")) {
-                        fieldValueVar = methodBlk.decl(jType, varNamePrefix + fieldName, joVar.invoke("getDouble").arg(fieldName));
+                        fieldValueVar = methodBlk
+                                .decl(jType, varNamePrefix + fieldName, joVar.invoke("getDouble").arg(fieldName));
                     } else {
                         fieldValueVar = methodBlk.decl(jType, varNamePrefix + fieldName,
                                 joVar.invoke("getString").arg(fieldName));

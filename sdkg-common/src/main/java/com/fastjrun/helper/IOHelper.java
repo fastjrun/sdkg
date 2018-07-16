@@ -5,7 +5,6 @@ import java.io.InputStream;
 
 public class IOHelper {
 
-
     public static byte[] read(InputStream inputStream) throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         byte[] buffer = new byte[4096];
