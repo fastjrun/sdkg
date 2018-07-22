@@ -71,6 +71,14 @@
             <artifactId>springfox-swagger-ui</artifactId>
             <version>${swagger2.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.fastjrun.share</groupId>
+            <artifactId>sdkg-common</artifactId>
+            <classifier>tests</classifier>
+            <type>test-jar</type>
+            <scope>test</scope>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

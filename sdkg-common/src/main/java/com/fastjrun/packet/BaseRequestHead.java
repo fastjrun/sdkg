@@ -9,5 +9,5 @@ package com.fastjrun.packet;
  *
  */
 
-public class BaseDefaultRequest<V extends BaseBody> extends BasePacket<EmptyRequestHead, V> {
+public abstract class BaseRequestHead extends BaseHead {
 }

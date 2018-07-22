@@ -3,8 +3,8 @@ package com.fastjrun.codeg;
 import java.io.File;
 import java.util.Calendar;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.fastjrun.codeg.helper.IOHelper;
 import com.sun.codemodel.JCodeModel;
@@ -21,7 +21,7 @@ public abstract class CodeGenerator {
         YEAR_CODEG_TIME = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
     }
 
-    protected final Log log = LogFactory.getLog(this.getClass());
+    protected final Logger log = LogManager.getLogger(this.getClass());
     protected String moduleName;
     protected String author = "fastjrun";
     protected String company = "快嘉框架";

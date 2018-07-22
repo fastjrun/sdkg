@@ -1,4 +1,4 @@
-package com.fastjrun.client;
+package com.fastjrun.packet;
 
 /*
  * *
@@ -9,6 +9,5 @@ package com.fastjrun.client;
  *
  */
 
-public abstract class RPCClient extends BaseClient {
-
+public class BaseRequest<T extends BaseRequestHead, V extends BaseRequestBody> extends BasePacket<T, V> {
 }

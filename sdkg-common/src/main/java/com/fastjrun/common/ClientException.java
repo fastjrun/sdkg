@@ -12,7 +12,7 @@ public class ClientException extends BaseException {
         super(code, msg);
     }
 
-    public ClientException(CodeMsgContants.CodeMsg codeMsg) {
+    public ClientException(CodeMsgConstants.CodeMsg codeMsg) {
         this(codeMsg.getCode(), codeMsg.getMsg());
     }
 }

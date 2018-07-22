@@ -3,14 +3,13 @@ package com.fastjrun.client;
 import java.util.ResourceBundle;
 
 import com.fastjrun.helper.EncryptHelper;
+import com.fastjrun.util.FastJsonObjectMapper;
 
-public abstract class BaseApiClient extends BaseHttpClient {
+public class DefaultApiClient extends DefaultResponseHandleClient {
 
     protected String accessKey;
 
     protected String accessKeySn;
-
-    protected String apiUrlPre;
 
     public String getAccessKey() {
         return accessKey;
@@ -28,20 +27,14 @@ public abstract class BaseApiClient extends BaseHttpClient {
         this.accessKeySn = accessKeySn;
     }
 
-    public String getApiUrlPre() {
-        return apiUrlPre;
-    }
-
-    public void setApiUrlPre(String apiUrlPre) {
-        this.apiUrlPre = apiUrlPre;
-    }
-
     @Override
-    public void initSDKConfig(String apiworld) {
-        ResourceBundle rb = ResourceBundle.getBundle(apiworld + "-sdk");
-        this.accessKey = rb.getString(apiworld + ".accessKey");
-        this.accessKeySn = rb.getString(apiworld + ".accessKeySn");
-        this.apiUrlPre = rb.getString(apiworld + ".apiUrlPre");
+    public void initSDKConfig(String apiWorld) {
+        ResourceBundle rb = ResourceBundle.getBundle(apiWorld + "-sdk");
+        this.accessKey = rb.getString(apiWorld + ".accessKey");
+        this.accessKeySn = rb.getString(apiWorld + ".accessKeySn");
+        String baseUrl = rb.getString(apiWorld + ".baseUrl");
+        this.initUtilClient(baseUrl);
+        this.objectMapper = new FastJsonObjectMapper();
     }
 
     @Override

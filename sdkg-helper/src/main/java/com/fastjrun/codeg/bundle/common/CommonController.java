@@ -7,7 +7,6 @@ public class CommonController {
     protected String clientName;
     protected String remark;
     protected String tags;
-    protected String clientParent;
 
     protected String serviceName;
 
@@ -68,14 +67,6 @@ public class CommonController {
 
     public void setRemark(String remark) {
         this.remark = remark;
-    }
-
-    public String getClientParent() {
-        return clientParent;
-    }
-
-    public void setClientParent(String clientParent) {
-        this.clientParent = clientParent;
     }
 
     public String getTags() {

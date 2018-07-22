@@ -2,7 +2,7 @@ package com.fastjrun.packet;
 
 import java.io.Serializable;
 
-public class BaseAppRequestHead extends BaseHead implements Serializable {
+public class AppRequestHead extends BaseRequestHead implements Serializable {
 
     private static final long serialVersionUID = -4242620759722491454L;
 

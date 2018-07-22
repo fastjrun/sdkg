@@ -154,7 +154,6 @@ public class BundleXMLParser {
                     commonController.setPath(path);
                     commonController.setRemark(remark);
                     commonController.setClientName(clientName);
-                    commonController.setClientParent(clientParent);
                     commonController.setTags(tags);
                     Element eleService = eleController.element("service");
                     String serviceName = eleService.attributeValue("name");
@@ -180,7 +179,6 @@ public class BundleXMLParser {
                     commonController.setPath("/" + name);
                     commonController.setRemark("rpc服务");
                     commonController.setClientName(StringHelper.toUpperCaseFirstOne(name) + "RPCClient");
-                    commonController.setClientParent("");
                     commonController.setTags("rpc");
                     commonController.setServiceName(name);
                     CommonService service = serviceMap.get(name);
@@ -211,6 +209,31 @@ public class BundleXMLParser {
                 PacketObject restObject = processPO(elePacket);
                 restObject.setParent(parent);
                 packetMap.put(_class, restObject);
+            }
+            List<Node> nodeServices = xml.selectNodes("services/*/service");
+            for (Node nodeService : nodeServices) {
+                Element eleService = (Element) nodeService;
+                List<Node> nodeMethods = eleService.selectNodes("method");
+                if (nodeMethods != null && nodeMethods.size() > 0) {
+                    for (Node nodeMethod : nodeMethods) {
+                        Element eleMethod = (Element) nodeMethod;
+                        Element eleRequest = eleMethod.element("request");
+                        if (eleRequest != null) {
+                            String requestClass = eleRequest.attributeValue("class");
+                            PacketObject poRequest = packetMap.get(requestClass);
+                            Element eleResponse = eleMethod.element("response");
+                            if (eleResponse != null) {
+                                String responseClass = eleResponse.attributeValue("class");
+                                poRequest.setResponseClass(responseClass);
+                            } else {
+                                poRequest.setResponseClass("com.fastjrun.packet.EmptyResponseBody");
+
+                            }
+                        }
+
+                    }
+                }
+
             }
             return packetMap;
         } catch (Exception e) {

@@ -1,6 +1,7 @@
 package com.fastjrun.codeg.bundle;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,9 +36,27 @@ import com.sun.codemodel.writer.FileCodeWriter;
 
 public class BundleGenerator extends ServiceGenerator {
 
-    Map<String, CommonController> controllerMap;
+    protected boolean skipService = false;
 
+    protected boolean skipController = false;
+    Map<String, CommonController> controllerMap;
     Map<String, JClass> controllerClassMap;
+
+    public boolean isSkipService() {
+        return skipService;
+    }
+
+    public void setSkipService(boolean skipService) {
+        this.skipService = skipService;
+    }
+
+    public boolean isSkipController() {
+        return skipController;
+    }
+
+    public void setSkipController(boolean skipController) {
+        this.skipController = skipController;
+    }
 
     /**
      * @param commonController
@@ -45,7 +64,7 @@ public class BundleGenerator extends ServiceGenerator {
     private JClass processController(CommonController commonController) {
         ControllerType controllerType = commonController.getControllerType();
         if (!this.mock && controllerType == ControllerType.ControllerType_RPC) {
-            return null;
+            return cm.NULL;
         }
         try {
             JDefinedClass dcController;
@@ -104,7 +123,7 @@ public class BundleGenerator extends ServiceGenerator {
                     responseBodyClass = poClassMap.get(_class);
 
                 }
-                jResponseClass = cm.ref("com.fastjrun.packet.BaseDefaultResponse").narrow(responseBodyClass);
+                jResponseClass = cm.ref("com.fastjrun.packet.DefaultResponse").narrow(responseBodyClass);
                 RequestMethod requestMethod = RequestMethod.POST;
                 switch (method.getHttpMethod().toUpperCase()) {
                     case "GET":
@@ -141,7 +160,7 @@ public class BundleGenerator extends ServiceGenerator {
                 JBlock controllerMethodBlk = controllerMethod.body();
                 JClass longClass = cm.ref("Long");
                 JClass requestHeadClass = cm
-                        .ref("com.fastjrun.packet.Base" + controllerType.controllerType + "RequestHead");
+                        .ref("com.fastjrun.packet." + controllerType.controllerType + "RequestHead");
 
                 if (controllerType == ControllerType.ControllerType_API) {
                     JVar requestHeadVar = controllerMethodBlk.decl(requestHeadClass, "requestHead",
@@ -305,7 +324,7 @@ public class BundleGenerator extends ServiceGenerator {
                 } else {
 
                     controllerMethodBlk.decl(jResponseClass, "response", JExpr._new(jResponseClass));
-                    JClass responseHeadClass = cm.ref("com.fastjrun.packet.BaseDefaultResponseHead");
+                    JClass responseHeadClass = cm.ref("com.fastjrun.packet.DefaultResponseHead");
                     JVar reponseHeadVar = controllerMethodBlk.decl(responseHeadClass, "responseHead",
                             JExpr._new(responseHeadClass));
                     controllerMethodBlk.invoke(reponseHeadVar, "setCode").arg(JExpr.lit("0000"));
@@ -327,6 +346,8 @@ public class BundleGenerator extends ServiceGenerator {
 
     @Override
     public boolean generate() {
+        Date begin = new Date();
+        log.info("begin genreate at {}", begin);
         this.beforeGenerate();
         if (this.bundleFiles != null && this.bundleFiles.length > 0) {
             BundleXMLParser.checkClassNameRepeat(bundleFiles);
@@ -341,14 +362,22 @@ public class BundleGenerator extends ServiceGenerator {
         } catch (IOException e) {
             throw new CodeGException("CG502", "code generating failed:" + e.getMessage());
         }
+        Date end = new Date();
+        log.info("end genreate at {},cast {} ms", end, end.getTime() - begin.getTime());
         return true;
     }
 
     private boolean generate(String bundleFile) {
         this.packetMap = BundleXMLParser.processPacket(bundleFile);
         this.generatePO();
+        if (this.skipService) {
+            return true;
+        }
         this.serviceMap = BundleXMLParser.processService(bundleFile, this.packetMap);
         this.generateService();
+        if (this.skipController) {
+            return true;
+        }
         this.controllerMap = BundleXMLParser.processControllers(bundleFile, serviceMap);
         this.generateController();
         return true;

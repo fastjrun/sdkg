@@ -5,6 +5,7 @@
     <test name="${envName}" parallel="methods" thread-count="5">
         <parameter name="envName" value="${envName}"></parameter>
         <classes>
+            <class name="com.fastjrun.share.sdk.client.VersionServiceRPCRPCClientTest"/>
             <class name="com.fastjrun.share.sdk.client.AppVersionGenericClientTest"/>
             <class name="com.fastjrun.share.sdk.client.UserGenericClientTest"/>
             <class name="com.fastjrun.share.sdk.client.UserAppClientTest"/>
@@ -12,7 +13,6 @@
             <class name="com.fastjrun.share.sdk.client.ArticleApiClientTest"/>
             <class name="com.fastjrun.share.sdk.client.UserApiClientTest"/>
             <class name="com.fastjrun.share.sdk.client.UserServiceRPCRPCClientTest"/>
-            <class name="com.fastjrun.share.sdk.client.VersionServiceRPCRPCClientTest"/>
         </classes>
     </test>
 </suite>

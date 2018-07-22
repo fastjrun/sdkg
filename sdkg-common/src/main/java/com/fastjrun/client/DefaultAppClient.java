@@ -2,14 +2,14 @@ package com.fastjrun.client;
 
 import java.util.ResourceBundle;
 
-public abstract class BaseAppClient extends BaseHttpClient {
+import com.fastjrun.util.FastJsonObjectMapper;
+
+public class DefaultAppClient extends DefaultResponseHandleClient {
 
     protected String appSource;
     protected String appVersion;
     protected String deviceId;
     protected String appKey;
-
-    protected String appUrlPre;
 
     public String getAppKey() {
         return appKey;
@@ -43,22 +43,16 @@ public abstract class BaseAppClient extends BaseHttpClient {
         this.appVersion = appVersion;
     }
 
-    public String getAppUrlPre() {
-        return appUrlPre;
-    }
-
-    public void setAppUrlPre(String appUrlPre) {
-        this.appUrlPre = appUrlPre;
-    }
-
     @Override
-    public void initSDKConfig(String apiworld) {
-        ResourceBundle rb = ResourceBundle.getBundle(apiworld + "-sdk");
-        this.appKey = rb.getString(apiworld + ".appKey");
-        this.appVersion = rb.getString(apiworld + ".appVersion");
-        this.appSource = rb.getString(apiworld + ".appSource");
-        this.deviceId = rb.getString(apiworld + ".deviceId");
-        this.appUrlPre = rb.getString(apiworld + ".appUrlPre");
+    public void initSDKConfig(String apiWorld) {
+        ResourceBundle rb = ResourceBundle.getBundle(apiWorld + "-sdk");
+        this.appKey = rb.getString(apiWorld + ".appKey");
+        this.appVersion = rb.getString(apiWorld + ".appVersion");
+        this.appSource = rb.getString(apiWorld + ".appSource");
+        this.deviceId = rb.getString(apiWorld + ".deviceId");
+        String baseUrl = rb.getString(apiWorld + ".baseUrl");
+        this.initUtilClient(baseUrl);
+        this.objectMapper = new FastJsonObjectMapper();
     }
 
     @Override

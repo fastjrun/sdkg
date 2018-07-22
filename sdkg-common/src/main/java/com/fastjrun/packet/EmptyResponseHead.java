@@ -11,7 +11,7 @@ import java.io.Serializable;
  *
  */
 
-public class EmptyResponseHead extends BaseHead implements Serializable {
+public class EmptyResponseHead extends BaseResponseHead implements Serializable {
 
-    private static final long serialVersionUID = -1271743708108024209L;
+    private static final long serialVersionUID = -337937552983324244L;
 }

@@ -9,9 +9,5 @@ package com.fastjrun.packet;
  *
  */
 
-import java.io.Serializable;
-
-public class EmptyRequest extends BasePacket<EmptyRequestHead, EmptyRequestBody> implements Serializable {
-
-    private static final long serialVersionUID = 4738248534408032101L;
+public class EmptyRequest<V extends BaseRequestBody> extends BasePacket<EmptyRequestHead, V> {
 }

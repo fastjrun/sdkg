@@ -16,6 +16,14 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.fastjrun.share</groupId>
+            <artifactId>sdkg-common</artifactId>
+            <classifier>tests</classifier>
+            <type>test-jar</type>
+            <scope>test</scope>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
         </dependency>
@@ -37,7 +45,7 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <includes>
-                    <include>${apiworld}-sdk.properties</include>
+                    <include>${apiWorld}-sdk.properties</include>
                     <include>testdata/${envName}.properties</include>
                 </includes>
                 <filtering>true</filtering>
@@ -73,7 +81,7 @@
                         <configuration>
                             <bundleFiles>app-client.xml,api-client.xml,generic-client.xml</bundleFiles>
                             <sdkDir>sdkg-sdk</sdkDir>
-                            <appName>${apiworld}</appName>
+                            <appName>${apiWorld}</appName>
                             <packagePrefix>com.fastjrun.share.sdk.</packagePrefix>
                         </configuration>
                     </execution>
@@ -85,7 +93,7 @@
                 <configuration>
                     <excludes>
                         <exclude>log4j2.xml</exclude>
-                        <exclude>${apiworld}-sdk.properties</exclude>
+                        <exclude>${apiWorld}-sdk.properties</exclude>
                         <exclude>testdata/*.properties</exclude>
                     </excludes>
                 </configuration>
@@ -139,6 +147,6 @@
     <profiles>
     </profiles>
     <properties>
-        <apiworld>apiworld</apiworld>
+        <apiWorld>apiWorld</apiWorld>
     </properties>
 </project>

@@ -11,10 +11,9 @@ import java.io.Serializable;
  *
  */
 
-public class BaseDefaultResponseHead extends BaseHead implements Serializable {
+public class DefaultResponseHead extends BaseResponseHead implements Serializable {
 
-    private static final long serialVersionUID = 6153642938936890248L;
-
+    private static final long serialVersionUID = 2492660045919530641L;
     private String code;
 
     private String msg;

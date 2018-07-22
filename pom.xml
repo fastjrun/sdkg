@@ -32,12 +32,6 @@
                 <version>${log4j2.version}</version>
             </dependency>
             <dependency>
-                <groupId>net.sf.json-lib</groupId>
-                <artifactId>json-lib</artifactId>
-                <version>${json-lib.version}</version>
-                <classifier>jdk15</classifier>
-            </dependency>
-            <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-web</artifactId>
                 <version>${springframework.version}</version>
@@ -60,6 +54,41 @@
                 <version>1.5.11.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.dataformat</groupId>
+                <artifactId>jackson-dataformat-xml</artifactId>
+                <version>${jackson-dataformat-xml.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>okhttp</artifactId>
+                <version>${okhttp.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>${commons-codec.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>${commons-lang.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -119,7 +148,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <!-- src/main/resources/apiworld-sdk.properties -->
+                <!-- src/main/resources/apiWorld-sdk.properties -->
                 <envName>local</envName>
             </properties>
         </profile>
@@ -139,10 +168,14 @@
         <mycompany-snapshots-url-suffix>/repository/maven-snapshots/</mycompany-snapshots-url-suffix>
         <mycompany-releases-url-suffix>/repository/maven-releases/</mycompany-releases-url-suffix>
         <log4j2.version>2.11.0</log4j2.version>
-        <json-lib.version>2.4</json-lib.version>
         <springframework.version>4.3.8.RELEASE</springframework.version>
         <junit.version>4.12</junit.version>
         <testng.version>6.10</testng.version>
+        <jackson.version>2.9.5</jackson.version>
+        <jackson-dataformat-xml.version>2.8.11</jackson-dataformat-xml.version>
+        <okhttp.version>3.10.0</okhttp.version>
+        <commons-codec.version>1.10</commons-codec.version>
+        <commons-lang.version>2.3</commons-lang.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 </project>

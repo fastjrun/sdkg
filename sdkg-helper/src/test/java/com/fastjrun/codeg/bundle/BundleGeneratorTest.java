@@ -28,8 +28,8 @@ public class BundleGeneratorTest {
         String moduleName = "Example";
         SDKGenerator sdkGenerator = new SDKGenerator();
         sdkGenerator.setModuleName(moduleName);
-        sdkGenerator.setAppName("apiwolrd");
-        sdkGenerator.setBundleFiles("../generic-client.xml".split(","));
+        sdkGenerator.setAppName("apiWolrd");
+        sdkGenerator.setBundleFiles("../generic-client.xml,../api-client.xml,../app-client.xml".split(","));
         sdkGenerator.setAuthor("崔莹峰");
         sdkGenerator.setPackageNamePrefix("com.fastjrun.common.");
         sdkGenerator.generate();
@@ -44,6 +44,19 @@ public class BundleGeneratorTest {
         bundleGenerator.setBundleFiles("../generic-client.xml".split(","));
         bundleGenerator.setAuthor("崔莹峰");
         bundleGenerator.setPackageNamePrefix("com.fastjrun.common.");
+        bundleGenerator.generate();
+    }
+
+    @Test
+    public void testGeneratePacket() {
+        String moduleName = "Example";
+        BundleGenerator bundleGenerator = new BundleGenerator();
+        bundleGenerator.setMock(true);
+        bundleGenerator.setModuleName(moduleName);
+        bundleGenerator.setBundleFiles("../generic-client.xml".split(","));
+        bundleGenerator.setAuthor("崔莹峰");
+        bundleGenerator.setPackageNamePrefix("com.fastjrun.common.");
+        bundleGenerator.setSkipController(true);
         bundleGenerator.generate();
     }
 

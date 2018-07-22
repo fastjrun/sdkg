@@ -1,7 +1,5 @@
 package com.fastjrun.packet;
 
-import java.io.Serializable;
-
 /*
  * *
  *  * 注意：本内容仅限于公司内部传阅，禁止外泄以及用于其他的商业目的
@@ -11,7 +9,9 @@ import java.io.Serializable;
  *
  */
 
-public class EmptyRequestBody extends BaseBody implements Serializable {
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-    private static final long serialVersionUID = -4357299426059554665L;
+public abstract class BaseRequestBody<T extends BaseResponseBody> extends BaseBody {
+    @JsonIgnore
+    public abstract Class<T> getResponseBodyClass();
 }

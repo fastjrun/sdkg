@@ -6,6 +6,8 @@ public class PacketObject {
     private String name;
     private String parent;
     private String _new;
+
+    private String responseClass;
     private String _class;
 
     private Map<String, PacketObject> objects;
@@ -20,6 +22,14 @@ public class PacketObject {
 
     public void set_new(String _new) {
         this._new = _new;
+    }
+
+    public String getResponseClass() {
+        return responseClass;
+    }
+
+    public void setResponseClass(String responseClass) {
+        this.responseClass = responseClass;
     }
 
     public String getParent() {

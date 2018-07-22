@@ -56,6 +56,22 @@ public abstract class PacketGenerator extends CodeGenerator {
 
             if (parentClass != null) {
                 dc._extends(parentClass);
+            } else {
+                if (body.getResponseClass() == null) {
+                    dc._extends(cm.ref("com.fastjrun.packet.BaseResponseBody"));
+                } else {
+                    String responseBodyClassName = "com.fastjrun.packet.EmptyResponseBody";
+                    if (!body.getResponseClass().equals(responseBodyClassName)) {
+                        responseBodyClassName = this.packageNamePrefix + body.getResponseClass();
+                    }
+                    dc._extends(cm.ref("com.fastjrun.packet.BaseRequestBody").narrow(cm.ref(responseBodyClassName)));
+                    JMethod jGetResponseBodyClassmethod = dc.method(JMod.PUBLIC, cm.ref("Class").narrow(cm.ref
+                                    (responseBodyClassName)),
+                            "getResponseBodyClass");
+                    jGetResponseBodyClassmethod.annotate(cm.ref("Override"));
+                    jGetResponseBodyClassmethod.body()._return(cm.ref(responseBodyClassName).dotclass());
+
+                }
 
             }
             dc._implements(cm.ref("java.io.Serializable"));
@@ -274,7 +290,7 @@ public abstract class PacketGenerator extends CodeGenerator {
         while (!isFinished) {
             isFinished = true;
             for (JClass fs : classMap.values()) {
-                log.debug(fs);
+                //log.debug(fs);
                 if (fs == null) {
                     isFinished = false;
                     break;
@@ -297,7 +313,7 @@ public abstract class PacketGenerator extends CodeGenerator {
         }
 
         public JClass call() {
-            return codeGenerator.processBody(body, cm.ref("com.fastjrun.packet.BaseBody"), codeGenerator.isMock());
+            return codeGenerator.processBody(body, null, codeGenerator.isMock());
         }
 
     }
