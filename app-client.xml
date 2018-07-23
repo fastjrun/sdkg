@@ -14,7 +14,7 @@
             <field name="mobileNo" dataType="String" length="20" canBeNull="true"
                    remark="手机号"/>
             <field name="email" dataType="String" length="30" canBeNull="true"
-                   remark="手机号"/>
+                   remark="邮箱"/>
         </packet>
         <packet class="packet.app.LoginRestRequestBody">
             <field name="loginName" dataType="String" length="12"
@@ -50,33 +50,31 @@
         </packet>
     </packets>
     <services>
-        <controllerServices>
-            <service name="userServiceRestApp" class="UserServiceRestApp">
-                <method name="register" version="v2" path="register" remark="注册">
-                    <request class="packet.app.RegistserRestRequestBody"/>
-                </method>
-                <method name="login" version="" path="login" remark="登录">
-                    <request class="packet.app.LoginRestRequestBody"/>
-                    <response class="packet.app.LoginRestResponseBody"/>
-                </method>
-                <method name="login" version="v1_1" path="login" remark="登录v1.1">
-                    <request class="packet.app.LoginRestRequestBody"/>
-                    <response class="packet.app.LoginRestResponseBody"/>
-                </method>
-                <method name="autoLogin" version="" path="autoLogin" remark="自动登录">
-                    <request class="packet.app.AutoLoginRestRequestBody"/>
-                    <response class="packet.app.LoginRestResponseBody"/>
-                </method>
-            </service>
-            <service name="versionServiceRestApp" class="VersionServiceRestApp">
-                <method name="check" version="" path="check" remark="版本检测"
-                        method="GET"/>
-                <method name="latests" version="" path="latests" remark="最近版本列表"
-                        method="GET">
-                    <response class="packet.app.VersionListResponseBody"/>
-                </method>
-            </service>
-        </controllerServices>
+        <service name="userServiceRestApp" class="UserServiceRestApp">
+            <method name="register" version="v2" path="register" remark="注册">
+                <request class="packet.app.RegistserRestRequestBody"/>
+            </method>
+            <method name="login" version="" path="login" remark="登录">
+                <request class="packet.app.LoginRestRequestBody"/>
+                <response class="packet.app.LoginRestResponseBody"/>
+            </method>
+            <method name="login" version="v1_1" path="login" remark="登录v1.1">
+                <request class="packet.app.LoginRestRequestBody"/>
+                <response class="packet.app.LoginRestResponseBody"/>
+            </method>
+            <method name="autoLogin" version="" path="autoLogin" remark="自动登录">
+                <request class="packet.app.AutoLoginRestRequestBody"/>
+                <response class="packet.app.LoginRestResponseBody"/>
+            </method>
+        </service>
+        <service name="versionServiceRestApp" class="VersionServiceRestApp">
+            <method name="check" version="" path="check" remark="版本检测"
+                    method="GET"/>
+            <method name="latests" version="" path="latests" remark="最近版本列表"
+                    method="GET">
+                <response class="packet.app.VersionListResponseBody"/>
+            </method>
+        </service>
     </services>
     <appControllers>
         <controller name="UserAppController" path="/app/user/"

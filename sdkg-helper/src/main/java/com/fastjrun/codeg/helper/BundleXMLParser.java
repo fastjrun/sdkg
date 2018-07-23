@@ -18,7 +18,6 @@ import com.fastjrun.codeg.bundle.common.CommonController;
 import com.fastjrun.codeg.bundle.common.CommonController.ControllerType;
 import com.fastjrun.codeg.bundle.common.CommonMethod;
 import com.fastjrun.codeg.bundle.common.CommonService;
-import com.fastjrun.codeg.bundle.common.CommonService.ServiceType;
 import com.fastjrun.codeg.bundle.common.PacketField;
 import com.fastjrun.codeg.bundle.common.PacketObject;
 
@@ -210,7 +209,7 @@ public class BundleXMLParser {
                 restObject.setParent(parent);
                 packetMap.put(_class, restObject);
             }
-            List<Node> nodeServices = xml.selectNodes("services/*/service");
+            List<Node> nodeServices = xml.selectNodes("services/service");
             for (Node nodeService : nodeServices) {
                 Element eleService = (Element) nodeService;
                 List<Node> nodeMethods = eleService.selectNodes("method");
@@ -248,20 +247,12 @@ public class BundleXMLParser {
             Document document = reader.read(bundleFile);
 
             Element xml = document.getRootElement();
-            List<Node> nodeServices = xml.selectNodes("services/*/service");
+            List<Node> nodeServices = xml.selectNodes("services/service");
             for (Node nodeService : nodeServices) {
                 Element eleService = (Element) nodeService;
                 String name = eleService.attributeValue("name");
                 String _class = eleService.attributeValue("class");
                 CommonService service = new CommonService();
-                if (eleService.getParent().getName().equals("controllerServices")) {
-
-                    service.setServiceType(ServiceType.ServiceType_Controller);
-
-                } else if (eleService.getParent().getName().equals("rpcServices")) {
-                    service.setServiceType(ServiceType.ServiceType_RPC);
-
-                }
 
                 service.set_class(_class);
                 service.setName(name);

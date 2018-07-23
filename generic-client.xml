@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bundle xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        name="快嘉接口定义规范" xsi:noNamespaceSchemaLocation="fastjrun-schema.xsd">
+<bundle xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="fastjrun-schema.xsd">
     <packets>
         <packet class="packet.generic.RegistserRestRequestBody">
             <field name="loginId" dataType="String" length="12" canBeNull="false"
@@ -14,7 +13,7 @@
             <field name="mobileNo" dataType="String" length="20" canBeNull="true"
                    remark="手机号"/>
             <field name="email" dataType="String" length="30" canBeNull="true"
-                   remark="手机号"/>
+                   remark="邮箱"/>
         </packet>
         <packet class="packet.generic.LoginRestRequestBody">
             <field name="loginName" dataType="String" length="12"
@@ -50,78 +49,74 @@
         </packet>
     </packets>
     <services>
-        <controllerServices>
-            <service name="userServiceRestGeneric" class="UserServiceRestGeneric">
-                <method name="register" version="" path="register" remark="注册">
-                    <request class="packet.generic.RegistserRestRequestBody"/>
-                </method>
-                <method name="login" version="" path="login" remark="登录">
-                    <request class="packet.generic.LoginRestRequestBody"/>
-                    <response class="packet.generic.LoginRestResponseBody"/>
-                </method>
-                <method name="login" version="v1_1" path="login" remark="登录v1.1">
-                    <request class="packet.generic.LoginRestRequestBody"/>
-                    <response class="packet.generic.LoginRestResponseBody"/>
-                </method>
-                <method name="autoLogin" version="" path="autoLogin" remark="自动登录">
-                    <request class="packet.generic.AutoLoginRestRequestBody"/>
-                    <response class="packet.generic.LoginRestResponseBody"/>
-                </method>
-            </service>
-            <service name="versionServiceRestGeneric" class="VersionServiceRestGeneric">
-                <method name="latests" version="" path="latests" remark="最近版本列表">
-                    <response class="packet.generic.VersionListResponseBody"/>
-                </method>
-                <method name="latests" version="v2" path="latests" remark="最近版本列表">
-                    <parameters>
-                        <parameter name="pageNum" dataType="Integer" length="11"
-                                   canBeNull="true" remark="每页返回多少条记录"/>
-                        <parameter name="pageIndex" dataType="Integer" length="11"
-                                   canBeNull="true" remark="页索引"/>
-                    </parameters>
-                    <pathVariables>
-                        <pathVariable name="appKey" dataType="String" length="32"
-                                      remark="分配客户端key"/>
-                        <pathVariable name="accessTime" dataType="Long"
-                                      length="11" remark="访问时间戳"/>
-                    </pathVariables>
-                    <response class="packet.generic.VersionListResponseBody"/>
-                </method>
-            </service>
-        </controllerServices>
-        <rpcServices>
-            <service name="userServiceRPC" class="UserServiceRPC">
-                <method name="register" version="" remark="注册">
-                    <request class="packet.generic.RegistserRestRequestBody"/>
-                </method>
-                <method name="login" version="" remark="登录">
-                    <request class="packet.generic.LoginRestRequestBody"/>
-                    <response class="packet.generic.LoginRestResponseBody"/>
-                </method>
-                <method name="login" version="v1_1" remark="登录v1.1">
-                    <request class="packet.generic.LoginRestRequestBody"/>
-                    <response class="packet.generic.LoginRestResponseBody"/>
-                </method>
-                <method name="autoLogin" version="" remark="自动登录">
-                    <request class="packet.generic.AutoLoginRestRequestBody"/>
-                    <response class="packet.generic.LoginRestResponseBody"/>
-                </method>
-            </service>
-            <service name="versionServiceRPC" class="VersionServiceRPC">
-                <method name="latests" version="" remark="最近版本列表">
-                    <response class="packet.generic.VersionListResponseBody"/>
-                </method>
-                <method name="latests" version="v2" remark="最近版本列表">
-                    <parameters>
-                        <parameter name="pageNum" dataType="Integer" length="11"
-                                   canBeNull="true" remark="每页返回多少条记录"/>
-                        <parameter name="pageIndex" dataType="Integer" length="11"
-                                   canBeNull="true" remark="页索引"/>
-                    </parameters>
-                    <response class="packet.generic.VersionListResponseBody"/>
-                </method>
-            </service>
-        </rpcServices>
+        <service name="userServiceRestGeneric" class="UserServiceRestGeneric">
+            <method name="register" version="" path="register" remark="注册">
+                <request class="packet.generic.RegistserRestRequestBody"/>
+            </method>
+            <method name="login" version="" path="login" remark="登录">
+                <request class="packet.generic.LoginRestRequestBody"/>
+                <response class="packet.generic.LoginRestResponseBody"/>
+            </method>
+            <method name="login" version="v1_1" path="login" remark="登录v1.1">
+                <request class="packet.generic.LoginRestRequestBody"/>
+                <response class="packet.generic.LoginRestResponseBody"/>
+            </method>
+            <method name="autoLogin" version="" path="autoLogin" remark="自动登录">
+                <request class="packet.generic.AutoLoginRestRequestBody"/>
+                <response class="packet.generic.LoginRestResponseBody"/>
+            </method>
+        </service>
+        <service name="versionServiceRestGeneric" class="VersionServiceRestGeneric">
+            <method name="latests" version="" path="latests" remark="最近版本列表">
+                <response class="packet.generic.VersionListResponseBody"/>
+            </method>
+            <method name="latests" version="v2" path="latests" remark="最近版本列表">
+                <parameters>
+                    <parameter name="pageNum" dataType="Integer" length="11"
+                               canBeNull="true" remark="每页返回多少条记录"/>
+                    <parameter name="pageIndex" dataType="Integer" length="11"
+                               canBeNull="true" remark="页索引"/>
+                </parameters>
+                <pathVariables>
+                    <pathVariable name="appKey" dataType="String" length="32"
+                                  remark="分配客户端key"/>
+                    <pathVariable name="accessTime" dataType="Long"
+                                  length="11" remark="访问时间戳"/>
+                </pathVariables>
+                <response class="packet.generic.VersionListResponseBody"/>
+            </method>
+        </service>
+        <service name="userServiceRPC" class="UserServiceRPC">
+            <method name="register" version="" remark="注册">
+                <request class="packet.generic.RegistserRestRequestBody"/>
+            </method>
+            <method name="login" version="" remark="登录">
+                <request class="packet.generic.LoginRestRequestBody"/>
+                <response class="packet.generic.LoginRestResponseBody"/>
+            </method>
+            <method name="login" version="v1_1" remark="登录v1.1">
+                <request class="packet.generic.LoginRestRequestBody"/>
+                <response class="packet.generic.LoginRestResponseBody"/>
+            </method>
+            <method name="autoLogin" version="" remark="自动登录">
+                <request class="packet.generic.AutoLoginRestRequestBody"/>
+                <response class="packet.generic.LoginRestResponseBody"/>
+            </method>
+        </service>
+        <service name="versionServiceRPC" class="VersionServiceRPC">
+            <method name="latests" version="" remark="最近版本列表">
+                <response class="packet.generic.VersionListResponseBody"/>
+            </method>
+            <method name="latests" version="v2" remark="最近版本列表">
+                <parameters>
+                    <parameter name="pageNum" dataType="Integer" length="11"
+                               canBeNull="true" remark="每页返回多少条记录"/>
+                    <parameter name="pageIndex" dataType="Integer" length="11"
+                               canBeNull="true" remark="页索引"/>
+                </parameters>
+                <response class="packet.generic.VersionListResponseBody"/>
+            </method>
+        </service>
     </services>
     <genericControllers>
         <controller name="UserGenericController" path="/generic/user/"

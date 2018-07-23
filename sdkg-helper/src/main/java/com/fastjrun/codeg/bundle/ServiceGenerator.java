@@ -1,15 +1,25 @@
 package com.fastjrun.codeg.bundle;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.XMLWriter;
+
 import com.fastjrun.codeg.CodeGException;
 import com.fastjrun.codeg.bundle.common.CommonMethod;
 import com.fastjrun.codeg.bundle.common.CommonService;
-import com.fastjrun.codeg.bundle.common.CommonService.ServiceType;
 import com.fastjrun.codeg.bundle.common.PacketField;
 import com.fastjrun.codeg.bundle.common.PacketObject;
 import com.fastjrun.codeg.helper.StringHelper;
@@ -30,6 +40,9 @@ public abstract class ServiceGenerator extends PacketGenerator {
     Map<String, CommonService> serviceMap;
 
     Map<String, JClass> serviceClassMap;
+
+
+    protected boolean supportDubbo = true;
 
     JClass mockHelperClass = cm.ref("com.fastjrun.helper.MockHelper");
 
@@ -52,7 +65,6 @@ public abstract class ServiceGenerator extends PacketGenerator {
             }
 
             List<? extends CommonMethod> methods = service.getMethods();
-            ServiceType serviceType = service.getServiceType();
             for (CommonMethod method : methods) {
                 PacketObject response;
                 String methodName = method.getName();
@@ -65,22 +77,12 @@ public abstract class ServiceGenerator extends PacketGenerator {
                 response = method.getResponse();
                 JType responseBodyClass;
                 if (response == null) {
-                    if (serviceType == ServiceType.ServiceType_Controller) {
-                        responseBodyClass = cm.VOID;
-                    } else {
-                        //TODO
-                        responseBodyClass = cm.VOID;
-                    }
+                    responseBodyClass = cm.VOID;
 
                 } else {
                     String _class = response.get_class();
                     response = packetMap.get(_class);
-                    if (serviceType == ServiceType.ServiceType_Controller) {
-                        responseBodyClass = poClassMap.get(_class);
-                    } else {
-                        //TODO
-                        responseBodyClass = poClassMap.get(_class);
-                    }
+                    responseBodyClass = poClassMap.get(_class);
                 }
                 JMethod serviceMethod = dcService.method(JMod.NONE, responseBodyClass, methodName);
                 serviceMethod.javadoc().append(methodRemark);
@@ -137,12 +139,7 @@ public abstract class ServiceGenerator extends PacketGenerator {
                     if (response != null) {
                         JVar reponseBodyVar = this.composeResponseBody(serviceMockMethodBlock, response,
                                 responseBodyClass);
-                        if (serviceType == ServiceType.ServiceType_Controller) {
-                            serviceMockMethodBlock._return(reponseBodyVar);
-                        } else {
-                            //TODO
-                            serviceMockMethodBlock._return(reponseBodyVar);
-                        }
+                        serviceMockMethodBlock._return(reponseBodyVar);
 
                     } else {
                         if (responseBodyClass != null && responseBodyClass != cm.VOID) {
@@ -367,6 +364,46 @@ public abstract class ServiceGenerator extends PacketGenerator {
         }
 
         this.waitForCodeGFinished(serviceClassMap);
+
+        if(this.mock&&this.supportDubbo){
+            Document document = DocumentHelper.createDocument();
+            Element root_node = DocumentHelper.createElement("beans");
+            OutputFormat outputFormat = new OutputFormat();
+            outputFormat.setEncoding("UTF-8");
+
+            OutputStream outputStream = null;
+            try {
+                outputStream = new FileOutputStream("src/main/resources/test.xml");
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            XMLWriter xmlWriter = null;
+            try {
+                xmlWriter = new XMLWriter(outputStream,outputFormat);
+                xmlWriter.write(document);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (xmlWriter != null){
+                try{
+                    xmlWriter.close();
+                } catch (IOException e) {
+                    log.error("XMLUtil.close error: "+ e);
+                }
+                xmlWriter = null;
+            }
+
+            if (outputStream != null){
+                try{
+                    outputStream.close();
+                } catch (IOException e) {
+                    log.error("XMLUtil.close error: "+ e);
+                }
+                outputStream = null;
+            }
+        }
     }
 
     private class GeneratorServiceTask implements Callable<JClass> {

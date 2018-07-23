@@ -50,7 +50,6 @@
         </packet>
     </packets>
     <services>
-        <controllerServices>
             <service name="userServiceRestApi" class="UserServiceRestApi">
                 <method name="register" version="" path="register" remark="注册">
                     <request class="packet.api.RegistserRestRequestBody"/>
@@ -75,7 +74,6 @@
                     <response class="packet.api.ArticleListResponseBody"/>
                 </method>
             </service>
-        </controllerServices>
     </services>
     <apiControllers>
         <controller name="UserApiController" path="/api/user/"
