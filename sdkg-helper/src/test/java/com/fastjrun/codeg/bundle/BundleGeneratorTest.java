@@ -18,6 +18,7 @@ public class BundleGeneratorTest {
         String moduleName = "Example";
         BundleGenerator bundleGenerator = new BundleGenerator();
         bundleGenerator.setModuleName(moduleName);
+        bundleGenerator.setMock(true);
         bundleGenerator.setBundleFiles("../generic-client.xml,../api-client.xml,../app-client.xml".split(","));
         bundleGenerator.setPackageNamePrefix("com.fastjrun.common.");
         bundleGenerator.generate();

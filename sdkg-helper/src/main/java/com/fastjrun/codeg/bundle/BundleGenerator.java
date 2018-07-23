@@ -1,6 +1,11 @@
 package com.fastjrun.codeg.bundle;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +13,11 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.XMLWriter;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.fastjrun.codeg.CodeGException;
@@ -349,10 +359,13 @@ public class BundleGenerator extends ServiceGenerator {
         Date begin = new Date();
         log.info("begin genreate at {}", begin);
         this.beforeGenerate();
+        Map<String, CommonService> serviceAllMap = new HashMap<>();
         if (this.bundleFiles != null && this.bundleFiles.length > 0) {
             BundleXMLParser.checkClassNameRepeat(bundleFiles);
             for (String bundleFile : bundleFiles) {
-                this.generate(bundleFile);
+                BundleGenerator bundleGenerator = new BundleGenerator();
+                bundleGenerator.generate(bundleFile);
+                serviceAllMap.putAll(bundleGenerator.serviceMap);
             }
         }
         try {
@@ -361,6 +374,61 @@ public class BundleGenerator extends ServiceGenerator {
             cm.build(src);
         } catch (IOException e) {
             throw new CodeGException("CG502", "code generating failed:" + e.getMessage());
+        }
+
+        if (this.mock && this.supportDubbo) {
+            Document document = DocumentHelper.createDocument();
+            Element root_node = DocumentHelper.createElement("beans");
+            root_node.addNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+            root_node.addNamespace("dubbo", "http://code.alibabatech.com/schema/dubbo");
+            root_node.addNamespace("", "http://www.springframework.org/schema/beans");
+            root_node.addAttribute("xsi:schemaLocation", "http://www.springframework.org/schema/beans "
+                    + "http://www.springframework.org/schema/beans/spring-beans.xsd http://code.alibabatech"
+                    + ".com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd");
+            document.add(root_node);
+            for (CommonService commonService : serviceAllMap.values()) {
+                Element service_node = DocumentHelper.createElement("dubbo:service");
+                service_node.addAttribute("ref", commonService.getName());
+                service_node.addAttribute("interface", this.packageNamePrefix + commonService.get_class());
+                root_node.add(service_node);
+            }
+
+            OutputFormat outputFormat = new OutputFormat();
+            outputFormat.setEncoding("UTF-8");
+
+            OutputStream outputStream = null;
+            try {
+                outputStream = new FileOutputStream(this.moduleName + this.getResourcesName() + File
+                        .separator + "applicationContext-dubbo-services.xml");
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            XMLWriter xmlWriter = null;
+            try {
+                xmlWriter = new XMLWriter(outputStream, outputFormat);
+                xmlWriter.write(document);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (xmlWriter != null) {
+                try {
+                    xmlWriter.close();
+                } catch (IOException e) {
+                    log.error("XMLUtil.close error: " + e);
+                }
+                xmlWriter = null;
+            }
+
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    log.error("XMLUtil.close error: " + e);
+                }
+                outputStream = null;
+            }
         }
         Date end = new Date();
         log.info("end genreate at {},cast {} ms", end, end.getTime() - begin.getTime());

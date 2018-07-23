@@ -36,8 +36,18 @@ public abstract class CodeGenerator {
     protected File testSrcDir;
     protected String packageNamePrefix;
     private String srcName = "/src/main/java";
+
+    private String resourcesName = "/src/main/resources";
     private String testSrcName = "/src/test/java";
     private String testDataName = "/src/test/data";
+
+    public String getResourcesName() {
+        return resourcesName;
+    }
+
+    public void setResourcesName(String resourcesName) {
+        this.resourcesName = resourcesName;
+    }
 
     public String getSrcName() {
         return srcName;

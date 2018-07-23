@@ -1,5 +1,6 @@
 package com.fastjrun.codeg.bundle;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -40,7 +41,6 @@ public abstract class ServiceGenerator extends PacketGenerator {
     Map<String, CommonService> serviceMap;
 
     Map<String, JClass> serviceClassMap;
-
 
     protected boolean supportDubbo = true;
 
@@ -364,46 +364,6 @@ public abstract class ServiceGenerator extends PacketGenerator {
         }
 
         this.waitForCodeGFinished(serviceClassMap);
-
-        if(this.mock&&this.supportDubbo){
-            Document document = DocumentHelper.createDocument();
-            Element root_node = DocumentHelper.createElement("beans");
-            OutputFormat outputFormat = new OutputFormat();
-            outputFormat.setEncoding("UTF-8");
-
-            OutputStream outputStream = null;
-            try {
-                outputStream = new FileOutputStream("src/main/resources/test.xml");
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            XMLWriter xmlWriter = null;
-            try {
-                xmlWriter = new XMLWriter(outputStream,outputFormat);
-                xmlWriter.write(document);
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if (xmlWriter != null){
-                try{
-                    xmlWriter.close();
-                } catch (IOException e) {
-                    log.error("XMLUtil.close error: "+ e);
-                }
-                xmlWriter = null;
-            }
-
-            if (outputStream != null){
-                try{
-                    outputStream.close();
-                } catch (IOException e) {
-                    log.error("XMLUtil.close error: "+ e);
-                }
-                outputStream = null;
-            }
-        }
     }
 
     private class GeneratorServiceTask implements Callable<JClass> {
