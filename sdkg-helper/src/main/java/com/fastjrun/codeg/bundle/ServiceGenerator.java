@@ -1,22 +1,10 @@
 package com.fastjrun.codeg.bundle;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
-
-import org.dom4j.Document;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
-import org.dom4j.io.OutputFormat;
-import org.dom4j.io.XMLWriter;
 
 import com.fastjrun.codeg.CodeGException;
 import com.fastjrun.codeg.bundle.common.CommonMethod;
@@ -38,12 +26,9 @@ import com.sun.codemodel.JVar;
 
 public abstract class ServiceGenerator extends PacketGenerator {
 
-    Map<String, CommonService> serviceMap;
-
-    Map<String, JClass> serviceClassMap;
-
     protected boolean supportDubbo = true;
-
+    Map<String, CommonService> serviceMap;
+    Map<String, JClass> serviceClassMap;
     JClass mockHelperClass = cm.ref("com.fastjrun.helper.MockHelper");
 
     private JClass processService(CommonService service) {

@@ -50,30 +50,30 @@
         </packet>
     </packets>
     <services>
-            <service name="userServiceRestApi" class="UserServiceRestApi">
-                <method name="register" version="" path="register" remark="注册">
-                    <request class="packet.api.RegistserRestRequestBody"/>
-                </method>
-                <method name="login" version="" path="login" remark="登录">
-                    <request class="packet.api.LoginRestRequestBody"/>
-                    <response class="packet.api.LoginRestResponseBody"/>
-                </method>
-                <method name="login" version="v1_1" path="login" remark="登录v1.1">
-                    <request class="packet.api.LoginRestRequestBody"/>
-                    <response class="packet.api.LoginRestResponseBody"/>
-                </method>
-                <method name="autoLogin" version="" path="autoLogin" remark="自动登录">
-                    <request class="packet.api.AutoLoginRestRequestBody"/>
-                    <response class="packet.api.LoginRestResponseBody"/>
-                </method>
-            </service>
-            <service name="articleServiceRestApi" class="ArticleServiceRestApi">
-                <method name="check" version="" path="check" method="GET"
-                        remark="是否有新文章检测"/>
-                <method name="latests" version="" path="latests" remark="最近版本列表">
-                    <response class="packet.api.ArticleListResponseBody"/>
-                </method>
-            </service>
+        <service name="userServiceRestApi" class="UserServiceRestApi">
+            <method name="register" version="" path="register" remark="注册">
+                <request class="packet.api.RegistserRestRequestBody"/>
+            </method>
+            <method name="login" version="" path="login" remark="登录">
+                <request class="packet.api.LoginRestRequestBody"/>
+                <response class="packet.api.LoginRestResponseBody"/>
+            </method>
+            <method name="login" version="v1_1" path="login" remark="登录v1.1">
+                <request class="packet.api.LoginRestRequestBody"/>
+                <response class="packet.api.LoginRestResponseBody"/>
+            </method>
+            <method name="autoLogin" version="" path="autoLogin" remark="自动登录">
+                <request class="packet.api.AutoLoginRestRequestBody"/>
+                <response class="packet.api.LoginRestResponseBody"/>
+            </method>
+        </service>
+        <service name="articleServiceRestApi" class="ArticleServiceRestApi">
+            <method name="check" version="" path="check" method="GET"
+                    remark="是否有新文章检测"/>
+            <method name="latests" version="" path="latests" remark="最近版本列表">
+                <response class="packet.api.ArticleListResponseBody"/>
+            </method>
+        </service>
     </services>
     <apiControllers>
         <controller name="UserApiController" path="/api/user/"

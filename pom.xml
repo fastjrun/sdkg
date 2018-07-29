@@ -154,6 +154,7 @@
         </profile>
     </profiles>
     <modules>
+        <module>sdkg-core</module>
         <module>sdkg-common</module>
         <module>sdkg-helper</module>
         <module>sdkg-sdk</module>

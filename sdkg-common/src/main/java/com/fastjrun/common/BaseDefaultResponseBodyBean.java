@@ -1,6 +1,6 @@
-package com.fastjrun.packet;
+package com.fastjrun.common;
 
-import com.fastjrun.common.BaseEntity;
+import com.fastjrun.packet.BaseResponseBody;
 
 public class BaseDefaultResponseBodyBean extends BaseResponseBody {
 
