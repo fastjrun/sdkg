@@ -9,5 +9,5 @@ package com.fastjrun.packet;
  *
  */
 
-public class DefaultResponse<V extends BaseResponseBody> extends BasePacket<DefaultResponseHead, V> {
+public class DefaultResponse<V extends BaseResponseBody> extends BaseResponse<DefaultResponseHead, V> {
 }
