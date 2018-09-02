@@ -8,6 +8,7 @@
                 <xs:element ref="apiControllers" minOccurs="0"/>
                 <xs:element ref="appControllers" minOccurs="0"/>
                 <xs:element ref="genericControllers" minOccurs="0"/>
+                <xs:element ref="dubbos" minOccurs="0"/>
             </xs:sequence>
             <xs:attribute name="name" type="xs:string" default="快嘉接口定义规范"/>
         </xs:complexType>
@@ -64,9 +65,9 @@
         <xs:sequence>
             <xs:element name="field" type="field" minOccurs="0"
                         maxOccurs="unbounded"/>
-            <xs:element name="list" type="packet" minOccurs="0"
+            <xs:element name="list" type="listOrObject" minOccurs="0"
                         maxOccurs="unbounded"/>
-            <xs:element name="object" type="packet" minOccurs="0"
+            <xs:element name="object" type="listOrObject" minOccurs="0"
                         maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="name" type="xs:string" use="required"/>
@@ -110,6 +111,13 @@
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element name="headVariable" type="commonParameter" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="cookieVariables" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="cookieVariable" type="commonParameter" maxOccurs="unbounded"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -177,6 +185,13 @@
             </xs:choice>
         </xs:complexType>
     </xs:element>
+    <xs:element name="dubbos">
+        <xs:complexType>
+            <xs:choice>
+                <xs:element name="dubbo" type="controller" maxOccurs="unbounded"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
     <xs:complexType name="controller">
         <xs:all>
             <xs:element name="service">
@@ -188,6 +203,7 @@
         </xs:all>
         <xs:attribute name="name" type="xs:string" use="required"/>
         <xs:attribute name="path" type="xs:string" use="required"/>
+        <xs:attribute name="version" type="xs:string"/>
         <xs:attribute name="clientName" type="xs:string" use="required"/>
         <xs:attribute name="remark" type="xs:string" use="required"/>
         <xs:attribute name="tags" type="xs:string" use="required"/>

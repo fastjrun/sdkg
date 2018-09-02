@@ -13,17 +13,18 @@ import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 import org.springframework.http.MediaType;
 
-import com.fastjrun.codeg.CodeGException;
-import com.fastjrun.codeg.bundle.common.CommonController;
-import com.fastjrun.codeg.bundle.common.CommonController.ControllerType;
-import com.fastjrun.codeg.bundle.common.CommonMethod;
-import com.fastjrun.codeg.bundle.common.CommonService;
-import com.fastjrun.codeg.bundle.common.PacketField;
-import com.fastjrun.codeg.bundle.common.PacketObject;
+import com.fastjrun.codeg.common.CodeGConstants;
+import com.fastjrun.codeg.common.CodeGException;
+import com.fastjrun.codeg.common.CodeGMsgContants;
+import com.fastjrun.codeg.common.CommonController;
+import com.fastjrun.codeg.common.CommonMethod;
+import com.fastjrun.codeg.common.CommonService;
+import com.fastjrun.codeg.common.PacketField;
+import com.fastjrun.codeg.common.PacketObject;
 
 public class BundleXMLParser {
 
-    static Map<String, String> contentType = new HashMap<String, String>();
+    static Map<String, String> contentType = new HashMap<>();
 
     static {
         contentType.put("json", MediaType.APPLICATION_JSON_UTF8_VALUE);
@@ -31,15 +32,26 @@ public class BundleXMLParser {
         contentType.put("json,xml", MediaType.APPLICATION_XML_VALUE + "," + MediaType.APPLICATION_XML_VALUE);
     }
 
+    private static Element getbundleRoot(String bundleFile) {
+        SAXReader reader = new SAXReader();
+        Document document;
+        try {
+            document = reader.read(bundleFile);
+        } catch (DocumentException e) {
+            throw new CodeGException(CodeGMsgContants.CODEG_BUNDLEFILE_INVALID, "bundleFile is wrong");
+        }
+        return document.getRootElement();
+    }
+
     public static Map<String, Element> checkClassNameRepeat(String[] bundleFiles) {
-        Map<String, Element> classMap = new HashMap<String, Element>();
+        Map<String, Element> classMap = new HashMap<>();
         for (String bundleFile : bundleFiles) {
             Map<String, Element> indexMap = checkClassNameRepeat(bundleFile);
             Iterator<String> itera = indexMap.keySet().iterator();
             while (itera.hasNext()) {
                 String indexName = itera.next();
                 if (classMap.keySet().contains(indexName)) {
-                    throw new CodeGException("CG501", indexName + " is duplicated");
+                    throw new CodeGException(CodeGMsgContants.CODEG_CLASS_DUPLICATED, indexName + " is duplicated");
                 }
                 classMap.put(indexName, indexMap.get(indexName));
             }
@@ -48,54 +60,60 @@ public class BundleXMLParser {
     }
 
     public static Map<String, Element> checkClassNameRepeat(String bundleFile) {
-        Map<String, Element> classMap = new HashMap<String, Element>();
-        SAXReader reader = new SAXReader();
-        try {
-            Document document = reader.read(bundleFile);
-            Element xml = document.getRootElement();
-            List<Node> nodePackets = xml.selectNodes("packets/packet");
-            for (Node nodePacket : nodePackets) {
-                Map<String, Element> childClassMap = checkClassNameRepeatInPO((Element) nodePacket);
-                Iterator<String> itera = childClassMap.keySet().iterator();
-                while (itera.hasNext()) {
-                    String childClassName = itera.next();
-                    if (classMap.keySet().contains(childClassName)) {
-                        throw new CodeGException("CG501", childClassName + " is duplicated");
-                    }
-                    classMap.put(childClassName, childClassMap.get(childClassName));
+        Element xml = getbundleRoot(bundleFile);
+        Map<String, Element> classMap = new HashMap<>();
+        List<Node> nodePackets = xml.selectNodes("packets/packet");
+        for (Node nodePacket : nodePackets) {
+            Map<String, Element> childClassMap = checkClassNameRepeatInPO((Element) nodePacket);
+            Iterator<String> itera = childClassMap.keySet().iterator();
+            while (itera.hasNext()) {
+                String childClassName = itera.next();
+                if (classMap.keySet().contains(childClassName)) {
+                    throw new CodeGException(CodeGMsgContants.CODEG_CLASS_DUPLICATED,
+                            childClassName + " is duplicated");
                 }
+                classMap.put(childClassName, childClassMap.get(childClassName));
             }
-            List<Node> nodeServices = xml.selectNodes("services/*/service");
-            for (Node nodeService : nodeServices) {
-                String _class = ((Element) nodeService).attributeValue("class");
-                if (classMap.keySet().contains(_class)) {
-                    throw new CodeGException("CG501", "service." + _class + " is duplicated");
-                }
-                classMap.put(_class, (Element) nodeService);
-
-            }
-            List<Node> nodeControllers = xml.selectNodes("*/controller");
-            for (Node nodeController : nodeControllers) {
-                String _class = ((Element) nodeController).attributeValue("name");
-                if (classMap.keySet().contains(_class)) {
-                    throw new CodeGException("CG501", "web.controller." + _class + " is duplicated");
-                }
-                classMap.put(_class, (Element) nodeController);
-            }
-            return classMap;
-        } catch (DocumentException e) {
-            throw new CodeGException("CG500", "system error");
         }
+        List<Node> nodeServices = xml.selectNodes("services/service");
+        for (Node nodeService : nodeServices) {
+            String classP = ((Element) nodeService).attributeValue("class");
+            if (classMap.keySet().contains(classP)) {
+                throw new CodeGException(CodeGMsgContants.CODEG_CLASS_DUPLICATED,
+                        "service." + classP + " is duplicated");
+            }
+            classMap.put(classP, (Element) nodeService);
+
+        }
+        List<Node> nodeControllers = xml.selectNodes("*/controller");
+        for (Node nodeController : nodeControllers) {
+            String classP = ((Element) nodeController).attributeValue("name");
+            if (classMap.keySet().contains(classP)) {
+                throw new CodeGException(CodeGMsgContants.CODEG_CLASS_DUPLICATED,
+                        "web.controller." + classP + " is duplicated");
+            }
+            classMap.put(classP, (Element) nodeController);
+        }
+        List<Node> nodeDubbos = xml.selectNodes("*/dubbo");
+        for (Node nodeController : nodeDubbos) {
+            String classP = ((Element) nodeController).attributeValue("name");
+            if (classMap.keySet().contains(classP)) {
+                throw new CodeGException(CodeGMsgContants.CODEG_CLASS_DUPLICATED, "biz." + classP + " is duplicated");
+            }
+            classMap.put(classP, (Element) nodeController);
+        }
+        return classMap;
+
     }
 
     private static Map<String, Element> checkClassNameRepeatInPO(Element po) {
         List<Element> elements = po.elements();
-        Map<String, Element> classMap = new HashMap<String, Element>();
-        String _class = po.attributeValue("class");
-        if (classMap.keySet().contains(_class)) {
-            throw new CodeGException("CG501", _class + " is duplicated");
+        Map<String, Element> classMap = new HashMap<>();
+        String classP = po.attributeValue("class");
+        if (classMap.keySet().contains(classP)) {
+            throw new CodeGException(CodeGMsgContants.CODEG_CLASS_DUPLICATED, classP + " is duplicated");
         }
-        classMap.put(_class, po);
+        classMap.put(classP, po);
         for (Element element : elements) {
             if (element == null) {
                 continue;
@@ -114,7 +132,8 @@ public class BundleXMLParser {
                 while (itera.hasNext()) {
                     String childClassName = itera.next();
                     if (classMap.keySet().contains(childClassName)) {
-                        throw new CodeGException("CG501", childClassName + " is duplicated");
+                        throw new CodeGException(CodeGMsgContants.CODEG_CLASS_DUPLICATED,
+                                childClassName + " is duplicated");
                     }
                     classMap.put(childClassName, childClassMap.get(childClassName));
                 }
@@ -123,162 +142,123 @@ public class BundleXMLParser {
         return classMap;
     }
 
-    public static Map<String, CommonController> processControllers(String bundleFile,
+    public static Map<String, CommonController> processControllers(CodeGConstants.ControllerType controllerType,
+                                                                   String bundleFile,
                                                                    Map<String, CommonService> serviceMap) {
-        Map<String, CommonController> controllerMap = new HashMap<String, CommonController>();
-        SAXReader reader = new SAXReader();
-        try {
-            Document document = reader.read(bundleFile);
 
-            Element xml = document.getRootElement();
-            List<Node> nodeControllers = xml.selectNodes("*/controller");
-            if (nodeControllers != null && nodeControllers.size() > 0) {
-                for (Node nodeController : nodeControllers) {
-                    Element eleController = (Element) nodeController;
-                    CommonController commonController = new CommonController();
-                    if (eleController.getParent().getName().equals("appControllers")) {
-                        commonController.setControllerType(CommonController.ControllerType.ControllerType_APP);
-                    } else if (eleController.getParent().getName().equals("apiControllers")) {
-                        commonController.setControllerType(CommonController.ControllerType.ControllerType_API);
-                    } else if (eleController.getParent().getName().equals("genericControllers")) {
-                        commonController.setControllerType(CommonController.ControllerType.ControllerType_GENERIC);
-                    }
-                    String name = eleController.attributeValue("name");
-                    String path = eleController.attributeValue("path");
-                    String remark = eleController.attributeValue("remark");
-                    String clientName = eleController.attributeValue("clientName");
-                    String clientParent = eleController.attributeValue("clientParent");
-                    String tags = eleController.attributeValue("tags");
-                    commonController.setName(name);
-                    commonController.setPath(path);
-                    commonController.setRemark(remark);
-                    commonController.setClientName(clientName);
-                    commonController.setTags(tags);
-                    Element eleService = eleController.element("service");
-                    String serviceName = eleService.attributeValue("name");
-                    commonController.setServiceName(serviceName);
-                    String serviceRef = eleService.attributeValue("ref");
+        Element xml = getbundleRoot(bundleFile);
+        List<Node> nodeControllers = null;
+        if (controllerType == CodeGConstants.ControllerType.ControllerType_API) {
+            nodeControllers = xml.selectNodes("apiControllers/controller");
+        } else if (controllerType == CodeGConstants.ControllerType.ControllerType_APP) {
+            nodeControllers = xml.selectNodes("appControllers/controller");
+        } else if (controllerType == CodeGConstants.ControllerType.ControllerType_GENERIC) {
+            nodeControllers = xml.selectNodes("genericControllers/controller");
+        }
+        return pushController2Map(nodeControllers, controllerType, serviceMap);
+    }
 
-                    CommonService service = serviceMap.get(serviceRef);
+    public static Map<String, CommonController> processPPCs(CodeGConstants.RpcType rpcType, String bundleFile,
+                                                            Map<String, CommonService> serviceMap) {
 
-                    commonController.setService(service);
-
-                    controllerMap.put(name, commonController);
-
-                }
-            }
-            List<Node> nodeServices = xml.selectNodes("services/*/service");
-            for (Node nodeService : nodeServices) {
-                Element eleService = (Element) nodeService;
-                if (eleService.getParent().getName().equals("rpcServices")) {
-                    CommonController commonController = new CommonController();
-                    commonController.setControllerType(ControllerType.ControllerType_RPC);
-                    String name = eleService.attributeValue("name");
-                    commonController.setName(StringHelper.toUpperCaseFirstOne(name) + "RPCController");
-                    commonController.setPath("/" + name);
-                    commonController.setRemark("rpc服务");
-                    commonController.setClientName(StringHelper.toUpperCaseFirstOne(name) + "RPCClient");
-                    commonController.setTags("rpc");
-                    commonController.setServiceName(name);
-                    CommonService service = serviceMap.get(name);
-                    commonController.setService(service);
-                    controllerMap.put(commonController.getName(), commonController);
-                }
-
-            }
-        } catch (Exception e) {
-            throw new CodeGException("CG502", "controller error:" + e.getMessage());
+        Element xml = getbundleRoot(bundleFile);
+        List<Node> nodeControllers = null;
+        CodeGConstants.ControllerType controllerType = CodeGConstants.ControllerType.ControllerType_DUBBO;
+        if (rpcType == CodeGConstants.RpcType.RpcType_Dubbo) {
+            nodeControllers = xml.selectNodes("dubbos/dubbo");
+        } else if (rpcType == CodeGConstants.RpcType.RpcType_Grpc) {
+            nodeControllers = xml.selectNodes("grpcs/grpc");
         }
 
+        return pushController2Map(nodeControllers, controllerType, serviceMap);
+    }
+
+    private static Map<String, CommonController> pushController2Map(List<Node> controllerNodes, CommonController
+            .ControllerType controllerType,
+                                                                    Map<String, CommonService> serviceMap) {
+        Map<String, CommonController> controllerMap = new HashMap<>();
+        for (Node controllerNode : controllerNodes) {
+            Element eleController = (Element) controllerNode;
+            CommonController commonController = new CommonController();
+            commonController.setControllerType(controllerType);
+            String name = eleController.attributeValue("name");
+            String path = eleController.attributeValue("path");
+            String version = eleController.attributeValue("version");
+            String remark = eleController.attributeValue("remark");
+            String clientName = eleController.attributeValue("clientName");
+            String tags = eleController.attributeValue("tags");
+            commonController.setName(name);
+            commonController.setPath(path);
+            commonController.setVersion(version);
+            commonController.setRemark(remark);
+            commonController.setClientName(clientName);
+            commonController.setTags(tags);
+            Element eleService = eleController.element("service");
+            String serviceName = eleService.attributeValue("name");
+            commonController.setServiceName(serviceName);
+            String serviceRef = eleService.attributeValue("ref");
+            commonController.setServiceRef(serviceRef);
+
+            CommonService service = serviceMap.get(serviceRef);
+
+            commonController.setService(service);
+
+            controllerMap.put(name, commonController);
+        }
         return controllerMap;
     }
 
     public static Map<String, PacketObject> processPacket(String bundleFile) {
-        Map<String, PacketObject> packetMap = new HashMap<String, PacketObject>();
-        SAXReader reader = new SAXReader();
-        try {
-            Document document = reader.read(bundleFile);
 
-            Element xml = document.getRootElement();
-            List<Node> nodePackets = xml.selectNodes("packets/packet");
-            for (Node nodePacket : nodePackets) {
-                Element elePacket = (Element) nodePacket;
-                String _class = elePacket.attributeValue("class");
-                String parent = elePacket.attributeValue("parent");
-                PacketObject restObject = processPO(elePacket);
-                restObject.setParent(parent);
-                packetMap.put(_class, restObject);
-            }
-            List<Node> nodeServices = xml.selectNodes("services/service");
-            for (Node nodeService : nodeServices) {
-                Element eleService = (Element) nodeService;
-                List<Node> nodeMethods = eleService.selectNodes("method");
-                if (nodeMethods != null && nodeMethods.size() > 0) {
-                    for (Node nodeMethod : nodeMethods) {
-                        Element eleMethod = (Element) nodeMethod;
-                        Element eleRequest = eleMethod.element("request");
-                        if (eleRequest != null) {
-                            String requestClass = eleRequest.attributeValue("class");
-                            PacketObject poRequest = packetMap.get(requestClass);
-                            Element eleResponse = eleMethod.element("response");
-                            if (eleResponse != null) {
-                                String responseClass = eleResponse.attributeValue("class");
-                                poRequest.setResponseClass(responseClass);
-                            } else {
-                                poRequest.setResponseClass("com.fastjrun.packet.EmptyResponseBody");
-
-                            }
-                        }
-
-                    }
-                }
-
-            }
-            return packetMap;
-        } catch (Exception e) {
-            throw new CodeGException("CG500", "packet error:" + e.getMessage());
+        Element xml = getbundleRoot(bundleFile);
+        Map<String, PacketObject> packetMap = new HashMap<>();
+        List<Node> nodePackets = xml.selectNodes("packets/packet");
+        for (Node nodePacket : nodePackets) {
+            Element elePacket = (Element) nodePacket;
+            String classP = elePacket.attributeValue("class");
+            String parent = elePacket.attributeValue("parent");
+            PacketObject restObject = processPO(elePacket);
+            restObject.setParent(parent);
+            packetMap.put(classP, restObject);
         }
+        return packetMap;
+
     }
 
     public static Map<String, CommonService> processService(String bundleFile, Map<String, PacketObject> packetMap) {
-        Map<String, CommonService> serviceMap = new HashMap<String, CommonService>();
-        SAXReader reader = new SAXReader();
-        try {
-            Document document = reader.read(bundleFile);
 
-            Element xml = document.getRootElement();
-            List<Node> nodeServices = xml.selectNodes("services/service");
-            for (Node nodeService : nodeServices) {
-                Element eleService = (Element) nodeService;
-                String name = eleService.attributeValue("name");
-                String _class = eleService.attributeValue("class");
-                CommonService service = new CommonService();
+        Element xml = getbundleRoot(bundleFile);
+        Map<String, CommonService> serviceMap = new HashMap<>();
+        List<Node> nodeServices = xml.selectNodes("services/service");
+        for (Node nodeService : nodeServices) {
+            Element eleService = (Element) nodeService;
+            String name = eleService.attributeValue("name");
+            String classP = eleService.attributeValue("class");
+            CommonService service = new CommonService();
 
-                service.set_class(_class);
-                service.setName(name);
-                List<Node> nodeMethods = eleService.selectNodes("method");
-                if (nodeMethods != null && nodeMethods.size() > 0) {
-                    List<CommonMethod> methods = new ArrayList<CommonMethod>();
-                    for (Node nodeMethod : nodeMethods) {
-                        CommonMethod method = processControllerMethod(nodeMethod, packetMap);
-                        methods.add(method);
-                    }
-                    service.setMethods(methods);
+            service.set_class(classP);
+            service.setName(name);
+            List<Node> nodeMethods = eleService.selectNodes("method");
+            if (nodeMethods != null && nodeMethods.size() > 0) {
+                List<CommonMethod> methods = new ArrayList<CommonMethod>();
+                for (Node nodeMethod : nodeMethods) {
+                    CommonMethod method = processControllerMethod(nodeMethod, packetMap);
+                    methods.add(method);
                 }
-                serviceMap.put(name, service);
-
+                service.setMethods(methods);
             }
-            return serviceMap;
-        } catch (Exception e) {
-            throw new CodeGException("CG501", "service error:" + e.getMessage());
+            serviceMap.put(name, service);
+
         }
+        return serviceMap;
+
     }
 
     private static PacketObject processPO(Element elePacket) {
         PacketObject restObject = new PacketObject();
-        Map<String, PacketField> fields = new HashMap<String, PacketField>();
-        Map<String, PacketObject> lists = new HashMap<String, PacketObject>();
-        Map<String, PacketObject> objects = new HashMap<String, PacketObject>();
+        Map<String, PacketField> fields = new HashMap<>();
+        Map<String, PacketObject> lists = new HashMap<>();
+        Map<String, PacketObject> objects = new HashMap<>();
         restObject.setName(elePacket.getName());
         restObject.set_class(elePacket.attributeValue("class"));
         restObject.setParent(elePacket.attributeValue("parent"));
@@ -303,13 +283,13 @@ public class BundleXMLParser {
                 objects.put(eleName, object);
             } else {
                 String fieldName = element.attributeValue("name");
-                String datatype = element.attributeValue("dataType");
+                String dataType = element.attributeValue("dataType");
                 String length = element.attributeValue("length");
                 String canBeNull = element.attributeValue("canBeNull");
                 String remark = element.attributeValue("remark");
                 PacketField field = new PacketField();
                 field.setName(fieldName);
-                field.setDatatype(datatype);
+                field.setDatatype(dataType);
                 field.setLength(length);
                 field.setCanBeNull(Boolean.parseBoolean(canBeNull));
                 field.setRemark(remark);
@@ -350,6 +330,12 @@ public class BundleXMLParser {
         Element eleResponse = eleMethod.element("response");
         if (eleResponse != null) {
             String responseClass = eleResponse.attributeValue("class");
+            if (responseClass.endsWith(":List")) {
+                responseClass = responseClass.split(":")[0];
+                method.setResponseIsArray(true);
+            } else {
+                method.setResponseIsArray(false);
+            }
             method.setResponse(packetMap.get(responseClass));
         }
 
@@ -412,35 +398,44 @@ public class BundleXMLParser {
         }
         Element eleHeadVariablesRoot = eleMethod.element("headVariables");
         if (eleHeadVariablesRoot != null) {
-            List<PacketField> headVariables = new ArrayList<PacketField>();
-            List<Element> eleHeadVariables = eleHeadVariablesRoot.elements("headVariable");
-            for (int index = 0; index < eleHeadVariables.size(); index++) {
-                Element element = eleHeadVariables.get(index);
-                String tagName = element.getName();
-                if (tagName.equals("headVariable")) {
-                    String fieldName = element.attributeValue("name");
-                    String fieldNameAlias = element.attributeValue("nameAlias");
-                    String datatype = element.attributeValue("dataType");
-                    String length = element.attributeValue("length");
-                    String parameterRemark = element.attributeValue("remark");
-                    PacketField field = new PacketField();
-                    field.setName(fieldName);
-                    if (fieldNameAlias != null && !fieldNameAlias.equals("")) {
-                        field.setNameAlias(fieldNameAlias);
-                    } else {
-                        field.setNameAlias(fieldName);
-                    }
-                    field.setDatatype(datatype);
-                    field.setLength(length);
-                    field.setRemark(parameterRemark);
-                    field.setIndex(index);
-                    headVariables.add(field);
-                }
-            }
+            List<PacketField> headVariables = parsePacketFields(eleHeadVariablesRoot, "headVariable");
             method.setHeadVariables(headVariables);
         }
 
+        Element eleCookieVariablesRoot = eleMethod.element("cookieVariables");
+        if (eleCookieVariablesRoot != null) {
+            List<PacketField> cookieVariables = parsePacketFields(eleCookieVariablesRoot, "cookieVariable");
+            method.setCookieVariables(cookieVariables);
+        }
+
         return method;
+    }
+
+    private static List<PacketField> parsePacketFields(Element elePacketFieldsRoot, String elePacketFieldName) {
+        List<PacketField> packetFields = new ArrayList<>();
+        List<Element> eleCookieVariables = elePacketFieldsRoot.elements(elePacketFieldName);
+        for (int index = 0; index < eleCookieVariables.size(); index++) {
+            Element element = eleCookieVariables.get(index);
+            String tagName = element.getName();
+            String fieldName = element.attributeValue("name");
+            String fieldNameAlias = element.attributeValue("nameAlias");
+            String datatype = element.attributeValue("dataType");
+            String length = element.attributeValue("length");
+            String parameterRemark = element.attributeValue("remark");
+            PacketField field = new PacketField();
+            field.setName(fieldName);
+            if (fieldNameAlias != null && !fieldNameAlias.equals("")) {
+                field.setNameAlias(fieldNameAlias);
+            } else {
+                field.setNameAlias(fieldName);
+            }
+            field.setDatatype(datatype);
+            field.setLength(length);
+            field.setRemark(parameterRemark);
+            field.setIndex(index);
+            packetFields.add(field);
+        }
+        return packetFields;
     }
 
 }

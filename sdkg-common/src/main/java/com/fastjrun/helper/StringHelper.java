@@ -12,7 +12,7 @@ public class StringHelper {
             return "";
         }
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         StringCharacterIterator sci = new StringCharacterIterator(src);
         for (char c = sci.first(); c != StringCharacterIterator.DONE; c = sci.next()) {
             String ch = String.valueOf(c);
@@ -25,13 +25,13 @@ public class StringHelper {
     }
 
     public static String escapeSQL(String input) {
-        HashMap<String, String> hashMap = new HashMap<String, String>();
+        HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("'", "''");
         return escape(input, hashMap);
     }
 
     public static String escapeXML(String input) {
-        HashMap<String, String> hashMap = new HashMap<String, String>();
+        HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("<", "&lt;");
         hashMap.put(">", "&gt;");
         hashMap.put("'", "&apos;");
@@ -44,7 +44,7 @@ public class StringHelper {
      * 去掉字符串中的逗号 例如：去掉金额字符串中的逗号
      */
     public static String removeComma(String string) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < string.length(); i++) {
             if (',' != string.charAt(i)) {
                 sb.append(string.charAt(i));
@@ -57,7 +57,7 @@ public class StringHelper {
      * 将字符串中的非字符转换成字母X
      */
     public static String toLetterOrDigit(String string) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < string.length(); i++) {
             if (Character.isLetterOrDigit(string.charAt(i))) {
                 sb.append(string.charAt(i));
@@ -72,7 +72,7 @@ public class StringHelper {
      * 将字符串中的非字母转换成字母
      */
     public static String toLetter(String string) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < string.length(); i++) {
             if (Character.isLetter(string.charAt(i))) {
                 sb.append(string.charAt(i));
@@ -210,7 +210,7 @@ public class StringHelper {
     /*
      * Converts a byte to hex digit and writes to the supplied buffer
      */
-    private static void byte2hex(byte b, StringBuffer sb) {
+    private static void byte2hex(byte b, StringBuilder sb) {
         char[] hexChars = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
         int high = ((b & 0xf0) >> 4);
         int low = (b & 0x0f);
@@ -227,7 +227,7 @@ public class StringHelper {
      * @return 十六进制字符串
      */
     public static String toHexString(byte[] bytes, char c) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         int len = bytes.length;
         for (int i = 0; i < len; i++) {
             byte2hex(bytes[i], sb);
@@ -246,7 +246,7 @@ public class StringHelper {
      * @return 十六进制字符串
      */
     public static String toHexString(byte[] bytes) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         int len = bytes.length;
         for (int i = 0; i < len; i++) {
             byte2hex(bytes[i], sb);

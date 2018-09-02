@@ -2,14 +2,6 @@
 *.log.*
 pom.xml.versionsBackup
 .project
-api-mock/src/main/java/
-dubbo-provider-mock/src/main/java/
-grpc-mock
-dubbo-consumer-sdk/src/main/java/
-dubbo-consumer-sdk/src/test/java/
-dubbo-consumer-sdk/src/test/data/*
-sdkg-sdk/src/test/data/*
-sdkg-helper/Example/*
 /.settings
 */*.log
 */*.log.*
@@ -27,4 +19,10 @@ sdkg-helper/Example/*
 */*/pom.xml.versionsBackup
 .idea
 *.yml
+*.iml
+*/*.iml
+sdkg-demo/demo-api/src/main/java
+sdkg-demo/demo-api/src/main/resources/applicationContext*consumer.xml
+sdkg-demo/demo-api/src/test/java
+
 

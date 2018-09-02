@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bundle xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="fastjrun-schema.xsd">
+<bundle xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        name="快嘉接口定义规范" xsi:noNamespaceSchemaLocation="fastjrun-schema.xsd">
     <packets>
         <packet class="packet.generic.RegistserRestRequestBody">
             <field name="loginId" dataType="String" length="12" canBeNull="false"
@@ -128,4 +129,14 @@
             <service name="versionService" ref="versionServiceRestGeneric"/>
         </controller>
     </genericControllers>
+    <dubbos>
+        <dubbo name="VersionServiceRPCController" path="/rpc/version/"
+               clientName="VersionServiceRPCClient" remark="版本接口" tags="rpc接口">
+            <service name="versionService" ref="versionServiceRPC"/>
+        </dubbo>
+        <dubbo name="UserServiceRPCController" path="/rpc/user/"
+               clientName="UserServiceRPCClient" remark="用户管理接口" tags="rpc接口">
+            <service name="userServiceRPC" ref="userServiceRPC"/>
+        </dubbo>
+    </dubbos>
 </bundle>

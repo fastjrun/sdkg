@@ -37,3 +37,17 @@ mvn clean package -Dsdkg.skip=false -Dsdkg.company=阿里居 -Dsdkg.year_codeg_t
 
 mvn clean package -Dsdkg.skip=false -Dsdkg.notice=这段代码不是我写的
 ```
+
+### to be continued
+#### codemodel重构
+#### mybatisgenerator新增
+#### 代码生成多线程化
+#### 支持自定义协议api和provider的代码生成
+
+## 版本说明：
+### v2.0 升级说明
+#### 模块进一步优化，sdkg-common拆分成5个模块core、common、client、biz和web
+#### 进一步优化接口定义规范：fastjrun-schema.xsd
+#### 新增sdkg-demo模块，会作为示例工程演示如何基于快嘉代码生成插件实现项目演进
+#### 代码分层，重构
+
