@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.fastjrun.codeg</groupId>
+        <artifactId>sdkg-parent</artifactId>
+        <version>2.0-SNAPSHOT</version>
+    </parent>
+    <groupId>com.fastjrun.share.sdkg</groupId>
+    <artifactId>sdkg-demo-parent</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.fastjrun.codeg</groupId>
+                <artifactId>sdkg-client</artifactId>
+                <version>${sdkg.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fastjrun.codeg</groupId>
+                <artifactId>sdkg-biz</artifactId>
+                <version>${sdkg.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fastjrun.codeg</groupId>
+                <artifactId>sdkg-web</artifactId>
+                <version>${sdkg.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-parent</artifactId>
+                <version>${spring-boot-starter-parent.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>com.fastjrun.codeg</groupId>
+                    <artifactId>sdkg-helper</artifactId>
+                    <version>${sdkg.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+    <profiles>
+        <profile>
+            <id>local</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <!-- src/main/resources/apiWorld-sdk.properties -->
+                <envName>local</envName>
+            </properties>
+        </profile>
+    </profiles>
+    <modules>
+    </modules>
+    <properties>
+        <apiBundleFiles>api-client.xml</apiBundleFiles>
+        <appBundleFiles>app-client.xml</appBundleFiles>
+        <genericBundleFiles>generic-client.xml</genericBundleFiles>
+        <packagePrefix>com.fastjrun.sdkg.demo.</packagePrefix>
+        <sdkg.version>2.0-SNAPSHOT</sdkg.version>
+        <spring-boot-starter-parent.version>1.5.15.RELEASE</spring-boot-starter-parent.version>
+    </properties>
+</project>

@@ -6,13 +6,13 @@
         xmlns="http://maven.apache.org/POM/4.0.0">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.fastjrun.share</groupId>
-        <artifactId>sdkg-parent</artifactId>
-        <version>1.1-SNAPSHOT</version>
+        <groupId>com.fastjrun.share.sdkg</groupId>
+        <artifactId>sdkg-demo-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>sdkg-config</artifactId>
+    <artifactId>demo-config</artifactId>
     <build>
-        <finalName>sdkg-config</finalName>
+        <finalName>demo-config</finalName>
         <filters>
             <filter>src/main/profiles/${envName}/var.properties</filter>
         </filters>
