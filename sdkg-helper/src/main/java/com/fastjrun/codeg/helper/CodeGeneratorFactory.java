@@ -1,34 +1,21 @@
-
 package com.fastjrun.codeg.helper;
 
 import com.fastjrun.codeg.common.CodeGConstants;
+import com.fastjrun.codeg.common.CodeGException;
+import com.fastjrun.codeg.common.CodeGMsgContants;
 import com.fastjrun.codeg.common.CommonController;
-import com.fastjrun.codeg.generator.ApiControllerGenerator;
-import com.fastjrun.codeg.generator.AppControllerGenerator;
-import com.fastjrun.codeg.generator.BaseHTTPGenerator;
-import com.fastjrun.codeg.generator.BaseRPCGenerator;
-import com.fastjrun.codeg.generator.DubboGenerator;
-import com.fastjrun.codeg.generator.GenericControllerGenerator;
+import com.fastjrun.codeg.generator.BaseProviderGenerator;
 
-public abstract class CodeGeneratorFactory {
-    public static BaseRPCGenerator createRPCGenerator(CodeGConstants.RpcType rpcType) {
-        BaseRPCGenerator generator = null;
-        if (rpcType == CodeGConstants.RpcType.RpcType_Dubbo) {
-            generator = new DubboGenerator();
+public abstract class CodeGeneratorFactory implements CodeGConstants {
+    public static BaseProviderGenerator createBaseGenerator(CommonController commonController, MockModel mockModel) {
+        ControllerType controllerType = commonController.getControllerType();
+        BaseProviderGenerator baseProviderGenerator;
+        try {
+            baseProviderGenerator = (BaseProviderGenerator) Class.forName("").newInstance();
+        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+            throw new CodeGException(CodeGMsgContants.CODEG_NOT_SUPPORT, "不支持这个生成器", e);
         }
-        return generator;
-    }
-
-    public static BaseHTTPGenerator createHTTPGenerator(CommonController.ControllerType controllerType) {
-        BaseHTTPGenerator generator = null;
-        if (controllerType == CommonController.ControllerType.ControllerType_APP) {
-            generator = new AppControllerGenerator();
-        } else if (controllerType == CommonController.ControllerType.ControllerType_API) {
-            generator = new ApiControllerGenerator();
-        }
-        if (controllerType == CommonController.ControllerType.ControllerType_GENERIC) {
-            generator = new GenericControllerGenerator();
-        }
-        return generator;
+        baseProviderGenerator.setMockModel(mockModel);
+        return baseProviderGenerator;
     }
 }

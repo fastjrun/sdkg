@@ -1,4 +1,3 @@
-
 package com.fastjrun.codeg.common;
 
 public class CodeGException extends RuntimeException {

@@ -1,6 +1,6 @@
 package com.fastjrun.codeg.common;
 
-public class CommonController implements CodeGConstants {
+public class CommonController extends BaseCodeGenerableObject implements CodeGConstants {
 
     protected String name;
     protected String path;
@@ -15,6 +15,16 @@ public class CommonController implements CodeGConstants {
 
     protected CommonService service;
     protected ControllerType controllerType;
+
+    private boolean _new;
+
+    public boolean is_new() {
+        return _new;
+    }
+
+    public void set_new(boolean _new) {
+        this._new = _new;
+    }
 
     public String getServiceRef() {
         return serviceRef;

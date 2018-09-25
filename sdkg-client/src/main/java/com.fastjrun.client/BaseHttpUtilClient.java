@@ -1,4 +1,3 @@
-
 package com.fastjrun.client;
 
 import java.util.Map;
@@ -16,6 +15,7 @@ public abstract class BaseHttpUtilClient extends BaseUtilClient {
     }
 
     protected abstract String process(String path, String method, Map<String, String> queryParams,
-                                      Map<String, String> headParams, String requestBody);
+                                      Map<String, String> headParams, Map<String, String> cookieParams,
+                                      String requestBody);
 
 }

@@ -158,7 +158,7 @@
         <module>sdkg-api</module>
         <module>sdkg-common</module>
         <module>sdkg-client</module>
-        <module>sdkg-biz</module>
+        <module>sdkg-service</module>
         <module>sdkg-web</module>
         <module>sdkg-helper</module>
         <module>sdkg-demo</module>

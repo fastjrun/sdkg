@@ -1,4 +1,3 @@
-
 package com.fastjrun.codeg.common;
 
 import org.apache.maven.plugin.logging.Log;

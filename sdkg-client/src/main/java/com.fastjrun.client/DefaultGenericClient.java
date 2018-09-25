@@ -4,7 +4,7 @@ import java.util.ResourceBundle;
 
 import com.fastjrun.util.FastJsonObjectMapper;
 
-public class DefaultGenericClient extends DefaultResponseHandleClient {
+public class DefaultGenericClient extends DefaultResponseHttpHandleClient {
 
     @Override
     public void initSDKConfig() {

@@ -1,4 +1,3 @@
-
 package com.fastjrun.codeg.plugin;
 
 import org.apache.maven.plugin.AbstractMojo;

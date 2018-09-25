@@ -5,7 +5,7 @@ import java.util.ResourceBundle;
 import com.fastjrun.helper.EncryptHelper;
 import com.fastjrun.util.FastJsonObjectMapper;
 
-public class DefaultApiClient extends DefaultResponseHandleClient {
+public class DefaultApiClient extends DefaultResponseHttpHandleClient {
 
     protected String accessKey;
 

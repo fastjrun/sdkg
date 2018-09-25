@@ -42,7 +42,7 @@ public class DefaultHttpClient extends BaseHttpUtilClient {
     }
 
     protected String process(String path, String method, Map<String, String> queryParams,
-                             Map<String, String> headParams, String requestBody) {
+                             Map<String, String> headParams, Map<String, String> cookieParams, String requestBody) {
         StringBuilder sb = new StringBuilder(this.baseUrl).append(path);
         OkHttpClient httpClient = okHttpClient();
         String result;
@@ -87,6 +87,15 @@ public class DefaultHttpClient extends BaseHttpUtilClient {
                 }
             }
             requestBuilder.url(sb.toString()).headers(headBuilder.build());
+
+            if (cookieParams != null && cookieParams.size() > 0) {
+                for (String key : cookieParams.keySet()) {
+                    log.debug("key={};value={}", key, cookieParams.get(key));
+                    requestBuilder.addHeader("Cookie", key + "=" + cookieParams.get(key));
+
+                }
+            }
+
             if (!method.toUpperCase().equals("GET")) {
                 if (requestBody != null && requestBody.length() > 0) {
                     MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
@@ -127,6 +136,6 @@ public class DefaultHttpClient extends BaseHttpUtilClient {
 
     protected String process(String urlReq, String method) {
 
-        return this.process(urlReq, method, null, requestHeaderDefault, null);
+        return this.process(urlReq, method, null, requestHeaderDefault, null, null);
     }
 }

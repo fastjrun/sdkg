@@ -20,6 +20,26 @@ public class PacketField {
     /* pathVariable需要用到顺序 */
     private int index;
 
+    private String getter;
+
+    private String setter;
+
+    public String getGetter() {
+        return getter;
+    }
+
+    public void setGetter(String getter) {
+        this.getter = getter;
+    }
+
+    public String getSetter() {
+        return setter;
+    }
+
+    public void setSetter(String setter) {
+        this.setter = setter;
+    }
+
     public int getIndex() {
         return index;
     }

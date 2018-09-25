@@ -1,6 +1,6 @@
 package com.fastjrun.web.controller;
 
-import com.fastjrun.packet.AppRequestHead;
+import com.fastjrun.dto.AppRequestHead;
 
 public abstract class BaseAppController extends BaseController {
 

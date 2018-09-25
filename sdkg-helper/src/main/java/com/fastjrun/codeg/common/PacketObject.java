@@ -2,10 +2,11 @@ package com.fastjrun.codeg.common;
 
 import java.util.Map;
 
-public class PacketObject {
+public class PacketObject extends BaseCodeGenerableObject implements CodeGConstants {
     private String name;
+    private boolean _new = true;
     private String parent;
-    private String _new;
+    private boolean ref = false;
 
     private String _class;
 
@@ -15,11 +16,11 @@ public class PacketObject {
 
     private Map<String, PacketObject> lists;
 
-    public String get_new() {
+    public boolean is_new() {
         return _new;
     }
 
-    public void set_new(String _new) {
+    public void set_new(boolean _new) {
         this._new = _new;
     }
 
@@ -29,6 +30,14 @@ public class PacketObject {
 
     public void setParent(String parent) {
         this.parent = parent;
+    }
+
+    public boolean isRef() {
+        return ref;
+    }
+
+    public void setRef(boolean ref) {
+        this.ref = ref;
     }
 
     public String getName() {

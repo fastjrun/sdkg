@@ -1,4 +1,3 @@
-
 package com.fastjrun.codeg.service;
 
 import com.fastjrun.codeg.common.CodeGConstants;

@@ -44,7 +44,7 @@ public abstract class DefaultRPCClient extends BaseUtilClient {
             log.error("{}", e);
             throw new ClientException(CodeMsgConstants.CodeMsg.ClIENT_NETWORK_RESPONSE_NOT_OK);
         }
-        Object result = null;
+        Object result;
         try {
             if (paramerValues == null) {
                 result = method.invoke(service);
@@ -52,10 +52,7 @@ public abstract class DefaultRPCClient extends BaseUtilClient {
                 result = method.invoke(service, paramerValues);
             }
 
-        } catch (IllegalAccessException e) {
-            log.error("{}", e);
-            throw new ClientException(CodeMsgConstants.CodeMsg.ClIENT_NETWORK_RESPONSE_NOT_OK);
-        } catch (InvocationTargetException e) {
+        } catch (IllegalAccessException | InvocationTargetException e) {
             log.error("{}", e);
             throw new ClientException(CodeMsgConstants.CodeMsg.ClIENT_NETWORK_RESPONSE_NOT_OK);
         }

@@ -1,4 +1,3 @@
-
 package com.fastjrun.codeg.common;
 
 public interface CodeGMsgContants {
@@ -12,4 +11,6 @@ public interface CodeGMsgContants {
     public static final String CODEG_CODEG_FAIL = "CG503";
     // some class is already exists
     public static final String CODEG_CLASS_EXISTS = "CG504";
+    // don't support such class generate
+    public static final String CODEG_NOT_SUPPORT = "CG505";
 }

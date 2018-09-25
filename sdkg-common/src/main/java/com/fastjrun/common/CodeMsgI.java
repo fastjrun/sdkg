@@ -1,4 +1,3 @@
-
 package com.fastjrun.common;
 
 public interface CodeMsgI {

@@ -4,7 +4,7 @@ import java.util.ResourceBundle;
 
 import com.fastjrun.util.FastJsonObjectMapper;
 
-public class DefaultAppClient extends DefaultResponseHandleClient {
+public class DefaultAppClient extends DefaultResponseHttpHandleClient {
 
     protected String appSource;
     protected String appVersion;

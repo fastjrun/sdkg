@@ -1,4 +1,3 @@
-
 package com.fastjrun.codeg.common;
 
 import com.sun.codemodel.JCodeModel;

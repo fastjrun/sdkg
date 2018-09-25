@@ -1,5 +1,8 @@
 package com.fastjrun.codeg.generator;
 
+import java.util.Calendar;
+
+import com.fastjrun.codeg.common.BaseCodeGenerableObject;
 import com.fastjrun.codeg.common.CommonLog;
 
 /**
@@ -7,16 +10,26 @@ import com.fastjrun.codeg.common.CommonLog;
  */
 public abstract class BaseGenerator {
 
-    protected static String YEAR_CODEG_TIME = "2016";
+    protected static String YEAR_CODEG_TIME = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
     protected CommonLog commonLog = new CommonLog();
     protected String packageNamePrefix;
     protected String author = "cuiyingfeng";
-    protected String company = "快嘉框架";
+    protected String company = "快嘉";
     protected String notice = "注意：本内容仅限于公司内部传阅，禁止外泄以及用于其他的商业目的";
     protected boolean skipAuthor = false;
     protected boolean skipNotice = false;
     protected String yearCodegTime = "";
     protected boolean skipCopyright = false;
+
+    private boolean client = true;
+
+    public boolean isClient() {
+        return client;
+    }
+
+    public void setClient(boolean client) {
+        this.client = client;
+    }
 
     public String getPackageNamePrefix() {
         return packageNamePrefix;
@@ -78,9 +91,17 @@ public abstract class BaseGenerator {
         return author;
     }
 
-    public void setAuthor(String author) {
+    public void
+    setAuthor(String author) {
         this.author = author;
     }
 
-    public abstract void generate();
+    public <T extends BaseCodeGenerableObject> boolean generate(T baseCodeGenerableObject) {
+        return baseCodeGenerableObject.genearte();
+    }
+
+    public abstract void processApiModule();
+
+    public abstract void processProviderModule();
+
 }
