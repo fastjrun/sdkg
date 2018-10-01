@@ -27,6 +27,7 @@ public abstract class BaseRPCResponseHandleClient extends BaseResponseHandleClie
     @Override
     public void initSDKConfig() {
         this.applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
+        this.baseClient = new DefaultRPCClient();
         this.baseClient.setApplicationContext(applicationContext);
 
     }

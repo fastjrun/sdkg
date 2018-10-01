@@ -23,6 +23,10 @@ pom.xml.versionsBackup
 */*.iml
 sdkg-demo/demo-api/src/main/java
 sdkg-demo/demo-api/src/main/resources/applicationContext*consumer.xml
+sdkg-demo/demo-api/src/test/resources/testng.xml
 sdkg-demo/demo-api/src/test/java
+sdkg-demo/demo-api/src/test/data
+sdkg-demo/demo-bundle/src/
+sdkg-demo/demo-bundle-mock/src/
 
 

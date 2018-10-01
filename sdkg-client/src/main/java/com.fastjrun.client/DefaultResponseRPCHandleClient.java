@@ -17,7 +17,7 @@ import com.fastjrun.dto.DefaultResponseHead;
  *
  */
 
-public class DefaultResponseRPCHandleClient extends BaseRPCResponseHandleClient {
+public abstract class DefaultResponseRPCHandleClient extends BaseRPCResponseHandleClient {
 
     public <T> T process(Class classType, String methodName) {
 

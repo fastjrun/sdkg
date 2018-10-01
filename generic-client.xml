@@ -51,27 +51,27 @@
     </packets>
     <services>
         <service name="userServiceRestGeneric" class="UserServiceRestGeneric">
-            <method name="register" version="" path="register" remark="注册">
+            <method name="register" version="" path="/register" remark="注册">
                 <request class="packet.generic.RegistserRestRequestBody"/>
             </method>
-            <method name="login" version="" path="login" remark="登录">
+            <method name="login" version="" path="/login" remark="登录">
                 <request class="packet.generic.LoginRestRequestBody"/>
                 <response class="packet.generic.LoginRestResponseBody"/>
             </method>
-            <method name="login" version="v1_1" path="login" remark="登录v1.1">
+            <method name="login" version="v1_1" path="/login" remark="登录v1.1">
                 <request class="packet.generic.LoginRestRequestBody"/>
                 <response class="packet.generic.LoginRestResponseBody"/>
             </method>
-            <method name="autoLogin" version="" path="autoLogin" remark="自动登录">
+            <method name="autoLogin" version="" path="/autoLogin" remark="自动登录">
                 <request class="packet.generic.AutoLoginRestRequestBody"/>
                 <response class="packet.generic.LoginRestResponseBody"/>
             </method>
         </service>
         <service name="versionServiceRestGeneric" class="VersionServiceRestGeneric">
-            <method name="latests" version="" path="latests" remark="最近版本列表">
+            <method name="latests" version="" path="/latests" remark="最近版本列表">
                 <response class="packet.generic.VersionListResponseBody"/>
             </method>
-            <method name="latests" version="v2" path="latests" remark="最近版本列表">
+            <method name="latests" version="v2" path="/latests" remark="最近版本列表">
                 <parameters>
                     <parameter name="pageNum" dataType="Integer" length="11"
                                canBeNull="true" remark="每页返回多少条记录"/>
@@ -119,24 +119,25 @@
             </method>
         </service>
     </services>
-    <genericControllers>
-        <controller name="UserGenericController" path="/generic/user/"
-                    clientName="UserGenericClient" remark="用户管理接口" tags="基本接口">
-            <service name="userService" ref="userServiceRestGeneric"/>
-        </controller>
-        <controller name="AppVersionGenericController" path="/generic/version/"
+    <controllers>
+        <!--
+        -->
+        <controller type="Generic" name="AppVersionGenericController" path="/generic/version"
                     clientName="AppVersionGenericClient" remark="版本接口" tags="基本接口">
             <service name="versionService" ref="versionServiceRestGeneric"/>
         </controller>
-    </genericControllers>
-    <dubbos>
-        <dubbo name="VersionServiceRPCController" path="/rpc/version/"
-               clientName="VersionServiceRPCClient" remark="版本接口" tags="rpc接口">
-            <service name="versionService" ref="versionServiceRPC"/>
-        </dubbo>
-        <dubbo name="UserServiceRPCController" path="/rpc/user/"
-               clientName="UserServiceRPCClient" remark="用户管理接口" tags="rpc接口">
+        <controller type="Generic" name="UserGenericController" path="/generic/user"
+                    clientName="UserGenericClient" remark="用户管理接口" tags="基本接口">
+            <service name="userService" ref="userServiceRestGeneric"/>
+        </controller>
+        <controller type="Dubbo" name="UserServiceRPCController" path="/dubbo/user"
+                    clientName="UserServiceRPCClient" remark="用户管理接口" tags="dubbo接口">
             <service name="userServiceRPC" ref="userServiceRPC"/>
-        </dubbo>
-    </dubbos>
+        </controller>
+
+        <controller type="Dubbo" name="VersionServiceRPCController" path="/dubbo/version"
+                    clientName="VersionServiceRPCClient" remark="版本接口" tags="dubbo接口">
+            <service name="versionService" ref="versionServiceRPC"/>
+        </controller>
+    </controllers>
 </bundle>

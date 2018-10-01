@@ -4,10 +4,10 @@ import com.fastjrun.codeg.common.CodeGConstants;
 
 public interface CodeGService extends CodeGConstants {
 
-    boolean generateAPI(String moduleName, RpcType rpcType, ControllerType controllerType);
+    boolean generateAPI(String moduleName);
 
-    boolean generateProvider(String moduleName, RpcType rpcType, ControllerType controllerType);
+    boolean generateProvider(String moduleName);
 
-    boolean generateBundle(String moduleName, RpcType rpcType, ControllerType controllerType, MockModel mockModel);
+    boolean generateBundle(String moduleName, MockModel mockModel);
 
 }

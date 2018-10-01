@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <dubbo:application name="${dubbo.consumer.application.name}"/>
+    <dubbo:registry address="${dubbo.consumer.registry.address}"/>
+
+    <bean id="propertyConfigure"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:api-sdk.properties</value>
+            </list>
+        </property>
+    </bean>
+    <!-- 加载当前目录下的xml -->
+
+    <import resource="applicationContext-dubbo-consumer.xml"/>
+</beans>

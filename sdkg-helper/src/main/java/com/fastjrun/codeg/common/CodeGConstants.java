@@ -1,10 +1,33 @@
 package com.fastjrun.codeg.common;
 
 public interface CodeGConstants {
+    ControllerType ControllerType_GENERIC =
+            new ControllerType("Generic", ControllerProtocol.ControllerProtocol_HTTP, "",
+                    "com.fastjrun.client.DefaultGenericClient", "",
+                    "",
+                    "com"
+                            + ".fastjrun.web"
+                            + ".controller.BaseController", "DefaultHTTPGenerator",
+                    "DefaultHTTPApiMethodGenerator");
+    ControllerType ControllerType_APP =
+            new ControllerType("App", ControllerProtocol.ControllerProtocol_HTTP, "",
+                    "com.fastjrun.client.DefaultAppClient", "", "",
+                    "com.fastjrun.web.controller.BaseAppController", "DefaultHTTPGenerator",
+                    "DefaultHTTPAppMethodGenerator");
+    ControllerType ControllerType_API =
+            new ControllerType("Api", ControllerProtocol.ControllerProtocol_HTTP, "",
+                    "com.fastjrun.client.DefaultApiClient", "", "",
+                    "com.fastjrun.web.controller.BaseApiController", "DefaultHTTPGenerator",
+                    "DefaultHTTPGenericMethodGenerator");
+    ControllerType ControllerType_DUBBO =
+            new ControllerType("Dubbo", ControllerProtocol.ControllerProtocol_RPC, "DubboClient",
+                    "com.fastjrun.client.DefaultDubboClient", "DubboController", "",
+                    "com.fastjrun.web.controller.BaseRPCController", "DefaultRPCGenerator",
+                    "DefaultRPCMethodGenerator");
 
-    MockModel MOCK_MODEL_DEFAULT = MockModel.MockModel_Common;
-
-    ControllerType CONTROLLER_TYPE_DEFAULT = ControllerType.ControllerType_GENERIC;
+    public enum CodeGCommand {
+        ApiG, BundleG, BundleMockG;
+    }
 
     // 0:common;1:swagger
     public enum MockModel {
@@ -29,21 +52,15 @@ public interface CodeGConstants {
 
     }
 
-    public enum ControllerType {
-        ControllerType_GENERIC("Generic", ControllerProtocol.ControllerProtocol_HTTP, "", "", "", "com.fastjrun.web"
-                + ".controller.BaseController", "DefaultHTTPGenericGenerator"),
-        ControllerType_APP("App", ControllerProtocol.ControllerProtocol_HTTP, "", "", "",
-                "com.fastjrun.web.controller.BaseAppController", "DefaultHTTPAppGenerator"),
-        ControllerType_API("Api", ControllerProtocol.ControllerProtocol_HTTP, "", "", "",
-                "com.fastjrun.web.controller.BaseApiController", "DefaultHTTPApiGenerator"),
-        ControllerType_DUBBO("Dubbo", ControllerProtocol.ControllerProtocol_RPC, "DubboClient", "DubboController", "",
-                "com.fastjrun.web.controller.BaseRPCController", "DefaultRPCGenerator");
+    public class ControllerType {
 
         public String name;
 
         public ControllerProtocol controllerProtocol;
 
         public String clientSuffix;
+
+        public String baseClient;
 
         public String providerSuffix;
 
@@ -53,15 +70,21 @@ public interface CodeGConstants {
 
         public String generatorName;
 
-        ControllerType(String name, ControllerProtocol controllerProtocol, String clientSuffix, String providerSuffix,
-                       String apiParentName, String providerParentName, String generatorName) {
+        public String methodGeneratorName;
+
+        public ControllerType(String name, ControllerProtocol controllerProtocol, String clientSuffix, String
+                baseClient, String providerSuffix,
+                              String apiParentName, String providerParentName, String generatorName,
+                              String methodGeneratorName) {
             this.name = name;
             this.controllerProtocol = controllerProtocol;
             this.clientSuffix = clientSuffix;
+            this.baseClient = baseClient;
             this.providerSuffix = providerSuffix;
             this.apiParentName = apiParentName;
             this.providerParentName = providerParentName;
             this.generatorName = generatorName;
+            this.methodGeneratorName = methodGeneratorName;
         }
 
     }

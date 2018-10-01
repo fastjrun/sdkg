@@ -35,6 +35,17 @@ public abstract class BaseHttpResponseHandleClient extends BaseResponseHandleCli
         this.objectMapper = objectMapper;
     }
 
+    public <T> void process(String path, String method,
+                            Map<String,
+                                    String>
+                                    queryParams,
+                            Map<String, String> headParams,
+                            Map<String, String> cookieParams, T requestBody) {
+
+        this.parseBodyFromResponse(path, method, queryParams, headParams, cookieParams,
+                requestBody);
+    }
+
     public <T, V> T process(String path, String method,
                             Map<String,
                                     String>
@@ -117,10 +128,8 @@ public abstract class BaseHttpResponseHandleClient extends BaseResponseHandleCli
             throw new ClientException(CodeMsgConstants.CodeMsg.ClIENT_RESPONSE_NOT_VALID);
         }
 
-        return this.parseBodyFromResponse(responseJsonObject);
+        return responseJsonObject;
     }
-
-    public abstract void initSDKConfig();
 
     protected abstract JsonNode parseBodyFromResponse(JsonNode responseJsonObject);
 

@@ -51,38 +51,38 @@
     </packets>
     <services>
         <service name="userServiceRestApi" class="UserServiceRestApi">
-            <method name="register" version="" path="register" remark="注册">
+            <method name="register" version="" path="/register" remark="注册">
                 <request class="packet.api.RegistserRestRequestBody"/>
             </method>
-            <method name="login" version="" path="login" remark="登录">
+            <method name="login" version="" path="/login" remark="登录">
                 <request class="packet.api.LoginRestRequestBody"/>
                 <response class="packet.api.LoginRestResponseBody"/>
             </method>
-            <method name="login" version="v1_1" path="login" remark="登录v1.1">
+            <method name="login" version="v1_1" path="/login" remark="登录v1.1">
                 <request class="packet.api.LoginRestRequestBody"/>
                 <response class="packet.api.LoginRestResponseBody"/>
             </method>
-            <method name="autoLogin" version="" path="autoLogin" remark="自动登录">
+            <method name="autoLogin" version="" path="/autoLogin" remark="自动登录">
                 <request class="packet.api.AutoLoginRestRequestBody"/>
                 <response class="packet.api.LoginRestResponseBody"/>
             </method>
         </service>
         <service name="articleServiceRestApi" class="ArticleServiceRestApi">
-            <method name="check" version="" path="check" method="GET"
+            <method name="check" version="" path="/check" method="GET"
                     remark="是否有新文章检测"/>
-            <method name="latests" version="" path="latests" remark="最近版本列表">
+            <method name="latests" version="" path="/latests" remark="最近版本列表">
                 <response class="packet.api.ArticleListResponseBody"/>
             </method>
         </service>
     </services>
-    <apiControllers>
-        <controller name="UserApiController" path="/api/user/"
+    <controllers>
+        <controller type="Api" name="UserApiController" path="/api/user"
                     clientName="UserApiClient" remark="用户管理接口" tags="第三方接口">
             <service name="userService" ref="userServiceRestApi"/>
         </controller>
-        <controller name="ArticleApiController" path="/api/article/"
+        <controller type="Api" name="ArticleApiController" path="/api/article"
                     clientName="ArticleApiClient" remark="版本接口" tags="第三方接口">
             <service name="articleService" ref="articleServiceRestApi"/>
         </controller>
-    </apiControllers>
+    </controllers>
 </bundle>

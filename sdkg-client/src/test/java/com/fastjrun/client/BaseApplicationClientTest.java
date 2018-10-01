@@ -1,4 +1,4 @@
-package com.fastjrun.test;
+package com.fastjrun.client;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,8 +11,6 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.testng.annotations.DataProvider;
-
-import com.fastjrun.client.BaseApplicationClient;
 
 /*
  * *
@@ -33,7 +31,7 @@ public abstract class BaseApplicationClientTest<T extends BaseApplicationClient>
 
     public abstract void prepareApplicationClient(String envName);
 
-    protected void initSDKConfig(String envName) {
+    protected void init(String envName) {
         baseApplicationClient.initSDKConfig();
         try {
             InputStream inParam =

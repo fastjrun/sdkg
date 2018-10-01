@@ -1,16 +1,13 @@
 package com.fastjrun.codeg.generator;
 
-import java.util.Map;
-
 import com.fastjrun.codeg.common.CodeModelConstants;
-import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JDocComment;
 
 /**
  * 生成
  */
-public abstract class BaseCMGenerator extends BaseGenerator implements CodeModelConstants {
+public abstract class BaseCMGenerator extends BaseGenerator implements Cloneable, CodeModelConstants {
 
     protected MockModel mockModel = MockModel.MockModel_Common;
 
@@ -42,20 +39,9 @@ public abstract class BaseCMGenerator extends BaseGenerator implements CodeModel
         }
     }
 
-    protected boolean waitForCodeGFinished(Map<String, JClass> classMap) {
-        // 遍历任务的结果
-        boolean isFinished = false;
-        while (!isFinished) {
-            isFinished = true;
-            for (JClass fs : classMap.values()) {
-                if (fs == null) {
-                    isFinished = false;
-                    break;
-                }
-            }
-        }
-
-        return true;
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 
 }

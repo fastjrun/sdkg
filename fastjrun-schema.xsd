@@ -5,10 +5,7 @@
             <xs:sequence>
                 <xs:element ref="packets" minOccurs="0"/>
                 <xs:element ref="services" minOccurs="0"/>
-                <xs:element ref="apiControllers" minOccurs="0"/>
-                <xs:element ref="appControllers" minOccurs="0"/>
-                <xs:element ref="genericControllers" minOccurs="0"/>
-                <xs:element ref="dubbos" minOccurs="0"/>
+                <xs:element ref="controllers" minOccurs="0"/>
             </xs:sequence>
             <xs:attribute name="name" type="xs:string" default="快嘉接口定义规范"/>
         </xs:complexType>
@@ -164,31 +161,10 @@
         <xs:attribute name="canBeNull" type="xs:boolean"/>
         <xs:attribute name="remark" type="xs:string" use="required"/>
     </xs:complexType>
-    <xs:element name="apiControllers">
+    <xs:element name="controllers">
         <xs:complexType>
             <xs:choice>
                 <xs:element name="controller" type="controller" maxOccurs="unbounded"/>
-            </xs:choice>
-        </xs:complexType>
-    </xs:element>
-    <xs:element name="appControllers">
-        <xs:complexType>
-            <xs:choice>
-                <xs:element name="controller" type="controller" maxOccurs="unbounded"/>
-            </xs:choice>
-        </xs:complexType>
-    </xs:element>
-    <xs:element name="genericControllers">
-        <xs:complexType>
-            <xs:choice>
-                <xs:element name="controller" type="controller" maxOccurs="unbounded"/>
-            </xs:choice>
-        </xs:complexType>
-    </xs:element>
-    <xs:element name="dubbos">
-        <xs:complexType>
-            <xs:choice>
-                <xs:element name="dubbo" type="controller" maxOccurs="unbounded"/>
             </xs:choice>
         </xs:complexType>
     </xs:element>
@@ -201,6 +177,16 @@
                 </xs:complexType>
             </xs:element>
         </xs:all>
+        <xs:attribute name="type" type="xs:string" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="Api"/>
+                    <xs:enumeration value="App"/>
+                    <xs:enumeration value="Generic"/>
+                    <xs:enumeration value="Dubbo"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
         <xs:attribute name="name" type="xs:string" use="required"/>
         <xs:attribute name="path" type="xs:string" use="required"/>
         <xs:attribute name="version" type="xs:string"/>

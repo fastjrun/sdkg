@@ -21,16 +21,6 @@ public abstract class BaseGenerator {
     protected String yearCodegTime = "";
     protected boolean skipCopyright = false;
 
-    private boolean client = true;
-
-    public boolean isClient() {
-        return client;
-    }
-
-    public void setClient(boolean client) {
-        this.client = client;
-    }
-
     public String getPackageNamePrefix() {
         return packageNamePrefix;
     }
@@ -99,9 +89,4 @@ public abstract class BaseGenerator {
     public <T extends BaseCodeGenerableObject> boolean generate(T baseCodeGenerableObject) {
         return baseCodeGenerableObject.genearte();
     }
-
-    public abstract void processApiModule();
-
-    public abstract void processProviderModule();
-
 }

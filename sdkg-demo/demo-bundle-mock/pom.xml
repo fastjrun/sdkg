@@ -1,0 +1,60 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.fastjrun.share.sdkg</groupId>
+        <artifactId>sdkg-demo-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>demo-bundle-mock</artifactId>
+    <packaging>jar</packaging>
+    <url>http://maven.apache.org</url>
+    <name>${project.artifactId}</name>
+    <dependencies>
+        <dependency>
+            <groupId>com.fastjrun.codeg</groupId>
+            <artifactId>sdkg-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+        </dependency>
+        <!-- swagger -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>${swagger2.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${swagger2.version}</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.fastjrun.codeg</groupId>
+                <artifactId>sdkg-helper</artifactId>
+                <executions>
+                    <execution>
+                        <id>initialize phase</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>bundleMockGc</goal>
+                        </goals>
+                        <configuration>
+                            <bundleFiles>${bundleFiles}</bundleFiles>
+                            <packagePrefix>${packagePrefix}</packagePrefix>
+                            <module>sdkg-demo/demo-bundle-mock</module>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

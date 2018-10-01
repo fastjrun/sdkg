@@ -17,7 +17,7 @@ import org.springframework.context.ApplicationContext;
 import com.fastjrun.common.ClientException;
 import com.fastjrun.common.CodeMsgConstants;
 
-public abstract class DefaultRPCClient extends BaseUtilClient {
+public class DefaultRPCClient extends BaseUtilClient {
 
     protected ApplicationContext applicationContext;
 

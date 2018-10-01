@@ -63,7 +63,7 @@
                         </goals>
                         <configuration>
                             <includes>
-                                <include>com/fastjrun/test/**</include>
+                                <include>com/fastjrun/client/**</include>
                             </includes>
                         </configuration>
                     </execution>

@@ -7,23 +7,20 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 
 import com.fastjrun.codeg.common.CommonController;
 import com.fastjrun.codeg.common.CommonLog;
-import com.fastjrun.codeg.common.CommonService;
-import com.fastjrun.codeg.common.PacketObject;
-import com.fastjrun.codeg.generator.BaseHTTPGenerator;
-import com.fastjrun.codeg.generator.BaseRPCGenerator;
-import com.fastjrun.codeg.helper.BundleXMLParser;
-import com.fastjrun.codeg.helper.CodeGeneratorFactory;
 import com.fastjrun.codeg.helper.IOHelper;
+import com.fastjrun.codeg.helper.StringHelper;
 import com.fastjrun.codeg.service.CodeGService;
 
 public abstract class BaseCodeGServiceImpl implements CodeGService {
@@ -32,6 +29,8 @@ public abstract class BaseCodeGServiceImpl implements CodeGService {
 
     protected String packageNamePrefix;
     protected String[] bundleFiles;
+    protected String author;
+    protected String company;
 
     protected File srcDir;
     protected File testSrcDir;
@@ -40,6 +39,22 @@ public abstract class BaseCodeGServiceImpl implements CodeGService {
     private String testSrcName = "/src/test/java";
     private String testResourcesName = "/src/test/resources";
     private String testDataName = "/src/test/data";
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
 
     public String getTestResourcesName() {
         return testResourcesName;
@@ -126,23 +141,6 @@ public abstract class BaseCodeGServiceImpl implements CodeGService {
         this.setTestSrcDir(testSrcDir);
     }
 
-    protected void saveRPCDocument(String moduleName, RpcType rpcType, boolean isOnlyApi, Document document) {
-        String fileName = "applicationContext-dubbo-provider.xml";
-        if (isOnlyApi) {
-            if (rpcType == RpcType.RpcType_Dubbo) {
-                fileName = "applicationContext-dubbo-consumer.xml";
-            }
-        } else {
-            if (rpcType == RpcType.RpcType_Dubbo) {
-                fileName = "applicationContext-dubbo-provider.xml";
-            }
-        }
-
-        File rpcfile = new File(moduleName + this.getResourcesName() + File
-                .separator + fileName);
-        this.saveDocument(rpcfile, document);
-    }
-
     protected void saveDocument(File file, Document document) {
         OutputFormat outputFormat = OutputFormat.createPrettyPrint();
         outputFormat.setEncoding("UTF-8");
@@ -205,52 +203,122 @@ public abstract class BaseCodeGServiceImpl implements CodeGService {
 
     }
 
-    protected BaseRPCGenerator createRPCGenerator(RpcType rpcType, MockModel
-            mockModel) {
-        Map<String, PacketObject> packetAllMap = new HashMap<>();
-        Map<String, CommonService> serviceAllMap = new HashMap<>();
-        Map<String, CommonController> rpcAllMap = new HashMap<>();
-        if (this.bundleFiles != null && this.bundleFiles.length > 0) {
-            for (String bundleFile : bundleFiles) {
-                Map<String, PacketObject> packetMap = BundleXMLParser.processPacket(bundleFile);
-                packetAllMap.putAll(packetMap);
-                Map<String, CommonService> serviceMap = BundleXMLParser.processService(bundleFile, packetMap);
-                serviceAllMap.putAll(serviceMap);
-                Map<String, CommonController> rpcMap =
-                        BundleXMLParser.processPPCs(rpcType, bundleFile, serviceMap);
-                rpcAllMap.putAll(rpcMap);
+    protected Document generateTestngXml(Map<String, CommonController> controllerMap, int classThreadCount, int
+            dataProviderThreadCount, int methodThreadCount) {
+        Document document = DocumentHelper.createDocument();
+        document.addDocType("suite", "SYSTEM", "http://testng.org/testng-1.0.dtd");
+        Element rootNode = DocumentHelper.createElement("suite");
+        rootNode.addAttribute("name", "clientTest");
+        rootNode.addAttribute("parallel", "classes");
+        rootNode.addAttribute("thread-count", String.valueOf(classThreadCount));
+        rootNode.addAttribute("data-provider-thread-count", String.valueOf(dataProviderThreadCount));
+        document.add(rootNode);
+        Element testNode = DocumentHelper.createElement("test");
+        testNode.addAttribute("name", "${envName}");
+        testNode.addAttribute("parallel", "methods");
+        testNode.addAttribute("thread-count", String.valueOf(methodThreadCount));
+        rootNode.add(testNode);
+        Element paramNode = DocumentHelper.createElement("parameter");
+        paramNode.addAttribute("name", "envName");
+        paramNode.addAttribute("value", "${envName}");
+        testNode.add(paramNode);
+        Element classesNode = DocumentHelper.createElement("classes");
+        for (String key : controllerMap.keySet()) {
+            CommonController commonController = controllerMap.get(key);
+            Element classNode = DocumentHelper.createElement("class");
+
+            String clientName = commonController.getClientName();
+            int lastDotIndex = clientName.lastIndexOf(".");
+            if (lastDotIndex > 0) {
+                clientName = clientName.substring(lastDotIndex + 1, clientName.length());
             }
+            classNode.addAttribute("name",
+                    this.packageNamePrefix + "client." + clientName + commonController.getControllerType().clientSuffix
+                            + "Test");
+
+            classesNode.add(classNode);
+
         }
-        BaseRPCGenerator rpcGenerator = CodeGeneratorFactory.createRPCGenerator(rpcType);
-        rpcGenerator.setPackageNamePrefix(this.packageNamePrefix);
-        rpcGenerator.setPacketMap(packetAllMap);
-        rpcGenerator.setServiceMap(serviceAllMap);
-        rpcGenerator.setControllerMap(rpcAllMap);
-        rpcGenerator.setMockModel(mockModel);
-        return rpcGenerator;
+        testNode.add(classesNode);
+        return document;
     }
 
-    protected BaseHTTPGenerator createHTTPGenerator(ControllerType controllerType, MockModel mockModel) {
-        Map<String, PacketObject> packetAllMap = new HashMap<>();
-        Map<String, CommonService> serviceAllMap = new HashMap<>();
-        Map<String, CommonController> controllerAllMap = new HashMap<>();
-        if (this.bundleFiles != null && this.bundleFiles.length > 0) {
-            for (String bundleFile : bundleFiles) {
-                Map<String, PacketObject> packetMap = BundleXMLParser.processPacket(bundleFile);
-                packetAllMap.putAll(packetMap);
-                Map<String, CommonService> serviceMap = BundleXMLParser.processService(bundleFile, packetMap);
-                serviceAllMap.putAll(serviceMap);
-                Map<String, CommonController> controllerMap =
-                        BundleXMLParser.processControllers(controllerType, bundleFile, serviceMap);
-                controllerAllMap.putAll(controllerMap);
+    protected Document generateDubboClientXml(List<CommonController> rpcDubboList) {
+        Document document = DocumentHelper.createDocument();
+        Element rootNode = this.generateDubboRoot();
+        document.add(rootNode);
+        if (rpcDubboList != null && rpcDubboList.size() > 0) {
+            for (CommonController rpcDubbo : rpcDubboList) {
+                String clientName = rpcDubbo.getClientName();
+                int lastDotIndex = clientName.lastIndexOf(".");
+                if (lastDotIndex > 0) {
+                    clientName = clientName.substring(lastDotIndex + 1, clientName.length());
+                }
+                Element referenceNode = DocumentHelper.createElement("dubbo:reference");
+                referenceNode.addAttribute("id", StringHelper.toLowerCaseFirstOne(clientName));
+
+                if (rpcDubbo.is_new()) {
+                    referenceNode
+                            .addAttribute("interface",
+                                    this.packageNamePrefix + "api." + rpcDubbo.getClientName());
+                } else {
+                    referenceNode
+                            .addAttribute("interface", rpcDubbo.getClientName());
+                }
+
+                rootNode.add(referenceNode);
+
             }
         }
-        BaseHTTPGenerator httpGenerator = CodeGeneratorFactory.createHTTPGenerator(controllerType);
-        httpGenerator.setPackageNamePrefix(this.packageNamePrefix);
-        httpGenerator.setPacketMap(packetAllMap);
-        httpGenerator.setServiceMap(serviceAllMap);
-        httpGenerator.setControllerMap(controllerAllMap);
-        httpGenerator.setMockModel(mockModel);
-        return httpGenerator;
+        return document;
     }
+
+    protected Document generateDubboServerXml(List<CommonController> rpcDubboList) {
+
+        Document document = DocumentHelper.createDocument();
+        Element rootNode = this.generateDubboRoot();
+        document.add(rootNode);
+        for (CommonController rpcDubbo : rpcDubboList) {
+            String clientName = rpcDubbo.getClientName();
+            int lastDotIndex = clientName.lastIndexOf(".");
+            if (lastDotIndex > 0) {
+                clientName = clientName.substring(lastDotIndex + 1, clientName.length());
+            }
+            Element serviceNode = DocumentHelper.createElement("dubbo:service");
+            serviceNode.addAttribute("ref", StringHelper.toLowerCaseFirstOne(clientName));
+            if (rpcDubbo.is_new()) {
+                serviceNode
+                        .addAttribute("interface",
+                                this.packageNamePrefix + "api." + rpcDubbo.getClientName());
+            } else {
+                serviceNode
+                        .addAttribute("interface", rpcDubbo.getClientName());
+            }
+            rootNode.add(serviceNode);
+
+        }
+        Element contextComponentScan = DocumentHelper.createElement("context:component-scan");
+        contextComponentScan.addAttribute("base-package", this.packageNamePrefix + "biz");
+
+        rootNode.add(contextComponentScan);
+
+        return document;
+
+    }
+
+    private Element generateDubboRoot() {
+        Element rootNode = DocumentHelper.createElement("beans");
+        rootNode.addNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+        rootNode.addNamespace("context", "http://www.springframework.org/schema/context");
+        rootNode.addNamespace("dubbo", "http://code.alibabatech.com/schema/dubbo");
+        rootNode.addNamespace("", "http://www.springframework.org/schema/beans");
+        rootNode.addAttribute("xsi:schemaLocation",
+                "http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans"
+                        + ".xsd http://www.springframework.org/schema/context http://www.springframework"
+                        + ".org/schema/context/spring-context.xsd http://code.alibabatech.com/schema/dubbo "
+                        + "http://code.alibabatech.com/schema/dubbo/dubbo.xsd");
+        return rootNode;
+
+    }
+
 }

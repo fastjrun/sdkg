@@ -22,13 +22,42 @@
             </dependency>
             <dependency>
                 <groupId>com.fastjrun.codeg</groupId>
-                <artifactId>sdkg-biz</artifactId>
+                <artifactId>sdkg-client</artifactId>
+                <classifier>tests</classifier>
+                <type>test-jar</type>
+                <scope>test</scope>
+                <version>${sdkg.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fastjrun.codeg</groupId>
+                <artifactId>sdkg-service</artifactId>
                 <version>${sdkg.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fastjrun.codeg</groupId>
                 <artifactId>sdkg-web</artifactId>
                 <version>${sdkg.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-recipes</artifactId>
+                <version>${curator.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.zookeeper</groupId>
+                        <artifactId>zookeeper</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.zookeeper</groupId>
+                <artifactId>zookeeper</artifactId>
+                <version>${zookeeper.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>dubbo</artifactId>
+                <version>${dubbo.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -63,13 +92,19 @@
         </profile>
     </profiles>
     <modules>
+        <module>demo-api</module>
+        <module>demo-bundle</module>
+        <module>demo-bundle-mock</module>
+        <module>demo-provider-mock</module>
     </modules>
     <properties>
-        <apiBundleFiles>api-client.xml</apiBundleFiles>
-        <appBundleFiles>app-client.xml</appBundleFiles>
-        <genericBundleFiles>generic-client.xml</genericBundleFiles>
+        <bundleFiles>generic-client.xml,app-client.xml,api-client.xml</bundleFiles>
         <packagePrefix>com.fastjrun.sdkg.demo.</packagePrefix>
+        <swagger2.version>2.7.0</swagger2.version>
         <sdkg.version>2.0-SNAPSHOT</sdkg.version>
+        <dubbo.version>2.6.2</dubbo.version>
+        <curator.version>4.0.1</curator.version>
+        <zookeeper.version>3.4.12</zookeeper.version>
         <spring-boot-starter-parent.version>1.5.15.RELEASE</spring-boot-starter-parent.version>
     </properties>
 </project>

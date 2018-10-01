@@ -9,5 +9,9 @@ package com.fastjrun.dto;
  *
  */
 
-public class DefaultResponse<V> extends BasePacket<DefaultResponseHead, V> {
+import java.io.Serializable;
+
+public class DefaultResponse<V> extends BasePacket<DefaultResponseHead, V> implements Serializable {
+
+    private static final long serialVersionUID = 8565734923985454999L;
 }

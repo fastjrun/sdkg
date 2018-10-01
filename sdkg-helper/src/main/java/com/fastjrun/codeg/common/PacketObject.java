@@ -9,12 +9,18 @@ public class PacketObject extends BaseCodeGenerableObject implements CodeGConsta
     private boolean ref = false;
 
     private String _class;
-
     private Map<String, PacketObject> objects;
-
     private Map<String, PacketField> fields;
-
     private Map<String, PacketObject> lists;
+
+    public PacketObject(String name, boolean _new, String _class) {
+        this.name = name;
+        this._new = _new;
+        this._class = _class;
+    }
+
+    public PacketObject() {
+    }
 
     public boolean is_new() {
         return _new;

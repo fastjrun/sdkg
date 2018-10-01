@@ -263,12 +263,10 @@ public class PacketGenerator extends BaseCMGenerator {
     public JClass processObjectORList(String key, PacketObject po, boolean isObject, Long hashCode,
                                       JDefinedClass dc, int index, JBlock toStringMethodBlk,
                                       JVar toStringSBVar) {
-        PacketGenerator packetGenerator = new PacketGenerator();
-        packetGenerator.setPacketObject(packetObject);
-        if (packetGenerator.process()) {
-            return packetGenerator.getPacketObjectJClass();
+        if (po.is_new()) {
+            return cm.ref(this.packageNamePrefix + po.get_class());
         } else {
-            return null;
+            return cm.ref(po.get_class());
         }
     }
 

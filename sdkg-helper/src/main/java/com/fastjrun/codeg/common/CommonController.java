@@ -16,7 +16,7 @@ public class CommonController extends BaseCodeGenerableObject implements CodeGCo
     protected CommonService service;
     protected ControllerType controllerType;
 
-    private boolean _new;
+    private boolean _new = true;
 
     public boolean is_new() {
         return _new;
