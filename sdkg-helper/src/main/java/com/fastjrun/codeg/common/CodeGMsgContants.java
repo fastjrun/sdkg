@@ -13,4 +13,6 @@ public interface CodeGMsgContants {
     public static final String CODEG_CLASS_EXISTS = "CG504";
     // don't support such class generate
     public static final String CODEG_NOT_SUPPORT = "CG505";
+    // sqlFile is invalid
+    public static final String CODEG_SQLFILE_INVALID = "CG506";
 }

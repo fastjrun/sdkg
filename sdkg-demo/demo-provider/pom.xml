@@ -6,7 +6,7 @@
         <artifactId>sdkg-demo-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>demo-provider-mock</artifactId>
+    <artifactId>demo-provider</artifactId>
     <packaging>jar</packaging>
     <url>http://maven.apache.org</url>
     <name>${project.artifactId}</name>
@@ -22,7 +22,7 @@
         </dependency>
         <dependency>
             <groupId>com.fastjrun.share.sdkg</groupId>
-            <artifactId>demo-bundle-mock</artifactId>
+            <artifactId>demo-bundle</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -45,7 +45,7 @@
         </dependency>
     </dependencies>
     <build>
-        <finalName>demo-provider-mock</finalName>
+        <finalName>demo-provider</finalName>
         <filters>
             <filter>../demo-config/src/main/profiles/${envName}.properties</filter>
         </filters>
@@ -69,7 +69,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.fastjrun.ProviderMockApplication</mainClass>
+                    <mainClass>com.fastjrun.ProviderApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>

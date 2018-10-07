@@ -1,19 +1,22 @@
 package com.fastjrun.codeg.processer;
 
 import com.fastjrun.codeg.generator.method.BaseControllerMethodGenerator;
-import com.fastjrun.exchange.DefaultExchange;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JInvocation;
 
-public abstract class BaseExchangeProcessor implements ExchangeProcessor, DefaultExchange {
+public class DefaultResponseProcessor implements ResponseProcessor {
+
+    static String responseClassName = "com.fastjrun.dto.DefaultResponse";
+
+    static String listResponseClassName = "com.fastjrun.dto.DefaultListResponse";
 
     @Override
     public void processResponse(BaseControllerMethodGenerator baseControllerMethodGenerator, JBlock methodBlk,
                                 JInvocation jInvocation) {
         if (baseControllerMethodGenerator.getResponseBodyClass() == cm.VOID) {
             methodBlk.decl(baseControllerMethodGenerator.getResponseClass(), "response",
-                    BaseControllerMethodGenerator.cm.ref("com.fastjrun.helper.BaseResponseHelper")
+                    cm.ref("com.fastjrun.helper.BaseResponseHelper")
                             .staticInvoke("getSuccessResult"));
         } else {
             String responseHelperMethodName = "getResult";
@@ -21,7 +24,7 @@ public abstract class BaseExchangeProcessor implements ExchangeProcessor, Defaul
                 responseHelperMethodName = "getResultList";
             }
             methodBlk.decl(baseControllerMethodGenerator.getResponseClass(), "response",
-                    BaseControllerMethodGenerator.cm.ref("com.fastjrun.helper.BaseResponseHelper")
+                    cm.ref("com.fastjrun.helper.BaseResponseHelper")
                             .staticInvoke(responseHelperMethodName));
             methodBlk.decl(baseControllerMethodGenerator.getResponseBodyClass(), "responseBody", jInvocation);
             methodBlk.invoke(JExpr.ref("response"), "setBody").arg(JExpr.ref("responseBody"));
@@ -36,16 +39,16 @@ public abstract class BaseExchangeProcessor implements ExchangeProcessor, Defaul
         if (baseControllerMethodGenerator.getResponseBodyClass() != cm.VOID) {
             if (baseControllerMethodGenerator.getCommonMethod().isResponseIsArray()) {
                 baseControllerMethodGenerator.setResponseClass(
-                        BaseControllerMethodGenerator.cm.ref(LISTRESPONSE_CLASS_NAME)
-                                .narrow(baseControllerMethodGenerator.getResponseBodyClass()));
+                        cm.ref(listResponseClassName).narrow(baseControllerMethodGenerator.getResponseBodyClass()));
             } else {
-                baseControllerMethodGenerator.setResponseClass(
-                        BaseControllerMethodGenerator.cm.ref(RESPONSE_CLASS_NAME)
-                                .narrow(baseControllerMethodGenerator.getResponseBodyClass()));
+                baseControllerMethodGenerator
+                        .setResponseClass(
+                                cm.ref(responseClassName).narrow(baseControllerMethodGenerator.getResponseBodyClass()));
             }
         } else {
             baseControllerMethodGenerator.setResponseClass(
-                    BaseControllerMethodGenerator.cm.ref(RESPONSE_CLASS_NAME));
+                    cm.ref(responseClassName));
         }
     }
+
 }

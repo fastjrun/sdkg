@@ -45,7 +45,7 @@ public abstract class BaseApplicationClientTest<T extends BaseApplicationClient>
     @DataProvider(name = "loadParam")
     public Object[][] loadParam(Method method) {
         Set<String> keys = propParams.stringPropertyNames();
-        List<String[]> parameters = new ArrayList<String[]>();
+        List<String[]> parameters = new ArrayList<>();
         for (String key : keys) {
             if (key.startsWith(((baseApplicationClient.getClass().getSimpleName() + ".") + (method.getName() + ".")))) {
                 String value = propParams.getProperty(key);

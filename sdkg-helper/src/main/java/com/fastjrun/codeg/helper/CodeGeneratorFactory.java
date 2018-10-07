@@ -10,9 +10,11 @@ import com.fastjrun.codeg.generator.PacketGenerator;
 import com.fastjrun.codeg.generator.method.BaseControllerMethodGenerator;
 import com.fastjrun.codeg.generator.method.DefaultHTTPMethodGenerator;
 import com.fastjrun.codeg.generator.method.DefaultRPCMethodGenerator;
+import com.fastjrun.codeg.processer.ApiRequestProcessor;
+import com.fastjrun.codeg.processer.AppRequestProcessor;
 import com.fastjrun.codeg.processer.DefaultExchangeProcessor;
-import com.fastjrun.codeg.processer.DefaultHTTPApiExchangeProcessor;
-import com.fastjrun.codeg.processer.DefaultHTTPAppExchangeProcessor;
+import com.fastjrun.codeg.processer.DefaultRequestWithoutHeadProcessor;
+import com.fastjrun.codeg.processer.DefaultResponseProcessor;
 import com.fastjrun.codeg.processer.ExchangeProcessor;
 
 public abstract class CodeGeneratorFactory implements CodeGConstants {
@@ -46,27 +48,40 @@ public abstract class CodeGeneratorFactory implements CodeGConstants {
                         (BaseControllerGenerator) Class.forName(GENERATO_RPACKAGE + controllerType.generatorName)
                                 .newInstance();
                 BaseControllerMethodGenerator baseControllerMethodGenerator;
-                ExchangeProcessor exchangeProcessor;
+                ExchangeProcessor exchangeProcessor = new DefaultExchangeProcessor();
                 switch (controllerType.name) {
                     case "Dubbo":
                         baseControllerMethodGenerator = new DefaultRPCMethodGenerator();
-                        exchangeProcessor = new DefaultExchangeProcessor();
+                        ((DefaultExchangeProcessor) exchangeProcessor)
+                                .setRequestProcessor(new DefaultRequestWithoutHeadProcessor());
+                        ((DefaultExchangeProcessor) exchangeProcessor)
+                                .setResponseProcessor(new DefaultResponseProcessor());
                         break;
                     case "Api":
                         baseControllerMethodGenerator = new DefaultHTTPMethodGenerator();
-                        exchangeProcessor = new DefaultHTTPApiExchangeProcessor();
+                        ((DefaultExchangeProcessor) exchangeProcessor).setRequestProcessor(new ApiRequestProcessor());
+                        ((DefaultExchangeProcessor) exchangeProcessor)
+                                .setResponseProcessor(new DefaultResponseProcessor());
                         break;
                     case "App":
                         baseControllerMethodGenerator = new DefaultHTTPMethodGenerator();
-                        exchangeProcessor = new DefaultHTTPAppExchangeProcessor();
+                        ((DefaultExchangeProcessor) exchangeProcessor).setRequestProcessor(new AppRequestProcessor());
+                        ((DefaultExchangeProcessor) exchangeProcessor)
+                                .setResponseProcessor(new DefaultResponseProcessor());
                         break;
                     case "Generic":
                         baseControllerMethodGenerator = new DefaultHTTPMethodGenerator();
-                        exchangeProcessor = new DefaultExchangeProcessor();
+                        ((DefaultExchangeProcessor) exchangeProcessor)
+                                .setRequestProcessor(new DefaultRequestWithoutHeadProcessor());
+                        ((DefaultExchangeProcessor) exchangeProcessor)
+                                .setResponseProcessor(new DefaultResponseProcessor());
                         break;
                     default:
                         baseControllerMethodGenerator = new DefaultHTTPMethodGenerator();
-                        exchangeProcessor = new DefaultExchangeProcessor();
+                        ((DefaultExchangeProcessor) exchangeProcessor)
+                                .setRequestProcessor(new DefaultRequestWithoutHeadProcessor());
+                        ((DefaultExchangeProcessor) exchangeProcessor)
+                                .setResponseProcessor(new DefaultResponseProcessor());
                         break;
                 }
                 baseControllerMethodGenerator.setExchangeProcessor(exchangeProcessor);

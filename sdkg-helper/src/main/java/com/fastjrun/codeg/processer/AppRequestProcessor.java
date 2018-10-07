@@ -1,20 +1,28 @@
 package com.fastjrun.codeg.processer;
 
 import com.fastjrun.codeg.generator.method.BaseControllerMethodGenerator;
-import com.fastjrun.exchange.DefaultHTTPAppExchange;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JVar;
 
-public class DefaultHTTPAppExchangeProcessor extends BaseExchangeProcessor implements DefaultHTTPAppExchange {
+public class AppRequestProcessor extends BaseRequestProcessor {
+
+    static String REQUEST_HEAD_CLASS_NAME = "com.fastjrun.dto.AppRequestHead";
+
+    static String REQUEST_CLASS_NAME = "com.fastjrun.dto.AppRequest";
+
+    public AppRequestProcessor() {
+        this.requestHeadClassName = REQUEST_HEAD_CLASS_NAME;
+        this.requestClassName = REQUEST_CLASS_NAME;
+    }
 
     @Override
-    public String processRequest(BaseControllerMethodGenerator baseControllerMethodGenerator, JMethod
-            jcontrollerMethod, MockModel mockModel) {
+    public String processRequest(BaseControllerMethodGenerator baseControllerMethodGenerator, JMethod jcontrollerMethod,
+                                 MockModel mockModel) {
         JBlock controllerMethodBlk = jcontrollerMethod.body();
-        JVar requestHeadVar = controllerMethodBlk.decl(cm.ref(REQUEST_HEAD_CLASS_NAME), "requestHead",
-                JExpr._new(cm.ref(REQUEST_HEAD_CLASS_NAME)));
+        JVar requestHeadVar = controllerMethodBlk.decl(cm.ref(this.requestHeadClassName), "requestHead",
+                JExpr._new(cm.ref(this.requestHeadClassName)));
         JVar appKeyJVar = jcontrollerMethod.param(cm.ref("String"), "appKey");
         appKeyJVar.annotate(cm.ref("org.springframework.web.bind.annotation.PathVariable")).param("value",
                 "appKey");
@@ -58,18 +66,5 @@ public class DefaultHTTPAppExchangeProcessor extends BaseExchangeProcessor imple
         }
         controllerMethodBlk.invoke(JExpr._this(), "processHead").arg(requestHeadVar);
         return "/{appKey}/{appVersion}/{appSource}/{deviceId}/{txTime}";
-    }
-
-    @Override
-    public void parseRequestClass(BaseControllerMethodGenerator baseControllerMethodGenerator) {
-        if (baseControllerMethodGenerator.getRequestBodyClass() != null) {
-            baseControllerMethodGenerator.setRequestClass(
-                    cm.ref(REQUEST_CLASS_NAME).narrow(baseControllerMethodGenerator.getRequestBodyClass())
-            );
-        } else {
-            baseControllerMethodGenerator.setRequestClass(
-                    cm.ref(REQUEST_CLASS_NAME)
-            );
-        }
     }
 }
