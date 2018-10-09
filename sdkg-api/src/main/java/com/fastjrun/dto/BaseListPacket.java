@@ -1,8 +1,7 @@
 package com.fastjrun.dto;
 
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlElement;
+import java.util.List;
 
 public abstract class BaseListPacket<T, V> {
 

@@ -1,7 +1,5 @@
 package com.fastjrun.codeg.helper;
 
-import java.util.HashMap;
-
 import com.fastjrun.codeg.common.CodeGConstants;
 import com.fastjrun.codeg.common.CodeGException;
 import com.fastjrun.codeg.common.CodeGMsgContants;
@@ -10,12 +8,9 @@ import com.fastjrun.codeg.generator.PacketGenerator;
 import com.fastjrun.codeg.generator.method.BaseControllerMethodGenerator;
 import com.fastjrun.codeg.generator.method.DefaultHTTPMethodGenerator;
 import com.fastjrun.codeg.generator.method.DefaultRPCMethodGenerator;
-import com.fastjrun.codeg.processer.ApiRequestProcessor;
-import com.fastjrun.codeg.processer.AppRequestProcessor;
-import com.fastjrun.codeg.processer.DefaultExchangeProcessor;
-import com.fastjrun.codeg.processer.DefaultRequestWithoutHeadProcessor;
-import com.fastjrun.codeg.processer.DefaultResponseProcessor;
-import com.fastjrun.codeg.processer.ExchangeProcessor;
+import com.fastjrun.codeg.processer.*;
+
+import java.util.HashMap;
 
 public abstract class CodeGeneratorFactory implements CodeGConstants {
 

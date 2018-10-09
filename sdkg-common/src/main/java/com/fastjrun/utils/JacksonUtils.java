@@ -28,7 +28,6 @@ public class JacksonUtils {
      *
      * @param jsonStr
      * @param valueType
-     *
      * @return
      */
     public static <T> T readValue(String jsonStr, Class<T> valueType) {
@@ -47,7 +46,6 @@ public class JacksonUtils {
      *
      * @param jsonStr
      * @param valueTypeRef
-     *
      * @return
      */
     public static <T> T readValue(String jsonStr, TypeReference<T> valueTypeRef) {
@@ -65,7 +63,6 @@ public class JacksonUtils {
      * 把JavaBean转换为json字符串
      *
      * @param object
-     *
      * @return
      */
     public static String toJSon(Object object) {
@@ -83,7 +80,6 @@ public class JacksonUtils {
      * 把string转换为jsonNode
      *
      * @param data
-     *
      * @return
      */
     public static JsonNode toJsonNode(String data) {

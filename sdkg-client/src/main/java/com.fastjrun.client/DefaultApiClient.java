@@ -1,9 +1,9 @@
 package com.fastjrun.client;
 
-import java.util.ResourceBundle;
-
 import com.fastjrun.helper.EncryptHelper;
 import com.fastjrun.util.FastJsonObjectMapper;
+
+import java.util.ResourceBundle;
 
 public class DefaultApiClient extends DefaultResponseHttpHandleClient {
 

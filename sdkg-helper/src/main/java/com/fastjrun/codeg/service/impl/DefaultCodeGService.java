@@ -1,21 +1,6 @@
 package com.fastjrun.codeg.service.impl;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import org.dom4j.Document;
-
-import com.fastjrun.codeg.common.CodeGException;
-import com.fastjrun.codeg.common.CodeGMsgContants;
-import com.fastjrun.codeg.common.CodeModelConstants;
-import com.fastjrun.codeg.common.CommonController;
-import com.fastjrun.codeg.common.PacketObject;
+import com.fastjrun.codeg.common.*;
 import com.fastjrun.codeg.generator.BaseControllerGenerator;
 import com.fastjrun.codeg.generator.PacketGenerator;
 import com.fastjrun.codeg.helper.CodeGeneratorFactory;
@@ -23,6 +8,11 @@ import com.fastjrun.codeg.service.CodeGService;
 import com.fastjrun.codeg.util.BundleXMLParser;
 import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.writer.FileCodeWriter;
+import org.dom4j.Document;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 public class DefaultCodeGService extends BaseCodeGServiceImpl implements CodeGService, CodeModelConstants {
 
@@ -93,7 +83,7 @@ public class DefaultCodeGService extends BaseCodeGServiceImpl implements CodeGSe
     private Map<String, CommonController> generatePacket(String moduleName, MockModel mockModel) {
 
         Map<String, PacketObject> packetAllMap = new HashMap<>();
-        Map<String, CommonController> controllerAlleMap = new HashMap<>();
+        Map<String, CommonController> controllerAllMap = new HashMap<>();
         if (this.bundleFiles != null && this.bundleFiles.length > 0) {
             for (String bundleFile : bundleFiles) {
                 BundleXMLParser bundleXMLParser = new BundleXMLParser();
@@ -101,7 +91,7 @@ public class DefaultCodeGService extends BaseCodeGServiceImpl implements CodeGSe
                 bundleXMLParser.setBundleFile(bundleFile);
                 bundleXMLParser.doParse();
                 packetAllMap.putAll(bundleXMLParser.getPacketMap());
-                controllerAlleMap.putAll(bundleXMLParser.getControllerMap());
+                controllerAllMap.putAll(bundleXMLParser.getControllerMap());
             }
         }
 
@@ -112,7 +102,7 @@ public class DefaultCodeGService extends BaseCodeGServiceImpl implements CodeGSe
             packetGenerator.process();
         }
 
-        return controllerAlleMap;
+        return controllerAllMap;
     }
 
     @Override

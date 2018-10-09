@@ -1,22 +1,15 @@
 package com.fastjrun.client;
 
+import com.fastjrun.common.ClientException;
+import com.fastjrun.common.CodeMsgConstants;
+import okhttp3.*;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URLEncoder;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
-import com.fastjrun.common.ClientException;
-import com.fastjrun.common.CodeMsgConstants;
-
-import okhttp3.ConnectionPool;
-import okhttp3.Headers;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 public class DefaultHttpClient extends BaseHttpUtilClient {
 

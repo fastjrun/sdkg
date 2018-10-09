@@ -1,21 +1,15 @@
 package com.fastjrun.codeg.generator;
 
-import java.util.List;
-import java.util.Properties;
-
-import org.dom4j.Document;
-
 import com.fastjrun.codeg.common.CodeGException;
 import com.fastjrun.codeg.common.CodeGMsgContants;
 import com.fastjrun.codeg.common.CommonMethod;
 import com.fastjrun.codeg.generator.method.BaseRPCMethodGenerator;
-import com.fastjrun.codeg.helper.StringHelper;
-import com.sun.codemodel.ClassType;
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JClassAlreadyExistsException;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JMod;
+import com.fastjrun.helper.StringHelper;
+import com.sun.codemodel.*;
+import org.dom4j.Document;
+
+import java.util.List;
+import java.util.Properties;
 
 public abstract class BaseRPCGenerator extends BaseControllerGenerator {
 
