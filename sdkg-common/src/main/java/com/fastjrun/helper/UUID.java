@@ -189,7 +189,6 @@ public final class UUID implements java.io.Serializable, Comparable {
      * the specified byte array.
      *
      * @param name a byte array to be used to construct a <tt>UUID</tt>.
-     *
      * @return a <tt>UUID</tt> generated from the specified array.
      */
     public static UUID nameUUIDFromBytes(byte[] name) {
@@ -212,9 +211,7 @@ public final class UUID implements java.io.Serializable, Comparable {
      * described in the {@link #toString} method.
      *
      * @param name a string that specifies a <tt>UUID</tt>.
-     *
      * @return a <tt>UUID</tt> with the specified value.
-     *
      * @throws IllegalArgumentException if name does not conform to the string representation as
      *                                  described in {@link #toString}.
      */
@@ -363,7 +360,6 @@ public final class UUID implements java.io.Serializable, Comparable {
      * method throws UnsupportedOperationException.
      *
      * @return the clock sequence of this <tt>UUID</tt>.
-     *
      * @throws UnsupportedOperationException if this UUID is not a version 1 UUID.
      */
     public int clockSequence() {
@@ -392,7 +388,6 @@ public final class UUID implements java.io.Serializable, Comparable {
      * UnsupportedOperationException.
      *
      * @return the node value of this <tt>UUID</tt>.
-     *
      * @throws UnsupportedOperationException if this UUID is not a version 1 UUID.
      */
     public long node() {
@@ -434,8 +429,8 @@ public final class UUID implements java.io.Serializable, Comparable {
      */
     public String toString() {
         return (digits(mostSigBits >> 32, 8) + "-"
-                        + digits(mostSigBits >> 16, 4) + "-" + digits(mostSigBits, 4)
-                        + "-" + digits(leastSigBits >> 48, 4) + "-" + digits(
+                + digits(mostSigBits >> 16, 4) + "-" + digits(mostSigBits, 4)
+                + "-" + digits(leastSigBits >> 48, 4) + "-" + digits(
                 leastSigBits, 12));
     }
 
@@ -447,7 +442,7 @@ public final class UUID implements java.io.Serializable, Comparable {
     public int hashCode() {
         if (hashCode == -1) {
             hashCode = (int) ((mostSigBits >> 32) ^ mostSigBits
-                                      ^ (leastSigBits >> 32) ^ leastSigBits);
+                    ^ (leastSigBits >> 32) ^ leastSigBits);
         }
         return hashCode;
     }
@@ -459,7 +454,6 @@ public final class UUID implements java.io.Serializable, Comparable {
      * as this <tt>UUID</tt>.
      *
      * @param obj the object to compare with.
-     *
      * @return <code>true</code> if the objects are the same;
      * <code>false</code> otherwise.
      */
@@ -485,7 +479,6 @@ public final class UUID implements java.io.Serializable, Comparable {
      *
      * @param val <tt>UUID</tt> to which this <tt>UUID</tt> is to be
      *            compared.
-     *
      * @return -1, 0 or 1 as this <tt>UUID</tt> is less than, equal to, or
      * greater than <tt>val</tt>.
      */
@@ -494,9 +487,9 @@ public final class UUID implements java.io.Serializable, Comparable {
         // The ordering is intentionally set up so that the UUIDs
         // can simply be numerically compared as two numbers
         return (this.mostSigBits < val.mostSigBits ? -1
-                        : (this.mostSigBits > val.mostSigBits ? 1
-                                   : (this.leastSigBits < val.leastSigBits ? -1
-                                              : (this.leastSigBits > val.leastSigBits ? 1 : 0))));
+                : (this.mostSigBits > val.mostSigBits ? 1
+                : (this.leastSigBits < val.leastSigBits ? -1
+                : (this.leastSigBits > val.leastSigBits ? 1 : 0))));
     }
 
     /**

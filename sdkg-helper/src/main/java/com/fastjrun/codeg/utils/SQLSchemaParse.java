@@ -1,25 +1,6 @@
 package com.fastjrun.codeg.utils;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import com.fastjrun.codeg.common.CodeGException;
-import com.fastjrun.codeg.common.CodeGMsgContants;
-import com.fastjrun.codeg.common.DataBaseObject;
-import com.fastjrun.codeg.common.FJColumn;
-import com.fastjrun.codeg.common.FJTable;
-
+import com.fastjrun.codeg.common.*;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
@@ -27,6 +8,14 @@ import net.sf.jsqlparser.statement.Statements;
 import net.sf.jsqlparser.statement.create.table.ColDataType;
 import net.sf.jsqlparser.statement.create.table.ColumnDefinition;
 import net.sf.jsqlparser.statement.create.table.CreateTable;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
 
 public class SQLSchemaParse {
 
@@ -145,7 +134,6 @@ public class SQLSchemaParse {
 
     /**
      * @param tableName
-     *
      * @return 根据code得出类名 规则： 去掉 T_或t_；去掉下划线，每个单词首字母大写;
      * 例：t_user_demo，去掉“t_”,u和d大写，类名是UserDemo
      */
@@ -173,7 +161,6 @@ public class SQLSchemaParse {
 
     /**
      * @param columnName
-     *
      * @return 根据字段code得到属性名 规则：去掉下划线；第一个字母小写，其他单词首字母大写
      */
     private static String parseFieldName(String columnName) {

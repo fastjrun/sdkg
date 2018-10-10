@@ -1,9 +1,9 @@
 package com.fastjrun.codeg.helper;
 
-import java.util.Map;
-
 import com.fastjrun.codeg.common.FJColumn;
 import com.fastjrun.codeg.common.FJTable;
+
+import java.util.Map;
 
 /**
  * 构造Sql语句

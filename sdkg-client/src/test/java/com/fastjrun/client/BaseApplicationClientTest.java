@@ -1,16 +1,19 @@
 package com.fastjrun.client;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fastjrun.helper.StringHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.testng.Assert;
 import org.testng.annotations.DataProvider;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.*;
 
 /*
  * *
@@ -49,7 +52,7 @@ public abstract class BaseApplicationClientTest<T extends BaseApplicationClient>
         for (String key : keys) {
             if (key.startsWith(((baseApplicationClient.getClass().getSimpleName() + ".") + (method.getName() + ".")))) {
                 String value = propParams.getProperty(key);
-                parameters.add(new String[] {value});
+                parameters.add(new String[]{value});
             }
         }
         Object[][] object = new Object[parameters.size()][];
@@ -61,5 +64,65 @@ public abstract class BaseApplicationClientTest<T extends BaseApplicationClient>
             }
         }
         return object;
+    }
+
+
+    protected <T> void processAssertion(JsonNode assertJson, Object responseBody, Class<T> classType) {
+
+        if (assertJson != null && assertJson.isObject()) {
+            Iterator<Map.Entry<String, JsonNode>> it = assertJson.fields();
+            while (it.hasNext()) {
+                Map.Entry<String, JsonNode> entry = it.next();
+                String key = entry.getKey();
+                if (key.equals("code")) {
+                    continue;
+                }
+                String jsonNodeText = entry.getValue().asText();
+                processObject(key, responseBody, classType, jsonNodeText);
+            }
+        }
+
+    }
+
+    private <T> void processObject(String key, Object object, Class<T> classType, String expectedValue) {
+        String[] keyFields = key.split("\\.");
+        int length = keyFields.length;
+        String tterMethodName = keyFields[0].split("\\[")[0];
+        if (tterMethodName.length() > 1) {
+            String char2 = String.valueOf(tterMethodName.charAt(1));
+            if (!char2.equals(char2.toUpperCase())) {
+                tterMethodName = StringHelper.toUpperCaseFirstOne(tterMethodName);
+            }
+        }
+        try {
+            Method method = classType.getMethod("get" + tterMethodName);
+            Object returnValue = method.invoke(object);
+            Type returnClass = null;
+            Class<T> newClassType = null;
+            if (keyFields[0].indexOf("[") > 0) {
+                String indexStr = keyFields[0].split("\\[")[1].split("]")[0];
+                if (indexStr.length() > 0) {
+                    int index = Integer.parseInt(indexStr);
+                    returnValue = List.class.getMethod("get", int.class).invoke(returnValue, index);
+                    returnClass = method.getGenericReturnType();
+                    Type[] typeArguments = ((ParameterizedType) returnClass).getActualTypeArguments();
+                    newClassType = (Class) typeArguments[0];
+                }
+            } else {
+                returnClass = method.getReturnType();
+                newClassType = (Class) returnClass;
+            }
+            if (length == 1) {
+                Assert.assertEquals(returnValue, expectedValue);
+            } else {
+                this.processObject(key.substring(key.indexOf(".") + 1), returnValue, newClassType, expectedValue);
+            }
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
     }
 }

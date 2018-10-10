@@ -1,20 +1,11 @@
 package com.fastjrun.codeg.generator.method;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fastjrun.codeg.common.CommonController;
 import com.fastjrun.codeg.common.PacketField;
-import com.sun.codemodel.JBlock;
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JExpression;
-import com.sun.codemodel.JInvocation;
-import com.sun.codemodel.JMethod;
-import com.sun.codemodel.JMod;
-import com.sun.codemodel.JType;
-import com.sun.codemodel.JVar;
+import com.sun.codemodel.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class BaseRPCMethodGenerator extends BaseControllerMethodGenerator {
 

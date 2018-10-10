@@ -1,8 +1,8 @@
 package com.fastjrun.client;
 
-import java.util.ResourceBundle;
-
 import com.fastjrun.util.FastJsonObjectMapper;
+
+import java.util.ResourceBundle;
 
 public class DefaultGenericClient extends DefaultResponseHttpHandleClient {
 

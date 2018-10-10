@@ -1,12 +1,12 @@
 package com.fastjrun.codeg.generator;
 
-import java.util.List;
-import java.util.Properties;
-
 import com.fastjrun.codeg.common.CodeGException;
 import com.fastjrun.codeg.common.CodeGMsgContants;
 import com.fastjrun.codeg.common.CommonMethod;
 import com.fastjrun.codeg.generator.method.BaseHTTPMethodGenerator;
+
+import java.util.List;
+import java.util.Properties;
 
 public abstract class BaseHTTPGenerator extends BaseControllerGenerator {
 

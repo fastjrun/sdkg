@@ -1,10 +1,10 @@
 package com.fastjrun.helper;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.math.RandomUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MockHelper {
 

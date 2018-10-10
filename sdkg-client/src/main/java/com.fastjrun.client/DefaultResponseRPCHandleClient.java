@@ -1,12 +1,12 @@
 package com.fastjrun.client;
 
-import java.util.List;
-
 import com.fastjrun.common.ClientException;
 import com.fastjrun.common.CodeMsgConstants;
 import com.fastjrun.dto.DefaultListResponse;
 import com.fastjrun.dto.DefaultResponse;
 import com.fastjrun.dto.DefaultResponseHead;
+
+import java.util.List;
 
 /*
  * *
