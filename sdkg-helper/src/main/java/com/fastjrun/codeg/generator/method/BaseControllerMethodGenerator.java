@@ -273,22 +273,21 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
     private JVar composeResponseBody(int loopSeq, JBlock methodBlk, PacketObject responseBody,
                                      JType responseBodyClass) {
         JVar responseVar = composeResponseBodyField(methodBlk, responseBody, responseBodyClass);
-        Map<String, PacketObject> robjects = responseBody.getObjects();
-        if (robjects != null && robjects.size() > 0) {
-            for (String reName : robjects.keySet()) {
-                PacketObject ro = robjects.get(reName);
+        Map<String, PacketObject> packetObjectMap = responseBody.getObjects();
+        if (packetObjectMap != null && packetObjectMap.size() > 0) {
+            for (String reName : packetObjectMap.keySet()) {
+                PacketObject ro = packetObjectMap.get(reName);
                 JClass roClass = cm.ref(this.packageNamePrefix + ro.get_class());
                 if (!ro.is_new()) {
                     roClass = cm.ref(ro.get_class());
                 }
-                JVar roVar = this.composeResponseBody(loopSeq++, methodBlk, ro, roClass);
+                JVar roVar = this.composeResponseBody(loopSeq + 1, methodBlk, ro, roClass);
                 String tterMethodName = reName;
                 if (reName.length() > 1) {
                     String char2 = String.valueOf(reName.charAt(1));
                     if (!char2.equals(char2.toUpperCase())) {
                         tterMethodName = StringHelper.toUpperCaseFirstOne(reName);
                     }
-                    tterMethodName += loopSeq;
                 }
                 methodBlk.invoke(responseVar, "set" + tterMethodName).arg(roVar);
             }
@@ -307,14 +306,14 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
                 JVar listsVar = methodBlk.decl(cm.ref("java.util.List").narrow(roListEntityClass),
                         varNamePrefixList + "list",
                         JExpr._new(cm.ref("java.util.ArrayList").narrow(roListEntityClass)));
-                JVar iSizeVar = methodBlk.decl(cm.INT, "iSize" + String.valueOf(index++),
+                JVar iSizeVar = methodBlk.decl(cm.INT, "iSize" + loopSeq + index,
                         mockHelperClass.staticInvoke("geInteger").arg(JExpr.lit(10)).invoke("intValue"));
                 JForLoop forLoop = methodBlk._for();
-                JVar iVar = forLoop.init(cm.INT, "i" + index++, JExpr.lit(0));
+                JVar iVar = forLoop.init(cm.INT, "i" + loopSeq + index, JExpr.lit(0));
                 forLoop.test(iVar.lt(iSizeVar));
                 forLoop.update(iVar.incr());
                 JBlock forBody = forLoop.body();
-                JVar roVar = composeResponseBody(loopSeq++, forBody, ro, roListEntityClass);
+                JVar roVar = composeResponseBody(loopSeq + 1, forBody, ro, roListEntityClass);
                 forBody.invoke(listsVar, "add").arg(roVar);
                 String tterMethodName = listName;
                 if (listName.length() > 1) {
@@ -324,6 +323,7 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
                     }
                 }
                 methodBlk.invoke(responseVar, "set" + tterMethodName).arg(listsVar);
+                index++;
             }
         }
         return responseVar;
