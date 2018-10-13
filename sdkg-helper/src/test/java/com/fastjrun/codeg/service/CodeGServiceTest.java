@@ -1,9 +1,10 @@
 package com.fastjrun.codeg.service;
 
-import com.fastjrun.codeg.common.CodeGConstants;
-import com.fastjrun.codeg.service.impl.DefaultCodeGService;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import com.fastjrun.codeg.common.CodeGConstants;
+import com.fastjrun.codeg.service.impl.DefaultCodeGService;
 
 public class CodeGServiceTest implements CodeGConstants {
 

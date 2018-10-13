@@ -1,10 +1,8 @@
 package com.fastjrun.client;
 
-import com.fastjrun.util.FastJsonObjectMapper;
-
 import java.util.ResourceBundle;
 
-public class DefaultAppClient extends DefaultResponseHttpHandleClient {
+public class DefaultHttpAppClient extends DefaultHttpExchangeHandleClient {
 
     protected String appSource;
     protected String appVersion;
@@ -52,7 +50,7 @@ public class DefaultAppClient extends DefaultResponseHttpHandleClient {
         this.appSource = rb.getString("appServer.appSource");
         this.deviceId = rb.getString("appServer.deviceId");
         this.initUtilClient(baseUrl);
-        this.objectMapper = new FastJsonObjectMapper();
+        this.initExchange();
     }
 
     @Override

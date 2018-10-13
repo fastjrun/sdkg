@@ -1,23 +1,21 @@
-package com.fastjrun.client;
+package com.fastjrun.exchange;
+
+import java.io.IOException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fastjrun.common.ClientException;
 import com.fastjrun.common.CodeMsgConstants;
 
-/*
- * *
- *  * 注意：本内容仅限于公司内部传阅，禁止外泄以及用于其他的商业目的
- *  *
- *  * @author 崔莹峰
- *  * @Copyright 2018 快嘉框架. All rights reserved.
- *
- */
+public class DefaultHttpResponseDecoder extends BaseHttpResponseDecoder {
 
-public abstract class DefaultResponseHttpHandleClient extends BaseHttpResponseHandleClient {
-
-    // DefaultResponseHead
     @Override
-    public JsonNode parseBodyFromResponse(JsonNode responseJsonObject) {
+    protected JsonNode parseBodyFromResponse(String responseResult) {
+        JsonNode responseJsonObject;
+        try {
+            responseJsonObject = this.objectMapper.readTree(responseResult);
+        } catch (IOException e) {
+            throw new ClientException(CodeMsgConstants.CodeMsg.ClIENT_RESPONSE_NOT_VALID);
+        }
         JsonNode headNode = responseJsonObject.get("head");
         if (headNode == null) {
             throw new ClientException(CodeMsgConstants.CodeMsg.CLIENT_RESPONSE_HEAD_NULL);
@@ -46,10 +44,5 @@ public abstract class DefaultResponseHttpHandleClient extends BaseHttpResponseHa
         log.warn("code = {},msg = {}", code, msg);
 
         throw new ClientException(CodeMsgConstants.CodeMsg.ClIENT_SERVER_EXCEPTION);
-    }
-
-    protected void initUtilClient(String baseUrl) {
-        this.baseClient = new DefaultHttpClient();
-        baseClient.setBaseUrl(baseUrl);
     }
 }

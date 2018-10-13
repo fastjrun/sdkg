@@ -12,7 +12,7 @@ import org.apache.logging.log4j.Logger;
  *
  */
 
-public abstract class BaseApplicationClient<T extends BaseResponseHandleClient> {
+public abstract class BaseApplicationClient<T extends BaseExchangeHandleClient> {
     protected final Logger log = LogManager.getLogger(this.getClass());
 
     protected T baseClient;

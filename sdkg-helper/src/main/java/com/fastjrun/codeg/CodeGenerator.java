@@ -1,14 +1,15 @@
 package com.fastjrun.codeg;
 
+import java.io.File;
+import java.util.Calendar;
+
+import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.plugin.logging.SystemStreamLog;
+
 import com.fastjrun.codeg.helper.IOHelper;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JDocComment;
-import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.plugin.logging.SystemStreamLog;
-
-import java.io.File;
-import java.util.Calendar;
 
 /**
  * 生成

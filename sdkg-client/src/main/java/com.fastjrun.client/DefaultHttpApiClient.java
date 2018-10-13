@@ -1,11 +1,10 @@
 package com.fastjrun.client;
 
-import com.fastjrun.helper.EncryptHelper;
-import com.fastjrun.util.FastJsonObjectMapper;
-
 import java.util.ResourceBundle;
 
-public class DefaultApiClient extends DefaultResponseHttpHandleClient {
+import com.fastjrun.helper.EncryptHelper;
+
+public class DefaultHttpApiClient extends DefaultHttpExchangeHandleClient {
 
     protected String accessKey;
 
@@ -34,7 +33,8 @@ public class DefaultApiClient extends DefaultResponseHttpHandleClient {
         this.accessKey = rb.getString("apiServer.accessKey");
         this.accessKeySn = rb.getString("apiServer.accessKeySn");
         this.initUtilClient(baseUrl);
-        this.objectMapper = new FastJsonObjectMapper();
+        this.initExchange();
+
     }
 
     @Override

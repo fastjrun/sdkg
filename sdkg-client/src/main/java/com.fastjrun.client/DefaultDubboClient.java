@@ -9,6 +9,5 @@ package com.fastjrun.client;
  *
  */
 
-public class DefaultDubboClient extends DefaultResponseRPCHandleClient {
-
+public class DefaultDubboClient extends DefaultRPCExchangeHandleClient {
 }

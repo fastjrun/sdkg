@@ -1,19 +1,25 @@
 package com.fastjrun.client;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fastjrun.helper.StringHelper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.testng.Assert;
-import org.testng.annotations.DataProvider;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.testng.Assert;
+import org.testng.annotations.DataProvider;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fastjrun.helper.StringHelper;
 
 /*
  * *
@@ -52,7 +58,7 @@ public abstract class BaseApplicationClientTest<T extends BaseApplicationClient>
         for (String key : keys) {
             if (key.startsWith(((baseApplicationClient.getClass().getSimpleName() + ".") + (method.getName() + ".")))) {
                 String value = propParams.getProperty(key);
-                parameters.add(new String[]{value});
+                parameters.add(new String[] {value});
             }
         }
         Object[][] object = new Object[parameters.size()][];
@@ -65,7 +71,6 @@ public abstract class BaseApplicationClientTest<T extends BaseApplicationClient>
         }
         return object;
     }
-
 
     protected <T> void processAssertion(JsonNode assertJson, Object responseBody, Class<T> classType) {
 

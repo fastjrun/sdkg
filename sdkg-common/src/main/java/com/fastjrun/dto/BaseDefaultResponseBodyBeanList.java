@@ -1,8 +1,8 @@
 package com.fastjrun.dto;
 
-import com.fastjrun.entity.BaseEntity;
-
 import java.util.List;
+
+import com.fastjrun.entity.BaseEntity;
 
 public class BaseDefaultResponseBodyBeanList<T extends BaseEntity> {
 

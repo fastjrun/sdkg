@@ -46,6 +46,46 @@
                        canBeNull="false" remark="版本号"/>
                 <field name="versionInfo" dataType="String" length="400"
                        canBeNull="false" remark="版本信息"/>
+                <list name="list" class="packet.generic.VersionList">
+                    <field name="id" dataType="Long" length="64" canBeNull="false"
+                           remark="版本Id"/>
+                    <field name="versionNo" dataType="String" length="64"
+                           canBeNull="false" remark="版本号"/>
+                    <field name="versionInfo" dataType="String" length="400"
+                           canBeNull="false" remark="版本信息"/>
+                    <object name="object" class="packet.generic.VersionListObject">
+                        <field name="id" dataType="Long" length="64" canBeNull="false"
+                               remark="版本Id"/>
+                        <field name="versionNo" dataType="String" length="64"
+                               canBeNull="false" remark="版本号"/>
+                        <field name="versionInfo" dataType="String" length="400"
+                               canBeNull="false" remark="版本信息"/>
+                        <list name="list" class="packet.generic.VersionListObjectList">
+                            <field name="id" dataType="Long" length="64" canBeNull="false"
+                                   remark="版本Id"/>
+                            <field name="versionNo" dataType="String" length="64"
+                                   canBeNull="false" remark="版本号"/>
+                            <field name="versionInfo" dataType="String" length="400"
+                                   canBeNull="false" remark="版本信息"/>
+                        </list>
+                    </object>
+                </list>
+                <object name="object" class="packet.generic.VersionObject">
+                    <field name="id" dataType="Long" length="64" canBeNull="false"
+                           remark="版本Id"/>
+                    <field name="versionNo" dataType="String" length="64"
+                           canBeNull="false" remark="版本号"/>
+                    <field name="versionInfo" dataType="String" length="400"
+                           canBeNull="false" remark="版本信息"/>
+                    <list name="list" class="packet.generic.VersionObjectList">
+                        <field name="id" dataType="Long" length="64" canBeNull="false"
+                               remark="版本Id"/>
+                        <field name="versionNo" dataType="String" length="64"
+                               canBeNull="false" remark="版本号"/>
+                        <field name="versionInfo" dataType="String" length="400"
+                               canBeNull="false" remark="版本信息"/>
+                    </list>
+                </object>
             </list>
         </packet>
     </packets>

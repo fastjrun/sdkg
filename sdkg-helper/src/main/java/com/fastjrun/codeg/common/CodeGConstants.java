@@ -3,7 +3,7 @@ package com.fastjrun.codeg.common;
 public interface CodeGConstants {
     ControllerType ControllerType_GENERIC =
             new ControllerType("Generic", ControllerProtocol.ControllerProtocol_HTTP, "",
-                    "com.fastjrun.client.DefaultGenericClient", "",
+                    "com.fastjrun.client.DefaultHttpGenericClient", "",
                     "",
                     "com"
                             + ".fastjrun.web"
@@ -11,12 +11,12 @@ public interface CodeGConstants {
                     "DefaultHTTPApiMethodGenerator");
     ControllerType ControllerType_APP =
             new ControllerType("App", ControllerProtocol.ControllerProtocol_HTTP, "",
-                    "com.fastjrun.client.DefaultAppClient", "", "",
+                    "com.fastjrun.client.DefaultHttpAppClient", "", "",
                     "com.fastjrun.web.controller.BaseAppController", "DefaultHTTPGenerator",
                     "DefaultHTTPAppMethodGenerator");
     ControllerType ControllerType_API =
             new ControllerType("Api", ControllerProtocol.ControllerProtocol_HTTP, "",
-                    "com.fastjrun.client.DefaultApiClient", "", "",
+                    "com.fastjrun.client.DefaultHttpApiClient", "", "",
                     "com.fastjrun.web.controller.BaseApiController", "DefaultHTTPGenerator",
                     "DefaultHTTPGenericMethodGenerator");
     ControllerType ControllerType_DUBBO =

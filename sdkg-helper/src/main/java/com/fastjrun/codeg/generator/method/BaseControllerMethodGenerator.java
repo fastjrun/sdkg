@@ -1,17 +1,36 @@
 package com.fastjrun.codeg.generator.method;
 
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.web.bind.annotation.RequestMethod;
+
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fastjrun.codeg.common.*;
+import com.fastjrun.codeg.common.CodeGException;
+import com.fastjrun.codeg.common.CommonController;
+import com.fastjrun.codeg.common.CommonMethod;
+import com.fastjrun.codeg.common.PacketField;
+import com.fastjrun.codeg.common.PacketObject;
 import com.fastjrun.codeg.generator.BaseCMGenerator;
 import com.fastjrun.codeg.processer.ExchangeProcessor;
 import com.fastjrun.helper.StringHelper;
 import com.fastjrun.utils.JacksonUtils;
-import com.sun.codemodel.*;
-import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.util.List;
-import java.util.Map;
+import com.sun.codemodel.JAnnotationArrayMember;
+import com.sun.codemodel.JAnnotationUse;
+import com.sun.codemodel.JBlock;
+import com.sun.codemodel.JCatchBlock;
+import com.sun.codemodel.JClass;
+import com.sun.codemodel.JConditional;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JForLoop;
+import com.sun.codemodel.JInvocation;
+import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JMod;
+import com.sun.codemodel.JTryBlock;
+import com.sun.codemodel.JType;
+import com.sun.codemodel.JVar;
 
 public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
 
@@ -368,7 +387,7 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
                 } else if (jType.name().endsWith("String")) {
                     methodBlk.invoke(reponseBodyVar, "set" + tterMethodName).arg(
                             (mockHelperClass.staticInvoke("geStringWithAscii")
-                                    .arg(JExpr.lit(Integer.parseInt(length)))));
+                                     .arg(JExpr.lit(Integer.parseInt(length)))));
                 } else if (jType.name().endsWith("Boolean")) {
                     String setter = restField.getSetter();
                     if (setter == null || setter.equals("")) {
@@ -415,8 +434,11 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
         JAnnotationArrayMember parametersArrayMember = methodTestAnnotationParameters.paramArray("value");
         parametersArrayMember.param("reqParamsJsonStrAndAssert");
         JVar reqParamsJsonStrAndAssertJVar = clientTestMethod.param(cmTest.ref("String"), "reqParamsJsonStrAndAssert");
-        JVar reqParamsJsonStrAndAssertArrayJVar = methodTestBlk.decl(cmTest.ref("String").array(), "reqParamsJsonStrAndAssertArray", reqParamsJsonStrAndAssertJVar.invoke("split").arg(",assert="));
-        JVar reqParamsJsonStrJVar = methodTestBlk.decl(cm.ref("String"), "reqParamsJsonStr", reqParamsJsonStrAndAssertArrayJVar.component(JExpr.lit(0)));
+        JVar reqParamsJsonStrAndAssertArrayJVar = methodTestBlk
+                .decl(cmTest.ref("String").array(), "reqParamsJsonStrAndAssertArray",
+                        reqParamsJsonStrAndAssertJVar.invoke("split").arg(",assert="));
+        JVar reqParamsJsonStrJVar = methodTestBlk
+                .decl(cm.ref("String"), "reqParamsJsonStr", reqParamsJsonStrAndAssertArrayJVar.component(JExpr.lit(0)));
         methodTestBlk.invoke(JExpr.ref("log"), "debug").arg(reqParamsJsonStrJVar);
         JVar reqParamsJsonJVar = methodTestBlk.decl(jSONObjectClass, "reqParamsJson", cmTest
                 .ref("com.fastjrun.utils.JacksonUtils").staticInvoke("toJsonNode")
@@ -541,12 +563,14 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
             JVar responseBodyVar = methodTestBlk.decl(this.responseBodyClass, "responseBody", JExpr._null());
 
             JVar assertJsonJVar = methodTestBlk.decl(jSONObjectClass, "assertJson", JExpr._null());
-            methodTestBlk._if(reqParamsJsonStrAndAssertArrayJVar.ref("length").eq(JExpr.lit(2)))._then().block().assign(assertJsonJVar, cmTest
-                    .ref("com.fastjrun.utils.JacksonUtils").staticInvoke("toJsonNode")
-                    .arg(reqParamsJsonStrAndAssertArrayJVar.component(JExpr.lit(1))));
+            methodTestBlk._if(reqParamsJsonStrAndAssertArrayJVar.ref("length").eq(JExpr.lit(2)))._then().block()
+                    .assign(assertJsonJVar, cmTest
+                            .ref("com.fastjrun.utils.JacksonUtils").staticInvoke("toJsonNode")
+                            .arg(reqParamsJsonStrAndAssertArrayJVar.component(JExpr.lit(1))));
             JConditional jConditional1 = methodTestBlk._if(assertJsonJVar.ne(JExpr._null()));
             JBlock jConditional1Block = jConditional1._then();
-            JVar codeNodeJVar = jConditional1Block.decl(jSONObjectClass, "codeNode", assertJsonJVar.invoke("get").arg("code"));
+            JVar codeNodeJVar =
+                    jConditional1Block.decl(jSONObjectClass, "codeNode", assertJsonJVar.invoke("get").arg("code"));
             JConditional jConditional2 = jConditional1Block._if(codeNodeJVar.ne(JExpr._null()));
             JBlock jConditional2ThenBlock = jConditional2._then();
             JTryBlock jTry = jConditional2ThenBlock._try();
@@ -554,10 +578,11 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
             JCatchBlock jCatchBlock = jTry._catch(cmTest.ref("com.fastjrun.common.ClientException"));
             JVar jExceptionVar = jCatchBlock.param("e");
             JBlock jCatchBlockBody = jCatchBlock.body();
-            jCatchBlockBody.staticInvoke(cmTest.ref("org.testng.Assert"), "assertEquals").arg(jExceptionVar.invoke("getCode")).arg(codeNodeJVar.invoke("asText")).arg(JExpr.lit("返回消息码不是指定消息码：").plus(codeNodeJVar.invoke("asText")));
+            jCatchBlockBody.staticInvoke(cmTest.ref("org.testng.Assert"), "assertEquals")
+                    .arg(jExceptionVar.invoke("getCode")).arg(codeNodeJVar.invoke("asText"))
+                    .arg(JExpr.lit("返回消息码不是指定消息码：").plus(codeNodeJVar.invoke("asText")));
             jConditional2._else().assign(responseBodyVar, jInvocationTest);
             jConditional1._else().assign(responseBodyVar, jInvocationTest);
-
 
             methodTestBlk.invoke(JExpr.refthis("log"), "debug").arg(cmTest
                     .ref("com.fastjrun.utils.JacksonUtils").staticInvoke("toJSon")
@@ -573,18 +598,20 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
                         forBlock1.decl(this.elementClass, "item" + this.elementClass.name(),
                                 responseBodyVar.invoke("get").arg(initIndexVar));
 
-                this.logResponseBody(this.commonMethod.getResponse(), responseBodyIndexVar, forBlock1);
+                this.logResponseBody(1, this.commonMethod.getResponse(), responseBodyIndexVar, forBlock1);
 
             } else {
-                this.logResponseBody(this.commonMethod.getResponse(), responseBodyVar, methodTestBlk);
+                this.logResponseBody(1, this.commonMethod.getResponse(), responseBodyVar, methodTestBlk);
             }
-            methodTestBlk.invoke(JExpr._this(), "processAssertion").arg(assertJsonJVar).arg(responseBodyVar).arg(JExpr.dotclass((JClass) responseBodyClass));
+            methodTestBlk.invoke(JExpr._this(), "processAssertion").arg(assertJsonJVar).arg(responseBodyVar)
+                    .arg(JExpr.dotclass((JClass) responseBodyClass));
 
         } else {
             JVar assertJsonJVar = methodTestBlk.decl(jSONObjectClass, "assertJson", JExpr._null());
             JConditional jConditional1 = methodTestBlk._if(assertJsonJVar.ne(JExpr._null()));
             JBlock jConditional1Block = jConditional1._then();
-            JVar codeNodeJVar = jConditional1Block.decl(jSONObjectClass, "codeNode", assertJsonJVar.invoke("get").arg("code"));
+            JVar codeNodeJVar =
+                    jConditional1Block.decl(jSONObjectClass, "codeNode", assertJsonJVar.invoke("get").arg("code"));
             JConditional jConditional2 = jConditional1Block._if(codeNodeJVar.ne(JExpr._null()));
             JBlock jConditional2ThenBlock = jConditional2._then();
             JTryBlock jTry = jConditional2ThenBlock._try();
@@ -592,7 +619,9 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
             JCatchBlock jCatchBlock = jTry._catch(cmTest.ref("com.fastjrun.common.ClientException"));
             JVar jExceptionVar = jCatchBlock.param("e");
             JBlock jCatchBlockBody = jCatchBlock.body();
-            jCatchBlockBody.staticInvoke(cmTest.ref("org.testng.Assert"), "assertEquals").arg(jExceptionVar.invoke("getCode")).arg(codeNodeJVar.invoke("asText")).arg(JExpr.lit("返回消息码不是指定消息码：").plus(codeNodeJVar.invoke("asText")));
+            jCatchBlockBody.staticInvoke(cmTest.ref("org.testng.Assert"), "assertEquals")
+                    .arg(jExceptionVar.invoke("getCode")).arg(codeNodeJVar.invoke("asText"))
+                    .arg(JExpr.lit("返回消息码不是指定消息码：").plus(codeNodeJVar.invoke("asText")));
             jConditional2._else().add(jInvocationTest);
             jConditional1._else().add(jInvocationTest);
         }
@@ -661,7 +690,7 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
 
     }
 
-    private void logResponseBody(PacketObject responseBody, JVar responseBodyVar, JBlock methodTestBlk) {
+    private void logResponseBody(int loopSeq, PacketObject responseBody, JVar responseBodyVar, JBlock methodTestBlk) {
         logResponseBodyField(responseBody, responseBodyVar, methodTestBlk);
         Map<String, PacketObject> robjects = responseBody.getObjects();
         if (robjects != null && robjects.size() > 0) {
@@ -682,13 +711,14 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
                 }
                 JVar reNameVar =
                         methodTestBlk.decl(roClass,
-                                responseBody.getName() + tterMethodName,
+                                responseBody.getName() + tterMethodName + loopSeq,
                                 responseBodyVar.invoke("get" + tterMethodName));
-                this.logResponseBody(ro, reNameVar, methodTestBlk);
+                this.logResponseBody(loopSeq + 1, ro, reNameVar, methodTestBlk);
             }
         }
         Map<String, PacketObject> roLists = responseBody.getLists();
         if (roLists != null && roLists.size() > 0) {
+            int index = 0;
             for (String roName : roLists.keySet()) {
                 PacketObject ro = roLists.get(roName);
                 String tterMethodName = roName;
@@ -707,12 +737,13 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
                 JVar roListVar =
                         methodTestBlk.decl(cmTest.ref("java.util.List")
                                         .narrow(roClass),
-                                responseBody.getName() + tterMethodName + "List",
+                                responseBody.getName() + tterMethodName + "List" + loopSeq + index,
                                 responseBodyVar.invoke("get" + tterMethodName));
                 JBlock ifBlock1 = methodTestBlk._if(roListVar.ne(JExpr._null()))._then();
                 JForLoop forLoop = ifBlock1._for();
                 JVar initIndexVar =
-                        forLoop.init(cmTest.INT, responseBody.getName() + tterMethodName + "ListIndex", JExpr.lit(0));
+                        forLoop.init(cmTest.INT,
+                                responseBody.getName() + tterMethodName + "ListIndex" + loopSeq + index, JExpr.lit(0));
                 forLoop.test(initIndexVar.lt(roListVar.invoke("size")));
                 forLoop.update(initIndexVar.incr());
                 JBlock forBlock1 = forLoop.body();
@@ -721,7 +752,8 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
                                         .name(),
                                 roListVar.invoke("get").arg(initIndexVar));
 
-                this.logResponseBody(ro, responseBodyIndexVar, forBlock1);
+                this.logResponseBody(loopSeq + 1, ro, responseBodyIndexVar, forBlock1);
+                index++;
             }
         }
     }

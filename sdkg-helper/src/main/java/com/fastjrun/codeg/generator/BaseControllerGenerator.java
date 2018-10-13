@@ -1,13 +1,22 @@
 package com.fastjrun.codeg.generator;
 
+import java.util.Properties;
+
 import com.fastjrun.codeg.common.CodeGException;
 import com.fastjrun.codeg.common.CodeGMsgContants;
 import com.fastjrun.codeg.common.CommonController;
 import com.fastjrun.codeg.common.CommonService;
 import com.fastjrun.codeg.generator.method.BaseControllerMethodGenerator;
-import com.sun.codemodel.*;
-
-import java.util.Properties;
+import com.sun.codemodel.ClassType;
+import com.sun.codemodel.JBlock;
+import com.sun.codemodel.JClass;
+import com.sun.codemodel.JClassAlreadyExistsException;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JMod;
+import com.sun.codemodel.JVar;
 
 public abstract class BaseControllerGenerator extends BaseCMGenerator {
 

@@ -1,6 +1,11 @@
 package com.fastjrun.codeg.util;
 
-import com.fastjrun.codeg.common.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -8,7 +13,14 @@ import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 import org.springframework.http.MediaType;
 
-import java.util.*;
+import com.fastjrun.codeg.common.CodeGConstants;
+import com.fastjrun.codeg.common.CodeGException;
+import com.fastjrun.codeg.common.CodeGMsgContants;
+import com.fastjrun.codeg.common.CommonController;
+import com.fastjrun.codeg.common.CommonMethod;
+import com.fastjrun.codeg.common.CommonService;
+import com.fastjrun.codeg.common.PacketField;
+import com.fastjrun.codeg.common.PacketObject;
 
 public class BundleXMLParser implements CodeGConstants {
 

@@ -12,7 +12,7 @@ import org.apache.logging.log4j.Logger;
  *
  */
 
-public abstract class BaseResponseHandleClient<T extends BaseUtilClient> {
+public abstract class BaseExchangeHandleClient<T extends BaseUtilClient> {
 
     protected final Logger log = LogManager.getLogger(this.getClass());
 
@@ -28,4 +28,5 @@ public abstract class BaseResponseHandleClient<T extends BaseUtilClient> {
 
     public abstract void initSDKConfig();
 
+    protected abstract void initExchange();
 }

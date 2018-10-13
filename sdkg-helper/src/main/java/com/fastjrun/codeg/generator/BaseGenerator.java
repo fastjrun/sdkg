@@ -1,9 +1,9 @@
 package com.fastjrun.codeg.generator;
 
+import java.util.Calendar;
+
 import com.fastjrun.codeg.common.BaseCodeGenerableObject;
 import com.fastjrun.codeg.common.CommonLog;
-
-import java.util.Calendar;
 
 /**
  * 生成

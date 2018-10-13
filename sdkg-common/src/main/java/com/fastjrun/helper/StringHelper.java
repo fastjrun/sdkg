@@ -223,6 +223,7 @@ public class StringHelper {
      *
      * @param bytes
      * @param c     分隔符
+     *
      * @return 十六进制字符串
      */
     public static String toHexString(byte[] bytes, char c) {
@@ -241,6 +242,7 @@ public class StringHelper {
      * Converts a byte array to hex string
      *
      * @param bytes
+     *
      * @return 十六进制字符串
      */
     public static String toHexString(byte[] bytes) {
@@ -256,6 +258,7 @@ public class StringHelper {
      * 判断字符串是否为空
      *
      * @param str
+     *
      * @return
      */
     public static boolean isEmpty(String str) {
@@ -295,7 +298,6 @@ public class StringHelper {
             return string.trim();
         }
     }
-
 
     // 首字母转大写
     public static String toUpperCaseFirstOne(String s) {

@@ -1,20 +1,27 @@
 package com.fastjrun.codeg.service.impl;
 
-import com.fastjrun.codeg.common.CommonController;
-import com.fastjrun.codeg.common.CommonLog;
-import com.fastjrun.codeg.helper.IOHelper;
-import com.fastjrun.codeg.service.CodeGService;
-import com.fastjrun.helper.StringHelper;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 
-import java.io.*;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import com.fastjrun.codeg.common.CommonController;
+import com.fastjrun.codeg.common.CommonLog;
+import com.fastjrun.codeg.helper.IOHelper;
+import com.fastjrun.codeg.service.CodeGService;
+import com.fastjrun.helper.StringHelper;
 
 public abstract class BaseCodeGServiceImpl implements CodeGService {
 
