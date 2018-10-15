@@ -13,22 +13,11 @@
     <xs:element name="packets">
         <xs:complexType>
             <xs:choice>
-                <xs:element name="packet" type="packet" minOccurs="0"
+                <xs:element name="packet" type="packetObject" minOccurs="0"
                             maxOccurs="unbounded"/>
             </xs:choice>
         </xs:complexType>
     </xs:element>
-    <xs:complexType name="packet">
-        <xs:sequence>
-            <xs:element name="field" type="field" minOccurs="0"
-                        maxOccurs="unbounded"/>
-            <xs:element name="list" type="listOrObject" minOccurs="0"
-                        maxOccurs="unbounded"/>
-            <xs:element name="object" type="listOrObject" minOccurs="0"
-                        maxOccurs="unbounded"/>
-        </xs:sequence>
-        <xs:attribute name="class" type="xs:string" use="required"/>
-    </xs:complexType>
     <xs:complexType name="field">
         <xs:attribute name="name" type="xs:string" use="required"/>
         <xs:attribute name="dataType" use="required">
@@ -39,11 +28,13 @@
                     <xs:enumeration value="Long"/>
                     <xs:enumeration value="Double"/>
                     <xs:enumeration value="String"/>
+                    <xs:enumeration value="java.util.Date"/>
                     <xs:enumeration value="Boolean:List"/>
                     <xs:enumeration value="Integer:List"/>
                     <xs:enumeration value="Long:List"/>
                     <xs:enumeration value="Double:List"/>
                     <xs:enumeration value="String:List"/>
+                    <xs:enumeration value="java.util.Date:List"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
@@ -57,18 +48,25 @@
         <xs:attribute name="canBeNull" type="xs:boolean" use="required"/>
         <xs:attribute name="message" type="xs:string"/>
         <xs:attribute name="remark" type="xs:string" use="required"/>
+        <xs:attribute name="getter" type="xs:string"/>
+        <xs:attribute name="setter" type="xs:string"/>
     </xs:complexType>
-    <xs:complexType name="listOrObject">
+    <xs:complexType name="packetObject">
         <xs:sequence>
             <xs:element name="field" type="field" minOccurs="0"
                         maxOccurs="unbounded"/>
-            <xs:element name="list" type="listOrObject" minOccurs="0"
+            <xs:element name="list" type="packetObject" minOccurs="0"
                         maxOccurs="unbounded"/>
-            <xs:element name="object" type="listOrObject" minOccurs="0"
+            <xs:element name="object" type="packetObject" minOccurs="0"
                         maxOccurs="unbounded"/>
         </xs:sequence>
-        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="name" type="xs:string" default=""/>
         <xs:attribute name="class" type="xs:string" use="required"/>
+        <xs:attribute name="new" type="xs:boolean" default="false"/>
+        <xs:attribute name="ref" type="xs:boolean" default="false"/>
+        <!--parent必须是已经有的类-->
+        <xs:attribute name="parent" type="xs:string"/>
+        <xs:attribute name="remark" type="xs:string" default=""/>
     </xs:complexType>
     <xs:element name="services">
         <xs:complexType>
@@ -177,7 +175,7 @@
                 </xs:complexType>
             </xs:element>
         </xs:all>
-        <xs:attribute name="type" type="xs:string" use="required">
+        <xs:attribute name="type" use="required">
             <xs:simpleType>
                 <xs:restriction base="xs:string">
                     <xs:enumeration value="Api"/>
@@ -193,5 +191,6 @@
         <xs:attribute name="clientName" type="xs:string" use="required"/>
         <xs:attribute name="remark" type="xs:string" use="required"/>
         <xs:attribute name="tags" type="xs:string" use="required"/>
+        <xs:attribute name="new" type="xs:boolean" default="true"/>
     </xs:complexType>
 </xs:schema>

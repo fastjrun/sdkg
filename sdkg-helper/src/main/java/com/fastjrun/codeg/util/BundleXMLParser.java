@@ -290,9 +290,6 @@ public class BundleXMLParser implements CodeGConstants {
         if (ref != null && !ref.equals("")) {
             restObject.setRef(Boolean.parseBoolean(ref));
         }
-        if (restObject.isRef()) {
-            return null;
-        }
         List<Element> elements = elePacket.elements();
         for (Element element : elements) {
             if (element == null) {
@@ -334,7 +331,11 @@ public class BundleXMLParser implements CodeGConstants {
         restObject.setFields(fields);
         restObject.setLists(lists);
         restObject.setObjects(objects);
-        this.packetMap.put(restObject.get_class(), restObject);
+
+        if (!restObject.isRef()) {
+            packetMap.put(restObject.get_class(), restObject);
+        }
+
         return restObject;
     }
 

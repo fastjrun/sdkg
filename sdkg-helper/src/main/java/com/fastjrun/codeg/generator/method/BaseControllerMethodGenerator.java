@@ -275,7 +275,8 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
 
     private JVar composeResponseBody(int loopSeq, JBlock methodBlk, PacketObject responseBody,
                                      JType responseBodyClass) {
-        JVar responseVar = composeResponseBodyField(methodBlk, responseBody, responseBodyClass);
+        JVar responseVar = composeResponseBodyField(loopSeq, methodBlk, responseBody, responseBodyClass);
+        int start = 1;
         Map<String, PacketObject> packetObjectMap = responseBody.getObjects();
         if (packetObjectMap != null && packetObjectMap.size() > 0) {
             for (String reName : packetObjectMap.keySet()) {
@@ -284,7 +285,7 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
                 if (!ro.is_new()) {
                     roClass = cm.ref(ro.get_class());
                 }
-                JVar roVar = this.composeResponseBody(loopSeq + 1, methodBlk, ro, roClass);
+                JVar roVar = this.composeResponseBody(loopSeq + start++, methodBlk, ro, roClass);
                 String tterMethodName = reName;
                 if (reName.length() > 1) {
                     String char2 = String.valueOf(reName.charAt(1));
@@ -309,14 +310,14 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
                 JVar listsVar = methodBlk.decl(cm.ref("java.util.List").narrow(roListEntityClass),
                         varNamePrefixList + "list",
                         JExpr._new(cm.ref("java.util.ArrayList").narrow(roListEntityClass)));
-                JVar iSizeVar = methodBlk.decl(cm.INT, "iSize" + loopSeq + index,
+                JVar iSizeVar = methodBlk.decl(cm.INT, "iSize" + listName + loopSeq + index,
                         mockHelperClass.staticInvoke("geInteger").arg(JExpr.lit(10)).invoke("intValue"));
                 JForLoop forLoop = methodBlk._for();
                 JVar iVar = forLoop.init(cm.INT, "i" + loopSeq + index, JExpr.lit(0));
                 forLoop.test(iVar.lt(iSizeVar));
                 forLoop.update(iVar.incr());
                 JBlock forBody = forLoop.body();
-                JVar roVar = composeResponseBody(loopSeq + 1, forBody, ro, roListEntityClass);
+                JVar roVar = composeResponseBody(loopSeq + start++, forBody, ro, roListEntityClass);
                 forBody.invoke(listsVar, "add").arg(roVar);
                 String tterMethodName = listName;
                 if (listName.length() > 1) {
@@ -332,10 +333,11 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
         return responseVar;
     }
 
-    private JVar composeResponseBodyField(JBlock methodBlk, PacketObject responseBody, JType
+    private JVar composeResponseBodyField(int loopSeq, JBlock methodBlk, PacketObject responseBody, JType
             responseBodyClass) {
         String varNamePrefix = StringHelper
-                .toLowerCaseFirstOne(responseBody.get_class().substring(responseBody.get_class().lastIndexOf(".") + 1));
+                .toLowerCaseFirstOne(responseBody.get_class().substring(responseBody.get_class().lastIndexOf(".") +
+                        1)) + loopSeq;
         JVar reponseBodyVar = methodBlk.decl(responseBodyClass, varNamePrefix, JExpr._new(responseBodyClass));
         Map<String, PacketField> restFields = responseBody.getFields();
         if (restFields != null && restFields.size() > 0) {
@@ -627,7 +629,8 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
         }
     }
 
-    private void logResponseBodyField(PacketObject responseBody, JVar responseBodyVar, JBlock methodTestBlk) {
+    private void logResponseBodyField(int loopSeq, PacketObject responseBody, JVar responseBodyVar,
+                                      JBlock methodTestBlk) {
         Map<String, PacketField> fields = responseBody.getFields();
         if (fields != null) {
             for (String fieldName : fields.keySet()) {
@@ -664,7 +667,8 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
                     getter = "get" + tterMethodName;
                 }
                 JVar fieldNameVar = methodTestBlk
-                        .decl(jType, StringHelper.toLowerCaseFirstOne(responseBodyVar.type().name()) + tterMethodName,
+                        .decl(jType, StringHelper.toLowerCaseFirstOne(responseBodyVar.type().name()) + loopSeq
+                                        + tterMethodName,
                                 responseBodyVar.invoke(getter));
                 methodTestBlk.invoke(JExpr.ref("log"), "debug").arg(fieldNameVar);
                 if (!canBeNull) {
@@ -691,7 +695,8 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
     }
 
     private void logResponseBody(int loopSeq, PacketObject responseBody, JVar responseBodyVar, JBlock methodTestBlk) {
-        logResponseBodyField(responseBody, responseBodyVar, methodTestBlk);
+        logResponseBodyField(loopSeq, responseBody, responseBodyVar, methodTestBlk);
+        int start = 1;
         Map<String, PacketObject> robjects = responseBody.getObjects();
         if (robjects != null && robjects.size() > 0) {
             for (String reName : robjects.keySet()) {
@@ -713,7 +718,7 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
                         methodTestBlk.decl(roClass,
                                 responseBody.getName() + tterMethodName + loopSeq,
                                 responseBodyVar.invoke("get" + tterMethodName));
-                this.logResponseBody(loopSeq + 1, ro, reNameVar, methodTestBlk);
+                this.logResponseBody(loopSeq + start++, ro, reNameVar, methodTestBlk);
             }
         }
         Map<String, PacketObject> roLists = responseBody.getLists();
@@ -752,7 +757,7 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
                                         .name(),
                                 roListVar.invoke("get").arg(initIndexVar));
 
-                this.logResponseBody(loopSeq + 1, ro, responseBodyIndexVar, forBlock1);
+                this.logResponseBody(loopSeq + start++, ro, responseBodyIndexVar, forBlock1);
                 index++;
             }
         }
