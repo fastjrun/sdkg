@@ -109,7 +109,7 @@ public abstract class CodeGeneratorFactory implements CodeGConstants {
         PacketGenerator packetGenerator = getPacketGeneratorInstance(packageNamePrefix, mockModel, author, company);
         try {
             PacketGenerator packetGeneratorTmp = (PacketGenerator) packetGenerator.clone();
-            return packetGenerator;
+            return packetGeneratorTmp;
         } catch (CloneNotSupportedException e) {
             throw new CodeGException(CodeGMsgContants.CODEG_NOT_SUPPORT, "不支持packetObject这个生成器", e);
         }

@@ -8,6 +8,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.dom4j.Document;
 
@@ -36,18 +42,35 @@ public class DefaultCodeGService extends BaseCodeGServiceImpl implements CodeGSe
                 MockModel.MockModel_Common);
         List<CommonController> rpcDubboList = new ArrayList<>();
         Map<String, Properties> clientTestParamMap = new HashMap<>();
+        ExecutorService threadPool = Executors.newSingleThreadExecutor();
+        CompletionService<Boolean> completionService = new ExecutorCompletionService<>(threadPool);
         for (CommonController commonController : controllerMap.values()) {
             BaseControllerGenerator baseControllerGenerator = CodeGeneratorFactory.createBaseControllerGenerator
                     (commonController.getControllerType(),
                             this.packageNamePrefix, MockModel.MockModel_Common, this.author, this.company);
             baseControllerGenerator.setCommonController(commonController);
-            baseControllerGenerator.processApiModule();
             if (commonController.getControllerType().name.equals("Dubbo")) {
                 rpcDubboList.add(commonController);
             }
-            clientTestParamMap
-                    .put(commonController.getClientName(), baseControllerGenerator.getClientTestParam());
 
+            Callable<Boolean> callable = () -> {
+                baseControllerGenerator.processApiModule();
+                clientTestParamMap
+                        .put(commonController.getClientName(), baseControllerGenerator.getClientTestParam());
+                return true;
+            };
+            completionService.submit(callable);
+
+        }
+
+        for (int i = 0; i < controllerMap.size(); i++) {
+            try {
+                completionService.take().get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
         }
 
         try {
@@ -104,12 +127,27 @@ public class DefaultCodeGService extends BaseCodeGServiceImpl implements CodeGSe
                 controllerAllMap.putAll(bundleXMLParser.getControllerMap());
             }
         }
+        ExecutorService threadPool = Executors.newSingleThreadExecutor();
+        CompletionService<Boolean> completionService = new ExecutorCompletionService<>(threadPool);
 
-        PacketGenerator packetGenerator = CodeGeneratorFactory
-                .createPacketGenerator(this.packageNamePrefix, mockModel, this.author, this.company);
         for (PacketObject packetObject : packetAllMap.values()) {
+            PacketGenerator packetGenerator = CodeGeneratorFactory
+                    .createPacketGenerator(this.packageNamePrefix, mockModel, this.author, this.company);
             packetGenerator.setPacketObject(packetObject);
-            packetGenerator.process();
+            Callable<Boolean> callable = () -> {
+                return packetGenerator.process();
+            };
+            completionService.submit(callable);
+        }
+
+        for (int i = 0; i < packetAllMap.size(); i++) {
+            try {
+                completionService.take().get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
         }
 
         return controllerAllMap;
@@ -124,14 +162,31 @@ public class DefaultCodeGService extends BaseCodeGServiceImpl implements CodeGSe
         Map<String, CommonController> controllerMap = this.generatePacket(moduleName,
                 MockModel.MockModel_Common);
         List<CommonController> rpcDubboList = new ArrayList<>();
+        ExecutorService threadPool = Executors.newSingleThreadExecutor();
+        CompletionService<Boolean> completionService = new ExecutorCompletionService<>(threadPool);
+
         for (CommonController commonController : controllerMap.values()) {
             BaseControllerGenerator baseControllerGenerator = CodeGeneratorFactory.createBaseControllerGenerator
                     (commonController.getControllerType(),
                             this.packageNamePrefix, mockModel, this.author, this.company);
             baseControllerGenerator.setCommonController(commonController);
-            baseControllerGenerator.processProviderModule();
             if (commonController.getControllerType().name.equals("Dubbo")) {
                 rpcDubboList.add(commonController);
+            }
+            Callable<Boolean> callable = () -> {
+                baseControllerGenerator.processProviderModule();
+                return true;
+            };
+            completionService.submit(callable);
+        }
+
+        for (int i = 0; i < controllerMap.size(); i++) {
+            try {
+                completionService.take().get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
             }
         }
 
