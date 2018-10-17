@@ -123,6 +123,11 @@
             <scope>test</scope>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>jaxen</groupId>
+            <artifactId>jaxen</artifactId>
+            <version>1.1.6</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -147,7 +152,7 @@
         <swagger2.version>2.7.0</swagger2.version>
         <maven-plugin-api.version>3.5.2</maven-plugin-api.version>
         <codemodel.version>2.6</codemodel.version>
-        <dom4j.version>2.0.2</dom4j.version>
+        <dom4j.version>[2.1.1,)</dom4j.version>
         <validation-api.version>1.1.0.Final</validation-api.version>
         <maven-plugin-plugin.version>3.5.2</maven-plugin-plugin.version>
     </properties>
