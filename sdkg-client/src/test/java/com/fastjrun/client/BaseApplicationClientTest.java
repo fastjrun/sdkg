@@ -83,18 +83,25 @@ public abstract class BaseApplicationClientTest<T extends BaseApplicationClient>
                     continue;
                 }
                 String jsonNodeText = entry.getValue().asText();
-                processObject(key, responseBody, classType, jsonNodeText);
+                processObject(key, responseBody, classType, jsonNodeText, "");
             }
         }
 
     }
 
-    private <T> void processObject(String key, Object object, Class<T> classType, String expectedValue) {
+    private <T> void processObject(String key, Object object, Class<T> classType, String expectedValue, String info) {
+
         String[] keyFields = key.split("\\.");
         // 只有一级属性
         int length = keyFields.length;
         // 有可能属性名称
         String tterMethodName = keyFields[0].split("\\[")[0];
+        if (info.equals("")) {
+            info = tterMethodName;
+        } else {
+            info = info + "." + tterMethodName;
+
+        }
         if (tterMethodName.length() > 1) {
             String char2 = String.valueOf(tterMethodName.charAt(1));
             if (!char2.equals(char2.toUpperCase())) {
@@ -107,22 +114,43 @@ public abstract class BaseApplicationClientTest<T extends BaseApplicationClient>
             Type returnClass = null;
             Class<T> newClassType = null;
             if (keyFields[0].indexOf("[") > 0) {
+                returnClass = method.getGenericReturnType();
+                Type[] typeArguments = ((ParameterizedType) returnClass).getActualTypeArguments();
+                newClassType = (Class) typeArguments[0];
+                int size = (int) List.class.getMethod("size").invoke(returnValue);
                 String indexStr = keyFields[0].split("\\[")[1].split("]")[0];
                 if (indexStr.length() > 0) {
+                    info = info + "[" + indexStr + "]";
                     int index = Integer.parseInt(indexStr);
-                    returnValue = List.class.getMethod("get", int.class).invoke(returnValue, index);
-                    returnClass = method.getGenericReturnType();
-                    Type[] typeArguments = ((ParameterizedType) returnClass).getActualTypeArguments();
-                    newClassType = (Class) typeArguments[0];
+                    if (size > index) {
+                        returnValue = List.class.getMethod("get", int.class).invoke(returnValue, index);
+                    } else {
+                        Assert.fail(info + " is null");
+                    }
+                } else {
+                    info = info + "[]";
+                    boolean isEqual = false;
+                    for (int i = 0; i < size; i++) {
+                        returnValue = List.class.getMethod("get", int.class).invoke(returnValue, i);
+                        if (expectedValue.equals(returnValue.toString())) {
+                            isEqual = true;
+                            break;
+                        }
+                    }
+                    if (!isEqual) {
+                        Assert.fail(info + " doesn't have"
+                                + " value:" + expectedValue);
+                    }
                 }
+
             } else {
                 returnClass = method.getReturnType();
                 newClassType = (Class) returnClass;
             }
             if (length == 1) {
-                Assert.assertEquals(returnValue, expectedValue);
+                Assert.assertEquals(returnValue, expectedValue, info);
             } else {
-                this.processObject(key.substring(key.indexOf(".") + 1), returnValue, newClassType, expectedValue);
+                this.processObject(key.substring(key.indexOf(".") + 1), returnValue, newClassType, expectedValue, info);
             }
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
