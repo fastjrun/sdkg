@@ -38,7 +38,6 @@ mvn clean package -pl sdkg-demo/demo-provider-mock -am -Dbdmgc.skip=false -Dcode
 #### codemodel重构
 #### mybatisgenerator新增
 #### 支持自定义协议api和provider的代码生成
-#### 代码生成多线程化
 
 ## 版本说明：
 ### v2.0 升级说明
@@ -46,6 +45,7 @@ mvn clean package -pl sdkg-demo/demo-provider-mock -am -Dbdmgc.skip=false -Dcode
 #### 进一步优化接口定义规范：fastjrun-schema.xsd
 #### 新增sdkg-demo模块，会作为示例工程演示如何基于快嘉代码生成插件实现项目演进
 #### 代码分层，重构
+#### 代码生成使用线程池
 #### 测试用例增加自定义断言
 - 错误码断言
 - 响应值中对应标签为指定值，如 {"list[0].versionNo":"v1.4"}、{"nickName":"fastjrun"}等

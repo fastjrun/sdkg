@@ -67,11 +67,6 @@
             </exclusions>
         </dependency>
     </dependencies>
-    <properties>
-        <dubbo.version>2.6.2</dubbo.version>
-        <zookeeper.version>3.4.12</zookeeper.version>
-        <curator.version>4.0.1</curator.version>
-    </properties>
     <build>
         <filters>
             <filter>../demo-config/src/main/profiles/${envName}.properties</filter>

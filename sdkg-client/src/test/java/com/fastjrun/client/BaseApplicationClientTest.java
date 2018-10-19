@@ -91,7 +91,9 @@ public abstract class BaseApplicationClientTest<T extends BaseApplicationClient>
 
     private <T> void processObject(String key, Object object, Class<T> classType, String expectedValue) {
         String[] keyFields = key.split("\\.");
+        // 只有一级属性
         int length = keyFields.length;
+        // 有可能属性名称
         String tterMethodName = keyFields[0].split("\\[")[0];
         if (tterMethodName.length() > 1) {
             String char2 = String.valueOf(tterMethodName.charAt(1));
