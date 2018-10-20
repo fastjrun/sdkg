@@ -1,5 +1,6 @@
 package com.fastjrun.codeg.common;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -12,9 +13,13 @@ public class FJTable {
      */
     private Map<String, FJColumn> columns;
     /**
-     * 表名，中文
+     * 表名
      */
     private String name;
+    /**
+     * 备注
+     */
+    private String comment;
     /**
      * javaBean 类名
      */
@@ -22,14 +27,14 @@ public class FJTable {
     /**
      * javaBean 自动
      */
-    private Map<String, FJColumn> primaryKeyColumns;
+    private List<String> primaryKeyColumnNames;
 
-    public Map<String, FJColumn> getPrimaryKeyColumns() {
-        return primaryKeyColumns;
+    public List<String> getPrimaryKeyColumnNames() {
+        return primaryKeyColumnNames;
     }
 
-    public void setPrimaryKeyColumns(Map<String, FJColumn> primaryKeyColumns) {
-        this.primaryKeyColumns = primaryKeyColumns;
+    public void setPrimaryKeyColumnNames(List<String> primaryKeyColumnNames) {
+        this.primaryKeyColumnNames = primaryKeyColumnNames;
     }
 
     public Map<String, FJColumn> getColumns() {
@@ -56,9 +61,16 @@ public class FJTable {
         this.className = className;
     }
 
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
     @Override
     public String toString() {
-        return "FJTable [columns=" + columns + ", name="
-                + name + ", className=" + className + "]";
+        return "fjTable [columns=" + columns + ", name=" + name + ", comment=" + comment + ", className=" + className + "]";
     }
 }

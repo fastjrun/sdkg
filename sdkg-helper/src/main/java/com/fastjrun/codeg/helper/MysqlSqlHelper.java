@@ -1,9 +1,10 @@
 package com.fastjrun.codeg.helper;
 
-import java.util.Map;
-
 import com.fastjrun.codeg.common.FJColumn;
 import com.fastjrun.codeg.common.FJTable;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 构造Sql语句
@@ -30,8 +31,7 @@ public class MysqlSqlHelper implements SqlHelper {
         int i = 0;
         for (FJColumn fjColumn : columns.values()) {
             String name = fjTable.getName();
-            String identity = fjColumn.getIdentity();
-            if (identity.equals("1")) {
+            if (fjColumn.isIdentity()) {
                 continue;
             }
             if (i > 0) {
@@ -57,11 +57,11 @@ public class MysqlSqlHelper implements SqlHelper {
         StringBuilder sql = new StringBuilder();
         sql.append("update ").append(fjTable.getName()).append(" set ");
         Map<String, FJColumn> fields = fjTable.getColumns();
-        Map<String, FJColumn> keyFields = fjTable.getPrimaryKeyColumns();
+        List<String> keyFields = fjTable.getPrimaryKeyColumnNames();
         int i = 0;
         for (FJColumn fjColumn : fields.values()) {
             String name = fjColumn.getName();
-            if (keyFields.get(name) != null) {
+            if (keyFields.contains(name)) {
                 continue;
             }
             if (i > 0) {
@@ -72,12 +72,11 @@ public class MysqlSqlHelper implements SqlHelper {
         }
         sql.append(" where ");
         i = 0;
-        for (FJColumn fjColumn : keyFields.values()) {
-            String name = fjColumn.getName();
+        for (String keyName : keyFields) {
             if (i > 0) {
                 sql.append(" and ");
             }
-            sql.append("`").append(name).append("` = #{").append(fjColumn.getFieldName()).append("}");
+            sql.append("`").append(keyName).append("` = #{").append(fields.get(keyName).getFieldName()).append("}");
             i++;
         }
         return sql.toString();
@@ -91,7 +90,7 @@ public class MysqlSqlHelper implements SqlHelper {
         StringBuilder sql = new StringBuilder();
         sql.append("select ");
         Map<String, FJColumn> fields = fjTable.getColumns();
-        Map<String, FJColumn> keyFields = fjTable.getPrimaryKeyColumns();
+        List<String> keyFields = fjTable.getPrimaryKeyColumnNames();
         int i = 0;
         for (FJColumn fjColumn : fields.values()) {
             String name = fjColumn.getName();
@@ -104,12 +103,12 @@ public class MysqlSqlHelper implements SqlHelper {
 
         sql.append(" from ").append(fjTable.getName()).append(" where ");
         i = 0;
-        for (FJColumn fjColumn : keyFields.values()) {
-            String name = fjColumn.getName();
+        for (String key : keyFields) {
+            FJColumn fjColumn = fields.get(key);
             if (i > 0) {
                 sql.append(" and ");
             }
-            sql.append("`").append(name).append("` = #{").append(fjColumn.getFieldName()).append("}");
+            sql.append("`").append(key).append("` = #{").append(fjColumn.getFieldName()).append("}");
             i++;
         }
         return sql.toString();
@@ -144,14 +143,14 @@ public class MysqlSqlHelper implements SqlHelper {
     public String getDeleteById() {
         StringBuilder sql = new StringBuilder();
         sql.append("delete from ").append(fjTable.getName()).append(" where ");
-        Map<String, FJColumn> keyFields = fjTable.getPrimaryKeyColumns();
+        List<String> keyFields = fjTable.getPrimaryKeyColumnNames();
         int i = 0;
-        for (FJColumn fjColumn : keyFields.values()) {
-            String name = fjColumn.getName();
+        for (String key : keyFields) {
+            FJColumn fjColumn = fjTable.getColumns().get(key);
             if (i > 0) {
                 sql.append(" and ");
             }
-            sql.append("`").append(name).append("` = #{").append(fjColumn.getFieldName()).append("}");
+            sql.append("`").append(key).append("` = #{").append(fjColumn.getFieldName()).append("}");
             i++;
         }
         return sql.toString();

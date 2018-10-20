@@ -1,38 +1,27 @@
 package com.fastjrun.codeg.utils;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import com.fastjrun.codeg.common.CodeGException;
-import com.fastjrun.codeg.common.CodeGMsgContants;
-import com.fastjrun.codeg.common.DataBaseObject;
-import com.fastjrun.codeg.common.FJColumn;
-import com.fastjrun.codeg.common.FJTable;
-
+import com.fastjrun.codeg.common.*;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.Statements;
-import net.sf.jsqlparser.statement.create.table.ColDataType;
 import net.sf.jsqlparser.statement.create.table.ColumnDefinition;
 import net.sf.jsqlparser.statement.create.table.CreateTable;
+import net.sf.jsqlparser.statement.create.table.Index;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
 
 public class SQLSchemaParse {
 
     protected static final Log logStatic = LogFactory.getLog(SQLSchemaParse.class);
     static final String[] javaKeyWords = {"return", "package",
-            "describe", "order", "text", "FJTable", "private", "public", "class",
+            "describe", "order", "text", "fjTable", "private", "public", "class",
             "static", "test"};
     static Set<String> nameSet = new HashSet<>();
     static Set<String> otherSet = new HashSet<>();
@@ -66,33 +55,18 @@ public class SQLSchemaParse {
             }
         }
         if (createTables.isEmpty()) {
-            throw new RuntimeException("Only support create FJTable statement !!!");
+            throw new RuntimeException("Only support create fjTable statement !!!");
         }
 
         for (CreateTable createTable : createTables) {
             Map<String, FJColumn> columns = new HashMap<>();
-            FJTable fjTable = new FJTable();
-            fjTable.setName(createTable.getTable().getName());
+            FJTable fjTable = parseTable(createTable);
             createTable.getColumnDefinitions().forEach(it -> {
-                FJColumn field = new FJColumn();
-                // 字段名称
-                String columnName = it.getColumnName();
-                // 同时设置了 FieldName
-                field.setName(columnName);
+                FJColumn field = parseColumn("mysql", it);
 
-                // 字段类型
-                ColDataType colDataType = it.getColDataType();
-                // 同时设置了字段类型
-                field.setDatatype(colDataType.getDataType());
-
-                // comment注释
-                //field.setComment(getColumnComment(it.getColumnSpecStrings()));
-
-                columns.put(columnName, field);
+                columns.put(it.getColumnName(), field);
             });
-            Map<String, FJColumn> primaryKeyColumns = new HashMap<>();
             fjTable.setColumns(columns);
-            fjTable.setPrimaryKeyColumns(primaryKeyColumns);
             tableMap.put(fjTable.getName(), fjTable);
         }
 
@@ -104,9 +78,27 @@ public class SQLSchemaParse {
         FJTable table = new FJTable();
         // 表名
         String tbName = createTable.getTable().getName();
-
         table.setName(tbName);
-        table.setClassName(parseTableName(tbName)); // 根据表名得到类名，
+        // 根据表名得到类名，
+        table.setClassName(parseTableName(tbName));
+        List<?> tableOptionsStrings = createTable.getTableOptionsStrings();
+        for (int i = 0; i < tableOptionsStrings.size() - 2; i++) {
+            if (tableOptionsStrings.get(i).toString().toUpperCase().equals("COMMENT")) {
+                String comment = tableOptionsStrings.get(i + 2).toString();
+                table.setComment(comment);
+                break;
+            }
+        }
+
+        List<Index> indexes = createTable.getIndexes();
+        for (int i = 0; i < indexes.size(); i++) {
+            Index index = indexes.get(i);
+            if (index.getType().toUpperCase().equals("PRIMARY KEY")) {
+                table.setPrimaryKeyColumnNames(index.getColumnsNames());
+                break;
+            }
+        }
+
         return table;
     }
 
@@ -122,12 +114,54 @@ public class SQLSchemaParse {
 
     private static FJColumn parseMysqlColumn(ColumnDefinition columnDefinition) {
         FJColumn fjColumn = new FJColumn();
-        fjColumn.setName(columnDefinition.getColumnName());
-        fjColumn.setFieldName(parseFieldName(columnDefinition.getColumnName()));
+
+
+        String columnName = columnDefinition.getColumnName();
+        // 字段名称
+        fjColumn.setName(columnName);
+        fjColumn.setFieldName(parseFieldName(columnName));
         //fjColumn.setComment(comment);
+        // 字段类型
         String dataType = columnDefinition.getColDataType().getDataType();
-        fjColumn.setDatatype(dataType);
-        //fjColumn.setIdentity(identity);
+        fjColumn.setDatatypeSource(dataType);
+        if (dataType.toUpperCase().indexOf("VARCHAR2") != -1) {
+            fjColumn.setDatatype("String");
+        } else if (dataType.toUpperCase().indexOf("CHAR") != -1) {
+            fjColumn.setDatatype("String");
+        } else if (dataType.toUpperCase().equals("TIMESTAMP")) {
+            // Time
+            fjColumn.setDatatype("java.sql.Timestamp");
+        } else if (dataType.toUpperCase().equals("DATETIME")) {
+            // DATETIME
+            fjColumn.setDatatype("java.sql.Timestamp");
+        } else if (dataType.toUpperCase().startsWith("BLOB")) {
+            // Date
+            fjColumn.setDatatype("java.sql.Blob");
+        } else if (dataType.toUpperCase().startsWith("CLOB")) {
+            // Date
+            fjColumn.setDatatype("java.sql.Clob");
+        } else if (dataType.toUpperCase().equals("DATE")) {
+            // Date
+            fjColumn.setDatatype("java.sql.Date");
+        } else if (dataType.toUpperCase().startsWith("TIME")) {
+            // Date
+            fjColumn.setDatatype("java.sql.Time");
+        } else if (dataType.toUpperCase().indexOf("DECIMAL") != -1) {
+            fjColumn.setDatatype("java.math.BigDecimal");
+        } else {
+            fjColumn.setDatatype("String");
+        }
+        List<String> columnSpecStrings = columnDefinition.getColumnSpecStrings();
+        for (int i = 0; i < columnSpecStrings.size(); i++) {
+            if (columnSpecStrings.get(i).toUpperCase().equals("AUTO_INCREMENT")) {
+                fjColumn.setIdentity(true);
+            }
+            if (columnSpecStrings.get(i).toUpperCase().equals("COMMENT")) {
+                String comment = columnSpecStrings.get(i + 1);
+                fjColumn.setComment(comment);
+            }
+        }
+
         return fjColumn;
     }
 
@@ -145,7 +179,6 @@ public class SQLSchemaParse {
 
     /**
      * @param tableName
-     *
      * @return 根据code得出类名 规则： 去掉 T_或t_；去掉下划线，每个单词首字母大写;
      * 例：t_user_demo，去掉“t_”,u和d大写，类名是UserDemo
      */
@@ -173,7 +206,6 @@ public class SQLSchemaParse {
 
     /**
      * @param columnName
-     *
      * @return 根据字段code得到属性名 规则：去掉下划线；第一个字母小写，其他单词首字母大写
      */
     private static String parseFieldName(String columnName) {

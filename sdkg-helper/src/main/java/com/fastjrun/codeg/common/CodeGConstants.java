@@ -25,12 +25,12 @@ public interface CodeGConstants {
                     "com.fastjrun.web.controller.BaseRPCController", "DefaultRPCGenerator",
                     "DefaultRPCMethodGenerator");
 
-    public enum CodeGCommand {
+    enum CodeGCommand {
         ApiG, BundleG, BundleMockG;
     }
 
     // 0:common;1:swagger
-    public enum MockModel {
+    enum MockModel {
         MockModel_Common(0),
         MockModel_Swagger(1);
         public int value;
@@ -40,7 +40,7 @@ public interface CodeGConstants {
         }
     }
 
-    public enum ControllerProtocol {
+    enum ControllerProtocol {
         ControllerProtocol_HTTP("http"),
         ControllerProtocol_RPC("rpc");
 
@@ -52,7 +52,7 @@ public interface CodeGConstants {
 
     }
 
-    public class ControllerType {
+    class ControllerType {
 
         public String name;
 

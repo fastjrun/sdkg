@@ -1,8 +1,5 @@
 package com.fastjrun.codeg.generator;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import com.fastjrun.codeg.common.CodeGException;
 import com.fastjrun.codeg.common.CodeGMsgContants;
 import com.fastjrun.codeg.common.FJColumn;
@@ -11,21 +8,10 @@ import com.fastjrun.codeg.helper.MysqlSqlHelper;
 import com.fastjrun.codeg.helper.SQLHelperFactory;
 import com.fastjrun.codeg.helper.SqlHelper;
 import com.fastjrun.helper.StringHelper;
-import com.sun.codemodel.ClassType;
-import com.sun.codemodel.JBlock;
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JClassAlreadyExistsException;
-import com.sun.codemodel.JConditional;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JDocComment;
-import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JFieldRef;
-import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JForLoop;
-import com.sun.codemodel.JMethod;
-import com.sun.codemodel.JMod;
-import com.sun.codemodel.JType;
-import com.sun.codemodel.JVar;
+import com.sun.codemodel.*;
+
+import java.util.List;
+import java.util.Map;
 
 public class BaseMybatisAFGenerator extends BaseCMGenerator {
 
@@ -37,7 +23,7 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
 
     static JClass parentClass = cm.ref("com.fastjrun.entity.BaseEntity");
 
-    protected FJTable FJTable;
+    protected FJTable fjTable;
 
     protected JDefinedClass entityClass;
 
@@ -47,12 +33,12 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
 
     protected JDefinedClass daoImplClass;
 
-    public FJTable getFJTable() {
-        return FJTable;
+    public FJTable getFjTable() {
+        return fjTable;
     }
 
-    public void setFJTable(FJTable FJTable) {
-        this.FJTable = FJTable;
+    public void setFjTable(FJTable fjTable) {
+        this.fjTable = fjTable;
     }
 
     public JDefinedClass getEntityClass() {
@@ -82,13 +68,13 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
     protected void processEntity() {
 
         String className = this.packageNamePrefix + entityPackageName
-                + FJTable.getClassName();
+                + fjTable.getClassName();
 
         try {
             this.entityClass = cm._class(className);
 
         } catch (JClassAlreadyExistsException e) {
-            String msg = "FJTable class：" + FJTable.getName() + " is already exists.";
+            String msg = "fjTable class：" + fjTable.getName() + " is already exists.";
             this.commonLog.getLog().error(msg, e);
             throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
         }
@@ -98,7 +84,7 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
         long hashCode = 0l;
         hashCode += this.entityClass.getClass().getName().hashCode();
         this.addClassDeclaration(this.entityClass);
-        Map<String, FJColumn> columns = FJTable.getColumns();
+        Map<String, FJColumn> columns = fjTable.getColumns();
         JMethod toStringMethod = this.entityClass.method(JMod.PUBLIC, cm.ref("String"),
                 "toString");
         toStringMethod.annotate(cm.ref("Override"));
@@ -108,7 +94,7 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
                 JExpr._new(cm.ref("StringBuilder")));
         int index = 0;
         toStringMethodBlk.invoke(toStringSBVar, "append").arg(
-                JExpr.lit(FJTable.getClassName()).plus(JExpr.lit(" [")));
+                JExpr.lit(fjTable.getClassName()).plus(JExpr.lit(" [")));
 
         for (FJColumn FJColumn : columns.values()) {
             String name = FJColumn.getFieldName();
@@ -168,40 +154,36 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
 
     protected void processDao() {
         String lowerCaseFirstOneClassName = StringHelper
-                .toLowerCaseFirstOne(FJTable.getClassName());
-        // 生成接口名：Base+FJTable.getClassName()+Dao
+                .toLowerCaseFirstOne(fjTable.getClassName());
+        // 生成接口名：Base+fjTable.getClassName()+Dao
         try {
             this.daoClass = cm._class(
-                    this.packageNamePrefix + "dao.Base" + FJTable.getClassName()
+                    this.packageNamePrefix + "dao.Base" + fjTable.getClassName()
                             + "Dao", ClassType.INTERFACE);
         } catch (JClassAlreadyExistsException e) {
-            String msg = "FJTable dao class：" + FJTable.getName() + " is already exists.";
+            String msg = "fjTable dao class：" + fjTable.getName() + " is already exists.";
             this.commonLog.getLog().error(msg, e);
             throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
         }
         this.addClassDeclaration(this.daoClass);
 
-        SqlHelper sqlHelper = SQLHelperFactory.getSQLHelper("mysql", FJTable);
+        SqlHelper sqlHelper = SQLHelperFactory.getSQLHelper("mysql", fjTable);
         // insert方法
         JMethod insertMethod = this.daoClass.method(JMod.PUBLIC, cm.INT, "insert");
         insertMethod.param(this.entityClass, lowerCaseFirstOneClassName);
         insertMethod.annotate(
                 cm.ref("org.apache.ibatis.annotations.Insert")).param(
                 "value", sqlHelper.getInsert());
-        Map<String, FJColumn> primaryKeyColumns = FJTable
-                .getPrimaryKeyColumns();
-        if (primaryKeyColumns != null) {
-            if (primaryKeyColumns.size() == 1) {
-                Iterator<FJColumn> itera = primaryKeyColumns.values()
-                        .iterator();
-                itera.hasNext();
-                FJColumn FJColumn = itera.next();
-                if (FJColumn.getIdentity().equals("1")) {
+        List<String> primaryKeyColumnNames = fjTable.getPrimaryKeyColumnNames();
+        if (primaryKeyColumnNames != null) {
+            if (primaryKeyColumnNames.size() == 1) {
+                FJColumn fjColumn = fjTable.getColumns().get(primaryKeyColumnNames.get(0));
+                if (fjColumn.isIdentity()) {
                     insertMethod
                             .annotate(
                                     cm.ref("org.apache.ibatis.annotations.Options"))
                             .param("useGeneratedKeys", true)
-                            .param("keyProperty", FJColumn.getFieldName());
+                            .param("keyProperty", fjColumn.getFieldName());
                 }
             }
             // selectByPK方法
@@ -226,17 +208,17 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
                     cm.ref("org.apache.ibatis.annotations.Update")).param(
                     "value", sqlHelper.getUpdateById());
             updateByIdMethod.param(this.entityClass, lowerCaseFirstOneClassName);
-            Iterator<FJColumn> itera = primaryKeyColumns.values().iterator();
-            while (itera.hasNext()) {
-                FJColumn FJColumn = itera.next();
-                String fieldName = FJColumn.getFieldName();
+            for (int i = 0; i < primaryKeyColumnNames.size(); i++) {
+                String key = primaryKeyColumnNames.get(i);
+                FJColumn fjColumn = fjTable.getColumns().get(i);
+                String fieldName = fjColumn.getFieldName();
                 JVar selectFieldNameParam = selectByIdMethod.param(
-                        cm.ref(FJColumn.getDatatype()), fieldName);
+                        cm.ref(fjColumn.getDatatype()), fieldName);
                 selectFieldNameParam.annotate(
                         cm.ref("org.apache.ibatis.annotations.Param"))
                         .param("value", fieldName);
                 JVar deleteFieldNameParam = deleteByIdMethod.param(
-                        cm.ref(FJColumn.getDatatype()), fieldName);
+                        cm.ref(fjColumn.getDatatype()), fieldName);
                 deleteFieldNameParam.annotate(
                         cm.ref("org.apache.ibatis.annotations.Param"))
                         .param("value", fieldName);
@@ -344,24 +326,24 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
     }
 
     /**
-     * 生成SqlBuilder类 类名：Base+FJTable.getClassName()+SqlBuilder
+     * 生成SqlBuilder类 类名：Base+fjTable.getClassName()+SqlBuilder
      *
      * @return 定义了sqlBuilder接口的三个方法：totalCountCondition,selectOneCondition,
      * queryForListCondition
      */
     private void processSQLBuilder() {
-        // 生成接口名：Base+FJTable.getClassName()+Dao
+        // 生成接口名：Base+fjTable.getClassName()+Dao
         try {
             this.sqlBuilderClass = cm._class(this.packageNamePrefix + "dao.Base"
-                    + FJTable.getClassName() + "SqlBuilder", ClassType.CLASS);
+                    + fjTable.getClassName() + "SqlBuilder", ClassType.CLASS);
 
         } catch (JClassAlreadyExistsException e) {
-            String msg = "FJTable SqlBuilder class：" + FJTable.getName() + " is already exists.";
+            String msg = "fjTable SqlBuilder class：" + fjTable.getName() + " is already exists.";
             this.commonLog.getLog().error(msg, e);
             throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
         }
         SqlHelper sqlHelper = SQLHelperFactory.getSQLHelper(
-                "mysql", FJTable);
+                "mysql", fjTable);
         // totalCountCondition方法
         JMethod totalCountConditionMethod = this.sqlBuilderClass.method(JMod.PUBLIC,
                 cm.ref("String"), "totalCountCondition");
@@ -410,11 +392,11 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
                         "parameter");
         JBlock insertAllMethodBlk = insertAllMethod.body();
         JVar listVar = insertAllMethodBlk.decl(cm.ref("java.util.List")
-                        .narrow(this.entityClass), FJTable.getClassName() + "s",
+                        .narrow(this.entityClass), fjTable.getClassName() + "s",
                 parameterVar.invoke("get").arg("list"));
         sbVar = insertAllMethodBlk.decl(cm.ref("StringBuilder"), "sb",
                 JExpr._new(cm.ref("StringBuilder")));
-        String[] sqlParamAndValue = getAllFieldsForBatch(FJTable);
+        String[] sqlParamAndValue = getAllFieldsForBatch(fjTable);
         JVar messageFormatVar = insertAllMethodBlk.decl(
                 cm.ref("java.text.MessageFormat"),
                 "messageFormat",
@@ -423,7 +405,7 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
         // mysql数据库
         if (sqlHelper instanceof MysqlSqlHelper) {
             insertAllMethodBlk.invoke(sbVar, "append").arg(
-                    "INSERT INTO " + FJTable.getName() + sqlParamAndValue[0]
+                    "INSERT INTO " + fjTable.getName() + sqlParamAndValue[0]
                             + " VALUES");
             JForLoop forLoop = insertAllMethodBlk._for();
             JVar i = forLoop.init(cm.INT, "i", JExpr.lit(0));
@@ -440,7 +422,7 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
             ifBlk.invoke(JExpr.ref("sb"), "append").arg(",");
         } else { // oracle数据库
             insertAllMethodBlk.invoke(sbVar, "append").arg(
-                    "INSERT INTO " + FJTable.getName() + sqlParamAndValue[0]
+                    "INSERT INTO " + fjTable.getName() + sqlParamAndValue[0]
                             + " ");
             JForLoop forLoop = insertAllMethodBlk._for();
             JVar i = forLoop.init(cm.INT, "i", JExpr.lit(0));
@@ -473,8 +455,7 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
         int i = 0;
         for (FJColumn fjColumn : columns.values()) {
             String name = fjColumn.getName();
-            String identity = fjColumn.getIdentity();
-            if (identity.equals("1")) {
+            if (fjColumn.isIdentity()) {
                 continue;
             }
             if (i > 0) {
@@ -488,6 +469,6 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
         }
         sqlParam.append(")");
         sqlValue.append(")");
-        return new String[] {sqlParam.toString(), sqlValue.toString()};
+        return new String[]{sqlParam.toString(), sqlValue.toString()};
     }
 }

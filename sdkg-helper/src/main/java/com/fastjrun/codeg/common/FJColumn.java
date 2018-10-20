@@ -6,7 +6,7 @@ package com.fastjrun.codeg.common;
 public class FJColumn {
 
     /**
-     * 字段名，中文
+     * 字段名
      */
     private String name;
 
@@ -26,20 +26,20 @@ public class FJColumn {
     private String datatype;
 
     /**
-     * pdm中的数据类型，<a:DataType>
+     * 数据类型，<a:DataType>
      */
     private String datatypeSource;
 
     /**
-     * pdm中的自动增长属性，<a:Identity>
+     * 自动增长属性，<a:Identity>
      */
-    private String identity;
+    private boolean identity;
 
-    public String getIdentity() {
+    public boolean isIdentity() {
         return identity;
     }
 
-    public void setIdentity(String identity) {
+    public void setIdentity(boolean identity) {
         this.identity = identity;
     }
 
