@@ -1,6 +1,25 @@
 package com.fastjrun.codeg.utils;
 
-import com.fastjrun.codeg.common.*;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.fastjrun.codeg.common.CodeGException;
+import com.fastjrun.codeg.common.CodeGMsgContants;
+import com.fastjrun.codeg.common.DataBaseObject;
+import com.fastjrun.codeg.common.FJColumn;
+import com.fastjrun.codeg.common.FJTable;
+
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
@@ -8,16 +27,18 @@ import net.sf.jsqlparser.statement.Statements;
 import net.sf.jsqlparser.statement.create.table.ColumnDefinition;
 import net.sf.jsqlparser.statement.create.table.CreateTable;
 import net.sf.jsqlparser.statement.create.table.Index;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.*;
 
 public class SQLSchemaParse {
+
+    public enum TargetType {
+        TargetType_Mysql("mysql"), TargetType_Oracle("oracle");
+
+        public String typeName;
+
+        TargetType(String typeName) {
+            this.typeName = typeName;
+        }
+    }
 
     protected static final Log logStatic = LogFactory.getLog(SQLSchemaParse.class);
     static final String[] javaKeyWords = {"return", "package",
@@ -37,7 +58,7 @@ public class SQLSchemaParse {
 
     ;
 
-    public static DataBaseObject process(String sqlFile) {
+    public static DataBaseObject process(TargetType targetType, String sqlFile) {
         DataBaseObject dataBaseObject = new DataBaseObject();
         Map<String, FJTable> tableMap = new HashMap<>();
         Statements statements;
@@ -47,7 +68,7 @@ public class SQLSchemaParse {
         } catch (IOException | JSQLParserException e) {
             throw new CodeGException(CodeGMsgContants.CODEG_SQLFILE_INVALID, "sqlFiles is wrong");
         }
-        dataBaseObject.setTargetType("mysql");
+        dataBaseObject.setTargetType(targetType.typeName);
         List<CreateTable> createTables = new ArrayList<>();
         for (Statement statement : statements.getStatements()) {
             if (statement instanceof CreateTable) {
@@ -64,7 +85,7 @@ public class SQLSchemaParse {
             createTable.getColumnDefinitions().forEach(it -> {
                 FJColumn field = parseColumn("mysql", it);
 
-                columns.put(it.getColumnName(), field);
+                columns.put(field.getName(), field);
             });
             fjTable.setColumns(columns);
             tableMap.put(fjTable.getName(), fjTable);
@@ -78,6 +99,9 @@ public class SQLSchemaParse {
         FJTable table = new FJTable();
         // 表名
         String tbName = createTable.getTable().getName();
+        if (tbName.startsWith("`")) {
+            tbName = tbName.substring(1, tbName.length() - 1);
+        }
         table.setName(tbName);
         // 根据表名得到类名，
         table.setClassName(parseTableName(tbName));
@@ -115,16 +139,40 @@ public class SQLSchemaParse {
     private static FJColumn parseMysqlColumn(ColumnDefinition columnDefinition) {
         FJColumn fjColumn = new FJColumn();
 
-
         String columnName = columnDefinition.getColumnName();
+
+        if (columnName.startsWith("`")) {
+            columnName = columnName.substring(1, columnName.length() - 1);
+        }
         // 字段名称
         fjColumn.setName(columnName);
         fjColumn.setFieldName(parseFieldName(columnName));
+
+        List<String> columnSpecStrings = columnDefinition.getColumnSpecStrings();
+        boolean unsignedExisted = false;
+        for (int i = 0; i < columnSpecStrings.size(); i++) {
+            if (columnSpecStrings.get(i).toUpperCase().equals("AUTO_INCREMENT")) {
+                fjColumn.setIdentity(true);
+            }
+            if (columnSpecStrings.get(i).toUpperCase().equals("COMMENT")) {
+                String comment = columnSpecStrings.get(i + 1);
+                fjColumn.setComment(comment);
+            }
+            if (columnSpecStrings.get(i).toUpperCase().equals("UNSIGNED")) {
+                unsignedExisted = true;
+            }
+        }
         //fjColumn.setComment(comment);
         // 字段类型
         String dataType = columnDefinition.getColDataType().getDataType();
         fjColumn.setDatatypeSource(dataType);
-        if (dataType.toUpperCase().indexOf("VARCHAR2") != -1) {
+        // https://dev.mysql.com/doc/connector-j/5.1/en/connector-j-reference-type-conversions.html
+
+        // java.lang.Boolean if the configuration property tinyInt1isBit is set to true (the default) and the storage
+        // size is 1, or java.lang.Integer if not.
+        if (dataType.toUpperCase().indexOf("BOOL") != -1) {
+            fjColumn.setDatatype("String");
+        } else if (dataType.toUpperCase().indexOf("VARCHAR2") != -1) {
             fjColumn.setDatatype("String");
         } else if (dataType.toUpperCase().indexOf("CHAR") != -1) {
             fjColumn.setDatatype("String");
@@ -134,10 +182,10 @@ public class SQLSchemaParse {
         } else if (dataType.toUpperCase().equals("DATETIME")) {
             // DATETIME
             fjColumn.setDatatype("java.sql.Timestamp");
-        } else if (dataType.toUpperCase().startsWith("BLOB")) {
-            // Date
-            fjColumn.setDatatype("java.sql.Blob");
-        } else if (dataType.toUpperCase().startsWith("CLOB")) {
+        } else if (dataType.toUpperCase().indexOf("BLOB") > 0) {
+            // byte[]
+            fjColumn.setDatatype("byte[]");
+        } else if (dataType.toUpperCase().indexOf("CLOB") > 0) {
             // Date
             fjColumn.setDatatype("java.sql.Clob");
         } else if (dataType.toUpperCase().equals("DATE")) {
@@ -148,18 +196,34 @@ public class SQLSchemaParse {
             fjColumn.setDatatype("java.sql.Time");
         } else if (dataType.toUpperCase().indexOf("DECIMAL") != -1) {
             fjColumn.setDatatype("java.math.BigDecimal");
+        } else if (dataType.toUpperCase().indexOf("BIGINT") != -1) {
+
+            if (unsignedExisted) {
+                fjColumn.setDatatype("java.math.BigInteger");
+            } else {
+                fjColumn.setDatatype("Long");
+            }
+        } else if ((dataType.toUpperCase().indexOf("TINYINT") != -1)
+                || (dataType.toUpperCase().indexOf("SMALLINT") != -1)
+                || (dataType.toUpperCase().indexOf("MEDIUMINT") != -1)) {
+            fjColumn.setDatatype("Integer");
+        } else if (dataType.toUpperCase().indexOf("INT") != -1) {
+            if (unsignedExisted) {
+                fjColumn.setDatatype("Long");
+            } else {
+                fjColumn.setDatatype("Integer");
+            }
+        } else if (dataType.toUpperCase().indexOf("TEXT") != -1) {
+            // TEXT,MEDIUMTEXT,LONGTEXT,TINYTEXT
+            fjColumn.setDatatype("String");
+        } else if (dataType.toUpperCase().indexOf("FLOAT") != -1) {
+            fjColumn.setDatatype("Float");
+        } else if (dataType.toUpperCase().indexOf("DOUBLE") != -1) {
+            fjColumn.setDatatype("Double");
+        } else if (dataType.toUpperCase().indexOf("LONG") != -1) {
+            fjColumn.setDatatype("Long");
         } else {
             fjColumn.setDatatype("String");
-        }
-        List<String> columnSpecStrings = columnDefinition.getColumnSpecStrings();
-        for (int i = 0; i < columnSpecStrings.size(); i++) {
-            if (columnSpecStrings.get(i).toUpperCase().equals("AUTO_INCREMENT")) {
-                fjColumn.setIdentity(true);
-            }
-            if (columnSpecStrings.get(i).toUpperCase().equals("COMMENT")) {
-                String comment = columnSpecStrings.get(i + 1);
-                fjColumn.setComment(comment);
-            }
         }
 
         return fjColumn;
@@ -179,11 +243,12 @@ public class SQLSchemaParse {
 
     /**
      * @param tableName
+     *
      * @return 根据code得出类名 规则： 去掉 T_或t_；去掉下划线，每个单词首字母大写;
      * 例：t_user_demo，去掉“t_”,u和d大写，类名是UserDemo
      */
     private static String parseTableName(String tableName) {
-        if ((tableName.startsWith("T_")) || (tableName.startsWith("t_"))) {
+        if (tableName.startsWith("T_") || tableName.startsWith("t_")) {
             tableName = tableName.substring(2);
         }
         StringBuilder sb = new StringBuilder();
@@ -206,6 +271,7 @@ public class SQLSchemaParse {
 
     /**
      * @param columnName
+     *
      * @return 根据字段code得到属性名 规则：去掉下划线；第一个字母小写，其他单词首字母大写
      */
     private static String parseFieldName(String columnName) {

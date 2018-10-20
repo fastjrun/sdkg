@@ -1,5 +1,8 @@
 package com.fastjrun.codeg.generator;
 
+import java.util.List;
+import java.util.Map;
+
 import com.fastjrun.codeg.common.CodeGException;
 import com.fastjrun.codeg.common.CodeGMsgContants;
 import com.fastjrun.codeg.common.FJColumn;
@@ -8,11 +11,25 @@ import com.fastjrun.codeg.helper.MysqlSqlHelper;
 import com.fastjrun.codeg.helper.SQLHelperFactory;
 import com.fastjrun.codeg.helper.SqlHelper;
 import com.fastjrun.helper.StringHelper;
-import com.sun.codemodel.*;
+import com.sun.codemodel.ClassType;
+import com.sun.codemodel.JBlock;
+import com.sun.codemodel.JClass;
+import com.sun.codemodel.JClassAlreadyExistsException;
+import com.sun.codemodel.JConditional;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JDocComment;
+import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JFieldRef;
+import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JForLoop;
+import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JMod;
+import com.sun.codemodel.JType;
+import com.sun.codemodel.JVar;
 
-import java.util.List;
-import java.util.Map;
-
+/**
+ * Mybatis Annotation
+ */
 public class BaseMybatisAFGenerator extends BaseCMGenerator {
 
     static String entityPackageName = "entity.";
@@ -469,6 +486,6 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
         }
         sqlParam.append(")");
         sqlValue.append(")");
-        return new String[]{sqlParam.toString(), sqlValue.toString()};
+        return new String[] {sqlParam.toString(), sqlValue.toString()};
     }
 }
