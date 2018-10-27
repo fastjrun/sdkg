@@ -141,7 +141,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <excludes>
-                        <exclude>**/CodeGServiceTest</exclude>
+                        <exclude>**/*Test</exclude>
                     </excludes>
                 </configuration>
             </plugin>
