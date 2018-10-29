@@ -47,7 +47,6 @@ public class BundleXMLParser implements CodeGConstants {
         List<Element> eleCookieVariables = elePacketFieldsRoot.elements(elePacketFieldName);
         for (int index = 0; index < eleCookieVariables.size(); index++) {
             Element element = eleCookieVariables.get(index);
-            String tagName = element.getName();
             String fieldName = element.attributeValue("name");
             String fieldNameAlias = element.attributeValue("nameAlias");
             String datatype = element.attributeValue("dataType");
@@ -207,12 +206,16 @@ public class BundleXMLParser implements CodeGConstants {
             String remark = eleController.attributeValue("remark");
             String clientName = eleController.attributeValue("clientName");
             String tags = eleController.attributeValue("tags");
+            String _new = eleController.attributeValue("new");
             commonController.setName(name);
             commonController.setPath(path);
             commonController.setVersion(version);
             commonController.setRemark(remark);
             commonController.setClientName(clientName);
             commonController.setTags(tags);
+            if (_new != null && !_new.equals("")) {
+                commonController.set_new(Boolean.parseBoolean(_new));
+            }
             Element eleService = eleController.element("service");
             String serviceName = eleService.attributeValue("name");
             commonController.setServiceName(serviceName);
@@ -222,6 +225,8 @@ public class BundleXMLParser implements CodeGConstants {
             CommonService service = serviceMap.get(serviceRef);
 
             commonController.setService(service);
+            List<CommonController> commonControllers = service.getCommonControllers();
+            commonControllers.add(commonController);
             this.controllerMap.put(name, commonController);
         }
     }
@@ -269,6 +274,8 @@ public class BundleXMLParser implements CodeGConstants {
                 }
                 service.setMethods(methods);
             }
+            List<CommonController> commonControllers = new ArrayList<>();
+            service.setCommonControllers(commonControllers);
             this.serviceMap.put(name, service);
 
         }
