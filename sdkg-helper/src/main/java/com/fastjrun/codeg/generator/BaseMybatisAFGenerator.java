@@ -186,7 +186,7 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
 
         SqlHelper sqlHelper = SQLHelperFactory.getSQLHelper("mysql", fjTable);
         // insert方法
-        JMethod insertMethod = this.daoClass.method(JMod.PUBLIC, cm.INT, "insert");
+        JMethod insertMethod = this.daoClass.method(JMod.NONE, cm.INT, "insert");
         insertMethod.param(this.entityClass, lowerCaseFirstOneClassName);
         insertMethod.annotate(
                 cm.ref("org.apache.ibatis.annotations.Insert")).param(
@@ -204,7 +204,7 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
                 }
             }
             // selectByPK方法
-            JMethod selectByIdMethod = this.daoClass.method(JMod.PUBLIC, this.entityClass,
+            JMethod selectByIdMethod = this.daoClass.method(JMod.NONE, this.entityClass,
                     "selectByPK");
             selectByIdMethod.annotate(
                     cm.ref("org.apache.ibatis.annotations.Select")).param(
@@ -213,13 +213,13 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
                     cm.ref("org.apache.ibatis.annotations.Options")).param(
                     "flushCache", true);
             // deleteById方法
-            JMethod deleteByIdMethod = this.daoClass.method(JMod.PUBLIC, cm.INT,
+            JMethod deleteByIdMethod = this.daoClass.method(JMod.NONE, cm.INT,
                     "deleteByPK");
             deleteByIdMethod.annotate(
                     cm.ref("org.apache.ibatis.annotations.Delete")).param(
                     "value", sqlHelper.getDeleteById());
             // updateById方法
-            JMethod updateByIdMethod = this.daoClass.method(JMod.PUBLIC, cm.INT,
+            JMethod updateByIdMethod = this.daoClass.method(JMod.NONE, cm.INT,
                     "updateByPK");
             updateByIdMethod.annotate(
                     cm.ref("org.apache.ibatis.annotations.Update")).param(
@@ -227,7 +227,7 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
             updateByIdMethod.param(this.entityClass, lowerCaseFirstOneClassName);
             for (int i = 0; i < primaryKeyColumnNames.size(); i++) {
                 String key = primaryKeyColumnNames.get(i);
-                FJColumn fjColumn = fjTable.getColumns().get(i);
+                FJColumn fjColumn = fjTable.getColumns().get(key);
                 String fieldName = fjColumn.getFieldName();
                 JVar selectFieldNameParam = selectByIdMethod.param(
                         cm.ref(fjColumn.getDatatype()), fieldName);
@@ -243,17 +243,14 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
 
         }
         // totalCount总数
-        JMethod totalCountMethod = this.daoClass.method(JMod.PUBLIC, cm.INT,
+        JMethod totalCountMethod = this.daoClass.method(JMod.NONE, cm.INT,
                 "totalCount");
         totalCountMethod.annotate(
                 cm.ref("org.apache.ibatis.annotations.Select")).param(
                 "value", sqlHelper.getTotalCount(0));
-        totalCountMethod.annotate(
-                cm.ref("org.apache.ibatis.annotations.Options")).param(
-                "flushCache", true);
         // queryForList查询
         JMethod queryForListMethod = this.daoClass
-                .method(JMod.PUBLIC,
+                .method(JMod.NONE,
                         cm.ref("java.util.List").narrow(this.entityClass),
                         "queryForList");
         queryForListMethod.annotate(
@@ -263,7 +260,7 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
                 cm.ref("org.apache.ibatis.annotations.Options")).param(
                 "flushCache", true);
         // queryForLimitList分页查询
-        JMethod queryForLimitListMethod = this.daoClass.method(JMod.PUBLIC,
+        JMethod queryForLimitListMethod = this.daoClass.method(JMod.NONE,
                 cm.ref("java.util.List").narrow(this.entityClass),
                 "queryForLimitList");
         queryForLimitListMethod.param(
@@ -276,7 +273,7 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
                 "flushCache", true);
 
         // totalCountCondition总数
-        JMethod totalCountConditionMethod = this.daoClass.method(JMod.PUBLIC, cm.INT,
+        JMethod totalCountConditionMethod = this.daoClass.method(JMod.NONE, cm.INT,
                 "totalCountCondition");
         totalCountConditionMethod
                 .annotate(
@@ -289,7 +286,7 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
                 .annotate(cm.ref("org.apache.ibatis.annotations.Param"))
                 .param("value", "condition");
         // selectOneCondition查询
-        JMethod selectOneConditionMethod = this.daoClass.method(JMod.PUBLIC,
+        JMethod selectOneConditionMethod = this.daoClass.method(JMod.NONE,
                 this.entityClass, "selectOneCondition");
         selectOneConditionMethod
                 .annotate(
@@ -302,7 +299,7 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
                 .annotate(cm.ref("org.apache.ibatis.annotations.Param"))
                 .param("value", "condition");
         // queryForListCondition查询
-        JMethod queryForListConditionMethod = this.daoClass.method(JMod.PUBLIC, cm
+        JMethod queryForListConditionMethod = this.daoClass.method(JMod.NONE, cm
                         .ref("java.util.List").narrow(this.entityClass),
                 "queryForListCondition");
         queryForListConditionMethod
@@ -316,7 +313,7 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
                 .annotate(cm.ref("org.apache.ibatis.annotations.Param"))
                 .param("value", "condition");
         // queryForLimitListCondition分页查询
-        JMethod queryForLimitListConditionMethod = this.daoClass.method(JMod.PUBLIC,
+        JMethod queryForLimitListConditionMethod = this.daoClass.method(JMod.NONE,
                 cm.ref("java.util.List").narrow(this.entityClass),
                 "queryForLimitListCondition");
         queryForLimitListConditionMethod
@@ -332,7 +329,7 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
         queryForLimitListConditionMethod.param(
                 cm.ref("org.apache.ibatis.session.RowBounds"), "rowBounds");
         // insertAll方法批量插入
-        JMethod insertAllMethod = this.daoClass.method(JMod.PUBLIC, cm.INT,
+        JMethod insertAllMethod = this.daoClass.method(JMod.NONE, cm.INT,
                 "insertAll");
         insertAllMethod.param(cm.ref("java.util.List").narrow(this.entityClass),
                 lowerCaseFirstOneClassName + "s"); // 复数形式
@@ -491,6 +488,10 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
 
     @Override
     public void generate() {
+
+        this.processEntity();
+        this.processSQLBuilder();
+        this.processDao();
 
     }
 }

@@ -82,6 +82,23 @@ public class DefaultCodeGService extends BaseCodeGServiceImpl implements CodeGSe
     }
 
     @Override
+    public boolean generateBase(String moduleName) {
+
+        Date begin = new Date();
+        commonLog.getLog().info("begin genreate at " + begin);
+        this.beforeGenerate(moduleName);
+
+        this.generateMybatisAnnotationCode(moduleName, false);
+
+        Date end = new Date();
+
+        commonLog.getLog()
+                .info("end genreate at " + end + ",cast " + String.valueOf(end.getTime() - begin.getTime()) + " ms");
+
+        return true;
+    }
+
+    @Override
     public boolean generateProvider(String moduleName) {
         return this.generateBundle(moduleName, MockModel.MockModel_Common);
     }

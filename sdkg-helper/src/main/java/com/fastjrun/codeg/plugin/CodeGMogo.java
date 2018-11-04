@@ -8,6 +8,9 @@ import com.fastjrun.codeg.service.impl.DefaultCodeGService;
 
 public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
 
+    @Parameter(property = "codeg.sqlFile", defaultValue = "fast-demo.sql")
+    protected String sqlFile;
+
     @Parameter(property = "codeg.bundleFiles", defaultValue = "demo_bundle.xml,demo_bundle1.xml")
     protected String bundleFiles;
 
@@ -50,7 +53,26 @@ public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
 
         getLog().info(company);
 
-        getLog().info(bundleFiles);
+        switch (codeGCommand) {
+            case BundleMockG:
+
+                getLog().info(bundleFiles);
+                break;
+            case BundleG:
+
+                getLog().info(bundleFiles);
+                break;
+            case ApiG:
+
+                getLog().info(bundleFiles);
+                break;
+            case BaseG:
+
+                getLog().info(sqlFile);
+                break;
+            default:
+                break;
+        }
 
         getLog().info(packagePrefix);
 
@@ -79,6 +101,9 @@ public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
                 break;
             case ApiG:
                 codeGService.generateAPI(module);
+                break;
+            case BaseG:
+                codeGService.generateBase(module);
                 break;
             default:
                 break;
