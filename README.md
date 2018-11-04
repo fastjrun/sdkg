@@ -41,7 +41,7 @@ mvn clean package -pl sdkg-demo/demo-provider-mock -am -Dbdmgc.skip=false -Dcode
 
 ## 版本说明：
 ### v2.0 升级说明
-#### 模块进一步优化，sdkg-common拆分成5个模块api、common、client、service和web
+#### 模块进一步优化，sdkg-common拆分成5个模块api、common、client、service和provider
 #### 进一步优化接口定义规范：fastjrun-schema.xsd
 #### 新增sdkg-demo模块，会作为示例工程演示如何基于快嘉代码生成插件实现项目演进
 #### 代码分层，重构
