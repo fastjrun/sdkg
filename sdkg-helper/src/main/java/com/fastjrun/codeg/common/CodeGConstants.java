@@ -3,27 +3,21 @@ package com.fastjrun.codeg.common;
 public interface CodeGConstants {
     ControllerType ControllerType_GENERIC =
             new ControllerType("Generic", ControllerProtocol.ControllerProtocol_HTTP, "",
-                    "com.fastjrun.client.DefaultHttpGenericClient", "",
+                    "com.fastjrun.client.DefaultHTTPGenericClient", "",
                     "",
-                    "com"
-                            + ".fastjrun.web"
-                            + ".controller.BaseController", "DefaultHTTPGenerator",
-                    "DefaultHTTPApiMethodGenerator");
+                    "com.fastjrun.web.controller.BaseController", "DefaultcHTTPGeneriGenerator");
     ControllerType ControllerType_APP =
             new ControllerType("App", ControllerProtocol.ControllerProtocol_HTTP, "",
-                    "com.fastjrun.client.DefaultHttpAppClient", "", "",
-                    "com.fastjrun.web.controller.BaseAppController", "DefaultHTTPGenerator",
-                    "DefaultHTTPAppMethodGenerator");
+                    "com.fastjrun.client.DefaultHTTPAppClient", "", "",
+                    "com.fastjrun.web.controller.BaseAppController", "DefaultHTTPAPPGenerator");
     ControllerType ControllerType_API =
             new ControllerType("Api", ControllerProtocol.ControllerProtocol_HTTP, "",
-                    "com.fastjrun.client.DefaultHttpApiClient", "", "",
-                    "com.fastjrun.web.controller.BaseApiController", "DefaultHTTPGenerator",
-                    "DefaultHTTPGenericMethodGenerator");
+                    "com.fastjrun.client.DefaultHTTPApiClient", "", "",
+                    "com.fastjrun.web.controller.BaseApiController", "DefaultHTTPAPIGenerator");
     ControllerType ControllerType_DUBBO =
-            new ControllerType("Dubbo", ControllerProtocol.ControllerProtocol_RPC, "DubboClient",
+            new ControllerType("Dubbo", ControllerProtocol.ControllerProtocol_DUBBO, "DubboClient",
                     "com.fastjrun.client.DefaultDubboClient", "DubboController", "",
-                    "com.fastjrun.web.controller.BaseRPCController", "DefaultRPCGenerator",
-                    "DefaultRPCMethodGenerator");
+                    "com.fastjrun.web.controller.BaseRPCController", "DefaultDubboGenerator");
 
     enum CodeGCommand {
         ApiG, BundleG, BundleMockG;
@@ -42,7 +36,7 @@ public interface CodeGConstants {
 
     enum ControllerProtocol {
         ControllerProtocol_HTTP("http"),
-        ControllerProtocol_RPC("rpc");
+        ControllerProtocol_DUBBO("dubbo");
 
         public String value;
 
@@ -70,12 +64,9 @@ public interface CodeGConstants {
 
         public String generatorName;
 
-        public String methodGeneratorName;
-
         public ControllerType(String name, ControllerProtocol controllerProtocol, String clientSuffix, String
                 baseClient, String providerSuffix,
-                              String apiParentName, String providerParentName, String generatorName,
-                              String methodGeneratorName) {
+                              String apiParentName, String providerParentName, String generatorName) {
             this.name = name;
             this.controllerProtocol = controllerProtocol;
             this.clientSuffix = clientSuffix;
@@ -84,7 +75,6 @@ public interface CodeGConstants {
             this.apiParentName = apiParentName;
             this.providerParentName = providerParentName;
             this.generatorName = generatorName;
-            this.methodGeneratorName = methodGeneratorName;
         }
 
     }

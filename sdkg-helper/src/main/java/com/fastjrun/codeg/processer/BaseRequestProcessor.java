@@ -1,20 +1,36 @@
 package com.fastjrun.codeg.processer;
 
-import com.fastjrun.codeg.generator.method.BaseControllerMethodGenerator;
+import com.sun.codemodel.JType;
 
 public abstract class BaseRequestProcessor implements RequestProcessor {
 
-    protected String requestHeadClassName;
+    protected String baseRequestClassName;
 
-    protected String requestClassName;
+    protected JType requestBodyClass;
 
-    @Override
-    public void parseRequestClass(BaseControllerMethodGenerator baseControllerMethodGenerator) {
-        if (baseControllerMethodGenerator.getRequestBodyClass() != null) {
-            baseControllerMethodGenerator.setRequestClass(
-                    cm.ref(this.requestClassName).narrow(baseControllerMethodGenerator.getRequestBodyClass()));
-        } else {
-            baseControllerMethodGenerator.setRequestClass(cm.ref(this.requestClassName));
-        }
+    protected JType requestClass;
+
+    public String getBaseRequestClassName() {
+        return baseRequestClassName;
+    }
+
+    public void setBaseRequestClassName(String baseRequestClassName) {
+        this.baseRequestClassName = baseRequestClassName;
+    }
+
+    public JType getRequestBodyClass() {
+        return requestBodyClass;
+    }
+
+    public void setRequestBodyClass(JType requestBodyClass) {
+        this.requestBodyClass = requestBodyClass;
+    }
+
+    public JType getRequestClass() {
+        return requestClass;
+    }
+
+    public void setRequestClass(JType requestClass) {
+        this.requestClass = requestClass;
     }
 }

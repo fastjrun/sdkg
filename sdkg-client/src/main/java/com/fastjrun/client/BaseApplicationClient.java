@@ -3,6 +3,8 @@ package com.fastjrun.client;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.fastjrun.client.exchange.BaseExchangeHandleClient;
+
 /*
  * *
  *  * 注意：本内容仅限于公司内部传阅，禁止外泄以及用于其他的商业目的
@@ -12,8 +14,7 @@ import org.apache.logging.log4j.Logger;
  *
  */
 
-public abstract class BaseExchangeHandleClient<T extends BaseUtilClient> {
-
+public abstract class BaseApplicationClient<T extends BaseExchangeHandleClient> {
     protected final Logger log = LogManager.getLogger(this.getClass());
 
     protected T baseClient;
@@ -28,5 +29,4 @@ public abstract class BaseExchangeHandleClient<T extends BaseUtilClient> {
 
     public abstract void initSDKConfig();
 
-    protected abstract void initExchange();
 }

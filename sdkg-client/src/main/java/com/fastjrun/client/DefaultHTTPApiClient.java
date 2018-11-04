@@ -2,9 +2,10 @@ package com.fastjrun.client;
 
 import java.util.ResourceBundle;
 
+import com.fastjrun.client.exchange.DefaultHTTPExchangeHandleClient;
 import com.fastjrun.helper.EncryptHelper;
 
-public class DefaultHttpApiClient extends DefaultHttpExchangeHandleClient {
+public class DefaultHTTPApiClient extends DefaultHTTPExchangeHandleClient {
 
     protected String accessKey;
 

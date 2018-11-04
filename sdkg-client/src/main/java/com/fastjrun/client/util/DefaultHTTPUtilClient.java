@@ -1,4 +1,7 @@
-package com.fastjrun.client;
+/*
+ * Copyright (C) 2018 Fastjrun, Inc. All Rights Reserved.
+ */
+package com.fastjrun.client.util;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -18,7 +21,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class DefaultHttpClient extends BaseHttpUtilClient {
+public class DefaultHTTPUtilClient extends BaseHTTPUtilClient {
 
     private static final int DEFAULT_CONNECT_TIMEOUT = 5000;
     private static final int DEFAULT_READ_TIMEOUT = 30000;
@@ -41,8 +44,8 @@ public class DefaultHttpClient extends BaseHttpUtilClient {
                 .build();
     }
 
-    protected String process(String path, String method, Map<String, String> queryParams,
-                             Map<String, String> headParams, Map<String, String> cookieParams, String requestBody) {
+    public String process(String path, String method, Map<String, String> queryParams,
+                          Map<String, String> headParams, Map<String, String> cookieParams, String requestBody) {
         StringBuilder sb = new StringBuilder(this.baseUrl).append(path);
         OkHttpClient httpClient = okHttpClient();
         String result;

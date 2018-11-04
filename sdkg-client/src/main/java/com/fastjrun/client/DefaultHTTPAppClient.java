@@ -2,7 +2,9 @@ package com.fastjrun.client;
 
 import java.util.ResourceBundle;
 
-public class DefaultHttpAppClient extends DefaultHttpExchangeHandleClient {
+import com.fastjrun.client.exchange.DefaultHTTPExchangeHandleClient;
+
+public class DefaultHTTPAppClient extends DefaultHTTPExchangeHandleClient {
 
     protected String appSource;
     protected String appVersion;

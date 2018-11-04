@@ -1,6 +1,8 @@
 package com.fastjrun.codeg.generator;
 
 import com.fastjrun.codeg.common.CodeModelConstants;
+import com.fastjrun.codeg.common.CommonLog;
+import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JDocComment;
 
@@ -8,6 +10,14 @@ import com.sun.codemodel.JDocComment;
  * 生成
  */
 public abstract class BaseCMGenerator extends BaseGenerator implements Cloneable, CodeModelConstants {
+
+    public static String mockPackageName = "com.fastjrun.mock.";
+
+    public static JClass JSONObjectClass = cmTest.ref("com.fasterxml.jackson.databind.JsonNode");
+
+    public static JClass JacksonUtilsClass = cm.ref("com.fastjrun.utils.JacksonUtils");
+
+    protected CommonLog commonLog = new CommonLog();
 
     protected MockModel mockModel = MockModel.MockModel_Common;
 

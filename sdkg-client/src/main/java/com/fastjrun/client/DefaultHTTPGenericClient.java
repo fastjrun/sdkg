@@ -2,7 +2,9 @@ package com.fastjrun.client;
 
 import java.util.ResourceBundle;
 
-public class DefaultHttpGenericClient extends DefaultGenericHttpExchangeHandleClient {
+import com.fastjrun.client.exchange.DefaultHTTPExchangeHandleClient;
+
+public class DefaultHTTPGenericClient extends DefaultHTTPExchangeHandleClient {
 
     @Override
     public void initSDKConfig() {

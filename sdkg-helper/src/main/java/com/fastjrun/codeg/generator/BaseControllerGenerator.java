@@ -5,9 +5,8 @@ import java.util.Properties;
 import com.fastjrun.codeg.common.CodeGException;
 import com.fastjrun.codeg.common.CodeGMsgContants;
 import com.fastjrun.codeg.common.CommonController;
-import com.fastjrun.codeg.common.CommonService;
 import com.fastjrun.codeg.generator.method.BaseControllerMethodGenerator;
-import com.sun.codemodel.ClassType;
+import com.fastjrun.codeg.generator.method.ServiceMethodGenerator;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
@@ -24,12 +23,7 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
 
     static String webPackageName = "web.controller.";
 
-    static String mockPackageName = "com.fastjrun.mock.";
-
     protected CommonController commonController;
-
-    protected JDefinedClass serviceClass;
-    protected JDefinedClass serviceMockClass;
 
     protected String clientName;
 
@@ -43,15 +37,30 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
 
     protected String controllerPath;
 
-    protected BaseControllerMethodGenerator baseControllerMethodGenerator;
+    protected ServiceGenerator serviceGenerator;
 
-    public BaseControllerMethodGenerator getBaseControllerMethodGenerator() {
-        return baseControllerMethodGenerator;
+    public String getClientName() {
+        return clientName;
     }
 
-    public void setBaseControllerMethodGenerator(
-            BaseControllerMethodGenerator baseControllerMethodGenerator) {
-        this.baseControllerMethodGenerator = baseControllerMethodGenerator;
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
+    }
+
+    public String getControllerPath() {
+        return controllerPath;
+    }
+
+    public void setControllerPath(String controllerPath) {
+        this.controllerPath = controllerPath;
+    }
+
+    public ServiceGenerator getServiceGenerator() {
+        return serviceGenerator;
+    }
+
+    public void setServiceGenerator(ServiceGenerator serviceGenerator) {
+        this.serviceGenerator = serviceGenerator;
     }
 
     public JDefinedClass getClientClass() {
@@ -78,28 +87,12 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
         this.clientTestParam = clientTestParam;
     }
 
-    public JDefinedClass getServiceMockClass() {
-        return serviceMockClass;
-    }
-
-    public void setServiceMockClass(JDefinedClass serviceMockClass) {
-        this.serviceMockClass = serviceMockClass;
-    }
-
     public CommonController getCommonController() {
         return commonController;
     }
 
     public void setCommonController(CommonController commonController) {
         this.commonController = commonController;
-    }
-
-    public JDefinedClass getServiceClass() {
-        return serviceClass;
-    }
-
-    public void setServiceClass(JDefinedClass serviceClass) {
-        this.serviceClass = serviceClass;
     }
 
     public JDefinedClass getControlllerClass() {
@@ -109,6 +102,9 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
     public void setControlllerClass(JDefinedClass controlllerClass) {
         this.controlllerClass = controlllerClass;
     }
+
+    public abstract BaseControllerMethodGenerator prepareBaseControllerMethodGenerator(
+            ServiceMethodGenerator serviceMethodGenerator);
 
     protected void processController() {
         ControllerType controllerType = commonController.getControllerType();
@@ -143,38 +139,11 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
         this.addClassDeclaration(this.controlllerClass);
 
         String serviceName = commonController.getServiceName();
-        JFieldVar fieldVar = this.controlllerClass.field(JMod.PRIVATE, this.serviceClass, serviceName);
+        JFieldVar fieldVar =
+                this.controlllerClass.field(JMod.PRIVATE, this.serviceGenerator.getServiceClass(), serviceName);
         fieldVar.annotate(cm.ref("org.springframework.beans.factory.annotation.Autowired"));
         fieldVar.annotate(cm.ref("org.springframework.beans.factory.annotation.Qualifier")).param("value",
                 commonController.getServiceRef());
-    }
-
-    protected void processService() {
-        CommonService commonService = commonController.getService();
-        try {
-            this.serviceClass = cm._class(this.packageNamePrefix + this.servicePackageName + commonService.get_class(),
-                    ClassType.INTERFACE);
-        } catch (JClassAlreadyExistsException e) {
-            String msg = commonService.get_class() + " is already exists.";
-            this.commonLog.getLog().error(msg, e);
-            throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
-        }
-        this.addClassDeclaration(this.serviceClass);
-    }
-
-    protected void processServiceMock() {
-        CommonService commonService = this.commonController.getService();
-        try {
-            this.serviceMockClass = cm._class(mockPackageName + commonService.get_class() + "Mock");
-            serviceMockClass._implements(this.serviceClass);
-            serviceMockClass.annotate(cm.ref("org.springframework.stereotype.Service")).param("value",
-                    commonService.getName());
-        } catch (JClassAlreadyExistsException e) {
-            String msg = commonService.get_class() + " is already exists.";
-            this.commonLog.getLog().error(msg, e);
-            throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
-        }
-        this.addClassDeclaration(this.serviceMockClass);
     }
 
     protected void processClientTest() {
@@ -225,7 +194,7 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
         this.addClassDeclaration(this.clientClass);
 
         this.clientClass._extends(jParentClass);
-        this.clientClass._implements(this.serviceClass);
+        this.clientClass._implements(this.serviceGenerator.getServiceClass());
 
         JMethod clientInitMethod = clientClass.method(JMod.PUBLIC, cm.VOID, "initSDKConfig");
         clientInitMethod.annotate(cm.ref("Override"));
@@ -240,9 +209,6 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
         if (version != null && !version.equals("")) {
             this.controllerPath = this.controllerPath + "/" + version;
         }
+
     }
-
-    public abstract void processProviderModule();
-
-    public abstract void processApiModule();
 }

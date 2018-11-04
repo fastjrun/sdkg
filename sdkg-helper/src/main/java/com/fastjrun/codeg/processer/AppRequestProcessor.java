@@ -1,28 +1,26 @@
 package com.fastjrun.codeg.processer;
 
-import com.fastjrun.codeg.generator.method.BaseControllerMethodGenerator;
+import com.fastjrun.codeg.common.CodeGConstants;
+import com.fastjrun.codeg.common.CodeModelConstants;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JVar;
 
-public class AppRequestProcessor extends BaseRequestProcessor {
-
-    static String REQUEST_HEAD_CLASS_NAME = "com.fastjrun.dto.AppRequestHead";
-
-    static String REQUEST_CLASS_NAME = "com.fastjrun.dto.AppRequest";
+public class AppRequestProcessor extends BaseRequestWithHeadProcessor implements CodeModelConstants {
 
     public AppRequestProcessor() {
-        this.requestHeadClassName = REQUEST_HEAD_CLASS_NAME;
-        this.requestClassName = REQUEST_CLASS_NAME;
+        this.requestHeadClass = cm.ref(APP_REQUEST_HEAD_CLASS_NAME);
+        this.baseRequestClassName = APP_REQUEST_CLASS_NAME;
     }
 
     @Override
-    public String processRequest(BaseControllerMethodGenerator baseControllerMethodGenerator, JMethod jcontrollerMethod,
-                                 MockModel mockModel) {
+    public String processHTTPRequest(JMethod jcontrollerMethod, JInvocation jInvocation,
+                                     CodeGConstants.MockModel mockModel) {
         JBlock controllerMethodBlk = jcontrollerMethod.body();
-        JVar requestHeadVar = controllerMethodBlk.decl(cm.ref(this.requestHeadClassName), "requestHead",
-                JExpr._new(cm.ref(this.requestHeadClassName)));
+        JVar requestHeadVar = controllerMethodBlk.decl(this.requestHeadClass, "requestHead",
+                JExpr._new(this.requestHeadClass));
         JVar appKeyJVar = jcontrollerMethod.param(cm.ref("String"), "appKey");
         appKeyJVar.annotate(cm.ref("org.springframework.web.bind.annotation.PathVariable")).param("value",
                 "appKey");
@@ -66,5 +64,10 @@ public class AppRequestProcessor extends BaseRequestProcessor {
         }
         controllerMethodBlk.invoke(JExpr._this(), "processHead").arg(requestHeadVar);
         return "/{appKey}/{appVersion}/{appSource}/{deviceId}/{txTime}";
+    }
+
+    @Override
+    public void processRPCRequest(JMethod method, JInvocation jInvocation) {
+
     }
 }

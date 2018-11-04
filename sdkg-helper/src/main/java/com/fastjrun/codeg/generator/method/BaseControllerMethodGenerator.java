@@ -7,12 +7,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fastjrun.codeg.common.CodeGException;
 import com.fastjrun.codeg.common.CommonController;
-import com.fastjrun.codeg.common.CommonMethod;
 import com.fastjrun.codeg.common.PacketField;
 import com.fastjrun.codeg.common.PacketObject;
 import com.fastjrun.codeg.generator.BaseCMGenerator;
+import com.fastjrun.codeg.generator.BaseControllerGenerator;
 import com.fastjrun.codeg.processer.ExchangeProcessor;
 import com.fastjrun.helper.StringHelper;
 import com.fastjrun.utils.JacksonUtils;
@@ -34,24 +33,6 @@ import com.sun.codemodel.JVar;
 
 public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
 
-    static JClass jSONObjectClass = cmTest.ref("com.fasterxml.jackson.databind.JsonNode");
-
-    static JClass mockHelperClass = cm.ref("com.fastjrun.helper.MockHelper");
-
-    protected JType responseBodyClass;
-    protected JClass elementClass;
-    protected JClass responseClass;
-    protected JType requestBodyClass;
-    protected JType requestClass;
-
-    protected CommonMethod commonMethod;
-
-    protected String methodName;
-
-    protected JMethod jServiceMethod;
-
-    protected JMethod jServiceMockMethod;
-
     protected JMethod jClientMethod;
 
     protected JMethod jClientTestMethod;
@@ -60,7 +41,27 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
 
     protected ObjectNode methodParamInJsonObject;
 
+    protected ServiceMethodGenerator serviceMethodGenerator;
+
+    protected BaseControllerGenerator baseControllerGenerator;
+
     protected ExchangeProcessor exchangeProcessor;
+
+    public ServiceMethodGenerator getServiceMethodGenerator() {
+        return serviceMethodGenerator;
+    }
+
+    public void setServiceMethodGenerator(ServiceMethodGenerator serviceMethodGenerator) {
+        this.serviceMethodGenerator = serviceMethodGenerator;
+    }
+
+    public BaseControllerGenerator getBaseControllerGenerator() {
+        return baseControllerGenerator;
+    }
+
+    public void setBaseControllerGenerator(BaseControllerGenerator baseControllerGenerator) {
+        this.baseControllerGenerator = baseControllerGenerator;
+    }
 
     public ExchangeProcessor getExchangeProcessor() {
         return exchangeProcessor;
@@ -76,30 +77,6 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
 
     public void setMethodParamInJsonObject(ObjectNode methodParamInJsonObject) {
         this.methodParamInJsonObject = methodParamInJsonObject;
-    }
-
-    public String getMethodName() {
-        return methodName;
-    }
-
-    public void setMethodName(String methodName) {
-        this.methodName = methodName;
-    }
-
-    public JMethod getjServiceMethod() {
-        return jServiceMethod;
-    }
-
-    public void setjServiceMethod(JMethod jServiceMethod) {
-        this.jServiceMethod = jServiceMethod;
-    }
-
-    public JMethod getjServiceMockMethod() {
-        return jServiceMockMethod;
-    }
-
-    public void setjServiceMockMethod(JMethod jServiceMockMethod) {
-        this.jServiceMockMethod = jServiceMockMethod;
     }
 
     public JMethod getjClientMethod() {
@@ -118,46 +95,6 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
         this.jClientTestMethod = jClientTestMethod;
     }
 
-    public JType getResponseBodyClass() {
-        return responseBodyClass;
-    }
-
-    public void setResponseBodyClass(JType responseBodyClass) {
-        this.responseBodyClass = responseBodyClass;
-    }
-
-    public JClass getElementClass() {
-        return elementClass;
-    }
-
-    public void setElementClass(JClass elementClass) {
-        this.elementClass = elementClass;
-    }
-
-    public JClass getResponseClass() {
-        return responseClass;
-    }
-
-    public void setResponseClass(JClass responseClass) {
-        this.responseClass = responseClass;
-    }
-
-    public JType getRequestBodyClass() {
-        return requestBodyClass;
-    }
-
-    public void setRequestBodyClass(JClass requestBodyClass) {
-        this.requestBodyClass = requestBodyClass;
-    }
-
-    public JType getRequestClass() {
-        return requestClass;
-    }
-
-    public void setRequestClass(JType requestClass) {
-        this.requestClass = requestClass;
-    }
-
     public JMethod getJcontrollerMethod() {
         return jcontrollerMethod;
     }
@@ -166,264 +103,9 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
         this.jcontrollerMethod = jcontrollerMethod;
     }
 
-    public CommonMethod getCommonMethod() {
-        return commonMethod;
-    }
-
-    public void setCommonMethod(CommonMethod commonMethod) {
-        this.commonMethod = commonMethod;
-    }
-
-    protected void parseResponseBodyClass() {
-        PacketObject response = this.commonMethod.getResponse();
-        if (response == null) {
-            this.responseBodyClass = cm.VOID;
-        } else {
-            String responseClassP = response.get_class();
-            if (response.is_new()) {
-                this.elementClass = cm.ref(this.packageNamePrefix + responseClassP);
-            } else {
-                this.elementClass = cm.ref(responseClassP);
-            }
-            if (this.commonMethod.isResponseIsArray()) {
-                this.responseBodyClass =
-                        cm.ref("java.util.List").narrow(elementClass);
-            } else {
-                this.responseBodyClass = elementClass;
-            }
-        }
-    }
-
-    protected void parseRequestBodyClass() {
-        PacketObject request = this.commonMethod.getRequest();
-        if (request != null) {
-            if (request.is_new()) {
-                this.requestBodyClass = cm.ref(this.packageNamePrefix + request.get_class());
-            } else {
-                this.requestBodyClass = cm.ref(request.get_class());
-            }
-
-        }
-    }
-
-    public void processServiceMethod(JDefinedClass jServiceClass) {
-        this.parseResponseClass();
-        this.parseRequestClass();
-        this.methodName = commonMethod.getName();
-
-        String methodVersion = commonMethod.getVersion();
-        if (methodVersion != null && !methodVersion.equals("")) {
-            this.methodName = this.methodName + methodVersion;
-        }
-        this.jServiceMethod = jServiceClass.method(JMod.NONE, this.responseBodyClass, this.methodName);
-        String methodRemark = commonMethod.getRemark();
-        this.jServiceMethod.javadoc().append(methodRemark);
-
-        this.processServiceMethodVariables(this.jServiceMethod, this.commonMethod.getHeadVariables());
-        this.processServiceMethodVariables(this.jServiceMethod, this.commonMethod.getPathVariables());
-        this.processServiceMethodVariables(this.jServiceMethod, this.commonMethod.getParameters());
-        this.processServiceMethodVariables(this.jServiceMethod, this.commonMethod.getCookieVariables());
-
-        if (this.requestBodyClass != null) {
-            this.jServiceMethod.param(this.requestBodyClass, "requestBody");
-        }
-    }
-
-    protected void processServiceMethodVariables(JMethod jmethod, List<PacketField> variables) {
-        if (variables != null && variables.size() > 0) {
-            for (int index = 0; index < variables.size(); index++) {
-                PacketField variable = variables.get(index);
-                JType jType = cm.ref(variable.getDatatype());
-                jmethod.param(jType, variable.getName());
-            }
-        }
-    }
-
-    public void processServiceMockMethod(JDefinedClass jServiceMockClass) {
-        this.jServiceMockMethod = jServiceMockClass.method(JMod.PUBLIC, this.responseBodyClass, this.methodName);
-        String methodRemark = commonMethod.getRemark();
-        this.jServiceMockMethod.javadoc().append(methodRemark);
-
-        this.processServiceMethodVariables(this.jServiceMockMethod, this.commonMethod.getHeadVariables());
-        this.processServiceMethodVariables(this.jServiceMockMethod, this.commonMethod.getPathVariables());
-        this.processServiceMethodVariables(this.jServiceMockMethod, this.commonMethod.getParameters());
-        this.processServiceMethodVariables(this.jServiceMockMethod, this.commonMethod.getCookieVariables());
-
-        if (this.requestBodyClass != null) {
-            this.jServiceMockMethod.param(this.requestBodyClass, "requestBody");
-        }
-
-        JBlock serviceMockMethodBlock = this.jServiceMockMethod.body();
-        if (this.responseBodyClass != cm.VOID) {
-            JVar responseBodyVar = this.composeResponseBody(0, serviceMockMethodBlock, commonMethod.getResponse
-                    (), this.responseBodyClass);
-            if (!commonMethod.isResponseIsArray()) {
-                serviceMockMethodBlock._return(responseBodyVar);
-            } else {
-                JVar responseVar = serviceMockMethodBlock
-                        .decl(this.responseBodyClass, "response", JExpr._new(
-                                cm.ref("java.util.ArrayList")
-                                        .narrow(
-                                                this.elementClass)));
-                serviceMockMethodBlock.invoke(responseVar, "add").arg(responseBodyVar);
-                serviceMockMethodBlock._return(responseVar);
-            }
-
-        }
-
-    }
-
-    private JVar composeResponseBody(int loopSeq, JBlock methodBlk, PacketObject responseBody,
-                                     JType responseBodyClass) {
-        JVar responseVar = composeResponseBodyField(loopSeq, methodBlk, responseBody, responseBodyClass);
-        int start = 1;
-        Map<String, PacketObject> packetObjectMap = responseBody.getObjects();
-        if (packetObjectMap != null && packetObjectMap.size() > 0) {
-            for (String reName : packetObjectMap.keySet()) {
-                PacketObject ro = packetObjectMap.get(reName);
-                JClass roClass = cm.ref(this.packageNamePrefix + ro.get_class());
-                if (!ro.is_new()) {
-                    roClass = cm.ref(ro.get_class());
-                }
-                JVar roVar = this.composeResponseBody(loopSeq + start++, methodBlk, ro, roClass);
-                String tterMethodName = reName;
-                if (reName.length() > 1) {
-                    String char2 = String.valueOf(reName.charAt(1));
-                    if (!char2.equals(char2.toUpperCase())) {
-                        tterMethodName = StringHelper.toUpperCaseFirstOne(reName);
-                    }
-                }
-                methodBlk.invoke(responseVar, "set" + tterMethodName).arg(roVar);
-            }
-        }
-        Map<String, PacketObject> roList = responseBody.getLists();
-        if (roList != null && roList.size() > 0) {
-            for (String listName : roList.keySet()) {
-                int index = 0;
-                PacketObject ro = roList.get(listName);
-                JType roListEntityClass = cm.ref(this.packageNamePrefix + ro.get_class());
-                if (!ro.is_new()) {
-                    roListEntityClass = cm.ref(ro.get_class());
-                }
-                String varNamePrefixList = StringHelper.toLowerCaseFirstOne(
-                        roListEntityClass.name().substring(roListEntityClass.name().lastIndexOf(".") + 1));
-                JVar listsVar = methodBlk.decl(cm.ref("java.util.List").narrow(roListEntityClass),
-                        varNamePrefixList + "list",
-                        JExpr._new(cm.ref("java.util.ArrayList").narrow(roListEntityClass)));
-                JVar iSizeVar = methodBlk.decl(cm.INT, "iSize" + listName + loopSeq + index,
-                        mockHelperClass.staticInvoke("geInteger").arg(JExpr.lit(10)).invoke("intValue"));
-                JForLoop forLoop = methodBlk._for();
-                JVar iVar = forLoop.init(cm.INT, "i" + loopSeq + index, JExpr.lit(0));
-                forLoop.test(iVar.lt(iSizeVar));
-                forLoop.update(iVar.incr());
-                JBlock forBody = forLoop.body();
-                JVar roVar = composeResponseBody(loopSeq + start++, forBody, ro, roListEntityClass);
-                forBody.invoke(listsVar, "add").arg(roVar);
-                String tterMethodName = listName;
-                if (listName.length() > 1) {
-                    String char2 = String.valueOf(listName.charAt(1));
-                    if (!char2.equals(char2.toUpperCase())) {
-                        tterMethodName = StringHelper.toUpperCaseFirstOne(listName);
-                    }
-                }
-                methodBlk.invoke(responseVar, "set" + tterMethodName).arg(listsVar);
-                index++;
-            }
-        }
-        return responseVar;
-    }
-
-    private JVar composeResponseBodyField(int loopSeq, JBlock methodBlk, PacketObject responseBody, JType
-            responseBodyClass) {
-        String varNamePrefix = StringHelper
-                .toLowerCaseFirstOne(responseBody.get_class().substring(responseBody.get_class().lastIndexOf(".") +
-                        1)) + loopSeq;
-        JVar reponseBodyVar = methodBlk.decl(responseBodyClass, varNamePrefix, JExpr._new(responseBodyClass));
-        Map<String, PacketField> restFields = responseBody.getFields();
-        if (restFields != null && restFields.size() > 0) {
-            for (String fieldName : restFields.keySet()) {
-                PacketField restField = restFields.get(fieldName);
-                String dataType = restField.getDatatype();
-                String length = restField.getLength();
-                JType jType;
-                String primitiveType = null;
-                if (dataType.endsWith(":List")) {
-                    primitiveType = dataType.split(":")[0];
-                    jType = cm.ref("java.util.List").narrow(cm.ref(primitiveType));
-                } else {
-                    jType = cm.ref(dataType);
-                }
-                String tterMethodName = fieldName;
-                if (fieldName.length() > 1) {
-                    String char2 = String.valueOf(fieldName.charAt(1));
-                    if (!char2.equals(char2.toUpperCase())) {
-                        tterMethodName = StringHelper.toUpperCaseFirstOne(fieldName);
-                    }
-                }
-                if (dataType.endsWith(":List")) {
-                    JVar fieldNameVar =
-                            methodBlk.decl(cm.ref("java.util.List").narrow(cm.ref(primitiveType)), fieldName,
-                                    JExpr._new(cm.ref("java.util.ArrayList").narrow(cm.ref(primitiveType))));
-                    if (primitiveType.endsWith("String")) {
-                        methodBlk.assign(fieldNameVar,
-                                mockHelperClass.staticInvoke("geStringListWithAscii").arg(JExpr.lit(10)));
-                    } else if (primitiveType.endsWith("Boolean")) {
-                        methodBlk
-                                .assign(fieldNameVar, mockHelperClass.staticInvoke("geBooleanList").arg(JExpr.lit(10)));
-                    } else if (primitiveType.endsWith("Integer")) {
-                        methodBlk
-                                .assign(fieldNameVar, mockHelperClass.staticInvoke("geIntegerList").arg(JExpr.lit(10)));
-                    } else if (primitiveType.endsWith("Long")) {
-                        methodBlk.assign(fieldNameVar, mockHelperClass.staticInvoke("geLongList").arg(JExpr.lit(10)));
-                    } else if (primitiveType.endsWith("Float")) {
-                        methodBlk.assign(fieldNameVar, mockHelperClass.staticInvoke("geFloatList").arg(JExpr.lit(10)));
-                    } else if (primitiveType.endsWith("Double")) {
-                        methodBlk.assign(fieldNameVar, mockHelperClass.staticInvoke("geDoubleList").arg(JExpr.lit(10)));
-                    } else if (primitiveType.endsWith("Date")) {
-                        methodBlk.assign(fieldNameVar, mockHelperClass.staticInvoke("geDateList").arg(JExpr.lit(10)));
-                    } else {
-                        throw new CodeGException("CG504",
-                                responseBodyClass.name() + "-" + fieldNameVar + " handled failed:for" + dataType);
-                    }
-                    methodBlk.invoke(reponseBodyVar, "set" + tterMethodName).arg((fieldNameVar));
-                } else if (jType.name().endsWith("String")) {
-                    methodBlk.invoke(reponseBodyVar, "set" + tterMethodName).arg(
-                            (mockHelperClass.staticInvoke("geStringWithAscii")
-                                     .arg(JExpr.lit(Integer.parseInt(length)))));
-                } else if (jType.name().endsWith("Boolean")) {
-                    String setter = restField.getSetter();
-                    if (setter == null || setter.equals("")) {
-                        setter = "set" + tterMethodName;
-                    }
-                    methodBlk.invoke(reponseBodyVar, setter)
-                            .arg((mockHelperClass.staticInvoke("geBoolean")));
-                } else if (jType.name().endsWith("Integer")) {
-                    methodBlk.invoke(reponseBodyVar, "set" + tterMethodName)
-                            .arg((mockHelperClass.staticInvoke("geInteger").arg(JExpr.lit(100))));
-                } else if (jType.name().endsWith("Long")) {
-                    methodBlk.invoke(reponseBodyVar, "set" + tterMethodName)
-                            .arg((mockHelperClass.staticInvoke("geLong").arg(JExpr.lit(100))));
-                } else if (jType.name().endsWith("Float")) {
-                    methodBlk.invoke(reponseBodyVar, "set" + tterMethodName)
-                            .arg((mockHelperClass.staticInvoke("geFloat").arg(JExpr.lit(100))));
-                } else if (jType.name().endsWith("Double")) {
-                    methodBlk.invoke(reponseBodyVar, "set" + tterMethodName)
-                            .arg((mockHelperClass.staticInvoke("geDouble").arg(JExpr.lit(100))));
-                } else if (jType.name().endsWith("Date")) {
-                    methodBlk.invoke(reponseBodyVar, "set" + tterMethodName)
-                            .arg((mockHelperClass.staticInvoke("geDate").arg(JExpr.lit(100))));
-                } else {
-                    throw new CodeGException("CG504",
-                            responseBodyClass.name() + "-" + tterMethodName + " handled failed:for" + dataType);
-                }
-            }
-        }
-        return reponseBodyVar;
-    }
-
     public void processClientTestMethod(JDefinedClass clientTestClass) {
         JMethod clientTestMethod = clientTestClass.method(JMod.PUBLIC, cmTest.VOID,
-                "test" + this.methodName);
+                "test" + StringHelper.toUpperCaseFirstOne(this.serviceMethodGenerator.methodName));
 
         JAnnotationUse methodTestAnnotationTest = clientTestMethod
                 .annotate(cmTest.ref("org.testng.annotations.Test"));
@@ -442,137 +124,76 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
         JVar reqParamsJsonStrJVar = methodTestBlk
                 .decl(cm.ref("String"), "reqParamsJsonStr", reqParamsJsonStrAndAssertArrayJVar.component(JExpr.lit(0)));
         methodTestBlk.invoke(JExpr.ref("log"), "debug").arg(reqParamsJsonStrJVar);
-        JVar reqParamsJsonJVar = methodTestBlk.decl(jSONObjectClass, "reqParamsJson", cmTest
+        JVar reqParamsJsonJVar = methodTestBlk.decl(JSONObjectClass, "reqParamsJson", cmTest
                 .ref("com.fastjrun.utils.JacksonUtils").staticInvoke("toJsonNode")
                 .arg(reqParamsJsonStrJVar));
 
-        JInvocation jInvocationTest = JExpr.invoke(JExpr.ref("baseApplicationClient"), methodName);
+        JInvocation jInvocationTest =
+                JExpr.invoke(JExpr.ref("baseApplicationClient"), this.serviceMethodGenerator.methodName);
 
         // headParams
-        List<PacketField> headVariables = this.commonMethod.getHeadVariables();
+        List<PacketField> headVariables = this.serviceMethodGenerator.getCommonMethod().getHeadVariables();
 
         if (headVariables != null && headVariables.size() > 0) {
             for (int index = 0; index < headVariables.size(); index++) {
                 PacketField headVariable = headVariables.get(index);
                 jInvocationTest.arg(JExpr.ref(headVariable.getNameAlias()));
-                JClass jType = cmTest.ref(headVariable.getDatatype());
-                if (jType.name().endsWith("Boolean")) {
-                    methodTestBlk.decl(jType, headVariable.getNameAlias(), reqParamsJsonJVar.invoke("get")
-                            .arg(JExpr.lit(headVariable.getNameAlias())).invoke("asBoolean"));
-                } else if (jType.name().endsWith("Integer")) {
-                    methodTestBlk.decl(jType, headVariable.getNameAlias(), reqParamsJsonJVar.invoke("get")
-                            .arg(JExpr.lit(headVariable.getNameAlias())).invoke("asInt"));
-                } else if (jType.name().endsWith("Long")) {
-                    methodTestBlk.decl(jType, headVariable.getNameAlias(), reqParamsJsonJVar.invoke("get")
-                            .arg(JExpr.lit(headVariable.getNameAlias())).invoke("asLong"));
-                } else if (jType.name().endsWith("Double")) {
-                    methodTestBlk.decl(jType, headVariable.getNameAlias(), reqParamsJsonJVar.invoke("get")
-                            .arg(JExpr.lit(headVariable.getNameAlias())).invoke("asDouble"));
-                } else {
-                    methodTestBlk.decl(jType, headVariable.getNameAlias(), reqParamsJsonJVar.invoke("get")
-                            .arg(JExpr.lit(headVariable.getNameAlias())).invoke("asText"));
-                }
+                processMethodCommonVariables(methodTestBlk, reqParamsJsonJVar, headVariable);
             }
 
         }
 
-        List<PacketField> pathVariables = this.commonMethod.getPathVariables();
+        List<PacketField> pathVariables = this.serviceMethodGenerator.getCommonMethod().getPathVariables();
         if (pathVariables != null && pathVariables.size() > 0) {
             for (int index = 0; index < pathVariables.size(); index++) {
                 PacketField pathVariable = pathVariables.get(index);
                 jInvocationTest.arg(JExpr.ref(pathVariable.getName()));
-                JClass jType = cmTest.ref(pathVariable.getDatatype());
-                if (jType.name().endsWith("Boolean")) {
-                    methodTestBlk.decl(jType, pathVariable.getName(), reqParamsJsonJVar.invoke("get")
-                            .arg(JExpr.lit(pathVariable.getName())).invoke("asBoolean"));
-                } else if (jType.name().endsWith("Integer")) {
-                    methodTestBlk.decl(jType, pathVariable.getName(), reqParamsJsonJVar.invoke("get")
-                            .arg(JExpr.lit(pathVariable.getName())).invoke("asInt"));
-                } else if (jType.name().endsWith("Long")) {
-                    methodTestBlk.decl(jType, pathVariable.getName(), reqParamsJsonJVar.invoke("get")
-                            .arg(JExpr.lit(pathVariable.getName())).invoke("asLong"));
-                } else if (jType.name().endsWith("Double")) {
-                    methodTestBlk.decl(jType, pathVariable.getName(), reqParamsJsonJVar.invoke("get")
-                            .arg(JExpr.lit(pathVariable.getName())).invoke("asDouble"));
-                } else {
-                    methodTestBlk.decl(jType, pathVariable.getName(), reqParamsJsonJVar.invoke("get")
-                            .arg(JExpr.lit(pathVariable.getName())).invoke("asText"));
-                }
-
+                processMethodCommonVariables(methodTestBlk, reqParamsJsonJVar, pathVariable);
             }
         }
 
-        List<PacketField> parameters = this.commonMethod.getParameters();
+        List<PacketField> parameters = this.serviceMethodGenerator.getCommonMethod().getParameters();
         if (parameters != null && parameters.size() > 0) {
             for (int index = 0; index < parameters.size(); index++) {
                 PacketField parameter = parameters.get(index);
                 jInvocationTest.arg(JExpr.ref(parameter.getName()));
-                JClass jType = cmTest.ref(parameter.getDatatype());
-                if (jType.name().endsWith("Boolean")) {
-                    methodTestBlk.decl(jType, parameter.getName(), reqParamsJsonJVar.invoke("get")
-                            .arg(JExpr.lit(parameter.getName())).invoke("asBoolean"));
-                } else if (jType.name().endsWith("Integer")) {
-                    methodTestBlk.decl(jType, parameter.getName(), reqParamsJsonJVar.invoke("get")
-                            .arg(JExpr.lit(parameter.getName())).invoke("asInt"));
-                } else if (jType.name().endsWith("Long")) {
-                    methodTestBlk.decl(jType, parameter.getName(), reqParamsJsonJVar.invoke("get")
-                            .arg(JExpr.lit(parameter.getName())).invoke("asLong"));
-                } else if (jType.name().endsWith("Double")) {
-                    methodTestBlk.decl(jType, parameter.getName(), reqParamsJsonJVar.invoke("get")
-                            .arg(JExpr.lit(parameter.getName())).invoke("asDouble"));
-                } else {
-                    methodTestBlk.decl(jType, parameter.getName(), reqParamsJsonJVar.invoke("get")
-                            .arg(JExpr.lit(parameter.getName())).invoke("asText"));
-                }
-
+                processMethodCommonVariables(methodTestBlk, reqParamsJsonJVar, parameter);
             }
         }
 
-        List<PacketField> cookies = this.commonMethod.getCookieVariables();
+        List<PacketField> cookies = this.serviceMethodGenerator.getCommonMethod().getCookieVariables();
         if (cookies != null && cookies.size() > 0) {
             for (int index = 0; index < cookies.size(); index++) {
                 PacketField cookie = cookies.get(index);
                 jInvocationTest.arg(JExpr.ref(cookie.getName()));
-                JClass jType = cmTest.ref(cookie.getDatatype());
-                if (jType.name().endsWith("Boolean")) {
-                    methodTestBlk.decl(jType, cookie.getName(), reqParamsJsonJVar.invoke("get")
-                            .arg(JExpr.lit(cookie.getName())).invoke("asBoolean"));
-                } else if (jType.name().endsWith("Integer")) {
-                    methodTestBlk.decl(jType, cookie.getName(), reqParamsJsonJVar.invoke("get")
-                            .arg(JExpr.lit(cookie.getName())).invoke("asInt"));
-                } else if (jType.name().endsWith("Long")) {
-                    methodTestBlk.decl(jType, cookie.getName(), reqParamsJsonJVar.invoke("get")
-                            .arg(JExpr.lit(cookie.getName())).invoke("asLong"));
-                } else if (jType.name().endsWith("Double")) {
-                    methodTestBlk.decl(jType, cookie.getName(), reqParamsJsonJVar.invoke("get")
-                            .arg(JExpr.lit(cookie.getName())).invoke("asDouble"));
-                } else {
-                    methodTestBlk.decl(jType, cookie.getName(), reqParamsJsonJVar.invoke("get")
-                            .arg(JExpr.lit(cookie.getName())).invoke("asText"));
-                }
+                processMethodCommonVariables(methodTestBlk, reqParamsJsonJVar, cookie);
             }
         }
-        if (this.requestBodyClass != null) {
-            JVar requestBodyStrVar = methodTestBlk.decl(jSONObjectClass, "reqJsonRequestBody",
+        if (this.serviceMethodGenerator.getRequestBodyClass() != null) {
+            JVar requestBodyVar =
+                    methodTestBlk.decl(this.serviceMethodGenerator.getRequestBodyClass(), "requestBody", JExpr._null());
+            JVar requestBodyStrVar = methodTestBlk.decl(JSONObjectClass, "reqJsonRequestBody",
                     reqParamsJsonJVar.invoke("get").arg(JExpr.lit("requestBody")));
-            JVar requestBodyVar = methodTestBlk.decl(this.requestBodyClass, "requestBody",
-                    cm.ref("com.fastjrun.utils.JacksonUtils").staticInvoke("readValue")
-                            .arg(requestBodyStrVar.invoke("toString"))
-                            .arg(((JClass) this.requestBodyClass).dotclass()));
+            JBlock jNotNullBlock =
+                    methodTestBlk._if(requestBodyStrVar.ne(JExpr._null()))._then();
+            jNotNullBlock.assign(requestBodyVar, JacksonUtilsClass.staticInvoke("readValue")
+                    .arg(requestBodyStrVar.invoke("toString"))
+                    .arg(((JClass) this.serviceMethodGenerator.getRequestBodyClass()).dotclass()));
             jInvocationTest.arg(requestBodyVar);
         }
-        if (this.responseBodyClass != cm.VOID) {
-            JVar responseBodyVar = methodTestBlk.decl(this.responseBodyClass, "responseBody", JExpr._null());
+        if (this.serviceMethodGenerator.getResponseBodyClass() != cm.VOID) {
+            JVar responseBodyVar =
+                    methodTestBlk
+                            .decl(this.serviceMethodGenerator.getResponseBodyClass(), "responseBody", JExpr._null());
 
-            JVar assertJsonJVar = methodTestBlk.decl(jSONObjectClass, "assertJson", JExpr._null());
+            JVar assertJsonJVar = methodTestBlk.decl(JSONObjectClass, "assertJson", JExpr._null());
             methodTestBlk._if(reqParamsJsonStrAndAssertArrayJVar.ref("length").eq(JExpr.lit(2)))._then().block()
-                    .assign(assertJsonJVar, cmTest
-                            .ref("com.fastjrun.utils.JacksonUtils").staticInvoke("toJsonNode")
+                    .assign(assertJsonJVar, JacksonUtilsClass.staticInvoke("toJsonNode")
                             .arg(reqParamsJsonStrAndAssertArrayJVar.component(JExpr.lit(1))));
             JConditional jConditional1 = methodTestBlk._if(assertJsonJVar.ne(JExpr._null()));
             JBlock jConditional1Block = jConditional1._then();
             JVar codeNodeJVar =
-                    jConditional1Block.decl(jSONObjectClass, "codeNode", assertJsonJVar.invoke("get").arg("code"));
+                    jConditional1Block.decl(JSONObjectClass, "codeNode", assertJsonJVar.invoke("get").arg("code"));
             JConditional jConditional2 = jConditional1Block._if(codeNodeJVar.ne(JExpr._null()));
             JBlock jConditional2ThenBlock = jConditional2._then();
             JTryBlock jTry = jConditional2ThenBlock._try();
@@ -586,10 +207,9 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
             jConditional2._else().assign(responseBodyVar, jInvocationTest);
             jConditional1._else().assign(responseBodyVar, jInvocationTest);
 
-            methodTestBlk.invoke(JExpr.refthis("log"), "debug").arg(cmTest
-                    .ref("com.fastjrun.utils.JacksonUtils").staticInvoke("toJSon")
+            methodTestBlk.invoke(JExpr.refthis("log"), "debug").arg(JacksonUtilsClass.staticInvoke("toJSon")
                     .arg(responseBodyVar));
-            if (this.commonMethod.isResponseIsArray()) {
+            if (this.serviceMethodGenerator.getCommonMethod().isResponseIsArray()) {
                 JBlock ifBlock1 = methodTestBlk._if(responseBodyVar.ne(JExpr._null()))._then();
                 JForLoop forLoop = ifBlock1._for();
                 JVar initIndexVar = forLoop.init(cm.INT, "index", JExpr.lit(0));
@@ -597,23 +217,26 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
                 forLoop.update(initIndexVar.incr());
                 JBlock forBlock1 = forLoop.body();
                 JVar responseBodyIndexVar =
-                        forBlock1.decl(this.elementClass, "item" + this.elementClass.name(),
+                        forBlock1.decl(this.serviceMethodGenerator.getElementClass(),
+                                "item" + this.serviceMethodGenerator.getElementClass().name(),
                                 responseBodyVar.invoke("get").arg(initIndexVar));
 
-                this.logResponseBody(1, this.commonMethod.getResponse(), responseBodyIndexVar, forBlock1);
+                this.logResponseBody(1, this.serviceMethodGenerator.getCommonMethod().getResponse(),
+                        responseBodyIndexVar, forBlock1);
 
             } else {
-                this.logResponseBody(1, this.commonMethod.getResponse(), responseBodyVar, methodTestBlk);
+                this.logResponseBody(1, this.serviceMethodGenerator.getCommonMethod().getResponse(), responseBodyVar,
+                        methodTestBlk);
             }
             methodTestBlk.invoke(JExpr._this(), "processAssertion").arg(assertJsonJVar).arg(responseBodyVar)
-                    .arg(JExpr.dotclass((JClass) responseBodyClass));
+                    .arg(JExpr.dotclass((JClass) this.serviceMethodGenerator.getResponseBodyClass()));
 
         } else {
-            JVar assertJsonJVar = methodTestBlk.decl(jSONObjectClass, "assertJson", JExpr._null());
+            JVar assertJsonJVar = methodTestBlk.decl(JSONObjectClass, "assertJson", JExpr._null());
             JConditional jConditional1 = methodTestBlk._if(assertJsonJVar.ne(JExpr._null()));
             JBlock jConditional1Block = jConditional1._then();
             JVar codeNodeJVar =
-                    jConditional1Block.decl(jSONObjectClass, "codeNode", assertJsonJVar.invoke("get").arg("code"));
+                    jConditional1Block.decl(JSONObjectClass, "codeNode", assertJsonJVar.invoke("get").arg("code"));
             JConditional jConditional2 = jConditional1Block._if(codeNodeJVar.ne(JExpr._null()));
             JBlock jConditional2ThenBlock = jConditional2._then();
             JTryBlock jTry = jConditional2ThenBlock._try();
@@ -627,6 +250,38 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
             jConditional2._else().add(jInvocationTest);
             jConditional1._else().add(jInvocationTest);
         }
+    }
+
+    private void processMethodCommonVariables(JBlock methodTestBlk, JVar reqParamsJsonJVar, PacketField parameter) {
+        JClass jType = cmTest.ref(parameter.getDatatype());
+        String paramterName = parameter.getName();
+        if (parameter.getNameAlias() != null && !parameter.getNameAlias().equals("")) {
+            paramterName = parameter.getNameAlias();
+        }
+        JVar jVar = methodTestBlk.decl(jType, paramterName, JExpr._null());
+        JVar jJsonVar = methodTestBlk.decl(JSONObjectClass, paramterName + "jSon",
+                reqParamsJsonJVar.invoke("get").arg(JExpr.lit(paramterName)));
+        JBlock jNotNullBlock =
+                methodTestBlk._if(jJsonVar.ne(JExpr._null()))
+                        ._then();
+        String jsonInvokeMethodName = "asText";
+        switch (jType.name()) {
+            case "Boolean":
+                jsonInvokeMethodName = "asBoolean";
+                break;
+            case "Integer":
+                jsonInvokeMethodName = "asInt";
+                break;
+            case "Long":
+                jsonInvokeMethodName = "asLong";
+                break;
+            case "Double":
+                jsonInvokeMethodName = "asDouble";
+                break;
+            default:
+                break;
+        }
+        jNotNullBlock.assign(jVar, jJsonVar.invoke(jsonInvokeMethodName));
     }
 
     private void logResponseBodyField(int loopSeq, PacketObject responseBody, JVar responseBodyVar,
@@ -768,7 +423,7 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
         this.methodParamInJsonObject = JacksonUtils.createObjectNode();
 
         // headParams
-        List<PacketField> headVariables = this.commonMethod.getHeadVariables();
+        List<PacketField> headVariables = this.serviceMethodGenerator.getCommonMethod().getHeadVariables();
         if (headVariables != null && headVariables.size() > 0) {
             for (int index = 0; index < headVariables.size(); index++) {
                 PacketField headVariable = headVariables.get(index);
@@ -777,7 +432,7 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
             }
 
         }
-        List<PacketField> pathVariables = this.commonMethod.getPathVariables();
+        List<PacketField> pathVariables = this.serviceMethodGenerator.getCommonMethod().getPathVariables();
         if (pathVariables != null && pathVariables.size() > 0) {
             for (int index = 0; index < pathVariables.size(); index++) {
                 PacketField pathVariable = pathVariables.get(index);
@@ -786,7 +441,7 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
             }
         }
 
-        List<PacketField> parameters = this.commonMethod.getParameters();
+        List<PacketField> parameters = this.serviceMethodGenerator.getCommonMethod().getParameters();
         if (parameters != null && parameters.size() > 0) {
             for (int index = 0; index < parameters.size(); index++) {
                 PacketField parameter = parameters.get(index);
@@ -794,7 +449,7 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
 
             }
         }
-        List<PacketField> cookies = this.commonMethod.getCookieVariables();
+        List<PacketField> cookies = this.serviceMethodGenerator.getCommonMethod().getCookieVariables();
         if (cookies != null && cookies.size() > 0) {
             for (int index = 0; index < cookies.size(); index++) {
                 PacketField cookie = cookies.get(index);
@@ -803,8 +458,9 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
             }
         }
 
-        if (this.requestBodyClass != null) {
-            ObjectNode jsonRequestParam = this.composeRequestBody(this.commonMethod.getRequest());
+        if (this.serviceMethodGenerator.getRequestBodyClass() != null) {
+            ObjectNode jsonRequestParam =
+                    this.composeRequestBody(this.serviceMethodGenerator.getCommonMethod().getRequest());
             methodParamInJsonObject.set("requestBody", jsonRequestParam);
 
         }
@@ -860,7 +516,7 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
     public void processControllerMethod(CommonController commonController, JDefinedClass controllerClass) {
 
         RequestMethod requestMethod = RequestMethod.POST;
-        switch (this.commonMethod.getHttpMethod().toUpperCase()) {
+        switch (this.serviceMethodGenerator.getCommonMethod().getHttpMethod().toUpperCase()) {
             case "GET":
                 requestMethod = RequestMethod.GET;
                 break;
@@ -882,29 +538,31 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
             default:
                 break;
         }
-        this.jcontrollerMethod = controllerClass.method(JMod.PUBLIC, this.responseClass, this.methodName);
-        String methodRemark = this.commonMethod.getRemark();
+        this.jcontrollerMethod = controllerClass.method(JMod.PUBLIC, this.exchangeProcessor.getResponseClass(), this
+                .serviceMethodGenerator.getMethodName());
+        String methodRemark = this.serviceMethodGenerator.getCommonMethod().getRemark();
         this.jcontrollerMethod.javadoc().append(methodRemark);
-        String methodPath = this.commonMethod.getPath();
+        String methodPath = this.serviceMethodGenerator.getCommonMethod().getPath();
         if (methodPath == null || methodPath.equals("")) {
-            methodPath = "/" + this.commonMethod.getName();
+            methodPath = "/" + this.serviceMethodGenerator.getCommonMethod().getName();
         }
-        String methodVersion = this.commonMethod.getVersion();
+        String methodVersion = this.serviceMethodGenerator.getCommonMethod().getVersion();
         if (methodVersion != null && !methodVersion.equals("")) {
             methodPath = methodPath + "/" + methodVersion;
         }
 
         JBlock controllerMethodBlk = this.jcontrollerMethod.body();
 
-        methodPath = methodPath + this.processRequest();
+        JInvocation jInvocation = JExpr.invoke(JExpr.refthis(commonController.getServiceName()), this
+                .serviceMethodGenerator.getMethodName());
 
-        JInvocation jInvocation = JExpr.invoke(JExpr.refthis(commonController.getServiceName()), this.methodName);
+        methodPath = methodPath + this.exchangeProcessor.processHTTPRequest(jcontrollerMethod, jInvocation, mockModel);
 
         if (this.getMockModel() == MockModel.MockModel_Swagger) {
             this.jcontrollerMethod.annotate(cm.ref("io.swagger.annotations.ApiOperation"))
                     .param("value", methodRemark).param("notes", methodRemark);
         }
-        List<PacketField> headVariables = this.commonMethod.getHeadVariables();
+        List<PacketField> headVariables = this.serviceMethodGenerator.getCommonMethod().getHeadVariables();
         if (headVariables != null && headVariables.size() > 0) {
             for (int index = 0; index < headVariables.size(); index++) {
                 PacketField headVariable = headVariables.get(index);
@@ -920,7 +578,7 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
                 }
             }
         }
-        List<PacketField> pathVariables = this.commonMethod.getPathVariables();
+        List<PacketField> pathVariables = this.serviceMethodGenerator.getCommonMethod().getPathVariables();
         if (pathVariables != null && pathVariables.size() > 0) {
             for (int index = 0; index < pathVariables.size(); index++) {
                 PacketField pathVariable = pathVariables.get(index);
@@ -938,7 +596,7 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
                 }
             }
         }
-        List<PacketField> parameters = this.commonMethod.getParameters();
+        List<PacketField> parameters = this.serviceMethodGenerator.getCommonMethod().getParameters();
         if (parameters != null && parameters.size() > 0) {
             for (int index = 0; index < parameters.size(); index++) {
                 PacketField parameter = parameters.get(index);
@@ -960,7 +618,7 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
                 .annotate(cm.ref("org.springframework.web.bind.annotation.RequestMapping"));
         jAnnotationUse.param("value", methodPath).param("method", requestMethod);
 
-        String[] resTypes = this.commonMethod.getResType().split(",");
+        String[] resTypes = this.serviceMethodGenerator.getCommonMethod().getResType().split(",");
         if (resTypes.length == 1) {
             jAnnotationUse.param("produces", resTypes[0]);
         } else {
@@ -970,7 +628,7 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
             }
         }
 
-        List<PacketField> cookieVariables = this.commonMethod.getCookieVariables();
+        List<PacketField> cookieVariables = this.serviceMethodGenerator.getCommonMethod().getCookieVariables();
         if (cookieVariables != null && cookieVariables.size() > 0) {
             for (int index = 0; index < cookieVariables.size(); index++) {
                 PacketField cookieVariable = cookieVariables.get(index);
@@ -989,31 +647,14 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
             }
         }
 
-        if (this.requestBodyClass != null) {
-            JVar requestParam = this.jcontrollerMethod.param(this.requestBodyClass, "requestBody");
+        if (this.serviceMethodGenerator.getRequestBodyClass() != null) {
+            JVar requestParam =
+                    this.jcontrollerMethod.param(this.serviceMethodGenerator.getRequestBodyClass(), "requestBody");
             requestParam.annotate(cm.ref("org.springframework.web.bind.annotation.RequestBody"));
             requestParam.annotate(cm.ref("javax.validation.Valid"));
             jInvocation.arg(JExpr.ref("requestBody"));
         }
-        this.processResponse(controllerMethodBlk, jInvocation);
+        this.exchangeProcessor.processResponse(controllerMethodBlk, jInvocation);
 
-    }
-
-    protected String processRequest() {
-        return this.exchangeProcessor.processRequest(this, jcontrollerMethod, this.mockModel);
-    }
-
-    protected void processResponse(JBlock methodBlk, JInvocation jInvocation) {
-        exchangeProcessor.processResponse(this, methodBlk, jInvocation);
-    }
-
-    protected void parseResponseClass() {
-        this.parseResponseBodyClass();
-        exchangeProcessor.parseResponseClass(this);
-    }
-
-    protected void parseRequestClass() {
-        this.parseRequestBodyClass();
-        exchangeProcessor.parseRequestClass(this);
     }
 }

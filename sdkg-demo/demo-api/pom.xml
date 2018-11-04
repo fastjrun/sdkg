@@ -131,6 +131,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
+                    <skipTests>false</skipTests>
                     <argLine>-Dfile.encoding=UTF-8</argLine>
                     <suiteXmlFiles>
                         <suiteXmlFile>${project.build.testOutputDirectory}/testng.xml</suiteXmlFile>

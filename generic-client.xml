@@ -160,8 +160,6 @@
         </service>
     </services>
     <controllers>
-        <!--
-        -->
         <controller type="Generic" name="AppVersionGenericController" path="/generic/version"
                     clientName="AppVersionGenericClient" remark="版本接口" tags="基本接口">
             <service name="versionService" ref="versionServiceRestGeneric"/>
@@ -170,13 +168,13 @@
                     clientName="UserGenericClient" remark="用户管理接口" tags="基本接口">
             <service name="userService" ref="userServiceRestGeneric"/>
         </controller>
-        <controller type="Dubbo" name="UserServiceRPCController" path="/dubbo/user"
-                    clientName="UserServiceRPCClient" remark="用户管理接口" tags="dubbo接口">
+        <controller type="Dubbo" name="UserDubboManager" path="/dubbo/user"
+                    clientName="UserDubboAPI" remark="用户管理接口" tags="dubbo接口">
             <service name="userServiceRPC" ref="userServiceRPC"/>
         </controller>
 
-        <controller type="Dubbo" name="VersionServiceRPCController" path="/dubbo/version"
-                    clientName="VersionServiceRPCClient" remark="版本接口" tags="dubbo接口">
+        <controller type="Dubbo" name="VersionDubboManager" path="/dubbo/version"
+                    clientName="VersionDubboAPI" remark="版本接口" tags="dubbo接口">
             <service name="versionService" ref="versionServiceRPC"/>
         </controller>
     </controllers>

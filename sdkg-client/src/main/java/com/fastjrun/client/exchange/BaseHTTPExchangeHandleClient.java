@@ -1,21 +1,16 @@
-package com.fastjrun.client;
+/*
+ * Copyright (C) 2018 Fastjrun, Inc. All Rights Reserved.
+ */
+package com.fastjrun.client.exchange;
 
 import java.util.List;
 import java.util.Map;
 
+import com.fastjrun.client.util.BaseHTTPUtilClient;
 import com.fastjrun.exchange.DefaultHTTPExchange;
 
-/*
- * *
- *  * 注意：本内容仅限于公司内部传阅，禁止外泄以及用于其他的商业目的
- *  *
- *  * @author 崔莹峰
- *  * @Copyright 2018 快嘉框架. All rights reserved.
- *
- */
-
-public abstract class BaseHttpExchangeHandleClient extends
-        BaseExchangeHandleClient<BaseHttpUtilClient> {
+public abstract class BaseHTTPExchangeHandleClient extends
+        BaseExchangeHandleClient<BaseHTTPUtilClient> {
 
     DefaultHTTPExchange defaultHTTPExchange;
 

@@ -1,13 +1,7 @@
-package com.fastjrun.client;
-
 /*
- * *
- *  * 注意：本内容仅限于公司内部传阅，禁止外泄以及用于其他的商业目的
- *  *
- *  * @author 崔莹峰
- *  * @Copyright 2018 快嘉框架. All rights reserved.
- *
+ * Copyright (C) 2018 Fastjrun, Inc. All Rights Reserved.
  */
+package com.fastjrun.client.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -17,7 +11,7 @@ import org.springframework.context.ApplicationContext;
 import com.fastjrun.common.ClientException;
 import com.fastjrun.common.CodeMsgConstants;
 
-public class DefaultRPCClient extends BaseUtilClient {
+public class DefaultRPCUtilClient extends BaseUtilClient {
 
     protected ApplicationContext applicationContext;
 

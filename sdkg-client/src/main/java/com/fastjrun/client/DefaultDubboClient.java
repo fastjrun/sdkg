@@ -9,5 +9,7 @@ package com.fastjrun.client;
  *
  */
 
+import com.fastjrun.client.exchange.DefaultRPCExchangeHandleClient;
+
 public class DefaultDubboClient extends DefaultRPCExchangeHandleClient {
 }

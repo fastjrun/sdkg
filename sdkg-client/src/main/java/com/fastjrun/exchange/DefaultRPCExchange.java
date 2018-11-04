@@ -7,15 +7,15 @@ import com.fastjrun.dto.BasePacket;
 
 public class DefaultRPCExchange {
 
-    private BaseRequestEncoder requestEncoder;
+    private BaseRPCRequestEncoder requestEncoder;
 
     private BaseRPCResponseDecoder responseDecoder;
 
-    public BaseRequestEncoder getRequestEncoder() {
+    public BaseRPCRequestEncoder getRequestEncoder() {
         return requestEncoder;
     }
 
-    public void setRequestEncoder(BaseRequestEncoder requestEncoder) {
+    public void setRequestEncoder(BaseRPCRequestEncoder requestEncoder) {
         this.requestEncoder = requestEncoder;
     }
 

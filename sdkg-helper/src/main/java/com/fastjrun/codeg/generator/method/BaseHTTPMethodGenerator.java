@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.fastjrun.codeg.common.PacketField;
 import com.fastjrun.codeg.common.PacketObject;
+import com.fastjrun.codeg.helper.StringHelper;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
@@ -13,23 +14,25 @@ import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JVar;
 
-public class BaseHTTPMethodGenerator extends BaseControllerMethodGenerator {
+public abstract class BaseHTTPMethodGenerator extends BaseControllerMethodGenerator {
 
     public void processClientMethod(String controllerPath, JDefinedClass clientClass) {
-        this.jClientMethod = clientClass.method(JMod.PUBLIC, this.responseBodyClass, this.methodName);
-        String methodRemark = this.commonMethod.getRemark();
+        this.jClientMethod =
+                clientClass.method(JMod.PUBLIC, this.serviceMethodGenerator.getResponseBodyClass(),
+                        this.serviceMethodGenerator.getMethodName());
+        String methodRemark = this.serviceMethodGenerator.getCommonMethod().getRemark();
         this.jClientMethod.javadoc().append(methodRemark);
         JBlock methodBlk = this.jClientMethod.body();
-        String methodPath = this.commonMethod.getPath();
+        String methodPath = this.serviceMethodGenerator.getCommonMethod().getPath();
         if (methodPath == null || methodPath.equals("")) {
-            methodPath = "/" + this.methodName;
+            methodPath = "/" + this.serviceMethodGenerator.getMethodName();
         }
-        String methodVersion = this.commonMethod.getVersion();
+        String methodVersion = this.serviceMethodGenerator.getCommonMethod().getVersion();
         if (methodVersion != null && !methodVersion.equals("")) {
             methodPath += "/" + methodVersion;
         }
         String invokeMethodName;
-        if (this.commonMethod.isResponseIsArray()) {
+        if (this.serviceMethodGenerator.getCommonMethod().isResponseIsArray()) {
             invokeMethodName = "processList";
         } else {
             invokeMethodName = "process";
@@ -37,7 +40,7 @@ public class BaseHTTPMethodGenerator extends BaseControllerMethodGenerator {
         JInvocation jInvocation = JExpr.invoke(JExpr.ref("baseClient"), invokeMethodName);
 
         // headParams
-        List<PacketField> headVariables = this.commonMethod.getHeadVariables();
+        List<PacketField> headVariables = this.serviceMethodGenerator.getCommonMethod().getHeadVariables();
 
         JClass stringClass = cm.ref("String");
 
@@ -65,7 +68,7 @@ public class BaseHTTPMethodGenerator extends BaseControllerMethodGenerator {
         JVar pathVar = methodBlk.decl(stringBuilderClass, "path",
                 JExpr._new(stringBuilderClass).invoke("append")
                         .arg(JExpr.lit(controllerPath).plus(JExpr.lit(methodPath))));
-        List<PacketField> pathVariables = this.commonMethod.getPathVariables();
+        List<PacketField> pathVariables = this.serviceMethodGenerator.getCommonMethod().getPathVariables();
         if (pathVariables != null && pathVariables.size() > 0) {
             for (int index = 0; index < pathVariables.size(); index++) {
                 PacketField pathVariable = pathVariables.get(index);
@@ -84,12 +87,13 @@ public class BaseHTTPMethodGenerator extends BaseControllerMethodGenerator {
 
         methodBlk.invoke(JExpr.ref("log"), "debug").arg(JExpr.lit("path = {}")).arg(pathVar.invoke("toString"));
         // method
-        jInvocation.arg(JExpr.lit(this.commonMethod.getHttpMethod().toUpperCase()));
+        jInvocation.arg(JExpr.lit(this.serviceMethodGenerator.getCommonMethod().getHttpMethod().toUpperCase()));
 
         methodBlk.invoke(JExpr.ref("log"), "debug")
-                .arg(JExpr.lit("method = " + this.commonMethod.getHttpMethod().toUpperCase()));
+                .arg(JExpr.lit("method = " + this.serviceMethodGenerator.getCommonMethod().getHttpMethod()
+                        .toUpperCase()));
 
-        List<PacketField> parameters = this.commonMethod.getParameters();
+        List<PacketField> parameters = this.serviceMethodGenerator.getCommonMethod().getParameters();
         if (parameters != null && parameters.size() > 0) {
             // queryParams
             JVar queryParamsJvar = methodBlk.decl(
@@ -124,7 +128,7 @@ public class BaseHTTPMethodGenerator extends BaseControllerMethodGenerator {
         } else {
             jInvocation.arg(JExpr._null());
         }
-        List<PacketField> cookies = this.commonMethod.getCookieVariables();
+        List<PacketField> cookies = this.serviceMethodGenerator.getCommonMethod().getCookieVariables();
         if (cookies != null && cookies.size() > 0) {
             // cookies
             JVar cookieJvar = methodBlk.decl(
@@ -154,9 +158,10 @@ public class BaseHTTPMethodGenerator extends BaseControllerMethodGenerator {
         }
 
         // requestBody
-        PacketObject requestBody = this.commonMethod.getRequest();
-        if (this.requestBodyClass != null) {
-            JVar jRequestBodyVar = this.jClientMethod.param(this.requestBodyClass, "requestBody");
+        PacketObject requestBody = this.serviceMethodGenerator.getCommonMethod().getRequest();
+        if (this.serviceMethodGenerator.getRequestBodyClass() != null) {
+            JVar jRequestBodyVar =
+                    this.jClientMethod.param(this.serviceMethodGenerator.getRequestBodyClass(), "requestBody");
             jInvocation.arg(jRequestBodyVar);
 
         } else {
@@ -164,12 +169,36 @@ public class BaseHTTPMethodGenerator extends BaseControllerMethodGenerator {
 
         }
 
-        if (this.responseBodyClass != cm.VOID) {
-            jInvocation.arg(JExpr.dotclass((JClass) this.responseBodyClass));
+        if (this.serviceMethodGenerator.getResponseBodyClass() != null && this.serviceMethodGenerator
+                .getResponseBodyClass() != cm.VOID) {
+            if (this.serviceMethodGenerator.getElementClass() != null) {
+                jInvocation.arg(JExpr.dotclass(this.serviceMethodGenerator.getElementClass()));
+            } else {
+                jInvocation.arg(JExpr.dotclass((JClass) this.serviceMethodGenerator.getResponseBodyClass()));
+            }
             methodBlk._return(jInvocation);
         } else {
             methodBlk.add(jInvocation);
         }
+    }
 
+    @Override
+    public void generate() {
+        if (this.isClient()) {
+            this.processClientMethod(this.baseControllerGenerator.getControllerPath(), this.baseControllerGenerator
+                    .getClientClass());
+            this.processClientTestMethod(this.baseControllerGenerator.getClientTestClass());
+
+            StringBuilder sb = new StringBuilder(this.baseControllerGenerator.getClientName()).append(".test");
+            sb.append(StringHelper.toUpperCaseFirstOne(this.serviceMethodGenerator.getMethodName())).append(".n");
+            this.processClientTestPraram();
+            this.baseControllerGenerator.getClientTestParam().put(sb.toString(), this.methodParamInJsonObject
+                    .toString().replaceAll("\n", "").replaceAll("\r", "")
+                    .trim());
+        } else {
+            this.processControllerMethod(this.baseControllerGenerator.getCommonController(),
+                    this.baseControllerGenerator
+                            .getControlllerClass());
+        }
     }
 }

@@ -1,24 +1,19 @@
-package com.fastjrun.client;
+/*
+ * Copyright (C) 2018 Fastjrun, Inc. All Rights Reserved.
+ */
+package com.fastjrun.client.exchange;
 
 import java.util.List;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.fastjrun.client.util.DefaultRPCUtilClient;
 import com.fastjrun.dto.BaseListPacket;
 import com.fastjrun.dto.BasePacket;
 import com.fastjrun.exchange.DefaultRPCExchange;
 
-/*
- * *
- *  * 注意：本内容仅限于公司内部传阅，禁止外泄以及用于其他的商业目的
- *  *
- *  * @author 崔莹峰
- *  * @Copyright 2018 快嘉框架. All rights reserved.
- *
- */
-
-public abstract class BaseRpcExchangeHandleClient extends BaseExchangeHandleClient<DefaultRPCClient> {
+public abstract class BaseRPCExchangeHandleClient extends BaseExchangeHandleClient<DefaultRPCUtilClient> {
 
     DefaultRPCExchange defaultRPCExchange;
 
@@ -28,7 +23,7 @@ public abstract class BaseRpcExchangeHandleClient extends BaseExchangeHandleClie
 
     public <T, V> V process(Class classType, String methodName, Class[]
             paramterTypes, Object[] paramerValues) {
-
+        this.defaultRPCExchange.getRequestEncoder().processRequest(paramterTypes, paramerValues);
         Object result = this.baseClient.process(classType, methodName, paramterTypes, paramerValues);
         BasePacket<T, V> response = (BasePacket<T, V>) result;
         return defaultRPCExchange.getResponseDecoder().process(response);
@@ -49,7 +44,7 @@ public abstract class BaseRpcExchangeHandleClient extends BaseExchangeHandleClie
     @Override
     public void initSDKConfig() {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
-        this.baseClient = new DefaultRPCClient();
+        this.baseClient = new DefaultRPCUtilClient();
         this.baseClient.setApplicationContext(applicationContext);
         this.initExchange();
 

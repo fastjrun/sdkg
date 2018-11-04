@@ -488,4 +488,9 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
         sqlValue.append(")");
         return new String[] {sqlParam.toString(), sqlValue.toString()};
     }
+
+    @Override
+    public void generate() {
+
+    }
 }

@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fastjrun.common.ClientException;
 import com.fastjrun.common.CodeMsgConstants;
 
-public abstract class BaseHttpResponseDecoder extends BaseResponseDecoder {
+public abstract class BaseHTTPResponseDecoder extends BaseResponseDecoder {
 
     protected ObjectMapper objectMapper;
 

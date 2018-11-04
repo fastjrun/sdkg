@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fastjrun.common.ClientException;
 import com.fastjrun.common.CodeMsgConstants;
 
-public class DefaultHttpRequestEncoder extends BaseRequestEncoder {
+public class DefaultHTTPRequestEncoder extends BaseRequestEncoder {
 
     protected ObjectMapper objectMapper;
 

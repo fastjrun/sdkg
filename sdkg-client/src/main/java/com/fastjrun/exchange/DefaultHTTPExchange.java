@@ -4,23 +4,23 @@ import java.util.List;
 
 public class DefaultHTTPExchange {
 
-    private DefaultHttpRequestEncoder requestEncoder;
+    private DefaultHTTPRequestEncoder requestEncoder;
 
-    private BaseHttpResponseDecoder responseDecoder;
+    private BaseHTTPResponseDecoder responseDecoder;
 
-    public DefaultHttpRequestEncoder getRequestEncoder() {
+    public DefaultHTTPRequestEncoder getRequestEncoder() {
         return requestEncoder;
     }
 
-    public void setRequestEncoder(DefaultHttpRequestEncoder requestEncoder) {
+    public void setRequestEncoder(DefaultHTTPRequestEncoder requestEncoder) {
         this.requestEncoder = requestEncoder;
     }
 
-    public BaseHttpResponseDecoder getResponseDecoder() {
+    public BaseHTTPResponseDecoder getResponseDecoder() {
         return responseDecoder;
     }
 
-    public void setResponseDecoder(BaseHttpResponseDecoder responseDecoder) {
+    public void setResponseDecoder(BaseHTTPResponseDecoder responseDecoder) {
         this.responseDecoder = responseDecoder;
     }
 

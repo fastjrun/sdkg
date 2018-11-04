@@ -1,14 +1,9 @@
 package com.fastjrun.codeg.generator;
 
-import java.util.List;
 import java.util.Properties;
-
-import org.dom4j.Document;
 
 import com.fastjrun.codeg.common.CodeGException;
 import com.fastjrun.codeg.common.CodeGMsgContants;
-import com.fastjrun.codeg.common.CommonMethod;
-import com.fastjrun.codeg.generator.method.BaseRPCMethodGenerator;
 import com.fastjrun.helper.StringHelper;
 import com.sun.codemodel.ClassType;
 import com.sun.codemodel.JClass;
@@ -26,10 +21,6 @@ public abstract class BaseRPCGenerator extends BaseControllerGenerator {
     protected JClass apiClass;
 
     protected JDefinedClass apiManagerClass;
-
-    protected Document clientXml;
-
-    protected Document serverXml;
 
     public JClass getApiClass() {
         return apiClass;
@@ -90,73 +81,26 @@ public abstract class BaseRPCGenerator extends BaseControllerGenerator {
         this.addClassDeclaration(this.apiManagerClass);
 
         String serviceName = commonController.getServiceName();
-        JFieldVar fieldVar = this.apiManagerClass.field(JMod.PRIVATE, this.serviceClass, serviceName);
+        JFieldVar fieldVar =
+                this.apiManagerClass.field(JMod.PRIVATE, this.serviceGenerator.getServiceClass(), serviceName);
         fieldVar.annotate(cm.ref("org.springframework.beans.factory.annotation.Autowired"));
         fieldVar.annotate(cm.ref("org.springframework.beans.factory.annotation.Qualifier")).param("value",
                 commonController.getServiceRef());
     }
 
     @Override
-    public void processProviderModule() {
-        this.processService();
-        if (this.getMockModel() != MockModel.MockModel_Common) {
-            this.processServiceMock();
-            this.genreateControllerPath();
-            this.processController();
-        }
+    public void generate() {
         this.processAPI();
-        this.processAPIManager();
-
-        List<CommonMethod> commonMethods = this.commonController.getService().getMethods();
-        for (CommonMethod commonMethod : commonMethods) {
-            BaseRPCMethodGenerator baseRPCMethodGenerator = null;
-            try {
-                baseRPCMethodGenerator = (BaseRPCMethodGenerator) this.baseControllerMethodGenerator.clone();
-                baseRPCMethodGenerator.setCommonMethod(commonMethod);
-            } catch (CloneNotSupportedException e) {
-                throw new CodeGException(CodeGMsgContants.CODEG_NOT_SUPPORT, "不支持这个生成器", e);
-            }
-            baseRPCMethodGenerator.processServiceMethod(this.serviceClass);
-            if (this.commonController.is_new()) {
-                baseRPCMethodGenerator.processApiMethod((JDefinedClass) this.apiClass);
-            }
-            baseRPCMethodGenerator.processApiManagerMethod(commonController, this.apiManagerClass);
+        if (this.isClient()) {
+            this.processClient();
+            this.processClientTest();
+            this.clientTestParam = new Properties();
+        } else {
+            this.processAPIManager();
             if (this.getMockModel() != MockModel.MockModel_Common) {
-                baseRPCMethodGenerator.processServiceMockMethod(this.serviceMockClass);
-                baseRPCMethodGenerator.processControllerMethod(commonController, this.controlllerClass);
+                this.genreateControllerPath();
+                this.processController();
             }
-        }
-    }
-
-    @Override
-    public void processApiModule() {
-        this.processService();
-        this.processAPI();
-        this.processClient();
-        this.processClientTest();
-        this.clientTestParam = new Properties();
-
-        List<CommonMethod> commonMethods = this.commonController.getService().getMethods();
-        for (CommonMethod commonMethod : commonMethods) {
-            BaseRPCMethodGenerator baseRPCMethodGenerator = null;
-            try {
-                baseRPCMethodGenerator = (BaseRPCMethodGenerator) this.baseControllerMethodGenerator.clone();
-                baseRPCMethodGenerator.setCommonMethod(commonMethod);
-            } catch (CloneNotSupportedException e) {
-                throw new CodeGException(CodeGMsgContants.CODEG_NOT_SUPPORT, "不支持这个生成器", e);
-            }
-            baseRPCMethodGenerator.processServiceMethod(this.serviceClass);
-            if (this.commonController.is_new()) {
-                baseRPCMethodGenerator.processApiMethod((JDefinedClass) this.apiClass);
-            }
-            baseRPCMethodGenerator.processClientMethod(this.apiClass, this.clientClass);
-            baseRPCMethodGenerator.processClientTestMethod(this.clientTestClass);
-            StringBuilder sb = new StringBuilder(this.clientName).append(".test");
-            sb.append(baseRPCMethodGenerator.getMethodName()).append(".n");
-            baseRPCMethodGenerator.processClientTestPraram();
-            this.clientTestParam.put(sb.toString(), baseRPCMethodGenerator.getMethodParamInJsonObject()
-                    .toString().replaceAll("\n", "").replaceAll("\r", "")
-                    .trim());
         }
     }
 

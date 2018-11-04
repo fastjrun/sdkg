@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fastjrun.common.ClientException;
 import com.fastjrun.common.CodeMsgConstants;
 
-public class DefaultHttpNoHeadResponseDecoder extends BaseHttpResponseDecoder {
+public class DefaultHTTPNoHeadResponseDecoder extends BaseHTTPResponseDecoder {
 
     @Override
     protected JsonNode parseBodyFromResponse(String responseResult) {

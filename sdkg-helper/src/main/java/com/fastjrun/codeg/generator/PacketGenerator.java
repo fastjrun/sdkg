@@ -44,7 +44,8 @@ public class PacketGenerator extends BaseCMGenerator {
         this.packetObjectJClass = packetObjectJClass;
     }
 
-    public boolean process() {
+    @Override
+    public void generate() {
         if (!this.packetObject.is_new()) {
             this.packetObjectJClass = cm.ref(packetObject.get_class());
         } else {
@@ -196,8 +197,6 @@ public class PacketGenerator extends BaseCMGenerator {
             toStringMethodBlk._return(toStringSBVar.invoke("toString"));
             this.addClassDeclaration(dc);
         }
-
-        return true;
     }
 
     public void processField(int index, PacketField field, JDefinedClass dc, Long hashCode,
@@ -269,5 +268,4 @@ public class PacketGenerator extends BaseCMGenerator {
             return cm.ref(po.get_class());
         }
     }
-
 }
