@@ -69,7 +69,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.fastjrun.ProviderMockApplication</mainClass>
+                    <mainClass>com.fastjrun.mock.ProviderMockStartApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>

@@ -11,9 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.fastjrun.codeg.common.CodeGException;
 import com.fastjrun.codeg.common.CodeGMsgContants;
 import com.fastjrun.codeg.common.DataBaseObject;
@@ -40,7 +37,6 @@ public class SQLSchemaParse {
         }
     }
 
-    protected static final Log logStatic = LogFactory.getLog(SQLSchemaParse.class);
     static final String[] javaKeyWords = {"return", "package",
             "describe", "order", "text", "fjTable", "private", "public", "class",
             "static", "test"};
