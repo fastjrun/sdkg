@@ -1,10 +1,10 @@
 package com.fastjrun.codeg.helper;
 
-import com.fastjrun.codeg.common.FJColumn;
-import com.fastjrun.codeg.common.FJTable;
-
 import java.util.List;
 import java.util.Map;
+
+import com.fastjrun.codeg.common.FJColumn;
+import com.fastjrun.codeg.common.FJTable;
 
 /**
  * 构造Sql语句
@@ -30,7 +30,7 @@ public class MysqlSqlHelper implements SqlHelper {
         Map<String, FJColumn> columns = fjTable.getColumns();
         int i = 0;
         for (FJColumn fjColumn : columns.values()) {
-            String name = fjTable.getName();
+            String name = fjColumn.getName();
             if (fjColumn.isIdentity()) {
                 continue;
             }

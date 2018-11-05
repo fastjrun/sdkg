@@ -114,7 +114,11 @@ public class SQLSchemaParse {
         for (int i = 0; i < indexes.size(); i++) {
             Index index = indexes.get(i);
             if (index.getType().toUpperCase().equals("PRIMARY KEY")) {
-                table.setPrimaryKeyColumnNames(index.getColumnsNames());
+                List<String> primaryKeyColumnNames = new ArrayList<>();
+                for (String columnName : index.getColumnsNames()) {
+                    primaryKeyColumnNames.add(columnName.replaceAll("`", ""));
+                }
+                table.setPrimaryKeyColumnNames(primaryKeyColumnNames);
                 break;
             }
         }
@@ -135,11 +139,7 @@ public class SQLSchemaParse {
     private static FJColumn parseMysqlColumn(ColumnDefinition columnDefinition) {
         FJColumn fjColumn = new FJColumn();
 
-        String columnName = columnDefinition.getColumnName();
-
-        if (columnName.startsWith("`")) {
-            columnName = columnName.substring(1, columnName.length() - 1);
-        }
+        String columnName = columnDefinition.getColumnName().replace("`", "");
         // 字段名称
         fjColumn.setName(columnName);
         fjColumn.setFieldName(parseFieldName(columnName));

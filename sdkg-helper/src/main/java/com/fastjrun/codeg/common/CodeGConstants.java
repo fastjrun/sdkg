@@ -20,7 +20,7 @@ public interface CodeGConstants {
                     "com.fastjrun.web.controller.BaseRPCController", "DefaultDubboGenerator");
 
     enum CodeGCommand {
-        ApiG, BundleG, BundleMockG;
+        BaseG, ApiG, BundleG, BundleMockG;
     }
 
     // 0:common;1:swagger

@@ -14,10 +14,18 @@ public class CodeGServiceTest implements CodeGConstants {
     public void setUp() {
         String packagePrefix = "com.fastjrun.sdkg.demo.";
         String genericBundleFiles = "generic-client.xml,app-client.xml,api-client.xml";
+        String sqlFile = "fast-demo.sql";
         DefaultCodeGService defaultGenericCodeGService = new DefaultCodeGService();
         defaultGenericCodeGService.setBundleFiles(genericBundleFiles.split(","));
+        defaultGenericCodeGService.setSqlFile(sqlFile);
         defaultGenericCodeGService.setPackageNamePrefix(packagePrefix);
         codeGGenericService = defaultGenericCodeGService;
+    }
+
+    @Test
+    public void generateBase() {
+        String moduleName = "sdkg-demo/demo-base";
+        codeGGenericService.generateBase(moduleName);
     }
 
     @Test

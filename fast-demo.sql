@@ -18,6 +18,28 @@
 --
 -- Table structure for table `t_user`
 --
+
+DROP TABLE IF EXISTS `t_user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `t_user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `loginName` varchar(50) DEFAULT NULL,
+  `loginPwd` char(32) DEFAULT NULL,
+  `mobileNo` varchar(20) DEFAULT NULL COMMENT '手机号',
+  `nickName` varchar(20) DEFAULT NULL COMMENT '昵称',
+  `sex` smallint(6) DEFAULT '1' COMMENT '1：男；2：女：3；未知',
+  `email` char(30) DEFAULT NULL COMMENT '邮件',
+  `createTime` datetime DEFAULT NULL,
+  `lastModifyTime` datetime DEFAULT NULL,
+  `lastLoginTime` char(17) DEFAULT NULL,
+  `loginErrCount` smallint(6) DEFAULT '0',
+  `lastRecordLoginErrTime` char(17) DEFAULT NULL,
+  `status` char(1) DEFAULT '1' COMMENT '1：正常；2：密码锁定；3：人工锁定',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
 --
 -- Table structure for table `t_user_login`
 --

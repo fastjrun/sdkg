@@ -10,4 +10,6 @@ public interface CodeGService extends CodeGConstants {
 
     boolean generateBundle(String moduleName, MockModel mockModel);
 
+    boolean generateBase(String moduleName);
+
 }
