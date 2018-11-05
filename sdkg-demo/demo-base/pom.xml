@@ -13,11 +13,7 @@
     <dependencies>
         <dependency>
             <groupId>com.fastjrun.codeg</groupId>
-            <artifactId>sdkg-common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis</artifactId>
+            <artifactId>sdkg-service</artifactId>
         </dependency>
     </dependencies>
     <build>

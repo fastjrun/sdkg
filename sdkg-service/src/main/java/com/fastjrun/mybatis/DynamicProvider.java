@@ -1,0 +1,19 @@
+/*
+ * Copyright (C) 2018 Fastjrun, Inc. All Rights Reserved.
+ */
+package com.fastjrun.mybatis;
+
+import java.util.Map;
+
+import com.fastjrun.mybatis.declare.Declare;
+
+public class DynamicProvider {
+    public String sql(Declare dec) {
+        return dec.getSql();
+    }
+
+    public String sqlLimit(Map<String, Object> para) {
+        Declare dec = (Declare) para.get("dec");
+        return dec.getSql();
+    }
+}

@@ -17,13 +17,8 @@
         <dependencies>
             <dependency>
                 <groupId>com.fastjrun.codeg</groupId>
-                <artifactId>sdkg-common</artifactId>
+                <artifactId>sdkg-service</artifactId>
                 <version>${sdkg.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.mybatis</groupId>
-                <artifactId>mybatis</artifactId>
-                <version>${mybatis.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fastjrun.codeg</groupId>
@@ -74,6 +69,42 @@
                 <artifactId>springfox-swagger-ui</artifactId>
                 <version>${swagger2.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis-spring</artifactId>
+                <version>${mybatis-spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper</artifactId>
+                <version>${pagehelper.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql-connector-java.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>commons-collections</groupId>
+                <artifactId>commons-collections</artifactId>
+                <version>${commons-collections.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-dbcp</groupId>
+                <artifactId>commons-dbcp</artifactId>
+                <version>${commons-dbcp.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context-support</artifactId>
+                <version>${springframework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-tx</artifactId>
+                <version>${springframework.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <build>
@@ -108,6 +139,7 @@
         <module>demo-api</module>
         <module>demo-base</module>
         <module>demo-bundle</module>
+        <module>demo-service-impl</module>
         <module>demo-bundle-mock</module>
         <module>demo-provider-mock</module>
     </modules>
@@ -116,7 +148,11 @@
         <sqlFile>fast-demo.sql</sqlFile>
         <packagePrefix>com.fastjrun.sdkg.demo.</packagePrefix>
         <sdkg.version>2.0-SNAPSHOT</sdkg.version>
-        <mybatis.version>3.2.3</mybatis.version>
+        <mybatis-spring.version>1.3.0</mybatis-spring.version>
+        <pagehelper.version>4.1.6</pagehelper.version>
+        <mysql-connector-java.version>5.1.40</mysql-connector-java.version>
+        <commons-collections.version>3.2.2</commons-collections.version>
+        <commons-dbcp.version>1.4</commons-dbcp.version>
         <dubbo.version>2.6.2</dubbo.version>
         <curator.version>4.0.1</curator.version>
         <zookeeper.version>3.4.12</zookeeper.version>
