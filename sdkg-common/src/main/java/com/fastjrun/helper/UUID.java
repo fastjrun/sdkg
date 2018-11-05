@@ -157,10 +157,6 @@ public final class UUID implements java.io.Serializable, Comparable {
         return last.format(new Date()) + UUID.randomUUID().toString().replaceAll("-", "");
     }
 
-    public static void main(String[] args) {
-        System.out.println(UUID.getUUID());
-    }
-
     /**
      * Static factory to retrieve a type 4 (pseudo randomly generated) UUID.
      * <p>
@@ -483,8 +479,8 @@ public final class UUID implements java.io.Serializable, Comparable {
      * The first of two UUIDs follows the second if the most significant field
      * in which the UUIDs differ is greater for the first UUID.
      *
-     * @param val <tt>UUID</tt> to which this <tt>UUID</tt> is to be
-     *            compared.
+     * @param o <tt>UUID</tt> to which this <tt>UUID</tt> is to be
+     *          compared.
      *
      * @return -1, 0 or 1 as this <tt>UUID</tt> is less than, equal to, or
      * greater than <tt>val</tt>.
