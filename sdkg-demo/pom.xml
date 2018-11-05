@@ -106,6 +106,7 @@
     </profiles>
     <modules>
         <module>demo-api</module>
+        <module>demo-base</module>
         <module>demo-bundle</module>
         <module>demo-bundle-mock</module>
         <module>demo-provider-mock</module>
@@ -115,7 +116,7 @@
         <sqlFile>fast-demo.sql</sqlFile>
         <packagePrefix>com.fastjrun.sdkg.demo.</packagePrefix>
         <sdkg.version>2.0-SNAPSHOT</sdkg.version>
-        <mybatis.version>3.4.6</mybatis.version>
+        <mybatis.version>3.2.3</mybatis.version>
         <dubbo.version>2.6.2</dubbo.version>
         <curator.version>4.0.1</curator.version>
         <zookeeper.version>3.4.12</zookeeper.version>
