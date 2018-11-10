@@ -75,16 +75,7 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <includes>
-                    <include>api-sdk.properties</include>
-                </includes>
-                <filtering>true</filtering>
-            </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-                <includes>
                     <include>*.xml</include>
-                    <include>testdata/${envName}.properties</include>
-                    <include>log4j.properties</include>
                 </includes>
             </resource>
         </resources>
@@ -92,9 +83,18 @@
             <testResource>
                 <directory>src/test/resources</directory>
                 <includes>
-                    <include>testng*.xml</include>
+                    <include>testng.xml</include>
+                    <include>api-sdk.properties</include>
                 </includes>
                 <filtering>true</filtering>
+            </testResource>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <includes>
+                    <include>testdata/${envName}.properties</include>
+                    <include>applicationContext.xml</include>
+                    <include>log4j2.xml</include>
+                </includes>
             </testResource>
         </testResources>
         <plugins>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C) 2018 Fastjrun, Inc. All Rights Reserved.
+  -->
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
+
+
+    <bean id="propertyConfigure"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:jdbc.properties</value>
+                <value>classpath:service.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <import resource="classpath:applicationContext-service.xml"/>
+    <!-- 初始化数据表结构 -->
+    <jdbc:initialize-database data-source="dataSource">
+        <jdbc:script location="classpath:fast-demo.sql" encoding="UTF-8"/>
+    </jdbc:initialize-database>
+</beans>

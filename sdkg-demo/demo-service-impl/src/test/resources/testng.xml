@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C) 2018 Fastjrun, Inc. All Rights Reserved.
+  -->
+<!DOCTYPE suite PUBLIC "SYSTEM" "http://testng.org/testng-1.0.dtd">
+
+<suite name="clientTest" parallel="classes" thread-count="5" data-provider-thread-count="5">
+    <test name="${envName}" parallel="methods" thread-count="5">
+        <parameter name="envName" value="${envName}"/>
+        <classes>
+            <class name="com.fastjrun.sdkg.demo.service.CoreUserServiceTest" />
+        </classes>
+    </test>
+</suite>
