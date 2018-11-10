@@ -151,7 +151,7 @@
             <properties>
                 <skipTests>true</skipTests>
                 <basegc.skip>false</basegc.skip>
-                <bggc.skip>false</bggc.skip>
+                <bdgc.skip>false</bdgc.skip>
                 <envName>unitTest</envName>
             </properties>
         </profile>
