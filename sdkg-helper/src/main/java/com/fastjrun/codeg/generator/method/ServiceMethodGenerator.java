@@ -328,7 +328,7 @@ public class ServiceMethodGenerator extends BaseCMGenerator {
                         tterMethodName = StringHelper.toUpperCaseFirstOne(fieldName);
                     }
                 }
-                if (dataType.endsWith(":List")) {
+                if (primitiveType != null) {
                     if (primitiveType.endsWith("String")) {
                         methodBlk.invoke(reponseBodyVar, "set" + tterMethodName)
                                 .arg((mockHelperClass.staticInvoke("geStringListWithAscii").arg(JExpr.lit(10))));
