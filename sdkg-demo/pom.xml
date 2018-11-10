@@ -146,6 +146,15 @@
                 <envName>local</envName>
             </properties>
         </profile>
+        <profile>
+            <id>unitTest</id>
+            <properties>
+                <skipTests>true</skipTests>
+                <basegc.skip>false</basegc.skip>
+                <bggc.skip>false</bggc.skip>
+                <envName>unitTest</envName>
+            </properties>
+        </profile>
     </profiles>
     <modules>
         <module>demo-api</module>
