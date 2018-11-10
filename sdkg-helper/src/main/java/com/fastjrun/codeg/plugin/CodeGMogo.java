@@ -8,6 +8,9 @@ import com.fastjrun.codeg.service.impl.DefaultCodeGService;
 
 public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
 
+    @Parameter(property = "codeg.sqlFile", defaultValue = "fast-demo.sql")
+    protected String sqlFile;
+
     @Parameter(property = "codeg.bundleFiles", defaultValue = "demo_bundle.xml,demo_bundle1.xml")
     protected String bundleFiles;
 
@@ -50,14 +53,32 @@ public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
 
         getLog().info(company);
 
-        getLog().info(bundleFiles);
+        switch (codeGCommand) {
+            case BundleMockG:
+
+                getLog().info(bundleFiles);
+                break;
+            case BundleG:
+
+                getLog().info(bundleFiles);
+                break;
+            case ApiG:
+
+                getLog().info(bundleFiles);
+                break;
+            case BaseG:
+
+                getLog().info(sqlFile);
+                break;
+            default:
+                break;
+        }
 
         getLog().info(packagePrefix);
 
         getLog().info(module);
 
         DefaultCodeGService codeGService = new DefaultCodeGService();
-        codeGService.setBundleFiles(bundleFiles.split(","));
         codeGService.setPackageNamePrefix(packagePrefix);
         codeGService.setAuthor(author);
         codeGService.setCompany(company);
@@ -72,13 +93,20 @@ public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
                     default:
                         break;
                 }
+                codeGService.setBundleFiles(bundleFiles.split(","));
                 codeGService.generateBundle(module, mockModelTemp);
                 break;
             case BundleG:
+                codeGService.setBundleFiles(bundleFiles.split(","));
                 codeGService.generateProvider(module);
                 break;
             case ApiG:
+                codeGService.setBundleFiles(bundleFiles.split(","));
                 codeGService.generateAPI(module);
+                break;
+            case BaseG:
+                codeGService.setSqlFile(sqlFile);
+                codeGService.generateBase(module);
                 break;
             default:
                 break;

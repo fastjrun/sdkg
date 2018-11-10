@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C) 2018 Fastjrun, Inc. All Rights Reserved.
+  -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+
+
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd">
+    <!-- 持久层 -->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName">
+            <value>${jdbc.driverClassName}</value>
+        </property>
+        <property name="url">
+            <value>${jdbc.url}</value>
+        </property>
+        <property name="username">
+            <value>${jdbc.username}</value>
+        </property>
+        <property name="password">
+            <value>${jdbc.password}</value>
+        </property>
+        <property name="initialSize">
+            <value>${jdbc.initialSize}</value>
+        </property>
+        <property name="maxIdle">
+            <value>${jdbc.maxIdle}</value>
+        </property>
+        <property name="minIdle">
+            <value>${jdbc.minIdle}</value>
+        </property>
+        <property name="maxActive">
+            <value>${jdbc.maxActive}</value>
+        </property>
+        <property name="maxWait">
+            <value>${jdbc.maxWait}</value>
+        </property>
+        <property name="defaultAutoCommit">
+            <value>${jdbc.defaultAutoCommit}</value>
+        </property>
+        <property name="logAbandoned">
+            <value>${jdbc.logAbandoned}</value>
+        </property>
+        <property name="testOnReturn">
+            <value>${jdbc.testOnReturn}</value>
+        </property>
+        <property name="testOnBorrow">
+            <value>${jdbc.testOnBorrow}</value>
+        </property>
+        <property name="testWhileIdle">
+            <value>${jdbc.testWhileIdle}</value>
+        </property>
+        <property name="validationQuery">
+            <value>${jdbc.validationQuery}</value>
+        </property>
+        <property name="removeAbandoned">
+            <value>${jdbc.removeAbandoned}</value>
+        </property>
+        <property name="removeAbandonedTimeout">
+            <value>${jdbc.removeAbandonedTimeout}</value>
+        </property>
+        <property name="timeBetweenEvictionRunsMillis">
+            <value>${jdbc.timeBetweenEvictionRunsMillis}</value>
+        </property>
+        <property name="numTestsPerEvictionRun">
+            <value>${jdbc.numTestsPerEvictionRun}</value>
+        </property>
+        <property name="minEvictableIdleTimeMillis">
+            <value>${jdbc.minEvictableIdleTimeMillis}</value>
+        </property>
+    </bean>
+    <!-- 配置基于注解的事物aop -->
+    <tx:annotation-driven/>
+    <!-- 事务管理器 -->
+    <bean id="transactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!-- MyBatis sqlSessionFactory 配置 mybatis -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="classpath:mybatis-config.xml"></property>
+        <property name="plugins">
+            <array>
+                <bean class="com.github.pagehelper.PageHelper">
+                    <property name="properties">
+                        <value>dialect=mysql
+                            offsetAsPageNum=true
+                            rowBoundsWithCount=false
+                        </value>
+                    </property>
+                </bean>
+            </array>
+        </property>
+        <property name="mapperLocations" value="classpath*:mappers/**/*.xml"/>
+    </bean>
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+        <property name="basePackage"
+                  value="com.fastjrun.dao,com.fastjrun.sdkg.demo.dao"></property>
+    </bean>
+</beans>

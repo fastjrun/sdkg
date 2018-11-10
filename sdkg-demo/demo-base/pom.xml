@@ -1,0 +1,50 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.fastjrun.share.sdkg</groupId>
+        <artifactId>sdkg-demo-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>demo-base</artifactId>
+    <packaging>jar</packaging>
+    <url>http://maven.apache.org</url>
+    <name>${project.artifactId}</name>
+    <dependencies>
+        <dependency>
+            <groupId>com.fastjrun.codeg</groupId>
+            <artifactId>sdkg-service</artifactId>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>*.xml</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.fastjrun.codeg</groupId>
+                <artifactId>sdkg-helper</artifactId>
+                <executions>
+                    <execution>
+                        <id>initialize phase</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>baseGc</goal>
+                        </goals>
+                        <configuration>
+                            <sqlFile>${sqlFile}</sqlFile>
+                            <packagePrefix>${packagePrefix}</packagePrefix>
+                            <module>sdkg-demo/demo-base</module>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

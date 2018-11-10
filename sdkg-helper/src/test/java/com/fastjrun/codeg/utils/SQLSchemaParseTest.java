@@ -11,7 +11,7 @@ public class SQLSchemaParseTest {
     @Test
     public void testParse() {
         DataBaseObject dataBaseObject =
-                SQLSchemaParse.process(SQLSchemaParse.TargetType.TargetType_Mysql, "fast_demo.sql");
+                SQLSchemaParse.process(SQLSchemaParse.TargetType.TargetType_Mysql, "fast-demo.sql");
         System.out.println(dataBaseObject.getTargetType());
         Map<String, FJTable> map = dataBaseObject.getTableMap();
         for (FJTable table : map.values()) {

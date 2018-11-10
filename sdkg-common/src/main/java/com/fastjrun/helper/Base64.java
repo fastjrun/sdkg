@@ -46,7 +46,7 @@ public class Base64 {
     /**
      * Encode an array of bytes using Base64
      *
-     * @param data[] The bytes to be encoded
+     * @param data The bytes to be encoded
      *
      * @return A valid Base64 representation of the input
      */
@@ -68,7 +68,7 @@ public class Base64 {
     /**
      * Encode an array of bytes using Base64
      *
-     * @param data[] The bytes to be encoded
+     * @param data The bytes to be encoded
      *
      * @return A valid Base64 representation of the input
      */
@@ -84,7 +84,7 @@ public class Base64 {
 
         int byteArrayLength = data.length;
         int byteArrayIndex = 0;
-        int byteTriplet = 0;
+        int byteTriplet;
         while (byteArrayIndex < byteArrayLength - 2) {
             // Build the 24 bit byte triplet from the input data
             byteTriplet = convertUnsignedByteToInt(data[byteArrayIndex++]);
@@ -192,7 +192,7 @@ public class Base64 {
 
         byte result[] = new byte[byteArrayLength];
 
-        int byteTriplet = 0;
+        int byteTriplet;
         int byteIndex = 0;
 
         // Continue until we have less than 4 full characters left to

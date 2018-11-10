@@ -31,8 +31,11 @@ import com.fastjrun.codeg.common.CommonController;
 import com.fastjrun.codeg.common.CommonLog;
 import com.fastjrun.codeg.common.CommonMethod;
 import com.fastjrun.codeg.common.CommonService;
+import com.fastjrun.codeg.common.DataBaseObject;
+import com.fastjrun.codeg.common.FJTable;
 import com.fastjrun.codeg.common.PacketObject;
 import com.fastjrun.codeg.generator.BaseControllerGenerator;
+import com.fastjrun.codeg.generator.BaseMybatisAFGenerator;
 import com.fastjrun.codeg.generator.PacketGenerator;
 import com.fastjrun.codeg.generator.ServiceGenerator;
 import com.fastjrun.codeg.generator.method.BaseControllerMethodGenerator;
@@ -41,6 +44,7 @@ import com.fastjrun.codeg.helper.CodeGeneratorFactory;
 import com.fastjrun.codeg.helper.IOHelper;
 import com.fastjrun.codeg.service.CodeGService;
 import com.fastjrun.codeg.util.BundleXMLParser;
+import com.fastjrun.codeg.utils.SQLSchemaParse;
 import com.fastjrun.helper.StringHelper;
 import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.writer.FileCodeWriter;
@@ -57,6 +61,7 @@ public abstract class BaseCodeGServiceImpl implements CodeGService, CodeModelCon
 
     protected String packageNamePrefix;
     protected String[] bundleFiles;
+    protected String sqlFile;
     protected String author;
     protected String company;
 
@@ -142,6 +147,14 @@ public abstract class BaseCodeGServiceImpl implements CodeGService, CodeModelCon
 
     public File getTestSrcDir() {
         return testSrcDir;
+    }
+
+    public String getSqlFile() {
+        return sqlFile;
+    }
+
+    public void setSqlFile(String sqlFile) {
+        this.sqlFile = sqlFile;
     }
 
     public void setTestSrcDir(File testSrcDir) {
@@ -517,6 +530,38 @@ public abstract class BaseCodeGServiceImpl implements CodeGService, CodeModelCon
         }
 
         return controllerAllMap;
+    }
+
+    protected boolean generateMybatisAnnotationCode(String moduleName, boolean supportController) {
+
+        ExecutorService threadPool = Executors.newSingleThreadExecutor();
+        CompletionService<Boolean> completionService = new ExecutorCompletionService<>(threadPool);
+
+        DataBaseObject dataBaseObject =
+                SQLSchemaParse.process(SQLSchemaParse.TargetType.TargetType_Mysql, this.sqlFile);
+        Map<String, FJTable> fjTableMap = dataBaseObject.getTableMap();
+        for (String key : fjTableMap.keySet()) {
+            FJTable fjTable = fjTableMap.get(key);
+            BaseMybatisAFGenerator baseMybatisAFGenerator =
+                    CodeGeneratorFactory.createBaseMybatisAFGenerator(this.packageNamePrefix, this.author, this.company
+                            , fjTable);
+            baseMybatisAFGenerator.generate();
+        }
+
+        threadPool.shutdown();
+
+        try {
+            // 生成代码为UTF-8编码
+            CodeWriter src = new FileCodeWriter(this.srcDir, "UTF-8");
+            // 自上而下地生成类、方法等
+            cm.build(src);
+
+        } catch (IOException e) {
+            this.commonLog.getLog().error("", e);
+            throw new CodeGException(CodeGMsgContants.CODEG_CODEG_FAIL, "code generating failed", e);
+        }
+
+        return true;
     }
 
     private Element generateDubboRoot() {
