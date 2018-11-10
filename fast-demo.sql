@@ -37,7 +37,7 @@ CREATE TABLE `t_user` (
   `lastRecordLoginErrTime` char(17) DEFAULT NULL,
   `status` char(1) DEFAULT '1' COMMENT '1：正常；2：密码锁定；3：人工锁定',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -57,7 +57,7 @@ CREATE TABLE `t_user_login` (
   `inValidateTime` char(17) DEFAULT NULL COMMENT '按照系统设置，凭证应该失效的时间',
   `status` char(1) DEFAULT '1' COMMENT '1：正常；2：无效',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='用户登录表';
+) COMMENT='用户登录表' ENGINE=InnoDB;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

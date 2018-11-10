@@ -27,6 +27,12 @@
             </dependency>
             <dependency>
                 <groupId>com.fastjrun.codeg</groupId>
+                <artifactId>sdkg-test</artifactId>
+                <version>${sdkg.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.fastjrun.codeg</groupId>
                 <artifactId>sdkg-client</artifactId>
                 <classifier>tests</classifier>
                 <type>test-jar</type>
@@ -104,6 +110,12 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-tx</artifactId>
                 <version>${springframework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${h2.version}</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
