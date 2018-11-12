@@ -9,6 +9,7 @@
         <parameter name="envName" value="${envName}"/>
         <classes>
             <class name="com.fastjrun.sdkg.demo.service.CoreUserServiceTest" />
+            <class name="com.fastjrun.sdkg.demo.service.UserServiceRPCTest"/>
         </classes>
     </test>
 </suite>
