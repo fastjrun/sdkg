@@ -57,7 +57,7 @@ public class CoreUserServiceImpl extends BaseService implements CoreUserService 
 
         List<UserLogin> userLogins = baseUserLoginDao
                 .queryForListCondition(condition);
-        if (!Check.isEmpty(userLogins) && userLogins.size() > 0) {
+        if (Check.isEmpty(userLogins) || userLogins.size() == 0) {
             throw new ServiceException(USER_NOT_LOGON,
                     this.serviceMessageSource.getMessage(USER_NOT_LOGON, null,
                             null));

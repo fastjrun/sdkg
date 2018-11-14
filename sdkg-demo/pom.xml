@@ -41,11 +41,6 @@
             </dependency>
             <dependency>
                 <groupId>com.fastjrun.codeg</groupId>
-                <artifactId>sdkg-service</artifactId>
-                <version>${sdkg.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fastjrun.codeg</groupId>
                 <artifactId>sdkg-provider</artifactId>
                 <version>${sdkg.version}</version>
             </dependency>
