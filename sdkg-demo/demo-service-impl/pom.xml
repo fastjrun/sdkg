@@ -123,6 +123,7 @@
                 <directory>../..</directory>
                 <includes>
                     <include>fast-demo.sql</include>
+                    <include>fast-demo_data.sql</include>
                 </includes>
             </testResource>
         </testResources>
@@ -138,7 +139,7 @@
                         <configuration>
                             <skipTests>false</skipTests>
                             <reuseForks>true</reuseForks>
-                            <argLine>${argLine} -Xmx1024m -XX:PermSize=256m -XX:MaxPermSize=256m -Dfile.encoding=UTF-8</argLine>
+                            <argLine>${argLine} -Dfile.encoding=UTF-8</argLine>
                             <suiteXmlFiles>
                                 <suiteXmlFile>${project.build.testOutputDirectory}/testng.xml</suiteXmlFile>
                             </suiteXmlFiles>

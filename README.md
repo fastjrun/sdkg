@@ -50,6 +50,12 @@ mvn clean package -pl sdkg-demo/demo-provider-mock -am -Dbdmgc.skip=false -Dcode
 - 错误码断言
 - 响应值中对应标签为指定值，如 {"list[0].versionNo":"v1.4"}、{"nickName":"fastjrun"}等
 - 组合条件（and）如{"sex":"1","nickName":"fastjrun"}
+#### mybatisgenerator新增
+#### 丰富业务层单元测试用例的写法
+- 使用h2数据库代替持久层
+- 单元测试用例代码模板化，参数和自定义断言配置化
+
+
 
 #### mybatisgenerator新增
 

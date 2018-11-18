@@ -13,10 +13,8 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 
 @ContextConfiguration(locations = {"classpath*:applicationContext.xml"})
@@ -26,11 +24,7 @@ public abstract class AbstractAdVancedTestNGSpringContextTest extends
 
     protected Properties propParams = new Properties();
 
-    @BeforeTest
-    @org.testng.annotations.Parameters({
-            "envName"
-    })
-    protected void init(String envName) {
+    protected void initParam(String envName) {
         try {
             InputStream inParam =
                     this.getClass().getResourceAsStream((("/testdata/" + envName) + ".properties"));
