@@ -4,6 +4,7 @@
 package com.fastjrun.sdkg.demo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -16,7 +17,15 @@ public class UserServiceRPCTest extends AbstractAdVancedTestNGSpringContextTest 
     @Autowired
     UserServiceRPC userServiceRPC;
 
-    @Test(dataProvider = "loadParam", priority = 1)
+    @BeforeTest
+    @org.testng.annotations.Parameters({
+            "envName"
+    })
+    protected void init(String envName) {
+        this.initParam(envName);
+    }
+
+    @Test(dataProvider = "loadParam")
     @org.testng.annotations.Parameters({
             "reqParamsJsonStrAndAssert"
     })
@@ -32,6 +41,9 @@ public class UserServiceRPCTest extends AbstractAdVancedTestNGSpringContextTest 
                     .readValue(reqJsonRequestBody.toString(), RegistserRestRequestBody.class);
         }
         JsonNode assertJson = null;
+        if (reqParamsJsonStrAndAssertArray.length == 2) {
+            assertJson = com.fastjrun.utils.JacksonUtils.toJsonNode(reqParamsJsonStrAndAssertArray[1]);
+        }
         if (assertJson != null) {
             JsonNode codeNode = assertJson.get("code");
             if (codeNode != null) {

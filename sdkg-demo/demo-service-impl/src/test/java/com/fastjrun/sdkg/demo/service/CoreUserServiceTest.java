@@ -4,6 +4,7 @@
 package com.fastjrun.sdkg.demo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -17,7 +18,15 @@ public class CoreUserServiceTest extends AbstractAdVancedTestNGSpringContextTest
     @Autowired
     CoreUserService coreUserService;
 
-    @Test(dataProvider = "loadParam", priority = 1)
+    @BeforeTest
+    @org.testng.annotations.Parameters({
+            "envName"
+    })
+    protected void init(String envName) {
+        this.initParam(envName);
+    }
+
+    @Test(dataProvider = "loadParam")
     @org.testng.annotations.Parameters({
             "reqParamsJsonStrAndAssert"
     })
@@ -57,10 +66,9 @@ public class CoreUserServiceTest extends AbstractAdVancedTestNGSpringContextTest
             coreUserService.checkLoign(uuid, deviceId);
         }
 
-
     }
 
-    @Test(dataProvider = "loadParam", priority = 1)
+    @Test(dataProvider = "loadParam")
     @org.testng.annotations.Parameters({
             "reqParamsJsonStrAndAssert"
     })

@@ -8,7 +8,7 @@
     <test name="${envName}" parallel="methods" thread-count="5">
         <parameter name="envName" value="${envName}"/>
         <classes>
-            <class name="com.fastjrun.sdkg.demo.service.CoreUserServiceTest" />
+            <class name="com.fastjrun.sdkg.demo.service.CoreUserServiceTest"/>
             <class name="com.fastjrun.sdkg.demo.service.UserServiceRPCTest"/>
         </classes>
     </test>
