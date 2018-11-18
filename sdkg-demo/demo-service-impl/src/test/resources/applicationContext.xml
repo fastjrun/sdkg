@@ -23,5 +23,6 @@
     <!-- 初始化数据表结构 -->
     <jdbc:initialize-database data-source="dataSource">
         <jdbc:script location="classpath:fast-demo.sql" encoding="UTF-8"/>
+        <jdbc:script location="classpath:fast-demo_data.sql" encoding="UTF-8"/>
     </jdbc:initialize-database>
 </beans>
