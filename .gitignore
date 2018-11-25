@@ -29,4 +29,9 @@ sdkg-demo/demo-base/src/
 sdkg-demo/demo-bundle/src/
 sdkg-demo/demo-bundle-mock/src/
 
+sdkg-demo/demo-app-api/src/main/
+sdkg-demo/demo-app-api/src/test/resources/testng.xml
+sdkg-demo/demo-app-api/src/test/java
+sdkg-demo/demo-app-api/src/test/data
+sdkg-demo/demo-app-bundle/src/
 

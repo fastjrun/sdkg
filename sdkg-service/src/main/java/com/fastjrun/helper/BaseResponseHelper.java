@@ -1,7 +1,7 @@
 package com.fastjrun.helper;
 
 import com.fastjrun.common.BaseCodeMsgConstants;
-import com.fastjrun.common.CodeException;
+import com.fastjrun.common.BaseException;
 import com.fastjrun.dto.DefaultListResponse;
 import com.fastjrun.dto.DefaultResponse;
 import com.fastjrun.dto.DefaultResponseHead;
@@ -38,7 +38,7 @@ public class BaseResponseHelper {
         return response;
     }
 
-    public static DefaultResponse getResult(CodeException codeException) {
+    public static DefaultResponse getFailResult(BaseException codeException) {
         DefaultResponse response = new DefaultResponse();
         DefaultResponseHead responseHead = new DefaultResponseHead();
         responseHead.setCode(codeException.getCode());
@@ -47,7 +47,16 @@ public class BaseResponseHelper {
         return response;
     }
 
-    public static DefaultListResponse getResultList(CodeException codeException) {
+    public static DefaultResponse getFailResult(String code, String msg) {
+        DefaultResponse response = new DefaultResponse();
+        DefaultResponseHead responseHead = new DefaultResponseHead();
+        responseHead.setCode(code);
+        responseHead.setMsg(msg);
+        response.setHead(responseHead);
+        return response;
+    }
+
+    public static DefaultListResponse getFailResultList(BaseException codeException) {
         DefaultListResponse response = new DefaultListResponse();
         DefaultResponseHead responseHead = new DefaultResponseHead();
         responseHead.setCode(codeException.getCode());

@@ -21,7 +21,7 @@
         </dependency>
         <dependency>
             <groupId>com.fastjrun.share.sdkg</groupId>
-            <artifactId>demo-bundle</artifactId>
+            <artifactId>demo-app-bundle</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

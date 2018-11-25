@@ -7,9 +7,8 @@
 <suite name="clientTest" parallel="classes" thread-count="5" data-provider-thread-count="5">
     <test name="${envName}" parallel="methods" thread-count="5">
         <parameter name="envName" value="${envName}"/>
-        <classes>
-            <class name="com.fastjrun.sdkg.demo.service.CoreUserServiceTest"/>
-            <class name="com.fastjrun.sdkg.demo.service.UserServiceRPCTest"/>
-        </classes>
+        <packages>
+            <package name="com.fastjrun.sdkg.demo.service"/>
+        </packages>
     </test>
 </suite>
