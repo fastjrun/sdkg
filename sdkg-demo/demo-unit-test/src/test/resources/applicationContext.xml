@@ -19,7 +19,7 @@
         </property>
     </bean>
 
-    <import resource="classpath:applicationContext-service.xml"/>
+    <import resource="classpath*:applicationContext-service.xml"/>
     <!-- 初始化数据表结构 -->
     <jdbc:initialize-database data-source="dataSource">
         <jdbc:script location="classpath:fast-demo.sql" encoding="UTF-8"/>

@@ -38,16 +38,6 @@
             <field name="uuidOld" dataType="String" length="64" canBeNull="false"
                    remark="旧登录凭证"/>
         </packet>
-        <packet class="packet.app.VersionListResponseBody">
-            <list name="list" class="packet.app.Version">
-                <field name="id" dataType="Long" length="64" canBeNull="false"
-                       remark="版本Id"/>
-                <field name="versionNo" dataType="String" length="64"
-                       canBeNull="false" remark="版本号"/>
-                <field name="versionInfo" dataType="String" length="400"
-                       canBeNull="false" remark="版本信息"/>
-            </list>
-        </packet>
     </packets>
     <services>
         <service name="userServiceRestApp" class="UserServiceRestApp">
@@ -67,23 +57,11 @@
                 <response class="packet.app.LoginRestResponseBody"/>
             </method>
         </service>
-        <service name="versionServiceRestApp" class="VersionServiceRestApp">
-            <method name="check" version="" path="/check" remark="版本检测"
-                    method="GET"/>
-            <method name="latests" version="" path="/latests" remark="最近版本列表"
-                    method="GET">
-                <response class="packet.app.VersionListResponseBody"/>
-            </method>
-        </service>
     </services>
     <controllers>
         <controller type="App" name="UserAppController" path="/app/user"
                     clientName="UserAppClient" remark="用户管理接口" tags="App接口">
             <service name="userService" ref="userServiceRestApp"/>
-        </controller>
-        <controller type="App" name="AppVersionAppController" path="/app/version"
-                    clientName="AppVersionAppClient" remark="版本接口" tags="App接口">
-            <service name="versionService" ref="versionServiceRestApp"/>
         </controller>
     </controllers>
 </bundle>

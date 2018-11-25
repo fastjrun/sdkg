@@ -12,9 +12,14 @@ elif [ "local_test" = $1 ] ; then
     mvn clean package -pl sdkg-demo/demo-api -Dapigc.skip=false
 elif [ "local_ci" = $1 ] ; then
     mvn clean install -pl sdkg-helper -am
-    mvn clean install -pl sdkg-demo/demo-api -am -Dapigc.skip=false -Dmaven.test.skip=true
+    mvn clean install -pl sdkg-demo/demo-api -Dapigc.skip=false -Dmaven.test.skip=true
+    mvn clean install -pl sdkg-demo/demo-base -Dbasegc.skip=false
+    mvn clean install -pl sdkg-demo/demo-bundle -Dbdgc.skip=false
+    mvn clean install -pl sdkg-demo/demo-bundle-mock -Dbdmgc.skip=false
+elif [ "service_ut" = $1 ] ; then
     mvn clean install -pl sdkg-demo/demo-base -am -Dbasegc.skip=false
     mvn clean install -pl sdkg-demo/demo-bundle -am -Dbdgc.skip=false
-    mvn clean install -pl sdkg-demo/demo-bundle-mock -am -Dbdmgc.skip=false
+    mvn clean verify -pl sdkg-demo/demo-unit-test -am -PunitTest
+
 fi
 echo "build done."
