@@ -33,6 +33,7 @@ mvn clean package -pl sdkg-demo/demo-provider-mock -am -Dbdmgc.skip=false -Dcode
 # 本地编译打包demo-provider-mock，并设置生成代码公司为“阿里居”
 mvn clean package -pl sdkg-demo/demo-provider-mock -am -Dbdmgc.skip=false -Dcodeg.company=阿里居
 ```
+更多命令参考工程下的build.sh
 
 ### to be continued
 #### codemodel重构
@@ -55,4 +56,6 @@ mvn clean package -pl sdkg-demo/demo-provider-mock -am -Dbdmgc.skip=false -Dcode
 - 单元测试用例代码模板化，参数和自定义断言配置化
 
 
+
+#### mybatisgenerator新增
 
