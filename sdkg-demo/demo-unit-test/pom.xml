@@ -9,38 +9,20 @@
         <artifactId>sdkg-demo-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>demo-service-impl</artifactId>
+    <artifactId>demo-unit-test</artifactId>
     <packaging>jar</packaging>
     <url>http://maven.apache.org</url>
     <name>${project.artifactId}</name>
     <dependencies>
         <dependency>
             <groupId>com.fastjrun.share.sdkg</groupId>
-            <artifactId>demo-base</artifactId>
+            <artifactId>demo-service-impl</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fastjrun.share.sdkg</groupId>
-            <artifactId>demo-app-bundle</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.pagehelper</groupId>
-            <artifactId>pagehelper</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>commons-dbcp</groupId>
-            <artifactId>commons-dbcp</artifactId>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
+            <artifactId>spring-test</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -52,28 +34,28 @@
             <artifactId>spring-tx</artifactId>
             <scope>runtime</scope>
         </dependency>
-        <!-- mybatis -->
         <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis-spring</artifactId>
+            <groupId>com.fastjrun.codeg</groupId>
+            <artifactId>sdkg-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <build>
-        <finalName>demo-service-impl</finalName>
+        <finalName>demo-unit-test</finalName>
         <filters>
             <filter>../demo-config/src/main/profiles/${envName}.properties</filter>
         </filters>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <includes>
-                    <include>applicationContext-persistence.xml</include>
-                    <include>applicationContext-service.xml</include>
-                    <include>mybatis-config.xml</include>
-                    <include>codeMsg.properties</include>
-                </includes>
-            </resource>
-        </resources>
         <testResources>
             <testResource>
                 <directory>../demo-config/src/main/resources</directory>
@@ -172,6 +154,9 @@
                     </plugin>
                 </plugins>
             </build>
+            <properties>
+                <envName>unitTest</envName>
+            </properties>
         </profile>
     </profiles>
 </project>

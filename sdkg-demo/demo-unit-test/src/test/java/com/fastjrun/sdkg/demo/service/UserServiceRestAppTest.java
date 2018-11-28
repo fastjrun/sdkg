@@ -9,13 +9,13 @@ import org.testng.annotations.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fastjrun.common.ServiceException;
-import com.fastjrun.sdkg.demo.packet.generic.RegistserRestRequestBody;
+import com.fastjrun.sdkg.demo.packet.app.RegistserRestRequestBody;
 import com.fastjrun.test.AbstractAdVancedTestNGSpringContextTest;
 
-public class UserServiceRPCTest extends AbstractAdVancedTestNGSpringContextTest {
+public class UserServiceRestAppTest extends AbstractAdVancedTestNGSpringContextTest {
 
     @Autowired
-    UserServiceRPC userServiceRPC;
+    UserServiceRestApp userServiceRestApp;
 
     @BeforeTest
     @org.testng.annotations.Parameters({
@@ -29,7 +29,7 @@ public class UserServiceRPCTest extends AbstractAdVancedTestNGSpringContextTest 
     @org.testng.annotations.Parameters({
             "reqParamsJsonStrAndAssert"
     })
-    public void testRegister(String reqParamsJsonStrAndAssert) {
+    public void testRegisterv2(String reqParamsJsonStrAndAssert) {
         String[] reqParamsJsonStrAndAssertArray = reqParamsJsonStrAndAssert.split(",assert=");
         String reqParamsJsonStr = reqParamsJsonStrAndAssertArray[0];
         log.debug(reqParamsJsonStr);
@@ -48,17 +48,17 @@ public class UserServiceRPCTest extends AbstractAdVancedTestNGSpringContextTest 
             JsonNode codeNode = assertJson.get("code");
             if (codeNode != null) {
                 try {
-                    userServiceRPC.register(requestBody);
+                    userServiceRestApp.registerv2(requestBody);
                 } catch (ServiceException e) {
                     org.testng.Assert.assertEquals(e.getCode(), codeNode.asText(),
                             ("返回消息码不是指定消息码:" + codeNode
                                     .asText()));
                 }
             } else {
-                userServiceRPC.register(requestBody);
+                userServiceRestApp.registerv2(requestBody);
             }
         } else {
-            userServiceRPC.register(requestBody);
+            userServiceRestApp.registerv2(requestBody);
         }
 
     }

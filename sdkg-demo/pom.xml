@@ -153,9 +153,13 @@
     </profiles>
     <modules>
         <module>demo-api</module>
+        <module>demo-app-api</module>
         <module>demo-base</module>
         <module>demo-bundle</module>
+        <module>demo-app-bundle</module>
         <module>demo-service-impl</module>
+        <module>demo-unit-test</module>
+        <module>demo-app-provider</module>
         <module>demo-bundle-mock</module>
         <module>demo-provider-mock</module>
     </modules>
