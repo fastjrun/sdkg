@@ -1,7 +1,11 @@
 package com.fastjrun.web.controller.advice;
 
+import javax.annotation.Resource;
+import javax.validation.constraints.NotNull;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,19 +24,35 @@ import com.fastjrun.helper.BaseResponseHelper;
 @ControllerAdvice
 public class ExceptionHandlerExt extends ResponseEntityExceptionHandler {
 
+    public static final String CODE_SYSTEM_ERROR = "9999";
+
+    public static final String MSG_SYSTEM_ERROR = "System Error";
+
+    @Resource
+    protected MessageSource serviceMessageSource;
+
     protected final Log log = LogFactory.getLog(this.getClass());
+
+    private String parseReqContentType(@NotNull WebRequest request) {
+
+        String reqContentType = request.getHeader("Content-Type");
+        if (reqContentType != null) {
+            reqContentType = reqContentType.replaceAll(" ", "");
+        } else {
+            reqContentType = MediaTypes.JSON;
+        }
+        return reqContentType;
+    }
 
     @ExceptionHandler({RestException.class, ServiceException.class})
     public final ResponseEntity<?> handleException(RestException ex,
                                                    WebRequest request) throws Exception {
 
-        HttpHeaders headers = new HttpHeaders();
-
-        String reqContentType = request.getHeader("Content-Type").replaceAll(
-                " ", "");
-
-        headers.setContentType(MediaType.parseMediaType(reqContentType));
+        log.error("异常", ex);
+        String reqContentType = this.parseReqContentType(request);
         if (reqContentType.indexOf(MediaTypes.JSON) >= 0) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.parseMediaType(reqContentType));
             DefaultResponse result = BaseResponseHelper
                     .getFailResult(ex);
             log.error("异常", ex);
@@ -48,17 +68,13 @@ public class ExceptionHandlerExt extends ResponseEntityExceptionHandler {
     public final ResponseEntity<?> handleSysException(Exception ex,
                                                       WebRequest request) throws Exception {
 
-        HttpHeaders headers = new HttpHeaders();
-
-        String reqContentType = request.getHeader("Content-Type").replaceAll(
-                " ", "");
-
-        headers.setContentType(MediaType.parseMediaType(reqContentType));
+        log.error("异常", ex);
+        String reqContentType = this.parseReqContentType(request);
         if (reqContentType.indexOf(MediaTypes.JSON) >= 0) {
-            DefaultResponse result = BaseResponseHelper
-                    .getFailResult("SYS0001", "系统错误，请稍后重试");
-
-            log.error("异常", ex);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.parseMediaType(reqContentType));
+            DefaultResponse result = BaseResponseHelper.getFailResult(CODE_SYSTEM_ERROR,
+                    serviceMessageSource.getMessage(CODE_SYSTEM_ERROR, null, MSG_SYSTEM_ERROR, null));
 
             return handleExceptionInternal(ex, result, headers,
                     HttpStatus.INTERNAL_SERVER_ERROR, request);
