@@ -27,6 +27,6 @@ elif [ "local_ci" = $1 ] ; then
 elif [ "service_ut" = $1 ] ; then
     mvn clean install -pl sdkg-demo/demo-base -am -Dbasegc.skip=false
     mvn clean install -pl sdkg-demo/demo-bundle -Dbdgc.skip=false
-    mvn clean verify -pl sdkg-demo/demo-service-impl,sdkg-test,sdkg-demo/demo-unit-test -PunitTest
+    mvn clean verify -pl .,sdkg-demo/demo-service-impl,sdkg-test,sdkg-demo/demo-unit-test -PunitTest
 fi
 echo "build done."
