@@ -49,9 +49,7 @@ public abstract class AbstractAdVancedTestNGSpringContextTest extends
         for (int i = 0; (i < object.length); i++) {
             String[] str = parameters.get(i);
             object[i] = new String[str.length];
-            for (int j = 0; (j < str.length); j++) {
-                object[i][j] = str[j];
-            }
+            System.arraycopy(str, 0, object[i], 0, str.length);
         }
         return object;
     }

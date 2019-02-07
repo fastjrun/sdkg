@@ -143,12 +143,6 @@ public class ServiceMethodGenerator extends BaseCMGenerator {
     }
 
     public void processServiceMethod() {
-        this.methodName = commonMethod.getName();
-
-        String methodVersion = commonMethod.getVersion();
-        if (methodVersion != null && !methodVersion.equals("")) {
-            this.methodName = this.methodName + methodVersion;
-        }
         this.jServiceMethod =
                 this.serviceGenerator.getServiceClass().method(JMod.NONE, this.responseBodyClass, this.methodName);
         String methodRemark = commonMethod.getRemark();
@@ -163,6 +157,14 @@ public class ServiceMethodGenerator extends BaseCMGenerator {
         if (this.requestBodyClass != null) {
             this.jServiceMethod.param(this.requestBodyClass, "requestBody");
         }
+        if (!this.isClient()) {
+            MethodGeneratorHelper
+                    .processServiceMethodVariables(this.jServiceMethod, this.commonMethod.getExtraParameters());
+        }
+
+    }
+
+    public void processServiceTestMethod() {
     }
 
     public void processServiceMockMethod() {
@@ -183,6 +185,8 @@ public class ServiceMethodGenerator extends BaseCMGenerator {
         if (this.requestBodyClass != null) {
             this.jServiceMockMethod.param(this.requestBodyClass, "requestBody");
         }
+        MethodGeneratorHelper
+                .processServiceMethodVariables(this.jServiceMockMethod, this.commonMethod.getExtraParameters());
 
         JBlock serviceMockMethodBlock = this.jServiceMockMethod.body();
         if (this.responseBodyClass != cm.VOID) {
@@ -391,11 +395,23 @@ public class ServiceMethodGenerator extends BaseCMGenerator {
 
     @Override
     public void generate() {
+        this.methodName = commonMethod.getName();
+
+        String methodVersion = commonMethod.getVersion();
+        if (methodVersion != null && !methodVersion.equals("")) {
+            this.methodName = this.methodName + methodVersion;
+        }
         this.doParse();
-        this.processServiceMethod();
-        if (!this.isClient()) {
-            if (this.getMockModel() != MockModel.MockModel_Common) {
-                this.processServiceMockMethod();
+        if (!this.isApi()) {
+            if (this.serviceGenerator.isTest()) {
+                this.processServiceTestMethod();
+            } else {
+                this.processServiceMethod();
+                if (!this.isClient()) {
+                    if (this.getMockModel() != MockModel.MockModel_Common) {
+                        this.processServiceMockMethod();
+                    }
+                }
             }
         }
     }

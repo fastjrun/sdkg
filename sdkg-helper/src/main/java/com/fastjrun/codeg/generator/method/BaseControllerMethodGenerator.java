@@ -654,7 +654,12 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
             requestParam.annotate(cm.ref("javax.validation.Valid"));
             jInvocation.arg(JExpr.ref("requestBody"));
         }
+
+        this.processExtraParameters(jInvocation);
+
         this.exchangeProcessor.processResponse(controllerMethodBlk, jInvocation);
 
     }
+
+    abstract protected void processExtraParameters(JInvocation jInvocation);
 }

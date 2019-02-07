@@ -13,7 +13,7 @@ public class CodeGServiceTest implements CodeGConstants {
     @BeforeTest
     public void setUp() {
         String packagePrefix = "com.fastjrun.sdkg.demo.";
-        String genericBundleFiles = "generic-client.xml,app-client.xml,api-client.xml";
+        String genericBundleFiles = "generic-client.xml";
         String sqlFile = "fast-demo.sql";
         DefaultCodeGService defaultGenericCodeGService = new DefaultCodeGService();
         defaultGenericCodeGService.setBundleFiles(genericBundleFiles.split(","));
@@ -32,6 +32,12 @@ public class CodeGServiceTest implements CodeGConstants {
     public void generateAPI() {
         String moduleName = "sdkg-demo/demo-api";
         codeGGenericService.generateAPI(moduleName);
+    }
+
+    @Test
+    public void generateClient() {
+        String moduleName = "sdkg-demo/demo-client";
+        codeGGenericService.generateClient(moduleName);
     }
 
     @Test

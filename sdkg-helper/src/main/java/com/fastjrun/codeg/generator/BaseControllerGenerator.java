@@ -160,6 +160,7 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
         JMethod clientTestPrepareApplicationClientMethod =
                 this.clientTestClass.method(JMod.PUBLIC, cmTest.VOID, "prepareApplicationClient");
         JVar jVarEnvName = clientTestPrepareApplicationClientMethod.param(cmTest.ref("String"), "envName");
+        jVarEnvName.annotate(cmTest.ref("org.testng.annotations.Optional")).param("value", "unitTest");
         clientTestPrepareApplicationClientMethod.annotate(cmTest.ref("Override"));
         clientTestPrepareApplicationClientMethod.annotate(cmTest.ref("org.testng.annotations.BeforeTest"));
         clientTestPrepareApplicationClientMethod.annotate(cmTest.ref("org.testng.annotations.Parameters"))

@@ -55,19 +55,18 @@ public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
 
         switch (codeGCommand) {
             case BundleMockG:
-
                 getLog().info(bundleFiles);
                 break;
             case BundleG:
-
+                getLog().info(bundleFiles);
+                break;
+            case ClientG:
                 getLog().info(bundleFiles);
                 break;
             case ApiG:
-
                 getLog().info(bundleFiles);
                 break;
             case BaseG:
-
                 getLog().info(sqlFile);
                 break;
             default:
@@ -75,7 +74,6 @@ public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
         }
 
         getLog().info(packagePrefix);
-
         getLog().info(module);
 
         DefaultCodeGService codeGService = new DefaultCodeGService();
@@ -99,6 +97,10 @@ public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
             case BundleG:
                 codeGService.setBundleFiles(bundleFiles.split(","));
                 codeGService.generateProvider(module);
+                break;
+            case ClientG:
+                codeGService.setBundleFiles(bundleFiles.split(","));
+                codeGService.generateClient(module);
                 break;
             case ApiG:
                 codeGService.setBundleFiles(bundleFiles.split(","));

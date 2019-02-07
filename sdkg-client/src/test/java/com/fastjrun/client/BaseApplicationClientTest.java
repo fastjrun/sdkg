@@ -56,7 +56,7 @@ public abstract class BaseApplicationClientTest<T extends BaseApplicationClient>
         Set<String> keys = propParams.stringPropertyNames();
         List<String[]> parameters = new ArrayList<>();
         for (String key : keys) {
-            if (key.startsWith(((baseApplicationClient.getClass().getSimpleName() + ".") + (method.getName() + ".")))) {
+            if (key.startsWith(((this.getClass().getSimpleName() + ".") + (method.getName() + ".")))) {
                 String value = propParams.getProperty(key);
                 parameters.add(new String[] {value});
             }
@@ -65,9 +65,7 @@ public abstract class BaseApplicationClientTest<T extends BaseApplicationClient>
         for (int i = 0; (i < object.length); i++) {
             String[] str = parameters.get(i);
             object[i] = new String[str.length];
-            for (int j = 0; (j < str.length); j++) {
-                object[i][j] = str[j];
-            }
+            System.arraycopy(str, 0, object[i], 0, str.length);
         }
         return object;
     }

@@ -445,6 +445,12 @@ public class BundleXMLParser implements CodeGConstants {
             method.setCookieVariables(cookieVariables);
         }
 
+        Element eleExtraParametersRoot = eleMethod.element("extraParameters");
+        if (eleExtraParametersRoot != null) {
+            List<PacketField> extraParameters = parsePacketFields(eleExtraParametersRoot, "parameter");
+            method.setExtraParameters(extraParameters);
+        }
+
         return method;
     }
 

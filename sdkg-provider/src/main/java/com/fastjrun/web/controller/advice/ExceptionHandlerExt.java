@@ -3,8 +3,9 @@ package com.fastjrun.web.controller.advice;
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,9 +16,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.fastjrun.common.BaseException;
 import com.fastjrun.common.MediaTypes;
-import com.fastjrun.common.RestException;
-import com.fastjrun.common.ServiceException;
 import com.fastjrun.dto.DefaultResponse;
 import com.fastjrun.helper.BaseResponseHelper;
 
@@ -25,13 +25,11 @@ import com.fastjrun.helper.BaseResponseHelper;
 public class ExceptionHandlerExt extends ResponseEntityExceptionHandler {
 
     public static final String CODE_SYSTEM_ERROR = "9999";
-
-    public static final String MSG_SYSTEM_ERROR = "System Error";
-
+    protected final Logger log = LogManager.getLogger(this.getClass());
     @Resource
     protected MessageSource serviceMessageSource;
-
-    protected final Log log = LogFactory.getLog(this.getClass());
+    @Value("${codeMsg.systemError:9999}")
+    String systemError;
 
     private String parseReqContentType(@NotNull WebRequest request) {
 
@@ -44,8 +42,8 @@ public class ExceptionHandlerExt extends ResponseEntityExceptionHandler {
         return reqContentType;
     }
 
-    @ExceptionHandler({RestException.class, ServiceException.class})
-    public final ResponseEntity<?> handleException(RestException ex,
+    @ExceptionHandler({BaseException.class})
+    public final ResponseEntity<?> handleException(BaseException ex,
                                                    WebRequest request) throws Exception {
 
         log.error("异常", ex);
@@ -71,13 +69,14 @@ public class ExceptionHandlerExt extends ResponseEntityExceptionHandler {
         log.error("异常", ex);
         String reqContentType = this.parseReqContentType(request);
         if (reqContentType.indexOf(MediaTypes.JSON) >= 0) {
+            DefaultResponse result = BaseResponseHelper.getFailResult(this.systemError,
+                    serviceMessageSource.getMessage(this.systemError, null, CODE_SYSTEM_ERROR, null));
+
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.parseMediaType(reqContentType));
-            DefaultResponse result = BaseResponseHelper.getFailResult(CODE_SYSTEM_ERROR,
-                    serviceMessageSource.getMessage(CODE_SYSTEM_ERROR, null, MSG_SYSTEM_ERROR, null));
 
             return handleExceptionInternal(ex, result, headers,
-                    HttpStatus.INTERNAL_SERVER_ERROR, request);
+                    HttpStatus.OK, request);
         } else {
             return super.handleException(ex, request);
         }

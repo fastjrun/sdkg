@@ -149,16 +149,16 @@ public abstract class BaseCodeGServiceImpl implements CodeGService, CodeModelCon
         return testSrcDir;
     }
 
+    public void setTestSrcDir(File testSrcDir) {
+        this.testSrcDir = testSrcDir;
+    }
+
     public String getSqlFile() {
         return sqlFile;
     }
 
     public void setSqlFile(String sqlFile) {
         this.sqlFile = sqlFile;
-    }
-
-    public void setTestSrcDir(File testSrcDir) {
-        this.testSrcDir = testSrcDir;
     }
 
     public String getPackageNamePrefix() {
@@ -364,7 +364,8 @@ public abstract class BaseCodeGServiceImpl implements CodeGService, CodeModelCon
 
     }
 
-    protected Map<String, CommonController> generateCode(String moduleName, MockModel mockModel, boolean isClient) {
+    protected Map<String, CommonController> generateCode(String moduleName, MockModel mockModel, boolean isApi,
+                                                         boolean isClient) {
 
         ExecutorService threadPool = Executors.newSingleThreadExecutor();
         CompletionService<Boolean> completionService = new ExecutorCompletionService<>(threadPool);
@@ -401,10 +402,8 @@ public abstract class BaseCodeGServiceImpl implements CodeGService, CodeModelCon
         for (int i = 0; i < packetAllMap.size(); i++) {
             try {
                 completionService.take().get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
+            } catch (InterruptedException | ExecutionException e) {
+                this.commonLog.getLog().error("" + e);
             }
         }
 
@@ -415,6 +414,7 @@ public abstract class BaseCodeGServiceImpl implements CodeGService, CodeModelCon
                 ServiceGenerator serviceGenerator = CodeGeneratorFactory
                         .createServiceGenerator(this.packageNamePrefix, mockModel, this.author, this.company);
                 serviceGenerator.setCommonService(commonService);
+                serviceGenerator.setApi(isApi);
                 serviceGenerator.setClient(isClient);
                 serviceGenerator.generate();
                 serviceGeneratorMap.put(commonService, serviceGenerator);
@@ -426,10 +426,8 @@ public abstract class BaseCodeGServiceImpl implements CodeGService, CodeModelCon
         for (int i = 0; i < serviceAllMap.size(); i++) {
             try {
                 completionService.take().get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
+            } catch (InterruptedException | ExecutionException e) {
+                this.commonLog.getLog().error("" + e);
             }
         }
 
@@ -440,6 +438,7 @@ public abstract class BaseCodeGServiceImpl implements CodeGService, CodeModelCon
                 BaseControllerGenerator baseControllerGenerator = CodeGeneratorFactory
                         .createBaseControllerGenerator(this.packageNamePrefix, mockModel, this.author, this
                                 .company, commonController);
+                baseControllerGenerator.setApi(isApi);
                 baseControllerGenerator.setClient(isClient);
                 CommonService commonService = commonController.getService();
                 baseControllerGenerator.setServiceGenerator(serviceGeneratorMap.get(commonService));
@@ -453,10 +452,8 @@ public abstract class BaseCodeGServiceImpl implements CodeGService, CodeModelCon
         for (int i = 0; i < controllerAllMap.size(); i++) {
             try {
                 completionService.take().get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
+            } catch (InterruptedException | ExecutionException e) {
+                this.commonLog.getLog().error("" + e);
             }
         }
 
@@ -474,6 +471,7 @@ public abstract class BaseCodeGServiceImpl implements CodeGService, CodeModelCon
                 serviceMethodGenerator.setMockModel(mockModel);
                 serviceMethodGenerator.setAuthor(author);
                 serviceMethodGenerator.setCompany(company);
+                serviceMethodGenerator.setApi(isApi);
                 serviceMethodGenerator.setClient(isClient);
                 serviceMethodGenerator.setServiceGenerator(serviceGenerator);
                 serviceMethodGenerator.setCommonMethod(commonMethod);
@@ -484,10 +482,13 @@ public abstract class BaseCodeGServiceImpl implements CodeGService, CodeModelCon
                                 baseControllerGeneratorMap.get(commonController);
                         BaseControllerMethodGenerator baseControllerMethodGenerator = baseControllerGenerator
                                 .prepareBaseControllerMethodGenerator(serviceMethodGenerator);
+                        baseControllerMethodGenerator.setApi(isApi);
+                        baseControllerMethodGenerator.setClient(isClient);
                         baseControllerMethodGenerator.generate();
-                        if (isClient) {
-                            clientTestParamMap.put(baseControllerGenerator.getClientName(), baseControllerGenerator
-                                    .getClientTestParam());
+                        if (!isApi && isClient) {
+                            clientTestParamMap.put(baseControllerGenerator.getClientName() + "Test",
+                                    baseControllerGenerator
+                                            .getClientTestParam());
                         }
 
                     }
@@ -501,10 +502,8 @@ public abstract class BaseCodeGServiceImpl implements CodeGService, CodeModelCon
         for (int i = 0; i < methodSize; i++) {
             try {
                 completionService.take().get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
+            } catch (InterruptedException | ExecutionException e) {
+                this.commonLog.getLog().error("" + e);
             }
         }
 

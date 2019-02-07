@@ -27,16 +27,6 @@ import net.sf.jsqlparser.statement.create.table.Index;
 
 public class SQLSchemaParse {
 
-    public enum TargetType {
-        TargetType_Mysql("mysql"), TargetType_Oracle("oracle");
-
-        public String typeName;
-
-        TargetType(String typeName) {
-            this.typeName = typeName;
-        }
-    }
-
     static final String[] javaKeyWords = {"return", "package",
             "describe", "order", "text", "fjTable", "private", "public", "class",
             "static", "test"};
@@ -51,8 +41,6 @@ public class SQLSchemaParse {
         otherSet.add("APPSOURCE");
         otherSet.add("APPKEY");
     }
-
-    ;
 
     public static DataBaseObject process(TargetType targetType, String sqlFile) {
         DataBaseObject dataBaseObject = new DataBaseObject();
@@ -91,6 +79,8 @@ public class SQLSchemaParse {
         return dataBaseObject;
     }
 
+    ;
+
     private static FJTable parseTable(CreateTable createTable) {
         FJTable table = new FJTable();
         // 表名
@@ -102,24 +92,28 @@ public class SQLSchemaParse {
         // 根据表名得到类名，
         table.setClassName(parseTableName(tbName));
         List<?> tableOptionsStrings = createTable.getTableOptionsStrings();
-        for (int i = 0; i < tableOptionsStrings.size() - 2; i++) {
-            if (tableOptionsStrings.get(i).toString().toUpperCase().equals("COMMENT")) {
-                String comment = tableOptionsStrings.get(i + 2).toString();
-                table.setComment(comment);
-                break;
+        if (tableOptionsStrings != null && tableOptionsStrings.size() >= 2) {
+            for (int i = 0; i < tableOptionsStrings.size() - 2; i++) {
+                if (tableOptionsStrings.get(i).toString().toUpperCase().equals("COMMENT")) {
+                    String comment = tableOptionsStrings.get(i + 2).toString();
+                    table.setComment(comment);
+                    break;
+                }
             }
         }
 
         List<Index> indexes = createTable.getIndexes();
-        for (int i = 0; i < indexes.size(); i++) {
-            Index index = indexes.get(i);
-            if (index.getType().toUpperCase().equals("PRIMARY KEY")) {
-                List<String> primaryKeyColumnNames = new ArrayList<>();
-                for (String columnName : index.getColumnsNames()) {
-                    primaryKeyColumnNames.add(columnName.replaceAll("`", ""));
+        if (indexes != null && indexes.size() > 0) {
+            for (int i = 0; i < indexes.size(); i++) {
+                Index index = indexes.get(i);
+                if (index.getType().toUpperCase().equals("PRIMARY KEY")) {
+                    List<String> primaryKeyColumnNames = new ArrayList<>();
+                    for (String columnName : index.getColumnsNames()) {
+                        primaryKeyColumnNames.add(columnName.replaceAll("`", ""));
+                    }
+                    table.setPrimaryKeyColumnNames(primaryKeyColumnNames);
+                    break;
                 }
-                table.setPrimaryKeyColumnNames(primaryKeyColumnNames);
-                break;
             }
         }
 
@@ -146,16 +140,18 @@ public class SQLSchemaParse {
 
         List<String> columnSpecStrings = columnDefinition.getColumnSpecStrings();
         boolean unsignedExisted = false;
-        for (int i = 0; i < columnSpecStrings.size(); i++) {
-            if (columnSpecStrings.get(i).toUpperCase().equals("AUTO_INCREMENT")) {
-                fjColumn.setIdentity(true);
-            }
-            if (columnSpecStrings.get(i).toUpperCase().equals("COMMENT")) {
-                String comment = columnSpecStrings.get(i + 1);
-                fjColumn.setComment(comment);
-            }
-            if (columnSpecStrings.get(i).toUpperCase().equals("UNSIGNED")) {
-                unsignedExisted = true;
+        if (columnSpecStrings != null && columnSpecStrings.size() > 0) {
+            for (int i = 0; i < columnSpecStrings.size(); i++) {
+                if (columnSpecStrings.get(i).toUpperCase().equals("AUTO_INCREMENT")) {
+                    fjColumn.setIdentity(true);
+                }
+                if (columnSpecStrings.get(i).toUpperCase().equals("COMMENT")) {
+                    String comment = columnSpecStrings.get(i + 1);
+                    fjColumn.setComment(comment);
+                }
+                if (columnSpecStrings.get(i).toUpperCase().equals("UNSIGNED")) {
+                    unsignedExisted = true;
+                }
             }
         }
         //fjColumn.setComment(comment);
@@ -315,5 +311,15 @@ public class SQLSchemaParse {
         }
 
         return false;
+    }
+
+    public enum TargetType {
+        TargetType_Mysql("mysql"), TargetType_Oracle("oracle");
+
+        public String typeName;
+
+        TargetType(String typeName) {
+            this.typeName = typeName;
+        }
     }
 }

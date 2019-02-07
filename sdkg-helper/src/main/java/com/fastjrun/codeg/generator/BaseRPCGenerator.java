@@ -91,15 +91,17 @@ public abstract class BaseRPCGenerator extends BaseControllerGenerator {
     @Override
     public void generate() {
         this.processAPI();
-        if (this.isClient()) {
-            this.processClient();
-            this.processClientTest();
-            this.clientTestParam = new Properties();
-        } else {
-            this.processAPIManager();
-            if (this.getMockModel() != MockModel.MockModel_Common) {
-                this.genreateControllerPath();
-                this.processController();
+        if (!this.isApi()) {
+            if (this.isClient()) {
+                this.processClient();
+                this.processClientTest();
+                this.clientTestParam = new Properties();
+            } else {
+                this.processAPIManager();
+                if (this.getMockModel() != MockModel.MockModel_Common) {
+                    this.genreateControllerPath();
+                    this.processController();
+                }
             }
         }
     }
