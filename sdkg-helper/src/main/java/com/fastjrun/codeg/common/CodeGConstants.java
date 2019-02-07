@@ -5,7 +5,7 @@ public interface CodeGConstants {
             new ControllerType("Generic", ControllerProtocol.ControllerProtocol_HTTP, "",
                     "com.fastjrun.client.DefaultHTTPGenericClient", "",
                     "",
-                    "com.fastjrun.web.controller.BaseController", "DefaultcHTTPGeneriGenerator");
+                    "com.fastjrun.web.controller.BaseController", "DefaultHTTPGeneriGenerator");
     ControllerType ControllerType_APP =
             new ControllerType("App", ControllerProtocol.ControllerProtocol_HTTP, "",
                     "com.fastjrun.client.DefaultHTTPAppClient", "", "",
@@ -20,7 +20,7 @@ public interface CodeGConstants {
                     "com.fastjrun.web.controller.BaseRPCController", "DefaultDubboGenerator");
 
     enum CodeGCommand {
-        BaseG, ApiG, BundleG, BundleMockG;
+        BaseG, ApiG, ClientG, BundleG, BundleMockG;
     }
 
     // 0:common;1:swagger

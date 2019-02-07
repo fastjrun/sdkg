@@ -71,6 +71,7 @@ public class FJTable {
 
     @Override
     public String toString() {
-        return "fjTable [columns=" + columns + ", name=" + name + ", comment=" + comment + ", className=" + className + "]";
+        return "fjTable [columns=" + columns + ", name=" + name + ", comment=" + comment + ", className=" + className
+                + "]";
     }
 }

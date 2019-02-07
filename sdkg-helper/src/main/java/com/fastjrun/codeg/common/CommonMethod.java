@@ -15,6 +15,8 @@ public class CommonMethod {
 
     private List<PacketField> cookieVariables;
 
+    private List<PacketField> extraParameters;
+
     private String version;
 
     private String path;
@@ -143,4 +145,11 @@ public class CommonMethod {
         this.remark = remark;
     }
 
+    public List<PacketField> getExtraParameters() {
+        return extraParameters;
+    }
+
+    public void setExtraParameters(List<PacketField> extraParameters) {
+        this.extraParameters = extraParameters;
+    }
 }

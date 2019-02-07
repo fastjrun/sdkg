@@ -7,12 +7,14 @@ public abstract class BaseHTTPGenerator extends BaseControllerGenerator {
     @Override
     public void generate() {
         this.genreateControllerPath();
-        if (this.isClient()) {
-            this.processClient();
-            this.processClientTest();
-            this.clientTestParam = new Properties();
-        } else {
-            this.processController();
+        if (!this.isApi()) {
+            if (this.isClient()) {
+                this.processClient();
+                this.processClientTest();
+                this.clientTestParam = new Properties();
+            } else {
+                this.processController();
+            }
         }
     }
 

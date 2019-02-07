@@ -166,7 +166,6 @@ public abstract class BaseHTTPMethodGenerator extends BaseControllerMethodGenera
 
         } else {
             jInvocation.arg(JExpr._null());
-
         }
 
         if (this.serviceMethodGenerator.getResponseBodyClass() != null && this.serviceMethodGenerator
@@ -184,21 +183,23 @@ public abstract class BaseHTTPMethodGenerator extends BaseControllerMethodGenera
 
     @Override
     public void generate() {
-        if (this.isClient()) {
-            this.processClientMethod(this.baseControllerGenerator.getControllerPath(), this.baseControllerGenerator
-                    .getClientClass());
-            this.processClientTestMethod(this.baseControllerGenerator.getClientTestClass());
+        if (!this.isApi()) {
+            if (this.isClient()) {
+                this.processClientMethod(this.baseControllerGenerator.getControllerPath(), this.baseControllerGenerator
+                        .getClientClass());
+                this.processClientTestMethod(this.baseControllerGenerator.getClientTestClass());
 
-            StringBuilder sb = new StringBuilder(this.baseControllerGenerator.getClientName()).append(".test");
-            sb.append(StringHelper.toUpperCaseFirstOne(this.serviceMethodGenerator.getMethodName())).append(".n");
-            this.processClientTestPraram();
-            this.baseControllerGenerator.getClientTestParam().put(sb.toString(), this.methodParamInJsonObject
-                    .toString().replaceAll("\n", "").replaceAll("\r", "")
-                    .trim());
-        } else {
-            this.processControllerMethod(this.baseControllerGenerator.getCommonController(),
-                    this.baseControllerGenerator
-                            .getControlllerClass());
+                StringBuilder sb = new StringBuilder(this.baseControllerGenerator.getClientName()).append("Test.test");
+                sb.append(StringHelper.toUpperCaseFirstOne(this.serviceMethodGenerator.getMethodName())).append(".n");
+                this.processClientTestPraram();
+                this.baseControllerGenerator.getClientTestParam().put(sb.toString(), this.methodParamInJsonObject
+                        .toString().replaceAll("\n", "").replaceAll("\r", "")
+                        .trim());
+            } else {
+                this.processControllerMethod(this.baseControllerGenerator.getCommonController(),
+                        this.baseControllerGenerator
+                                .getControlllerClass());
+            }
         }
     }
 }

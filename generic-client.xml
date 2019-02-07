@@ -172,7 +172,6 @@
                     clientName="UserDubboAPI" remark="用户管理接口" tags="dubbo接口">
             <service name="userServiceRPC" ref="userServiceRPC"/>
         </controller>
-
         <controller type="Dubbo" name="VersionDubboManager" path="/dubbo/version"
                     clientName="VersionDubboAPI" remark="版本接口" tags="dubbo接口">
             <service name="versionService" ref="versionServiceRPC"/>

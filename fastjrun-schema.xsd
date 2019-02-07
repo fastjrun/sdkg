@@ -191,6 +191,6 @@
         <xs:attribute name="clientName" type="xs:string" use="required"/>
         <xs:attribute name="remark" type="xs:string" use="required"/>
         <xs:attribute name="tags" type="xs:string" use="required"/>
-        <xs:attribute name="new" type="xs:boolean" default="true"/>
+        <xs:attribute name="new" type="xs:boolean" default="false"/>
     </xs:complexType>
 </xs:schema>

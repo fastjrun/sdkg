@@ -11,6 +11,8 @@ import com.sun.codemodel.JDocComment;
  */
 public abstract class BaseCMGenerator extends BaseGenerator implements Cloneable, CodeModelConstants {
 
+    public static String servicePackageName = "service.";
+
     public static String mockPackageName = "com.fastjrun.mock.";
 
     public static JClass JSONObjectClass = cmTest.ref("com.fasterxml.jackson.databind.JsonNode");
@@ -20,6 +22,7 @@ public abstract class BaseCMGenerator extends BaseGenerator implements Cloneable
     protected CommonLog commonLog = new CommonLog();
 
     protected MockModel mockModel = MockModel.MockModel_Common;
+    private boolean api = false;
 
     public MockModel getMockModel() {
         return mockModel;
@@ -27,6 +30,14 @@ public abstract class BaseCMGenerator extends BaseGenerator implements Cloneable
 
     public void setMockModel(MockModel mockModel) {
         this.mockModel = mockModel;
+    }
+
+    public boolean isApi() {
+        return api;
+    }
+
+    public void setApi(boolean api) {
+        this.api = api;
     }
 
     protected void addClassDeclaration(JDefinedClass jClass) {

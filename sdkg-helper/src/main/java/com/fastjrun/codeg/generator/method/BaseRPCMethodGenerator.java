@@ -215,25 +215,28 @@ public abstract class BaseRPCMethodGenerator extends BaseControllerMethodGenerat
         if (this.baseControllerGenerator.getCommonController().is_new()) {
             this.processApiMethod((JDefinedClass) ((BaseRPCGenerator) this.baseControllerGenerator).getApiClass());
         }
-        if (this.isClient()) {
-            this.processClientMethod(((BaseRPCGenerator) this.baseControllerGenerator).getApiClass(), this
-                    .baseControllerGenerator.getClientClass());
-            this.processClientTestMethod(this
-                    .baseControllerGenerator.getClientTestClass());
-            StringBuilder sb = new StringBuilder(this.baseControllerGenerator.getClientName()).append(".test");
-            sb.append(StringHelper.toUpperCaseFirstOne(this.serviceMethodGenerator.getMethodName())).append(".n");
-            this.processClientTestPraram();
-            this.baseControllerGenerator.getClientTestParam().put(sb.toString(), this.methodParamInJsonObject
-                    .toString().replaceAll("\n", "").replaceAll("\r", "")
-                    .trim());
-        } else {
-            if (this.getMockModel() != MockModel.MockModel_Common) {
-                this.processControllerMethod(this.baseControllerGenerator.getCommonController(), this
-                        .baseControllerGenerator.getControlllerClass());
-            }
+        if (!this.isApi()) {
+            if (this.isClient()) {
+                this.processClientMethod(((BaseRPCGenerator) this.baseControllerGenerator).getApiClass(), this
+                        .baseControllerGenerator.getClientClass());
+                this.processClientTestMethod(this
+                        .baseControllerGenerator.getClientTestClass());
+                StringBuilder sb = new StringBuilder(this.baseControllerGenerator.getClientName()).append("Test.test");
+                sb.append(StringHelper.toUpperCaseFirstOne(this.serviceMethodGenerator.getMethodName())).append(".n");
+                this.processClientTestPraram();
+                this.baseControllerGenerator.getClientTestParam().put(sb.toString(), this.methodParamInJsonObject
+                        .toString().replaceAll("\n", "").replaceAll("\r", "")
+                        .trim());
+            } else {
+                if (this.getMockModel() != MockModel.MockModel_Common) {
+                    this.processControllerMethod(this.baseControllerGenerator.getCommonController(), this
+                            .baseControllerGenerator.getControlllerClass());
+                }
 
-            this.processApiManagerMethod(this.baseControllerGenerator.getCommonController(), ((BaseRPCGenerator) this
-                    .baseControllerGenerator).getApiManagerClass());
+                this.processApiManagerMethod(this.baseControllerGenerator.getCommonController(),
+                        ((BaseRPCGenerator) this
+                                .baseControllerGenerator).getApiManagerClass());
+            }
         }
 
     }
