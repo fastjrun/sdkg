@@ -4,7 +4,7 @@ package com.fastjrun.utils;
  * *
  *  * 注意：本内容仅限于公司内部传阅，禁止外泄以及用于其他的商业目的
  *  *
- *  * @author 崔莹峰
+ *  * @author fastjrun
  *  * @Copyright 2018 快嘉框架. All rights reserved.
  *
  */
@@ -21,15 +21,13 @@ public class JacksonUtils {
     public static ObjectMapper objectMapper = new FastJsonObjectMapper();
 
     /**
-     * 使用泛型方法，把json字符串转换为相应的JavaBean对象。
-     * (1)转换为普通JavaBean：readValue(json,Student.class)
-     * (2)转换为List,如List<Student>,将第二个参数传递为Student
-     * [].class.然后使用Arrays.asList();方法把得到的数组转换为特定类型的List
+     * 使用泛型方法，把json字符串转换为相应的JavaBean对象或者把得到的数组转换为特定类型的List
      *
-     * @param jsonStr
-     * @param valueType
+     * @param <T>       This is the type parameter
+     * @param jsonStr   jsonStr
+     * @param valueType valueType
      *
-     * @return
+     * @return object
      */
     public static <T> T readValue(String jsonStr, Class<T> valueType) {
 
@@ -45,10 +43,11 @@ public class JacksonUtils {
     /**
      * json数组转List
      *
-     * @param jsonStr
-     * @param valueTypeRef
+     * @param <T>          This is the type parameter
+     * @param jsonStr      jsonStr
+     * @param valueTypeRef valueTypeRef
      *
-     * @return
+     * @return Object Array
      */
     public static <T> T readValue(String jsonStr, TypeReference<T> valueTypeRef) {
 
@@ -64,9 +63,9 @@ public class JacksonUtils {
     /**
      * 把JavaBean转换为json字符串
      *
-     * @param object
+     * @param object object
      *
-     * @return
+     * @return String
      */
     public static String toJSon(Object object) {
 
@@ -82,9 +81,9 @@ public class JacksonUtils {
     /**
      * 把string转换为jsonNode
      *
-     * @param data
+     * @param data data
      *
-     * @return
+     * @return JsonNode
      */
     public static JsonNode toJsonNode(String data) {
 
@@ -100,7 +99,7 @@ public class JacksonUtils {
     /**
      * 产生ObjectNode
      *
-     * @return
+     * @return ObjectNode
      */
     public static ObjectNode createObjectNode() {
 
@@ -114,9 +113,9 @@ public class JacksonUtils {
     }
 
     /**
-     * 产生ObjectNode
+     * 产生ArrayNode
      *
-     * @return
+     * @return ArrayNode
      */
     public static ArrayNode createArrayNode() {
 
