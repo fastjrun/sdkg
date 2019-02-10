@@ -42,6 +42,10 @@ public class StringHelper {
 
     /**
      * 去掉字符串中的逗号 例如：去掉金额字符串中的逗号
+     *
+     * @param string string
+     *
+     * @return String
      */
     public static String removeComma(String string) {
         StringBuilder sb = new StringBuilder();
@@ -55,6 +59,10 @@ public class StringHelper {
 
     /**
      * 将字符串中的非字符转换成字母X
+     *
+     * @param string string
+     *
+     * @return String
      */
     public static String toLetterOrDigit(String string) {
         StringBuilder sb = new StringBuilder();
@@ -70,6 +78,10 @@ public class StringHelper {
 
     /**
      * 将字符串中的非字母转换成字母
+     *
+     * @param string string
+     *
+     * @return String
      */
     public static String toLetter(String string) {
         StringBuilder sb = new StringBuilder();
@@ -209,6 +221,7 @@ public class StringHelper {
 
     /*
      * Converts a byte to hex digit and writes to the supplied buffer
+     *
      */
     private static void byte2hex(byte b, StringBuilder sb) {
         char[] hexChars = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
@@ -257,9 +270,9 @@ public class StringHelper {
     /**
      * 判断字符串是否为空
      *
-     * @param str
+     * @param str str
      *
-     * @return
+     * @return boolean
      */
     public static boolean isEmpty(String str) {
         if (null == str || "".equals(str.trim())) {
@@ -271,6 +284,10 @@ public class StringHelper {
 
     /**
      * 判断字符串是否不为空
+     *
+     * @param str str
+     *
+     * @return boolean
      */
     public static boolean isNotEmpty(String str) {
         if (str != null && !"".equals(str.trim())) {
@@ -288,9 +305,6 @@ public class StringHelper {
         }
     }
 
-    /**
-     *
-     */
     public static String trim(String string) {
         if (isEmpty(string)) {
             return "";

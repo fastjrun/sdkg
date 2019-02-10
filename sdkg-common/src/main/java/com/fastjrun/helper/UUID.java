@@ -130,8 +130,8 @@ public final class UUID implements java.io.Serializable, Comparable {
      * <tt>UUID</tt> and <tt>leastSigBits</tt> becomes the least significant
      * 64 bits of the <tt>UUID</tt>.
      *
-     * @param mostSigBits
-     * @param leastSigBits
+     * @param mostSigBits  mostSigBits
+     * @param leastSigBits leastSigBits
      */
     public UUID(long mostSigBits, long leastSigBits) {
         this.mostSigBits = mostSigBits;
@@ -144,9 +144,8 @@ public final class UUID implements java.io.Serializable, Comparable {
      * <ul>
      * <li>获取一个32位的UUID字符串</li>
      * </ul>
-     * </p>
      *
-     * @return
+     * @return String
      */
     public static String getUUID() {
         return UUID.randomUUID().toString().replaceAll("-", "");
@@ -324,10 +323,11 @@ public final class UUID implements java.io.Serializable, Comparable {
      * and time_hi fields of this <tt>UUID</tt>. The resulting timestamp is
      * measured in 100-nanosecond units since midnight, October 15, 1582 UTC.
      * <p>
-     * <p>
      * The timestamp value is only meaningful in a time-based UUID, which has
      * version type 1. If this <tt>UUID</tt> is not a time-based UUID then
      * this method throws UnsupportedOperationException.
+     *
+     * @return long
      *
      * @throws UnsupportedOperationException if this UUID is not a version 1 UUID.
      */
@@ -352,7 +352,6 @@ public final class UUID implements java.io.Serializable, Comparable {
      * The 14 bit clock sequence value is constructed from the clock sequence
      * field of this UUID. The clock sequence field is used to guarantee
      * temporal uniqueness in a time-based UUID.
-     * <p>
      * <p>
      * The clockSequence value is only meaningful in a time-based UUID, which
      * has version type 1. If this UUID is not a time-based UUID then this
@@ -381,7 +380,6 @@ public final class UUID implements java.io.Serializable, Comparable {
      * The 48 bit node value is constructed from the node field of this UUID.
      * This field is intended to hold the IEEE 802 address of the machine that
      * generated this UUID to guarantee spatial uniqueness.
-     * <p>
      * <p>
      * The node value is only meaningful in a time-based UUID, which has version
      * type 1. If this UUID is not a time-based UUID then this method throws
@@ -499,6 +497,11 @@ public final class UUID implements java.io.Serializable, Comparable {
      * Reconstitute the <tt>UUID</tt> instance from a stream (that is,
      * deserialize it). This is necessary to set the transient fields to their
      * correct uninitialized value so they will be recomputed on demand.
+     *
+     * @param in param
+     *
+     * @throws java.io.IOException    some exception
+     * @throws ClassNotFoundException some exception
      */
     private void readObject(java.io.ObjectInputStream in)
             throws java.io.IOException, ClassNotFoundException {
