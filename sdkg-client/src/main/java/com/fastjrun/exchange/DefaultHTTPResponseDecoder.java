@@ -43,6 +43,6 @@ public class DefaultHTTPResponseDecoder extends BaseHTTPResponseDecoder {
         }
         log.warn("code = {},msg = {}", code, msg);
 
-        throw new ClientException(CodeMsgConstants.CodeMsg.ClIENT_SERVER_EXCEPTION);
+        throw new ClientException(code, msg);
     }
 }
