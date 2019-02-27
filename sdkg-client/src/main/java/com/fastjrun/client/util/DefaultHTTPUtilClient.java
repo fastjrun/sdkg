@@ -28,7 +28,6 @@ public class DefaultHTTPUtilClient extends BaseHTTPUtilClient {
     private static final int DEFAULT_WRITE_TIMEOUT = 10000;
     private static final int DEFAULT_KEEPALIVE_TIME = 5 * 60 * 1000;
 
-    protected Map<String, String> requestHeaderDefault;
     private int maxTotal = 100;
     private boolean redirectable = true;
 

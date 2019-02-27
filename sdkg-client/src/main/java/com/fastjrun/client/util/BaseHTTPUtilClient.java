@@ -9,6 +9,16 @@ public abstract class BaseHTTPUtilClient extends BaseUtilClient {
 
     protected String baseUrl;
 
+    protected Map<String, String> requestHeaderDefault;
+
+    public Map<String, String> getRequestHeaderDefault() {
+        return requestHeaderDefault;
+    }
+
+    public void setRequestHeaderDefault(Map<String, String> requestHeaderDefault) {
+        this.requestHeaderDefault = requestHeaderDefault;
+    }
+
     public String getBaseUrl() {
         return baseUrl;
     }
