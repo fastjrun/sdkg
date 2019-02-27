@@ -4,18 +4,12 @@
 package com.fastjrun.client.exchange;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fastjrun.client.util.DefaultHTTPUtilClient;
 import com.fastjrun.exchange.DefaultHTTPExchange;
 import com.fastjrun.exchange.DefaultHTTPRequestEncoder;
 import com.fastjrun.exchange.DefaultHTTPResponseDecoder;
 import com.fastjrun.util.FastJsonObjectMapper;
 
 public abstract class DefaultHTTPExchangeHandleClient extends BaseHTTPExchangeHandleClient {
-
-    protected void initUtilClient(String baseUrl) {
-        this.baseClient = new DefaultHTTPUtilClient();
-        baseClient.setBaseUrl(baseUrl);
-    }
 
     @Override
     protected void initExchange() {

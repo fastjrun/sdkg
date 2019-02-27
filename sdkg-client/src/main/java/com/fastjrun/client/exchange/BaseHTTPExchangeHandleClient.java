@@ -3,16 +3,26 @@
  */
 package com.fastjrun.client.exchange;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.fastjrun.client.util.BaseHTTPUtilClient;
+import com.fastjrun.client.util.DefaultHTTPUtilClient;
 import com.fastjrun.exchange.DefaultHTTPExchange;
 
 public abstract class BaseHTTPExchangeHandleClient extends
         BaseExchangeHandleClient<BaseHTTPUtilClient> {
 
     DefaultHTTPExchange defaultHTTPExchange;
+
+    protected void initUtilClient(String baseUrl) {
+        this.baseClient = new DefaultHTTPUtilClient();
+        baseClient.setBaseUrl(baseUrl);
+        Map<String, String> requestHeaderDefault = new HashMap<>();
+        requestHeaderDefault.put("Content-Type", "application/json;charset=UTF-8");
+        baseClient.setRequestHeaderDefault(requestHeaderDefault);
+    }
 
     public void process(String path, String method,
                         Map<String,

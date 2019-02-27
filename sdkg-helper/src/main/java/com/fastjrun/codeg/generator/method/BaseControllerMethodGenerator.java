@@ -181,15 +181,15 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
                     .arg(((JClass) this.serviceMethodGenerator.getRequestBodyClass()).dotclass()));
             jInvocationTest.arg(requestBodyVar);
         }
+        JVar assertJsonJVar = methodTestBlk.decl(JSONObjectClass, "assertJson", JExpr._null());
+        methodTestBlk._if(reqParamsJsonStrAndAssertArrayJVar.ref("length").eq(JExpr.lit(2)))._then().block()
+                .assign(assertJsonJVar, JacksonUtilsClass.staticInvoke("toJsonNode")
+                        .arg(reqParamsJsonStrAndAssertArrayJVar.component(JExpr.lit(1))));
         if (this.serviceMethodGenerator.getResponseBodyClass() != cm.VOID) {
             JVar responseBodyVar =
                     methodTestBlk
                             .decl(this.serviceMethodGenerator.getResponseBodyClass(), "responseBody", JExpr._null());
 
-            JVar assertJsonJVar = methodTestBlk.decl(JSONObjectClass, "assertJson", JExpr._null());
-            methodTestBlk._if(reqParamsJsonStrAndAssertArrayJVar.ref("length").eq(JExpr.lit(2)))._then().block()
-                    .assign(assertJsonJVar, JacksonUtilsClass.staticInvoke("toJsonNode")
-                            .arg(reqParamsJsonStrAndAssertArrayJVar.component(JExpr.lit(1))));
             JConditional jConditional1 = methodTestBlk._if(assertJsonJVar.ne(JExpr._null()));
             JBlock jConditional1Block = jConditional1._then();
             JVar codeNodeJVar =
@@ -209,8 +209,8 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
 
             methodTestBlk.invoke(JExpr.refthis("log"), "debug").arg(JacksonUtilsClass.staticInvoke("toJSon")
                     .arg(responseBodyVar));
+            JBlock ifBlock1 = methodTestBlk._if(responseBodyVar.ne(JExpr._null()))._then();
             if (this.serviceMethodGenerator.getCommonMethod().isResponseIsArray()) {
-                JBlock ifBlock1 = methodTestBlk._if(responseBodyVar.ne(JExpr._null()))._then();
                 JForLoop forLoop = ifBlock1._for();
                 JVar initIndexVar = forLoop.init(cm.INT, "index", JExpr.lit(0));
                 forLoop.test(initIndexVar.lt(responseBodyVar.invoke("size")));
@@ -226,13 +226,12 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
 
             } else {
                 this.logResponseBody(1, this.serviceMethodGenerator.getCommonMethod().getResponse(), responseBodyVar,
-                        methodTestBlk);
+                        ifBlock1);
             }
-            methodTestBlk.invoke(JExpr._this(), "processAssertion").arg(assertJsonJVar).arg(responseBodyVar)
+            ifBlock1.invoke(JExpr._this(), "processAssertion").arg(assertJsonJVar).arg(responseBodyVar)
                     .arg(JExpr.dotclass((JClass) this.serviceMethodGenerator.getResponseBodyClass()));
 
         } else {
-            JVar assertJsonJVar = methodTestBlk.decl(JSONObjectClass, "assertJson", JExpr._null());
             JConditional jConditional1 = methodTestBlk._if(assertJsonJVar.ne(JExpr._null()));
             JBlock jConditional1Block = jConditional1._then();
             JVar codeNodeJVar =

@@ -28,6 +28,8 @@ mvn clean install -pl codeg-helper -am
 #### 支持自定义协议api和provider的代码生成
 
 ## 版本说明：
+### v2.0.1 升级说明
+#### bugfix
 ### v2.0 升级说明
 #### 模块进一步优化，sdkg-common拆分成5个模块api、common、client、service和provider
 #### 进一步优化接口定义规范：fastjrun-schema.xsd
