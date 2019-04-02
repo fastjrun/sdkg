@@ -32,13 +32,13 @@ public abstract class BaseRPCMethodGenerator extends BaseControllerMethodGenerat
 
         MethodGeneratorHelper
                 .processServiceMethodVariables(this.japiMethod, this.serviceMethodGenerator.getCommonMethod()
-                        .getHeadVariables());
+                        .getHeadVariables(), this.cm);
         MethodGeneratorHelper.processServiceMethodVariables(this.japiMethod,
-                this.serviceMethodGenerator.getCommonMethod().getPathVariables());
+                this.serviceMethodGenerator.getCommonMethod().getPathVariables(), this.cm);
         MethodGeneratorHelper.processServiceMethodVariables(this.japiMethod,
-                this.serviceMethodGenerator.getCommonMethod().getParameters());
+                this.serviceMethodGenerator.getCommonMethod().getParameters(), this.cm);
         MethodGeneratorHelper.processServiceMethodVariables(this.japiMethod,
-                this.serviceMethodGenerator.getCommonMethod().getCookieVariables());
+                this.serviceMethodGenerator.getCommonMethod().getCookieVariables(), this.cm);
 
         if (this.exchangeProcessor.getRequestClass() != null) {
             this.japiMethod.param(this.exchangeProcessor.getRequestClass(), "request");
@@ -93,8 +93,8 @@ public abstract class BaseRPCMethodGenerator extends BaseControllerMethodGenerat
             }
         }
 
-        this.exchangeProcessor.processRPCRequest(this.japiManagerMethod, jInvocation);
-        this.exchangeProcessor.processResponse(this.japiManagerMethod.body(), jInvocation);
+        this.exchangeProcessor.processRPCRequest(this.japiManagerMethod, jInvocation, this.cm);
+        this.exchangeProcessor.processResponse(this.japiManagerMethod.body(), jInvocation, this.cm);
     }
 
     public void processClientMethod(JClass apiClass, JDefinedClass clientClass) {

@@ -62,7 +62,7 @@ public class ServiceGenerator extends BaseCMGenerator {
                     ClassType.INTERFACE);
         } catch (JClassAlreadyExistsException e) {
             String msg = commonService.get_class() + " is already exists.";
-            this.commonLog.getLog().error(msg, e);
+            log.error(msg, e);
             throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
         }
         this.addClassDeclaration(this.serviceClass);
@@ -75,7 +75,7 @@ public class ServiceGenerator extends BaseCMGenerator {
                     ClassType.INTERFACE);
         } catch (JClassAlreadyExistsException e) {
             String msg = commonService.get_class() + serviceTestSuffix + " is already exists.";
-            this.commonLog.getLog().error(msg, e);
+            log.error(msg, e);
             throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
         }
         this.addClassDeclaration(this.serviceTestClass);
@@ -89,7 +89,7 @@ public class ServiceGenerator extends BaseCMGenerator {
                     commonService.getName());
         } catch (JClassAlreadyExistsException e) {
             String msg = commonService.get_class() + " is already exists.";
-            this.commonLog.getLog().error(msg, e);
+            log.error(msg, e);
             throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
         }
         this.addClassDeclaration(this.serviceMockClass);

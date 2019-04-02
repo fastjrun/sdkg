@@ -38,7 +38,7 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
 
     static String daoImplPackageName = "dao.impl.";
 
-    static JClass parentClass = cm.ref("com.fastjrun.entity.BaseEntity");
+    static String parentClassName = "com.fastjrun.entity.BaseEntity";
 
     protected FJTable fjTable;
 
@@ -92,11 +92,11 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
 
         } catch (JClassAlreadyExistsException e) {
             String msg = "fjTable class：" + fjTable.getName() + " is already exists.";
-            this.commonLog.getLog().error(msg, e);
+            log.error(msg, e);
             throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
         }
 
-        this.entityClass._extends(parentClass);
+        this.entityClass._extends(cm.ref(parentClassName));
         this.entityClass._implements(cm.ref("java.io.Serializable"));
         long hashCode = 0l;
         hashCode += this.entityClass.getClass().getName().hashCode();
@@ -179,7 +179,7 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
                             + "Dao", ClassType.INTERFACE);
         } catch (JClassAlreadyExistsException e) {
             String msg = "fjTable dao class：" + fjTable.getName() + " is already exists.";
-            this.commonLog.getLog().error(msg, e);
+            log.error(msg, e);
             throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
         }
         this.addClassDeclaration(this.daoClass);
@@ -353,7 +353,7 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
 
         } catch (JClassAlreadyExistsException e) {
             String msg = "fjTable SqlBuilder class：" + fjTable.getName() + " is already exists.";
-            this.commonLog.getLog().error(msg, e);
+            log.error(msg, e);
             throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
         }
         SqlHelper sqlHelper = SQLHelperFactory.getSQLHelper(

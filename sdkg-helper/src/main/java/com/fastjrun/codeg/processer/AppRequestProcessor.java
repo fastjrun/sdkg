@@ -1,23 +1,17 @@
 package com.fastjrun.codeg.processer;
 
-import com.fastjrun.codeg.common.CodeGConstants;
-import com.fastjrun.codeg.common.CodeModelConstants;
 import com.sun.codemodel.JBlock;
+import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JVar;
 
-public class AppRequestProcessor extends BaseRequestWithHeadProcessor implements CodeModelConstants {
-
-    public AppRequestProcessor() {
-        this.requestHeadClass = cm.ref(APP_REQUEST_HEAD_CLASS_NAME);
-        this.baseRequestClassName = APP_REQUEST_CLASS_NAME;
-    }
+public class AppRequestProcessor extends BaseRequestProcessor {
 
     @Override
     public String processHTTPRequest(JMethod jcontrollerMethod, JInvocation jInvocation,
-                                     CodeGConstants.MockModel mockModel) {
+                                     MockModel mockModel, JCodeModel cm) {
         JBlock controllerMethodBlk = jcontrollerMethod.body();
         JVar requestHeadVar = controllerMethodBlk.decl(this.requestHeadClass, "requestHead",
                 JExpr._new(this.requestHeadClass));
@@ -67,7 +61,7 @@ public class AppRequestProcessor extends BaseRequestWithHeadProcessor implements
     }
 
     @Override
-    public void processRPCRequest(JMethod method, JInvocation jInvocation) {
+    public void processRPCRequest(JMethod method, JInvocation jInvocation, JCodeModel cm) {
 
     }
 }

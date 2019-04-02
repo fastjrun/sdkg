@@ -91,24 +91,19 @@ public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
                     default:
                         break;
                 }
-                codeGService.setBundleFiles(bundleFiles.split(","));
-                codeGService.generateBundle(module, mockModelTemp);
+                codeGService.generateBundle(bundleFiles,module, mockModelTemp);
                 break;
             case BundleG:
-                codeGService.setBundleFiles(bundleFiles.split(","));
-                codeGService.generateProvider(module);
+                codeGService.generateProvider(bundleFiles,module);
                 break;
             case ClientG:
-                codeGService.setBundleFiles(bundleFiles.split(","));
-                codeGService.generateClient(module);
+                codeGService.generateClient(bundleFiles,module);
                 break;
             case ApiG:
-                codeGService.setBundleFiles(bundleFiles.split(","));
-                codeGService.generateAPI(module);
+                codeGService.generateAPI(bundleFiles,module);
                 break;
             case BaseG:
-                codeGService.setSqlFile(sqlFile);
-                codeGService.generateBase(module);
+                codeGService.generateBase(sqlFile,module);
                 break;
             default:
                 break;

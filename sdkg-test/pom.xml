@@ -10,7 +10,7 @@
     <parent>
         <groupId>com.fastjrun.codeg</groupId>
         <artifactId>sdkg-parent</artifactId>
-        <version>2.0.1</version>
+        <version>2.1-SNAPSHOT</version>
     </parent>
     <artifactId>sdkg-test</artifactId>
     <dependencies>
@@ -33,4 +33,8 @@
             <version>${springframework.version}</version>
         </dependency>
     </dependencies>
+    <properties>
+        <maven.install.skip>true</maven.install.skip>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
 </project>

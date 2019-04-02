@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.fastjrun.common.BaseException;
+import com.fastjrun.common.ServiceException;
 import com.fastjrun.common.MediaTypes;
 import com.fastjrun.dto.DefaultResponse;
 import com.fastjrun.helper.BaseResponseHelper;
@@ -42,8 +42,8 @@ public class ExceptionHandlerExt extends ResponseEntityExceptionHandler {
         return reqContentType;
     }
 
-    @ExceptionHandler({BaseException.class})
-    public final ResponseEntity<?> handleException(BaseException ex,
+    @ExceptionHandler({ServiceException.class})
+    public final ResponseEntity<?> handleException(ServiceException ex,
                                                    WebRequest request) throws Exception {
 
         log.error("异常", ex);

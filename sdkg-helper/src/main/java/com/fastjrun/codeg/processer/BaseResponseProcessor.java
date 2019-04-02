@@ -1,9 +1,8 @@
 package com.fastjrun.codeg.processer;
 
-import com.fastjrun.codeg.common.CodeModelConstants;
 import com.sun.codemodel.JClass;
 
-public abstract class BaseResponseProcessor implements ResponseProcessor, CodeModelConstants {
+public abstract class BaseResponseProcessor implements ResponseProcessor {
 
     protected String baseResponseClassName;
 

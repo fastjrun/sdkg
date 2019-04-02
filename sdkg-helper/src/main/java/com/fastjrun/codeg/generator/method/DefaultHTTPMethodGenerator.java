@@ -9,9 +9,8 @@ import com.sun.codemodel.JInvocation;
 public class DefaultHTTPMethodGenerator extends BaseHTTPMethodGenerator {
 
     /**
-     * app,api
      *
-     * @param jInvocation
+     * @param jInvocation 表达式
      */
     @Override
     protected void processExtraParameters(JInvocation jInvocation) {

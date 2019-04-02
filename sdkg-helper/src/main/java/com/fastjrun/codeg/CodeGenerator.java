@@ -3,8 +3,8 @@ package com.fastjrun.codeg;
 import java.io.File;
 import java.util.Calendar;
 
-import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.plugin.logging.SystemStreamLog;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.fastjrun.codeg.helper.IOHelper;
 import com.sun.codemodel.JCodeModel;
@@ -34,23 +34,11 @@ public abstract class CodeGenerator {
     protected File srcDir;
     protected File testSrcDir;
     protected String packageNamePrefix;
-    private Log log;
+    protected final Logger log = LogManager.getLogger(this.getClass());
     private String srcName = "/src/main/java";
     private String resourcesName = "/src/main/resources";
     private String testSrcName = "/src/test/java";
     private String testDataName = "/src/test/data";
-
-    public Log getLog() {
-        if (this.log == null) {
-            this.log = new SystemStreamLog();
-        }
-
-        return this.log;
-    }
-
-    public void setLog(Log log) {
-        this.log = log;
-    }
 
     public JCodeModel getCm() {
         return cm;

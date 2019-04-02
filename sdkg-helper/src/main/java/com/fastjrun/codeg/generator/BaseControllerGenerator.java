@@ -21,7 +21,7 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
 
     static String servicePackageName = "service.";
 
-    static String webPackageName = "web.controller.";
+    protected String webPackageName ;
 
     protected CommonController commonController;
 
@@ -38,6 +38,14 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
     protected String controllerPath;
 
     protected ServiceGenerator serviceGenerator;
+
+    public String getWebPackageName() {
+        return webPackageName;
+    }
+
+    public void setWebPackageName(String webPackageName) {
+        this.webPackageName = webPackageName;
+    }
 
     public String getClientName() {
         return clientName;
@@ -125,7 +133,7 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
 
         } catch (JClassAlreadyExistsException e) {
             String msg = commonController.getName() + " is already exists.";
-            this.commonLog.getLog().error(msg, e);
+            log.error(msg, e);
             throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
         }
         this.controlllerClass.annotate(cm.ref("org.springframework.web.bind.annotation.RestController"));
@@ -151,7 +159,7 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
             this.clientTestClass = cmTest._class(this.getPackageNamePrefix() + "client." + this.clientName + "Test");
         } catch (JClassAlreadyExistsException e) {
             String msg = commonController.getName() + "Test is already exists.";
-            this.commonLog.getLog().error(msg, e);
+            log.error(msg, e);
             throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
         }
         this.clientTestClass._extends(cmTest.ref("com.fastjrun.client.BaseApplicationClientTest").narrow
@@ -184,7 +192,7 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
                     ._class(this.getPackageNamePrefix() + "client." + this.clientName);
         } catch (JClassAlreadyExistsException e) {
             String msg = commonController.getName() + " is already exists.";
-            this.commonLog.getLog().error(msg, e);
+            log.error(msg, e);
             throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
         }
 

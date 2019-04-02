@@ -113,10 +113,6 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
 
         methodTestAnnotationTest.param("dataProvider", "loadParam");
 
-        JAnnotationUse methodTestAnnotationParameters = clientTestMethod
-                .annotate(cmTest.ref("org.testng.annotations.Parameters"));
-        JAnnotationArrayMember parametersArrayMember = methodTestAnnotationParameters.paramArray("value");
-        parametersArrayMember.param("reqParamsJsonStrAndAssert");
         JVar reqParamsJsonStrAndAssertJVar = clientTestMethod.param(cmTest.ref("String"), "reqParamsJsonStrAndAssert");
         JVar reqParamsJsonStrAndAssertArrayJVar = methodTestBlk
                 .decl(cmTest.ref("String").array(), "reqParamsJsonStrAndAssertArray",
@@ -124,8 +120,8 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
         JVar reqParamsJsonStrJVar = methodTestBlk
                 .decl(cm.ref("String"), "reqParamsJsonStr", reqParamsJsonStrAndAssertArrayJVar.component(JExpr.lit(0)));
         methodTestBlk.invoke(JExpr.ref("log"), "debug").arg(reqParamsJsonStrJVar);
-        JVar reqParamsJsonJVar = methodTestBlk.decl(JSONObjectClass, "reqParamsJson", cmTest
-                .ref("com.fastjrun.utils.JacksonUtils").staticInvoke("toJsonNode")
+        JVar reqParamsJsonJVar = methodTestBlk.decl(cm.ref(JSONObjectClassName), "reqParamsJson", cmTest
+                .ref(JacksonUtilsClassName).staticInvoke("toJsonNode")
                 .arg(reqParamsJsonStrJVar));
 
         JInvocation jInvocationTest =
@@ -172,18 +168,18 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
         if (this.serviceMethodGenerator.getRequestBodyClass() != null) {
             JVar requestBodyVar =
                     methodTestBlk.decl(this.serviceMethodGenerator.getRequestBodyClass(), "requestBody", JExpr._null());
-            JVar requestBodyStrVar = methodTestBlk.decl(JSONObjectClass, "reqJsonRequestBody",
+            JVar requestBodyStrVar = methodTestBlk.decl(cm.ref(JSONObjectClassName), "reqJsonRequestBody",
                     reqParamsJsonJVar.invoke("get").arg(JExpr.lit("requestBody")));
             JBlock jNotNullBlock =
                     methodTestBlk._if(requestBodyStrVar.ne(JExpr._null()))._then();
-            jNotNullBlock.assign(requestBodyVar, JacksonUtilsClass.staticInvoke("readValue")
+            jNotNullBlock.assign(requestBodyVar, cm.ref(JacksonUtilsClassName).staticInvoke("readValue")
                     .arg(requestBodyStrVar.invoke("toString"))
                     .arg(((JClass) this.serviceMethodGenerator.getRequestBodyClass()).dotclass()));
             jInvocationTest.arg(requestBodyVar);
         }
-        JVar assertJsonJVar = methodTestBlk.decl(JSONObjectClass, "assertJson", JExpr._null());
+        JVar assertJsonJVar = methodTestBlk.decl(cm.ref(JSONObjectClassName), "assertJson", JExpr._null());
         methodTestBlk._if(reqParamsJsonStrAndAssertArrayJVar.ref("length").eq(JExpr.lit(2)))._then().block()
-                .assign(assertJsonJVar, JacksonUtilsClass.staticInvoke("toJsonNode")
+                .assign(assertJsonJVar, cm.ref(JacksonUtilsClassName).staticInvoke("toJsonNode")
                         .arg(reqParamsJsonStrAndAssertArrayJVar.component(JExpr.lit(1))));
         if (this.serviceMethodGenerator.getResponseBodyClass() != cm.VOID) {
             JVar responseBodyVar =
@@ -193,7 +189,8 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
             JConditional jConditional1 = methodTestBlk._if(assertJsonJVar.ne(JExpr._null()));
             JBlock jConditional1Block = jConditional1._then();
             JVar codeNodeJVar =
-                    jConditional1Block.decl(JSONObjectClass, "codeNode", assertJsonJVar.invoke("get").arg("code"));
+                    jConditional1Block
+                            .decl(cm.ref(JSONObjectClassName), "codeNode", assertJsonJVar.invoke("get").arg("code"));
             JConditional jConditional2 = jConditional1Block._if(codeNodeJVar.ne(JExpr._null()));
             JBlock jConditional2ThenBlock = jConditional2._then();
             JTryBlock jTry = jConditional2ThenBlock._try();
@@ -207,7 +204,7 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
             jConditional2._else().assign(responseBodyVar, jInvocationTest);
             jConditional1._else().assign(responseBodyVar, jInvocationTest);
 
-            methodTestBlk.invoke(JExpr.refthis("log"), "debug").arg(JacksonUtilsClass.staticInvoke("toJSon")
+            methodTestBlk.invoke(JExpr.refthis("log"), "debug").arg(cm.ref(JacksonUtilsClassName).staticInvoke("toJSon")
                     .arg(responseBodyVar));
             JBlock ifBlock1 = methodTestBlk._if(responseBodyVar.ne(JExpr._null()))._then();
             if (this.serviceMethodGenerator.getCommonMethod().isResponseIsArray()) {
@@ -235,7 +232,8 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
             JConditional jConditional1 = methodTestBlk._if(assertJsonJVar.ne(JExpr._null()));
             JBlock jConditional1Block = jConditional1._then();
             JVar codeNodeJVar =
-                    jConditional1Block.decl(JSONObjectClass, "codeNode", assertJsonJVar.invoke("get").arg("code"));
+                    jConditional1Block
+                            .decl(cm.ref(JSONObjectClassName), "codeNode", assertJsonJVar.invoke("get").arg("code"));
             JConditional jConditional2 = jConditional1Block._if(codeNodeJVar.ne(JExpr._null()));
             JBlock jConditional2ThenBlock = jConditional2._then();
             JTryBlock jTry = jConditional2ThenBlock._try();
@@ -258,7 +256,7 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
             paramterName = parameter.getNameAlias();
         }
         JVar jVar = methodTestBlk.decl(jType, paramterName, JExpr._null());
-        JVar jJsonVar = methodTestBlk.decl(JSONObjectClass, paramterName + "jSon",
+        JVar jJsonVar = methodTestBlk.decl(cm.ref(JSONObjectClassName), paramterName + "jSon",
                 reqParamsJsonJVar.invoke("get").arg(JExpr.lit(paramterName)));
         JBlock jNotNullBlock =
                 methodTestBlk._if(jJsonVar.ne(JExpr._null()))
@@ -306,7 +304,7 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
                     try {
                         length = Integer.parseInt(lengthInString);
                     } catch (Exception e) {
-                        commonLog.getLog().error(fieldName + "'s length is assigned a wrong value", e);
+                        log.error(fieldName + "'s length is assigned a wrong value", e);
                     }
                 }
                 String tterMethodName = fieldName;
@@ -555,7 +553,8 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
         JInvocation jInvocation = JExpr.invoke(JExpr.refthis(commonController.getServiceName()), this
                 .serviceMethodGenerator.getMethodName());
 
-        methodPath = methodPath + this.exchangeProcessor.processHTTPRequest(jcontrollerMethod, jInvocation, mockModel);
+        methodPath = methodPath + this.exchangeProcessor.processHTTPRequest(jcontrollerMethod, jInvocation,
+                mockModel, this.cm);
 
         if (this.getMockModel() == MockModel.MockModel_Swagger) {
             this.jcontrollerMethod.annotate(cm.ref("io.swagger.annotations.ApiOperation"))
@@ -656,7 +655,7 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
 
         this.processExtraParameters(jInvocation);
 
-        this.exchangeProcessor.processResponse(controllerMethodBlk, jInvocation);
+        this.exchangeProcessor.processResponse(controllerMethodBlk, jInvocation, this.cm);
 
     }
 

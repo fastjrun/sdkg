@@ -8,36 +8,33 @@ import java.util.Map;
 
 import org.dom4j.Document;
 
-import com.fastjrun.codeg.common.CodeModelConstants;
 import com.fastjrun.codeg.common.CommonController;
-import com.fastjrun.codeg.service.CodeGService;
 
-public class DefaultCodeGService extends BaseCodeGServiceImpl implements CodeGService, CodeModelConstants {
+public class DefaultCodeGService extends BaseCodeGServiceImpl {
 
     @Override
-    public boolean generateAPI(String moduleName) {
+    public boolean generateAPI(String bundleFiles, String moduleName) {
         Date begin = new Date();
-        commonLog.getLog().info("begin genreate at " + begin);
+        log.info("begin genreate at " + begin);
         this.beforeGenerate(moduleName);
-
-        this.generateCode(moduleName, MockModel.MockModel_Common, true, false);
+        this.generateCode(bundleFiles, moduleName, MockModel.MockModel_Common, true, false);
 
         Date end = new Date();
 
-        commonLog.getLog()
+        log
                 .info("end genreate at " + end + ",cast " + String.valueOf(end.getTime() - begin.getTime()) + " ms");
 
         return true;
     }
 
     @Override
-    public boolean generateClient(String moduleName) {
+    public boolean generateClient(String bundleFiles, String moduleName) {
 
         Date begin = new Date();
-        commonLog.getLog().info("begin genreate at " + begin);
+        log.info("begin genreate at " + begin);
         this.beforeGenerate(moduleName);
 
-        Map<String, CommonController> controllerMap = this.generateCode(moduleName,
+        Map<String, CommonController> controllerMap = this.generateCode(bundleFiles, moduleName,
                 MockModel.MockModel_Common, false, true);
         List<CommonController> rpcDubboList = new ArrayList<>();
         for (CommonController commonController : controllerMap.values()) {
@@ -64,19 +61,20 @@ public class DefaultCodeGService extends BaseCodeGServiceImpl implements CodeGSe
 
         Date end = new Date();
 
-        commonLog.getLog()
+        log
                 .info("end genreate at " + end + ",cast " + String.valueOf(end.getTime() - begin.getTime()) + " ms");
 
         return true;
     }
 
     @Override
-    public boolean generateBundle(String moduleName, MockModel mockModel) {
+    public boolean generateBundle(String bundleFiles, String moduleName, MockModel mockModel) {
         Date begin = new Date();
-        commonLog.getLog().info("begin genreate at " + begin);
+        log.info("begin genreate at " + begin);
         this.beforeGenerate(moduleName);
 
-        Map<String, CommonController> controllerMap = this.generateCode(moduleName, mockModel, false, false);
+        Map<String, CommonController> controllerMap = this.generateCode(bundleFiles, moduleName, mockModel, false,
+                false);
         List<CommonController> rpcDubboList = new ArrayList<>();
 
         for (CommonController commonController : controllerMap.values()) {
@@ -94,31 +92,31 @@ public class DefaultCodeGService extends BaseCodeGServiceImpl implements CodeGSe
 
         Date end = new Date();
 
-        commonLog.getLog()
+        log
                 .info("end genreate at " + end + ",cast " + String.valueOf(end.getTime() - begin.getTime()) + " ms");
 
         return true;
     }
 
     @Override
-    public boolean generateBase(String moduleName) {
+    public boolean generateBase(String sqlFile, String moduleName) {
 
         Date begin = new Date();
-        commonLog.getLog().info("begin genreate at " + begin);
+        log.info("begin genreate at " + begin);
         this.beforeGenerate(moduleName);
 
-        this.generateMybatisAnnotationCode(moduleName, false);
+        this.generateMybatisAnnotationCode(sqlFile, moduleName, false);
 
         Date end = new Date();
 
-        commonLog.getLog()
+        log
                 .info("end genreate at " + end + ",cast " + String.valueOf(end.getTime() - begin.getTime()) + " ms");
 
         return true;
     }
 
     @Override
-    public boolean generateProvider(String moduleName) {
-        return this.generateBundle(moduleName, MockModel.MockModel_Common);
+    public boolean generateProvider(String bundleFiles, String moduleName) {
+        return this.generateBundle(bundleFiles, moduleName, MockModel.MockModel_Common);
     }
 }

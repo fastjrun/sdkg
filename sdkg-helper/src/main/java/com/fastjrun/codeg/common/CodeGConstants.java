@@ -1,6 +1,9 @@
 package com.fastjrun.codeg.common;
 
 public interface CodeGConstants {
+
+    String JacksonUtilsClassName = "com.fastjrun.utils.JacksonUtils";
+
     ControllerType ControllerType_GENERIC =
             new ControllerType("Generic", ControllerProtocol.ControllerProtocol_HTTP, "",
                     "com.fastjrun.client.DefaultHTTPGenericClient", "",

@@ -54,7 +54,7 @@ public abstract class BaseRPCGenerator extends BaseControllerGenerator {
 
             } catch (JClassAlreadyExistsException e) {
                 String msg = commonController.getClientName() + " is already exists.";
-                this.commonLog.getLog().error(msg, e);
+                log.error(msg, e);
                 throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
             }
             this.addClassDeclaration(apiClassTemp);
@@ -71,7 +71,7 @@ public abstract class BaseRPCGenerator extends BaseControllerGenerator {
             }
         } catch (JClassAlreadyExistsException e) {
             String msg = commonController.getName() + " is already exists.";
-            this.commonLog.getLog().error(msg, e);
+            log.error(msg, e);
             throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
         }
         this.apiManagerClass._implements(this.apiClass);

@@ -1,25 +1,24 @@
 package com.fastjrun.codeg.generator;
 
-import com.fastjrun.codeg.common.CodeModelConstants;
-import com.fastjrun.codeg.common.CommonLog;
-import com.sun.codemodel.JClass;
+import com.fastjrun.codeg.common.CodeGConstants;
+import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JDocComment;
 
 /**
  * 生成
  */
-public abstract class BaseCMGenerator extends BaseGenerator implements Cloneable, CodeModelConstants {
+public abstract class BaseCMGenerator extends BaseGenerator implements Cloneable, CodeGConstants {
+
+    protected JCodeModel cm;
+
+    protected JCodeModel cmTest;
 
     public static String servicePackageName = "service.";
 
     public static String mockPackageName = "com.fastjrun.mock.";
 
-    public static JClass JSONObjectClass = cmTest.ref("com.fasterxml.jackson.databind.JsonNode");
-
-    public static JClass JacksonUtilsClass = cm.ref("com.fastjrun.utils.JacksonUtils");
-
-    protected CommonLog commonLog = new CommonLog();
+    public static String JSONObjectClassName = "com.fasterxml.jackson.databind.JsonNode";
 
     protected MockModel mockModel = MockModel.MockModel_Common;
     private boolean api = false;
@@ -58,6 +57,22 @@ public abstract class BaseCMGenerator extends BaseGenerator implements Cloneable
         if (!this.skipAuthor) {
             jDoc.addXdoclet("author " + this.author);
         }
+    }
+
+    public JCodeModel getCm() {
+        return cm;
+    }
+
+    public void setCm(JCodeModel cm) {
+        this.cm = cm;
+    }
+
+    public JCodeModel getCmTest() {
+        return cmTest;
+    }
+
+    public void setCmTest(JCodeModel cmTest) {
+        this.cmTest = cmTest;
     }
 
     @Override

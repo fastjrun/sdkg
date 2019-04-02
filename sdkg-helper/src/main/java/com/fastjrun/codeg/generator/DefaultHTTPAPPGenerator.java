@@ -14,6 +14,17 @@ import com.fastjrun.codeg.processer.DefaultExchangeProcessor;
 import com.fastjrun.codeg.processer.DefaultResponseWithHeadProcessor;
 
 public class DefaultHTTPAPPGenerator extends BaseHTTPGenerator {
+
+    static final String WEB_PACKAGE_NAME = "web.app.controller.";
+
+    static final String APP_REQUEST_CLASS_NAME = "com.fastjrun.dto.AppRequest";
+
+    static final String APP_REQUEST_HEAD_CLASS_NAME = "com.fastjrun.dto.AppRequestHead";
+
+    public DefaultHTTPAPPGenerator(){
+        this.webPackageName = WEB_PACKAGE_NAME;
+    }
+
     @Override
     public BaseControllerMethodGenerator prepareBaseControllerMethodGenerator(
             ServiceMethodGenerator serviceMethodGenerator) {
@@ -23,11 +34,14 @@ public class DefaultHTTPAPPGenerator extends BaseHTTPGenerator {
         baseHTTPMethodGenerator.setMockModel(this.mockModel);
         baseHTTPMethodGenerator.setServiceMethodGenerator(serviceMethodGenerator);
         baseHTTPMethodGenerator.setBaseControllerGenerator(this);
-        DefaultExchangeProcessor exchangeProcessor = new DefaultExchangeProcessor();
         BaseRequestProcessor baseRequestProcessor = new AppRequestProcessor();
+        baseRequestProcessor.setRequestHeadClass(cm.ref(APP_REQUEST_HEAD_CLASS_NAME));
+        baseRequestProcessor.setBaseRequestClassName(APP_REQUEST_CLASS_NAME);
         BaseResponseProcessor baseResponseProcessor = new DefaultResponseWithHeadProcessor();
-        exchangeProcessor.setResponseProcessor(baseResponseProcessor);
-        exchangeProcessor.setRequestProcessor(baseRequestProcessor);
+        DefaultExchangeProcessor<AppRequestProcessor, DefaultResponseWithHeadProcessor> exchangeProcessor =
+                new DefaultExchangeProcessor
+                        (baseRequestProcessor,
+                                baseResponseProcessor);
         exchangeProcessor.doParse(serviceMethodGenerator, this.packageNamePrefix);
         baseHTTPMethodGenerator.setExchangeProcessor(exchangeProcessor);
         return baseHTTPMethodGenerator;

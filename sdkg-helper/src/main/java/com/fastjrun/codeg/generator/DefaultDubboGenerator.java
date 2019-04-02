@@ -4,11 +4,12 @@ import com.fastjrun.codeg.generator.method.BaseControllerMethodGenerator;
 import com.fastjrun.codeg.generator.method.BaseRPCMethodGenerator;
 import com.fastjrun.codeg.generator.method.DefaultRPCMethodGenerator;
 import com.fastjrun.codeg.generator.method.ServiceMethodGenerator;
+import com.fastjrun.codeg.processer.AppRequestProcessor;
 import com.fastjrun.codeg.processer.BaseRequestProcessor;
 import com.fastjrun.codeg.processer.BaseResponseProcessor;
 import com.fastjrun.codeg.processer.DefaultExchangeProcessor;
-import com.fastjrun.codeg.processer.DefaultRequestWithoutHeadProcessor;
 import com.fastjrun.codeg.processer.DefaultResponseWithHeadProcessor;
+import com.fastjrun.codeg.processer.GenericRequestProcessor;
 
 public class DefaultDubboGenerator extends BaseRPCGenerator {
 
@@ -21,11 +22,12 @@ public class DefaultDubboGenerator extends BaseRPCGenerator {
         baseRPCMethodGenerator.setMockModel(this.mockModel);
         baseRPCMethodGenerator.setServiceMethodGenerator(serviceMethodGenerator);
         baseRPCMethodGenerator.setBaseControllerGenerator(this);
-        DefaultExchangeProcessor exchangeProcessor = new DefaultExchangeProcessor();
-        BaseRequestProcessor baseRequestProcessor = new DefaultRequestWithoutHeadProcessor();
+        BaseRequestProcessor baseRequestProcessor = new GenericRequestProcessor();
         BaseResponseProcessor baseResponseProcessor = new DefaultResponseWithHeadProcessor();
-        exchangeProcessor.setResponseProcessor(baseResponseProcessor);
-        exchangeProcessor.setRequestProcessor(baseRequestProcessor);
+        DefaultExchangeProcessor<AppRequestProcessor, DefaultResponseWithHeadProcessor> exchangeProcessor =
+                new DefaultExchangeProcessor
+                        (baseRequestProcessor,
+                                baseResponseProcessor);
         exchangeProcessor.doParse(serviceMethodGenerator, this.packageNamePrefix);
         baseRPCMethodGenerator.setExchangeProcessor(exchangeProcessor);
         return baseRPCMethodGenerator;

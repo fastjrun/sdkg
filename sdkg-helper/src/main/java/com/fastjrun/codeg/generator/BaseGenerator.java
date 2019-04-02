@@ -2,8 +2,10 @@ package com.fastjrun.codeg.generator;
 
 import java.util.Calendar;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.fastjrun.codeg.common.BaseCodeGenerableObject;
-import com.fastjrun.codeg.common.CommonLog;
 
 /**
  * 生成
@@ -11,7 +13,7 @@ import com.fastjrun.codeg.common.CommonLog;
 public abstract class BaseGenerator {
 
     protected static String YEAR_CODEG_TIME = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
-    protected CommonLog commonLog = new CommonLog();
+    protected final Logger log = LogManager.getLogger(this.getClass());
     protected String packageNamePrefix;
     protected String author = "cuiyingfeng";
     protected String company = "快嘉";

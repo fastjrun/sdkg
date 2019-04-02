@@ -4,14 +4,14 @@ import com.fastjrun.codeg.common.CodeGConstants;
 
 public interface CodeGService extends CodeGConstants {
 
-    boolean generateAPI(String moduleName);
+    boolean generateAPI(String bundleFiles, String moduleName);
 
-    boolean generateClient(String moduleName);
+    boolean generateClient(String bundleFiles, String moduleName);
 
-    boolean generateProvider(String moduleName);
+    boolean generateProvider(String bundleFiles, String moduleName);
 
-    boolean generateBundle(String moduleName, MockModel mockModel);
+    boolean generateBundle(String bundleFiles, String moduleName, MockModel mockModel);
 
-    boolean generateBase(String moduleName);
+    boolean generateBase(String sqlFile, String moduleName);
 
 }

@@ -28,6 +28,14 @@ mvn clean install -pl codeg-helper -am
 #### 支持自定义协议api和provider的代码生成
 
 ## 版本说明：
+### v2.1 升级说明
+#### 项目结构进一步解耦，将代码生成功能和插件分开,从codeg-helper中拆分出codeg-plugin模块
+#### 抽离出codeg-test的单测模块
+#### 优化代码生成逻辑
+#### 调整web和provider模块的代码生成位置区分package
+#### 新增web模块进一步优化
+#### 新增接口协议，支持web方式
+
 ### v2.0.1 升级说明
 #### bugfix
 ### v2.0 升级说明
