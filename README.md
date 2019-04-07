@@ -13,16 +13,6 @@
 - 基于maven插件实现
 - 快嘉代码生成Maven插件使用dom4j解析接口文档，用codelmodel输出代码
 
-### 常见问题
-
-
-### 基于sdkg命令生成代码参考示例
-```
-# 本地参考安装codeg-helper插件
-mvn clean install -pl codeg-helper -am
-```
-更多命令参考工程下的build.sh
-
 ### to be continued
 #### codemodel重构
 #### 支持自定义协议api和provider的代码生成
@@ -35,6 +25,7 @@ mvn clean install -pl codeg-helper -am
 #### 调整web和provider模块的代码生成位置区分package
 #### 新增web模块进一步优化
 #### 新增接口协议，支持web方式
+#### base模板新增BaseService、BaseController
 
 ### v2.0.1 升级说明
 #### bugfix

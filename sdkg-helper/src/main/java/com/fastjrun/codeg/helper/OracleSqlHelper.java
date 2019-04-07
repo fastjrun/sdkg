@@ -50,10 +50,10 @@ public class OracleSqlHelper implements SqlHelper {
     }
 
     /* (non-Javadoc)
-     * @see com.fastjrun.codeg.helper.SQLHelper#getUpdateById()
+     * @see com.fastjrun.codeg.helper.SQLHelper#getUpdateByPK()
      */
     @Override
-    public String getUpdateById() {
+    public String getUpdateByPK() {
         StringBuffer sql = new StringBuffer();
         sql.append("update ").append(fjTable.getName()).append(" set ");
         Map<String, FJColumn> fields = fjTable.getColumns();
@@ -83,10 +83,10 @@ public class OracleSqlHelper implements SqlHelper {
     }
 
     /* (non-Javadoc)
-     * @see com.fastjrun.codeg.helper.SQLHelper#getSelectById()
+     * @see com.fastjrun.codeg.helper.SQLHelper#getSelectByPK()
      */
     @Override
-    public String getSelectById() {
+    public String getSelectByPK() {
         StringBuffer sql = new StringBuffer();
         sql.append("select ");
         Map<String, FJColumn> fields = fjTable.getColumns();
@@ -137,10 +137,10 @@ public class OracleSqlHelper implements SqlHelper {
     }
 
     /* (non-Javadoc)
-     * @see com.fastjrun.codeg.helper.SQLHelper#getDeleteById()
+     * @see com.fastjrun.codeg.helper.SQLHelper#getDeleteByPK()
      */
     @Override
-    public String getDeleteById() {
+    public String getDeleteByPK() {
         StringBuffer sql = new StringBuffer();
         sql.append("delete from ").append(fjTable.getName()).append(" where ");
         List<String> keyFields = fjTable.getPrimaryKeyColumnNames();

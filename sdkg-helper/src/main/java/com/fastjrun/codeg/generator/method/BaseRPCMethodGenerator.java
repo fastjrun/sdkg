@@ -53,6 +53,8 @@ public abstract class BaseRPCMethodGenerator extends BaseControllerMethodGenerat
         String serviceName = commonController.getServiceName();
         JInvocation jInvocation = JExpr.invoke(JExpr.refthis(serviceName), this.serviceMethodGenerator.getMethodName());
 
+        this.japiManagerMethod.annotate(cm.ref("java.lang.Override"));
+
         List<PacketField> headVariables = this.serviceMethodGenerator.getCommonMethod().getHeadVariables();
         if (headVariables != null && headVariables.size() > 0) {
             for (int index = 0; index < headVariables.size(); index++) {

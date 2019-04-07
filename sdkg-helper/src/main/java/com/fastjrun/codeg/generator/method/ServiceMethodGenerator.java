@@ -195,7 +195,7 @@ public class ServiceMethodGenerator extends BaseCMGenerator {
         MethodGeneratorHelper
                 .processServiceMethodVariables(this.jServiceMockMethod, this.commonMethod.getExtraParameters(),
                         this.cm);
-
+        this.jServiceMockMethod.annotate(cm.ref("java.lang.Override"));
         JBlock serviceMockMethodBlock = this.jServiceMockMethod.body();
         if (this.responseBodyClass != cm.VOID) {
             if (!commonMethod.isResponseIsArray()) {

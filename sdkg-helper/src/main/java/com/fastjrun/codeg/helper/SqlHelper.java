@@ -4,13 +4,13 @@ public interface SqlHelper {
 
     public abstract String getInsert();
 
-    public abstract String getUpdateById();
+    public abstract String getUpdateByPK();
 
-    public abstract String getSelectById();
+    public abstract String getSelectByPK();
 
     public abstract String getSelectByCondition();
 
-    public abstract String getDeleteById();
+    public abstract String getDeleteByPK();
 
     public abstract String getTotalCount(int conditionAndlimit);
 
