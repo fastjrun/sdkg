@@ -247,7 +247,7 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
                 cm.ref("org.apache.ibatis.session.RowBounds"), "rowBounds");
         queryForLimitListMethod.annotate(
                 cm.ref("org.apache.ibatis.annotations.Select")).param(
-                "value", sqlHelper.getQueryForList(0) + " #{offset},#{limit}");
+                "value", sqlHelper.getQueryForList(0));
         queryForLimitListMethod.annotate(
                 cm.ref("org.apache.ibatis.annotations.Options")).param(
                 "flushCache", true);
@@ -300,7 +300,7 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
                 .annotate(
                         cm.ref("org.apache.ibatis.annotations.SelectProvider"))
                 .param("type", this.sqlBuilderClass)
-                .param("method", "queryWithLimtCondition");
+                .param("method", "queryWithCondition");
         conditionVar = queryForLimitListConditionMethod.param(
                 cm.ref("String"), "condition");
         conditionVar
@@ -479,11 +479,18 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
         SqlHelper sqlHelper = SQLHelperFactory.getSQLHelper(
                 "mysql", fjTable);
         // totalCountCondition方法
+
         JMethod totalCountConditionMethod = this.sqlBuilderClass.method(JMod.PUBLIC,
                 cm.ref("String"), "totalCountCondition");
-        JVar totalCountConditionVar = totalCountConditionMethod.param(cm.ref("String"), "condition");
+
+        JVar parameterVar = totalCountConditionMethod.param(
+                cm.ref("java.util.Map").narrow(String.class)
+                        .narrow(String.class), "parameter");
         JBlock totalCountConditionMethodBlk = totalCountConditionMethod
                 .body();
+        JVar totalCountConditionVar = totalCountConditionMethodBlk.decl(cm
+                .ref("String"), "condition", parameterVar.invoke("get")
+                .arg("condition"));
         JVar totalCountConditionSbVar = totalCountConditionMethodBlk.decl(
                 cm.ref("StringBuilder"), "sb",
                 JExpr._new(cm.ref("StringBuilder")));
@@ -492,12 +499,18 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
         totalCountConditionMethodBlk.invoke(totalCountConditionSbVar, "append").arg(
                 totalCountConditionVar);
         totalCountConditionMethodBlk._return(totalCountConditionSbVar.invoke("toString"));
+
         // queryWithCondition方法
         JMethod queryWithConditionMethod = this.sqlBuilderClass.method(JMod.PUBLIC,
                 cm.ref("String"), "queryWithCondition");
-        JVar queryWithConditionVar = queryWithConditionMethod.param(cm.ref("String"), "condition");
+        parameterVar = queryWithConditionMethod.param(
+                cm.ref("java.util.Map").narrow(String.class)
+                        .narrow(String.class), "parameter");
         JBlock queryWithConditionMethodBlk = queryWithConditionMethod
                 .body();
+        JVar queryWithConditionVar = queryWithConditionMethodBlk.decl(cm
+                .ref("String"), "condition", parameterVar.invoke("get")
+                .arg("condition"));
         JVar queryWithConditionBbVar = queryWithConditionMethodBlk.decl(cm.ref("StringBuilder"),
                 "sb", JExpr._new(cm.ref("StringBuilder")));
         queryWithConditionMethodBlk.invoke(queryWithConditionBbVar, "append").arg(
@@ -505,32 +518,19 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
         queryWithConditionMethodBlk.invoke(queryWithConditionBbVar, "append").arg(
                 queryWithConditionVar);
         queryWithConditionMethodBlk._return(queryWithConditionBbVar.invoke("toString"));
-        // queryWithLimitCondition方法
-        JMethod queryWithLimtConditionMethod = this.sqlBuilderClass.method(JMod.PUBLIC,
-                cm.ref("String"), "queryWithLimtCondition");
-        JVar queryWithLimitConditionVar = queryWithLimtConditionMethod.param(cm.ref("String"), "condition");
-        JVar queryWithLimitRowBoundsVar =
-                queryWithLimtConditionMethod.param(cm.ref("org.apache.ibatis.session.RowBounds"),
-                        "rowBounds");
-        JBlock queryWithLimitConditionMethodBlk = queryWithLimtConditionMethod
-                .body();
-        JVar queryWithLimitConditionSbVar = queryWithLimitConditionMethodBlk.decl(cm.ref("StringBuilder"),
-                "sb", JExpr._new(cm.ref("StringBuilder")));
-        queryWithLimitConditionMethodBlk.invoke(queryWithLimitConditionSbVar, "append").arg(
-                sqlHelper.getQueryForList(1));
-        queryWithLimitConditionMethodBlk.invoke(queryWithLimitConditionSbVar, "append").arg(
-                queryWithLimitConditionVar);
-        queryWithLimitConditionMethodBlk.invoke(queryWithLimitConditionSbVar, "append")
-                .arg(JExpr.lit(" #{offset},#{limit}"));
-        queryWithLimitConditionMethodBlk._return(queryWithLimitConditionSbVar.invoke("toString"));
 
         // insertAll
         JMethod insertAllMethod = this.sqlBuilderClass.method(JMod.PUBLIC, cm.ref("String"),
                 "insertAll");
-        JVar insertAllParameterVar = insertAllMethod
-                .param(cm.ref("java.util.List").narrow(this.entityClass),
-                        lowerCaseFirstOneClassName + "s");
+        parameterVar = insertAllMethod.param(cm
+                        .ref("java.util.Map")
+                        .narrow(cm.ref("String"))
+                        .narrow(cm.ref("java.util.List").narrow(this.entityClass)),
+                "parameter");
         JBlock insertAllMethodBlk = insertAllMethod.body();
+        JVar insertAllParameterVar = insertAllMethodBlk.decl(cm.ref("java.util.List")
+                        .narrow(this.entityClass), lowerCaseFirstOneClassName + "s",
+                parameterVar.invoke("get").arg(lowerCaseFirstOneClassName + "s"));
         JVar insertAllSbVar = insertAllMethodBlk.decl(cm.ref("StringBuilder"), "sb",
                 JExpr._new(cm.ref("StringBuilder")));
         String[] sqlParamAndValue = getAllFieldsForBatch(fjTable);
