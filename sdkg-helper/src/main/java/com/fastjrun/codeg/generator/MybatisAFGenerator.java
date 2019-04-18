@@ -2,35 +2,37 @@ package com.fastjrun.codeg.generator;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import com.fastjrun.codeg.common.CodeGException;
 import com.fastjrun.codeg.common.CodeGMsgContants;
 import com.fastjrun.codeg.common.FJColumn;
 import com.fastjrun.codeg.common.FJTable;
+import com.fastjrun.codeg.generator.common.BaseCMGenerator;
 import com.fastjrun.codeg.helper.MysqlSqlHelper;
 import com.fastjrun.codeg.helper.SQLHelperFactory;
 import com.fastjrun.codeg.helper.SqlHelper;
 import com.fastjrun.helper.StringHelper;
-import com.sun.codemodel.ClassType;
-import com.sun.codemodel.JBlock;
-import com.sun.codemodel.JClassAlreadyExistsException;
-import com.sun.codemodel.JConditional;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JDocComment;
-import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JFieldRef;
-import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JForLoop;
-import com.sun.codemodel.JInvocation;
-import com.sun.codemodel.JMethod;
-import com.sun.codemodel.JMod;
-import com.sun.codemodel.JType;
-import com.sun.codemodel.JVar;
+import com.helger.jcodemodel.AbstractJType;
+import com.helger.jcodemodel.EClassType;
+import com.helger.jcodemodel.JBlock;
+import com.helger.jcodemodel.JClassAlreadyExistsException;
+import com.helger.jcodemodel.JConditional;
+import com.helger.jcodemodel.JDefinedClass;
+import com.helger.jcodemodel.JDocComment;
+import com.helger.jcodemodel.JExpr;
+import com.helger.jcodemodel.JFieldRef;
+import com.helger.jcodemodel.JFieldVar;
+import com.helger.jcodemodel.JForLoop;
+import com.helger.jcodemodel.JInvocation;
+import com.helger.jcodemodel.JMethod;
+import com.helger.jcodemodel.JMod;
+import com.helger.jcodemodel.JVar;
 
 /**
- * Mybatis Annotation
+ * Mybatis Annotation FrameWork
  */
-public class BaseMybatisAFGenerator extends BaseCMGenerator {
+public class MybatisAFGenerator extends BaseCMGenerator {
 
     static String PACKAGE_ENTITY_NAME = "entity.";
 
@@ -57,6 +59,36 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
     protected JDefinedClass serviceImplClass;
 
     protected JDefinedClass controllerClass;
+
+    protected boolean supportController;
+
+    protected boolean supportTest;
+
+    protected Properties daoTestParam;
+
+    public Properties getDaoTestParam() {
+        return daoTestParam;
+    }
+
+    public void setDaoTestParam(Properties daoTestParam) {
+        this.daoTestParam = daoTestParam;
+    }
+
+    public boolean isSupportController() {
+        return supportController;
+    }
+
+    public void setSupportController(boolean supportController) {
+        this.supportController = supportController;
+    }
+
+    public boolean isSupportTest() {
+        return supportTest;
+    }
+
+    public void setSupportTest(boolean supportTest) {
+        this.supportTest = supportTest;
+    }
 
     public void setFjTable(FJTable fjTable) {
         this.fjTable = fjTable;
@@ -90,14 +122,14 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
                 cm.ref("StringBuilder"), "sb",
                 JExpr._new(cm.ref("StringBuilder")));
         int index = 0;
-        toStringMethodBlk.invoke(toStringSBVar, "append").arg(
-                JExpr.lit(fjTable.getClassName()).plus(JExpr.lit(" [")));
+        toStringMethodBlk.add(toStringSBVar.invoke("append").arg(
+                JExpr.lit(fjTable.getClassName()).plus(JExpr.lit(" ["))));
 
         for (FJColumn FJColumn : columns.values()) {
             String name = FJColumn.getFieldName();
             hashCode += name.hashCode();
             String dataType = FJColumn.getDatatype();
-            JType jType = cm.ref(dataType);
+            AbstractJType jType = cm.ref(dataType);
             JFieldVar fieldVar = this.entityClass.field(JMod.PRIVATE, jType, name);
             JDocComment jdoc = fieldVar.javadoc();
             // 成员变量注释
@@ -110,15 +142,15 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
             }
             JFieldRef nameRef = JExpr.refthis(name);
             if (index > 0) {
-                toStringMethodBlk.invoke(toStringSBVar, "append").arg(
-                        JExpr.lit(","));
+                toStringMethodBlk.add(toStringSBVar.invoke("append").arg(
+                        JExpr.lit(",")));
             }
             index++;
-            toStringMethodBlk.invoke(toStringSBVar, "append").arg(
-                    JExpr.lit(name));
-            toStringMethodBlk.invoke(toStringSBVar, "append").arg(
-                    JExpr.lit("="));
-            toStringMethodBlk.invoke(toStringSBVar, "append").arg(nameRef);
+            toStringMethodBlk.add(toStringSBVar.invoke("append").arg(
+                    JExpr.lit(name)));
+            toStringMethodBlk.add(toStringSBVar.invoke("append").arg(
+                    JExpr.lit("=")));
+            toStringMethodBlk.add(toStringSBVar.invoke("append").arg(nameRef));
 
             // javabean命名规范：属性第二字母大写，则setter和getter方法首字母和第二字母都大写
 
@@ -141,12 +173,35 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
             JBlock setMethodBlk = setMethod.body();
             setMethodBlk.assign(nameRef, jvar);
         }
-        toStringMethodBlk.invoke(toStringSBVar, "append").arg(
-                JExpr.lit("]"));
+        toStringMethodBlk.add(toStringSBVar.invoke("append").arg(
+                JExpr.lit("]")));
         toStringMethodBlk._return(toStringSBVar.invoke("toString"));
         // private static final long serialVersionUID = 1L;
         this.entityClass.field(JMod.PRIVATE + JMod.STATIC + JMod.FINAL, cm.LONG,
                 "serialVersionUID", JExpr.lit(hashCode));
+    }
+
+    protected void processDaoTest(MybatisDaoTestMethodGenerator mybatisDaoTestMethodGenerator) {
+        // 生成测试类名：Base+fjTable.getClassName()+DaoTest
+        JDefinedClass daoTestClass = null;
+        try {
+            daoTestClass = cmTest._class(
+                    this.packageNamePrefix + PACKAGE_DAO_WITH_BASE + fjTable.getClassName()
+                            + "DaoTest");
+        } catch (JClassAlreadyExistsException e) {
+            String msg = "fjTable dao test class：" + fjTable.getName() + " is already exists.";
+            log.error(msg, e);
+            throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
+        }
+        daoTestClass._extends(cmTest.ref("com.fastjrun.test.AbstractAdVancedTestNGSpringContextTest"));
+        this.addClassDeclaration(daoTestClass);
+        JFieldVar fieldVar =
+                daoTestClass.field(JMod.PRIVATE, this.daoClass,
+                        "base" + fjTable.getClassName() + "Dao");
+        fieldVar.annotate(cmTest.ref("org.springframework.beans.factory.annotation.Autowired"));
+        mybatisDaoTestMethodGenerator.setDaoTestClass(daoTestClass);
+        mybatisDaoTestMethodGenerator.setFieldVar(fieldVar);
+
     }
 
     protected void processDao() {
@@ -156,7 +211,7 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
         try {
             this.daoClass = cm._class(
                     this.packageNamePrefix + PACKAGE_DAO_WITH_BASE + fjTable.getClassName()
-                            + "Dao", ClassType.INTERFACE);
+                            + "Dao", EClassType.INTERFACE);
         } catch (JClassAlreadyExistsException e) {
             String msg = "fjTable dao class：" + fjTable.getName() + " is already exists.";
             log.error(msg, e);
@@ -326,7 +381,7 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
         try {
             this.serviceClass = cm._class(
                     this.packageNamePrefix + PACKAGE_SERVICE_WITH_BASE + fjTable.getClassName()
-                            + "Service", ClassType.INTERFACE);
+                            + "Service", EClassType.INTERFACE);
         } catch (JClassAlreadyExistsException e) {
             String msg = "fjTable service class：" + fjTable.getName() + " is already exists.";
             log.error(msg, e);
@@ -469,7 +524,7 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
 
         try {
             this.sqlBuilderClass = cm._class(this.packageNamePrefix + PACKAGE_DAO_WITH_BASE
-                    + fjTable.getClassName() + "SqlBuilder", ClassType.CLASS);
+                    + fjTable.getClassName() + "SqlBuilder");
 
         } catch (JClassAlreadyExistsException e) {
             String msg = "fjTable SqlBuilder class：" + fjTable.getName() + " is already exists.";
@@ -494,10 +549,10 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
         JVar totalCountConditionSbVar = totalCountConditionMethodBlk.decl(
                 cm.ref("StringBuilder"), "sb",
                 JExpr._new(cm.ref("StringBuilder")));
-        totalCountConditionMethodBlk.invoke(totalCountConditionSbVar, "append").arg(
-                sqlHelper.getTotalCount(1));
-        totalCountConditionMethodBlk.invoke(totalCountConditionSbVar, "append").arg(
-                totalCountConditionVar);
+        totalCountConditionMethodBlk.add(totalCountConditionSbVar.invoke("append").arg(
+                sqlHelper.getTotalCount(1)));
+        totalCountConditionMethodBlk.add(totalCountConditionSbVar.invoke("append").arg(
+                totalCountConditionVar));
         totalCountConditionMethodBlk._return(totalCountConditionSbVar.invoke("toString"));
 
         // queryWithCondition方法
@@ -513,10 +568,10 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
                 .arg("condition"));
         JVar queryWithConditionBbVar = queryWithConditionMethodBlk.decl(cm.ref("StringBuilder"),
                 "sb", JExpr._new(cm.ref("StringBuilder")));
-        queryWithConditionMethodBlk.invoke(queryWithConditionBbVar, "append").arg(
-                sqlHelper.getQueryForList(1));
-        queryWithConditionMethodBlk.invoke(queryWithConditionBbVar, "append").arg(
-                queryWithConditionVar);
+        queryWithConditionMethodBlk.add(queryWithConditionBbVar.invoke("append").arg(
+                sqlHelper.getQueryForList(1)));
+        queryWithConditionMethodBlk.add(queryWithConditionBbVar.invoke("append").arg(
+                queryWithConditionVar));
         queryWithConditionMethodBlk._return(queryWithConditionBbVar.invoke("toString"));
 
         // insertAll
@@ -541,41 +596,41 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
                         sqlParamAndValue[1]));
         // mysql数据库
         if (sqlHelper instanceof MysqlSqlHelper) {
-            insertAllMethodBlk.invoke(insertAllSbVar, "append").arg(
+            insertAllMethodBlk.add(insertAllSbVar.invoke("append").arg(
                     "INSERT INTO " + fjTable.getName() + sqlParamAndValue[0]
-                            + " VALUES");
+                            + " VALUES"));
             JForLoop forLoop = insertAllMethodBlk._for();
             JVar i = forLoop.init(cm.INT, "i", JExpr.lit(0));
             forLoop.test(i.lt(insertAllParameterVar.invoke("size")));
             forLoop.update(i.incr());
             JBlock forBlk = forLoop.body();
-            forBlk.invoke(JExpr.ref("sb"), "append").arg(
+            forBlk.add(JExpr.ref("sb").invoke("append").arg(
                     messageFormatVar.invoke("format").arg(
                             JExpr.newArray(cm.ref("java.lang.Object")).add(
-                                    JExpr.ref("i"))));
+                                    JExpr.ref("i")))));
             JConditional jif = forBlk._if(JExpr.ref("i").lt(
                     insertAllParameterVar.invoke("size").minus(JExpr.lit(1))));
             JBlock ifBlk = jif._then();
-            ifBlk.invoke(JExpr.ref("sb"), "append").arg(",");
+            ifBlk.add(JExpr.ref("sb").invoke("append").arg(","));
         } else { // oracle数据库
-            insertAllMethodBlk.invoke(insertAllSbVar, "append").arg(
+            insertAllMethodBlk.add(insertAllSbVar.invoke("append").arg(
                     "INSERT INTO " + fjTable.getName() + sqlParamAndValue[0]
-                            + " ");
+                            + " "));
             JForLoop forLoop = insertAllMethodBlk._for();
             JVar i = forLoop.init(cm.INT, "i", JExpr.lit(0));
             forLoop.test(i.lt(insertAllParameterVar.invoke("size")));
             forLoop.update(i.incr());
             JBlock forBlk = forLoop.body();
-            forBlk.invoke(JExpr.ref("sb"), "append").arg("SELECT ");
-            forBlk.invoke(JExpr.ref("sb"), "append").arg(
+            forBlk.add(JExpr.ref("sb").invoke("append").arg("SELECT "));
+            forBlk.add(JExpr.ref("sb").invoke("append").arg(
                     messageFormatVar.invoke("format").arg(
                             JExpr.newArray(cm.ref("java.lang.Object")).add(
-                                    JExpr.ref("i"))));
-            forBlk.invoke(JExpr.ref("sb"), "append").arg(" FROM DUAL ");
+                                    JExpr.ref("i")))));
+            forBlk.add(JExpr.ref("sb").invoke("append").arg(" FROM DUAL "));
             JConditional jif = forBlk._if(JExpr.ref("i").lt(
                     insertAllParameterVar.invoke("size").minus(JExpr.lit(1))));
             JBlock ifBlk = jif._then();
-            ifBlk.invoke(JExpr.ref("sb"), "append").arg(" UNION ALL ");
+            ifBlk.add(JExpr.ref("sb").invoke("append").arg(" UNION ALL "));
         }
 
         insertAllMethodBlk._return(insertAllSbVar.invoke("toString"));
@@ -608,12 +663,21 @@ public class BaseMybatisAFGenerator extends BaseCMGenerator {
 
     @Override
     public void generate() {
-
         this.processEntity();
         this.processSQLBuilder();
         this.processDao();
         this.processService();
         this.processServiceImpl();
+        if (this.isSupportTest()) {
+            MybatisDaoTestMethodGenerator mybatisDaoTestMethodGenerator = new MybatisDaoTestMethodGenerator();
+            mybatisDaoTestMethodGenerator.setCmTest(this.cmTest);
+            mybatisDaoTestMethodGenerator.setEntityClass(this.entityClass);
+            mybatisDaoTestMethodGenerator.setFjTable(this.fjTable);
+            this.processDaoTest(mybatisDaoTestMethodGenerator);
+            mybatisDaoTestMethodGenerator.generate();
+            this.daoTestParam = mybatisDaoTestMethodGenerator.getDaoTestParam();
+
+        }
 
     }
 }

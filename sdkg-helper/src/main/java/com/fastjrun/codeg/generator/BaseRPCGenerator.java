@@ -4,13 +4,14 @@ import java.util.Properties;
 
 import com.fastjrun.codeg.common.CodeGException;
 import com.fastjrun.codeg.common.CodeGMsgContants;
+import com.fastjrun.codeg.generator.common.BaseControllerGenerator;
 import com.fastjrun.helper.StringHelper;
-import com.sun.codemodel.ClassType;
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JClassAlreadyExistsException;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JMod;
+import com.helger.jcodemodel.AbstractJClass;
+import com.helger.jcodemodel.EClassType;
+import com.helger.jcodemodel.JClassAlreadyExistsException;
+import com.helger.jcodemodel.JDefinedClass;
+import com.helger.jcodemodel.JFieldVar;
+import com.helger.jcodemodel.JMod;
 
 public abstract class BaseRPCGenerator extends BaseControllerGenerator {
 
@@ -18,15 +19,15 @@ public abstract class BaseRPCGenerator extends BaseControllerGenerator {
 
     static String rpcBiz = "biz.";
 
-    protected JClass apiClass;
+    protected AbstractJClass apiClass;
 
     protected JDefinedClass apiManagerClass;
 
-    public JClass getApiClass() {
+    public AbstractJClass getApiClass() {
         return apiClass;
     }
 
-    public void setApiClass(JClass apiClass) {
+    public void setApiClass(AbstractJClass apiClass) {
         this.apiClass = apiClass;
     }
 
@@ -47,7 +48,7 @@ public abstract class BaseRPCGenerator extends BaseControllerGenerator {
             try {
                 apiClassTemp =
                         cm._class(this.packageNamePrefix + rpcApi + commonController.getClientName(),
-                                ClassType.INTERFACE);
+                                EClassType.INTERFACE);
                 if (controllerType.apiParentName != null && !controllerType.apiParentName.equals("")) {
                     apiClassTemp._implements(cm.ref(controllerType.apiParentName));
                 }

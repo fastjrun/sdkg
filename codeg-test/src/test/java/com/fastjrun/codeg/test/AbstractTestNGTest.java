@@ -16,12 +16,9 @@ import com.fastjrun.utils.JacksonUtils;
 
 public abstract class AbstractTestNGTest {
 
-    protected final Logger log = LogManager.getLogger(this.getClass());
-
     protected static final String ASSERTION_SPLITSTRING = ",assert=";
-
     protected static final int PARAM_ASSERTION_ARRAY_SIZE = 2;
-
+    protected final Logger log = LogManager.getLogger(this.getClass());
     protected Properties propParams = new Properties();
 
     protected void initParam(String envName) {

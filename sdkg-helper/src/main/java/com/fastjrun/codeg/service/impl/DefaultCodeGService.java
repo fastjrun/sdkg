@@ -22,7 +22,7 @@ public class DefaultCodeGService extends BaseCodeGServiceImpl {
         Date end = new Date();
 
         log
-                .info("end genreate at " + end + ",cast " + String.valueOf(end.getTime() - begin.getTime()) + " ms");
+                .info("end genreate at " + end + ",cost " + String.valueOf(end.getTime() - begin.getTime()) + " ms");
 
         return true;
     }
@@ -62,7 +62,7 @@ public class DefaultCodeGService extends BaseCodeGServiceImpl {
         Date end = new Date();
 
         log
-                .info("end genreate at " + end + ",cast " + String.valueOf(end.getTime() - begin.getTime()) + " ms");
+                .info("end genreate at " + end + ",cost " + String.valueOf(end.getTime() - begin.getTime()) + " ms");
 
         return true;
     }
@@ -93,24 +93,24 @@ public class DefaultCodeGService extends BaseCodeGServiceImpl {
         Date end = new Date();
 
         log
-                .info("end genreate at " + end + ",cast " + String.valueOf(end.getTime() - begin.getTime()) + " ms");
+                .info("end genreate at " + end + ",cost " + String.valueOf(end.getTime() - begin.getTime()) + " ms");
 
         return true;
     }
 
     @Override
-    public boolean generateBase(String sqlFile, String moduleName) {
+    public boolean generateBase(String sqlFile, boolean supportController, boolean supportTest, String moduleName) {
 
         Date begin = new Date();
         log.info("begin genreate at " + begin);
         this.beforeGenerate(moduleName);
 
-        this.generateMybatisAnnotationCode(sqlFile, moduleName, false);
+        this.generateMybatisAnnotationCode(sqlFile, supportController, supportTest, moduleName);
 
         Date end = new Date();
 
         log
-                .info("end genreate at " + end + ",cast " + String.valueOf(end.getTime() - begin.getTime()) + " ms");
+                .info("end genreate at " + end + ",cost " + String.valueOf(end.getTime() - begin.getTime()) + " ms");
 
         return true;
     }

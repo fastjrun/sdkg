@@ -1,12 +1,11 @@
 package com.fastjrun.codeg.processer;
 
-import com.sun.codemodel.JBlock;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JInvocation;
+import com.helger.jcodemodel.JBlock;
+import com.helger.jcodemodel.JCodeModel;
+import com.helger.jcodemodel.JExpr;
+import com.helger.jcodemodel.JInvocation;
 
 public class DefaultResponseWithHeadProcessor extends BaseResponseProcessor {
-
 
     static String DEFAULT_RESPONSE_CLASS_NAME = "com.fastjrun.dto.DefaultResponse";
 
@@ -33,7 +32,7 @@ public class DefaultResponseWithHeadProcessor extends BaseResponseProcessor {
 
     @Override
     public void processResponse(JBlock methodBlk,
-                                JInvocation jInvocation,JCodeModel cm) {
+                                JInvocation jInvocation, JCodeModel cm) {
 
         String responseHelperMethodName = "getResult";
         if (this.isResponseIsArray()) {
@@ -51,9 +50,9 @@ public class DefaultResponseWithHeadProcessor extends BaseResponseProcessor {
                 methodBlk.decl(this.elementClass, "responseBody", jInvocation);
             }
 
-            methodBlk.invoke(JExpr.ref("response"), "setBody").arg(JExpr.ref("responseBody"));
+            methodBlk.add(JExpr.ref("response").invoke("setBody").arg(JExpr.ref("responseBody")));
         }
-        methodBlk.invoke(JExpr.ref("log"), "debug").arg(JExpr.ref("response"));
+        methodBlk.add(JExpr.ref("log").invoke("debug").arg(JExpr.ref("response")));
         methodBlk._return(JExpr.ref("response"));
     }
 }

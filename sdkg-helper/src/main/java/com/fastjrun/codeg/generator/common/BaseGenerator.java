@@ -1,11 +1,9 @@
-package com.fastjrun.codeg.generator;
+package com.fastjrun.codeg.generator.common;
 
 import java.util.Calendar;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import com.fastjrun.codeg.common.BaseCodeGenerableObject;
 
 /**
  * 生成
@@ -92,13 +90,8 @@ public abstract class BaseGenerator {
         return author;
     }
 
-    public void
-    setAuthor(String author) {
+    public void setAuthor(String author) {
         this.author = author;
-    }
-
-    public <T extends BaseCodeGenerableObject> boolean generate(T baseCodeGenerableObject) {
-        return baseCodeGenerableObject.genearte();
     }
 
     public abstract void generate();

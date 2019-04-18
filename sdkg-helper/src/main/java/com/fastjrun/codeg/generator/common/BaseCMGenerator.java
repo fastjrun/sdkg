@@ -1,25 +1,20 @@
-package com.fastjrun.codeg.generator;
+package com.fastjrun.codeg.generator.common;
 
 import com.fastjrun.codeg.common.CodeGConstants;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JDocComment;
+import com.helger.jcodemodel.JCodeModel;
+import com.helger.jcodemodel.JDefinedClass;
+import com.helger.jcodemodel.JDocComment;
 
 /**
  * 生成
  */
 public abstract class BaseCMGenerator extends BaseGenerator implements Cloneable, CodeGConstants {
 
-    protected JCodeModel cm;
-
-    protected JCodeModel cmTest;
-
     public static String servicePackageName = "service.";
-
     public static String mockPackageName = "com.fastjrun.mock.";
-
     public static String JSONObjectClassName = "com.fasterxml.jackson.databind.JsonNode";
-
+    protected JCodeModel cm;
+    protected JCodeModel cmTest;
     protected MockModel mockModel = MockModel.MockModel_Common;
     private boolean api = false;
 

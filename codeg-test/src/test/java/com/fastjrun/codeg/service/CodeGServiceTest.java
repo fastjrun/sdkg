@@ -86,12 +86,14 @@ public class CodeGServiceTest extends AbstractTestNGTest implements CodeGConstan
     public void testGenerateBase(String reqParamsJsonStrAndAssert) {
         JsonNode[] jsonNodes = this.parseStr2JsonArray(reqParamsJsonStrAndAssert);
         String sqlFile = jsonNodes[0].get("sqlFile").asText();
+        boolean supportController = jsonNodes[0].get("supportController").asBoolean();
+        boolean supportTest = jsonNodes[0].get("supportTest").asBoolean();
         String moduleName = jsonNodes[0].get("moduleName").asText();
         String packagePrefix = jsonNodes[0].get("packagePrefix").asText();
         DefaultCodeGService codeGService = new DefaultCodeGService();
         codeGService.setPackageNamePrefix(packagePrefix);
         try {
-            codeGService.generateBase(sqlFile, moduleName);
+            codeGService.generateBase(sqlFile, supportController, supportTest, moduleName);
         } catch (Exception e) {
             this.processExceptionInResponse(jsonNodes[1], e);
         }

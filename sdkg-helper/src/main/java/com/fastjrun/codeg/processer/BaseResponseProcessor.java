@@ -1,14 +1,14 @@
 package com.fastjrun.codeg.processer;
 
-import com.sun.codemodel.JClass;
+import com.helger.jcodemodel.AbstractJClass;
 
 public abstract class BaseResponseProcessor implements ResponseProcessor {
 
     protected String baseResponseClassName;
 
-    protected JClass responseClass;
+    protected AbstractJClass responseClass;
 
-    protected JClass elementClass;
+    protected AbstractJClass elementClass;
 
     private boolean responseIsArray;
 
@@ -20,19 +20,19 @@ public abstract class BaseResponseProcessor implements ResponseProcessor {
         this.baseResponseClassName = baseResponseClassName;
     }
 
-    public JClass getResponseClass() {
+    public AbstractJClass getResponseClass() {
         return responseClass;
     }
 
-    public void setResponseClass(JClass responseClass) {
+    public void setResponseClass(AbstractJClass responseClass) {
         this.responseClass = responseClass;
     }
 
-    public JClass getElementClass() {
+    public AbstractJClass getElementClass() {
         return elementClass;
     }
 
-    public void setElementClass(JClass elementClass) {
+    public void setElementClass(AbstractJClass elementClass) {
         this.elementClass = elementClass;
     }
 

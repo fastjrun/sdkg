@@ -11,6 +11,12 @@ public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
     @Parameter(property = "codeg.sqlFile", defaultValue = "fast-demo.sql")
     protected String sqlFile;
 
+    @Parameter(property = "codeg.supportController", defaultValue = "false")
+    protected boolean supportController;
+
+    @Parameter(property = "codeg.supportTest", defaultValue = "false")
+    protected boolean supportTest;
+
     @Parameter(property = "codeg.bundleFiles", defaultValue = "demo_bundle.xml,demo_bundle1.xml")
     protected String bundleFiles;
 
@@ -68,6 +74,8 @@ public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
                 break;
             case BaseG:
                 getLog().info(sqlFile);
+                getLog().info("supportController" + supportController);
+                getLog().info("supportTest" + supportTest);
                 break;
             default:
                 break;
@@ -91,19 +99,19 @@ public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
                     default:
                         break;
                 }
-                codeGService.generateBundle(bundleFiles,module, mockModelTemp);
+                codeGService.generateBundle(bundleFiles, module, mockModelTemp);
                 break;
             case BundleG:
-                codeGService.generateProvider(bundleFiles,module);
+                codeGService.generateProvider(bundleFiles, module);
                 break;
             case ClientG:
-                codeGService.generateClient(bundleFiles,module);
+                codeGService.generateClient(bundleFiles, module);
                 break;
             case ApiG:
-                codeGService.generateAPI(bundleFiles,module);
+                codeGService.generateAPI(bundleFiles, module);
                 break;
             case BaseG:
-                codeGService.generateBase(sqlFile,module);
+                codeGService.generateBase(sqlFile, supportController, supportTest, module);
                 break;
             default:
                 break;

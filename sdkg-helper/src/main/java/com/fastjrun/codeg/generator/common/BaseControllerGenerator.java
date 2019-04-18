@@ -1,27 +1,26 @@
-package com.fastjrun.codeg.generator;
+package com.fastjrun.codeg.generator.common;
 
 import java.util.Properties;
 
 import com.fastjrun.codeg.common.CodeGException;
 import com.fastjrun.codeg.common.CodeGMsgContants;
 import com.fastjrun.codeg.common.CommonController;
+import com.fastjrun.codeg.generator.ServiceGenerator;
 import com.fastjrun.codeg.generator.method.BaseControllerMethodGenerator;
 import com.fastjrun.codeg.generator.method.ServiceMethodGenerator;
-import com.sun.codemodel.JBlock;
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JClassAlreadyExistsException;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JMethod;
-import com.sun.codemodel.JMod;
-import com.sun.codemodel.JVar;
+import com.helger.jcodemodel.AbstractJClass;
+import com.helger.jcodemodel.JBlock;
+import com.helger.jcodemodel.JClassAlreadyExistsException;
+import com.helger.jcodemodel.JDefinedClass;
+import com.helger.jcodemodel.JExpr;
+import com.helger.jcodemodel.JFieldVar;
+import com.helger.jcodemodel.JMethod;
+import com.helger.jcodemodel.JMod;
+import com.helger.jcodemodel.JVar;
 
 public abstract class BaseControllerGenerator extends BaseCMGenerator {
 
-    static String servicePackageName = "service.";
-
-    protected String webPackageName ;
+    protected String webPackageName;
 
     protected CommonController commonController;
 
@@ -175,7 +174,7 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
                 .paramArray("value").param("envName");
         JBlock jBlock = clientTestPrepareApplicationClientMethod.body();
         jBlock.assign(JExpr.ref("baseApplicationClient"), JExpr._new(this.clientClass));
-        jBlock.invoke(JExpr._this(), "init").arg(jVarEnvName);
+        jBlock.add(JExpr._this().invoke("init").arg(jVarEnvName));
     }
 
     protected void processClient() {
@@ -196,9 +195,9 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
             throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
         }
 
-        JClass baseClientClass = cm.ref(controllerType.baseClient);
+        AbstractJClass baseClientClass = cm.ref(controllerType.baseClient);
 
-        JClass jParentClass = cm.ref("com.fastjrun.client.BaseApplicationClient").narrow(baseClientClass);
+        AbstractJClass jParentClass = cm.ref("com.fastjrun.client.BaseApplicationClient").narrow(baseClientClass);
 
         this.addClassDeclaration(this.clientClass);
 

@@ -3,16 +3,15 @@ package com.fastjrun.codeg.generator.method;
 import java.util.List;
 
 import com.fastjrun.codeg.common.PacketField;
-import com.fastjrun.codeg.common.PacketObject;
 import com.fastjrun.codeg.helper.StringHelper;
-import com.sun.codemodel.JBlock;
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JExpression;
-import com.sun.codemodel.JInvocation;
-import com.sun.codemodel.JMod;
-import com.sun.codemodel.JVar;
+import com.helger.jcodemodel.AbstractJClass;
+import com.helger.jcodemodel.IJExpression;
+import com.helger.jcodemodel.JBlock;
+import com.helger.jcodemodel.JDefinedClass;
+import com.helger.jcodemodel.JExpr;
+import com.helger.jcodemodel.JInvocation;
+import com.helger.jcodemodel.JMod;
+import com.helger.jcodemodel.JVar;
 
 public abstract class BaseHTTPMethodGenerator extends BaseControllerMethodGenerator {
 
@@ -42,7 +41,7 @@ public abstract class BaseHTTPMethodGenerator extends BaseControllerMethodGenera
         // headParams
         List<PacketField> headVariables = this.serviceMethodGenerator.getCommonMethod().getHeadVariables();
 
-        JClass stringClass = cm.ref("String");
+        AbstractJClass stringClass = cm.ref("String");
 
         JVar headParamsJvar = null;
         if (headVariables != null && headVariables.size() > 0) {
@@ -51,20 +50,20 @@ public abstract class BaseHTTPMethodGenerator extends BaseControllerMethodGenera
                     JExpr._new(cm.ref("java.util.HashMap").narrow(stringClass).narrow(stringClass)));
             for (int index = 0; index < headVariables.size(); index++) {
                 PacketField headVariable = headVariables.get(index);
-                JClass jClass = cm.ref(headVariable.getDatatype());
+                AbstractJClass jClass = cm.ref(headVariable.getDatatype());
                 this.jClientMethod.param(jClass, headVariable.getNameAlias());
-                methodBlk.invoke(headParamsJvar, "put").arg(JExpr.lit(headVariable.getName()))
-                        .arg(JExpr.ref(headVariable.getNameAlias()));
+                methodBlk.add(headParamsJvar.invoke("put").arg(JExpr.lit(headVariable.getName()))
+                        .arg(JExpr.ref(headVariable.getNameAlias())));
 
-                methodBlk.invoke(JExpr.ref("log"), "debug").arg(JExpr.lit("header[{}] = {}"))
+                methodBlk.add(JExpr.ref("log").invoke("debug").arg(JExpr.lit("header[{}] = {}"))
                         .arg(JExpr.lit(headVariable.getNameAlias()))
-                        .arg(JExpr.ref(headVariable.getNameAlias()));
+                        .arg(JExpr.ref(headVariable.getNameAlias())));
 
             }
 
         }
         // path
-        JClass stringBuilderClass = cm.ref("java.lang.StringBuilder");
+        AbstractJClass stringBuilderClass = cm.ref("java.lang.StringBuilder");
         JVar pathVar = methodBlk.decl(stringBuilderClass, "path",
                 JExpr._new(stringBuilderClass).invoke("append")
                         .arg(JExpr.lit(controllerPath).plus(JExpr.lit(methodPath))));
@@ -72,26 +71,26 @@ public abstract class BaseHTTPMethodGenerator extends BaseControllerMethodGenera
         if (pathVariables != null && pathVariables.size() > 0) {
             for (int index = 0; index < pathVariables.size(); index++) {
                 PacketField pathVariable = pathVariables.get(index);
-                JClass jClass = cm.ref(pathVariable.getDatatype());
+                AbstractJClass jClass = cm.ref(pathVariable.getDatatype());
                 this.jClientMethod.param(jClass, pathVariable.getName());
 
-                methodBlk.invoke(pathVar, "append").arg(JExpr.lit("/"));
-                methodBlk.invoke(pathVar, "append").arg(JExpr.ref(pathVariable.getName()));
+                methodBlk.add(pathVar.invoke("append").arg(JExpr.lit("/")));
+                methodBlk.add(pathVar.invoke("append").arg(JExpr.ref(pathVariable.getName())));
 
-                methodBlk.invoke(JExpr.ref("log"), "debug").arg(JExpr.lit("pathVariable[{}] = {}"))
-                        .arg(JExpr.lit(pathVariable.getName())).arg(JExpr.ref(pathVariable.getName()));
+                methodBlk.add(JExpr.ref("log").invoke("debug").arg(JExpr.lit("pathVariable[{}] = {}"))
+                        .arg(JExpr.lit(pathVariable.getName())).arg(JExpr.ref(pathVariable.getName())));
 
             }
         }
         jInvocation.arg(pathVar.invoke("toString"));
 
-        methodBlk.invoke(JExpr.ref("log"), "debug").arg(JExpr.lit("path = {}")).arg(pathVar.invoke("toString"));
+        methodBlk.add(JExpr.ref("log").invoke("debug").arg(JExpr.lit("path = {}")).arg(pathVar.invoke("toString")));
         // method
         jInvocation.arg(JExpr.lit(this.serviceMethodGenerator.getCommonMethod().getHttpMethod().toUpperCase()));
 
-        methodBlk.invoke(JExpr.ref("log"), "debug")
+        methodBlk.add(JExpr.ref("log").invoke("debug")
                 .arg(JExpr.lit("method = " + this.serviceMethodGenerator.getCommonMethod().getHttpMethod()
-                        .toUpperCase()));
+                        .toUpperCase())));
 
         List<PacketField> parameters = this.serviceMethodGenerator.getCommonMethod().getParameters();
         if (parameters != null && parameters.size() > 0) {
@@ -101,20 +100,20 @@ public abstract class BaseHTTPMethodGenerator extends BaseControllerMethodGenera
                     JExpr._new(cm.ref("java.util.HashMap").narrow(stringClass).narrow(stringClass)));
             for (int index = 0; index < parameters.size(); index++) {
                 PacketField parameter = parameters.get(index);
-                JClass jClass = cm.ref(parameter.getDatatype());
+                AbstractJClass jClass = cm.ref(parameter.getDatatype());
                 this.jClientMethod.param(jClass, parameter.getName());
 
-                JExpression jInvocationParameter = JExpr.ref(parameter.getName());
+                IJExpression jInvocationParameter = JExpr.direct(parameter.getName());
 
                 if (jClass != stringClass) {
                     jInvocationParameter = stringClass.staticInvoke("valueOf").arg(jInvocationParameter);
                 }
 
-                methodBlk.invoke(queryParamsJvar, "put").arg(JExpr.lit(parameter.getName()))
-                        .arg(jInvocationParameter);
+                methodBlk.add(queryParamsJvar.invoke("put").arg(JExpr.lit(parameter.getName()))
+                        .arg(jInvocationParameter));
 
-                methodBlk.invoke(JExpr.ref("log"), "debug").arg(JExpr.lit("paramter[{}] = {}"))
-                        .arg(JExpr.lit(parameter.getName())).arg(JExpr.ref(parameter.getName()));
+                methodBlk.add(JExpr.ref("log").invoke("debug").arg(JExpr.lit("paramter[{}] = {}"))
+                        .arg(JExpr.lit(parameter.getName())).arg(JExpr.ref(parameter.getName())));
 
             }
 
@@ -136,20 +135,20 @@ public abstract class BaseHTTPMethodGenerator extends BaseControllerMethodGenera
                     JExpr._new(cm.ref("java.util.HashMap").narrow(stringClass).narrow(stringClass)));
             for (int index = 0; index < cookies.size(); index++) {
                 PacketField cookie = cookies.get(index);
-                JClass jClass = cm.ref(cookie.getDatatype());
+                AbstractJClass jClass = cm.ref(cookie.getDatatype());
                 this.jClientMethod.param(jClass, cookie.getName());
 
-                JExpression jInvocationCookie = JExpr.ref(cookie.getName());
+                IJExpression jInvocationCookie = JExpr.ref(cookie.getName());
 
                 if (jClass != stringClass) {
                     jInvocationCookie = stringClass.staticInvoke("valueOf").arg(jInvocationCookie);
                 }
 
-                methodBlk.invoke(cookieJvar, "put").arg(JExpr.lit(cookie.getName()))
-                        .arg(jInvocationCookie);
+                methodBlk.add(cookieJvar.invoke("put").arg(JExpr.lit(cookie.getName()))
+                        .arg(jInvocationCookie));
 
-                methodBlk.invoke(JExpr.ref("log"), "debug").arg(JExpr.lit("paramter[{}] = {}"))
-                        .arg(JExpr.lit(cookie.getName())).arg(JExpr.ref(cookie.getName()));
+                methodBlk.add(JExpr.ref("log").invoke("debug").arg(JExpr.lit("paramter[{}] = {}"))
+                        .arg(JExpr.lit(cookie.getName())).arg(JExpr.ref(cookie.getName())));
 
             }
             jInvocation.arg(cookieJvar);
@@ -158,7 +157,6 @@ public abstract class BaseHTTPMethodGenerator extends BaseControllerMethodGenera
         }
 
         // requestBody
-        PacketObject requestBody = this.serviceMethodGenerator.getCommonMethod().getRequest();
         if (this.serviceMethodGenerator.getRequestBodyClass() != null) {
             JVar jRequestBodyVar =
                     this.jClientMethod.param(this.serviceMethodGenerator.getRequestBodyClass(), "requestBody");
@@ -171,9 +169,9 @@ public abstract class BaseHTTPMethodGenerator extends BaseControllerMethodGenera
         if (this.serviceMethodGenerator.getResponseBodyClass() != null && this.serviceMethodGenerator
                 .getResponseBodyClass() != cm.VOID) {
             if (this.serviceMethodGenerator.getElementClass() != null) {
-                jInvocation.arg(JExpr.dotclass(this.serviceMethodGenerator.getElementClass()));
+                jInvocation.arg(JExpr.dotClass(this.serviceMethodGenerator.getElementClass()));
             } else {
-                jInvocation.arg(JExpr.dotclass((JClass) this.serviceMethodGenerator.getResponseBodyClass()));
+                jInvocation.arg(JExpr.dotClass(this.serviceMethodGenerator.getResponseBodyClass()));
             }
             methodBlk._return(jInvocation);
         } else {

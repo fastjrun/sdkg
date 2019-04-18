@@ -3,6 +3,9 @@ package com.fastjrun.codeg.common;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fastjrun.utils.JacksonUtils;
+
 /**
  * Table类
  */
@@ -73,5 +76,15 @@ public class FJTable {
     public String toString() {
         return "fjTable [columns=" + columns + ", name=" + name + ", comment=" + comment + ", className=" + className
                 + "]";
+    }
+
+    public String parseDescToJson() {
+        ObjectNode entityObjectNode = JacksonUtils.createObjectNode();
+        for (String key : this.columns.keySet()) {
+            FJColumn fjColumn = this.columns.get(key);
+            String fjTypeName = fjColumn.getDatatype();
+            entityObjectNode.put(key, fjTypeName);
+        }
+        return entityObjectNode.toString();
     }
 }

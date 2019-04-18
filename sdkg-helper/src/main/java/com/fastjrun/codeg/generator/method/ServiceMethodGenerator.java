@@ -7,17 +7,17 @@ import com.fastjrun.codeg.common.CodeGException;
 import com.fastjrun.codeg.common.CommonMethod;
 import com.fastjrun.codeg.common.PacketField;
 import com.fastjrun.codeg.common.PacketObject;
-import com.fastjrun.codeg.generator.BaseCMGenerator;
 import com.fastjrun.codeg.generator.ServiceGenerator;
+import com.fastjrun.codeg.generator.common.BaseCMGenerator;
 import com.fastjrun.helper.StringHelper;
-import com.sun.codemodel.JBlock;
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JForLoop;
-import com.sun.codemodel.JMethod;
-import com.sun.codemodel.JMod;
-import com.sun.codemodel.JType;
-import com.sun.codemodel.JVar;
+import com.helger.jcodemodel.AbstractJClass;
+import com.helger.jcodemodel.AbstractJType;
+import com.helger.jcodemodel.JBlock;
+import com.helger.jcodemodel.JExpr;
+import com.helger.jcodemodel.JForLoop;
+import com.helger.jcodemodel.JMethod;
+import com.helger.jcodemodel.JMod;
+import com.helger.jcodemodel.JVar;
 
 public class ServiceMethodGenerator extends BaseCMGenerator {
 
@@ -33,11 +33,11 @@ public class ServiceMethodGenerator extends BaseCMGenerator {
 
     protected ObjectNode methodParamInJsonObject;
 
-    protected JType requestBodyClass;
+    protected AbstractJType requestBodyClass;
 
-    protected JType responseBodyClass;
+    protected AbstractJType responseBodyClass;
 
-    protected JClass elementClass;
+    protected AbstractJClass elementClass;
 
     protected ServiceGenerator serviceGenerator;
 
@@ -49,27 +49,27 @@ public class ServiceMethodGenerator extends BaseCMGenerator {
         this.serviceGenerator = serviceGenerator;
     }
 
-    public JType getResponseBodyClass() {
+    public AbstractJType getResponseBodyClass() {
         return responseBodyClass;
     }
 
-    public void setResponseBodyClass(JType responseBodyClass) {
+    public void setResponseBodyClass(AbstractJType responseBodyClass) {
         this.responseBodyClass = responseBodyClass;
     }
 
-    public JClass getElementClass() {
+    public AbstractJClass getElementClass() {
         return elementClass;
     }
 
-    public void setElementClass(JClass elementClass) {
+    public void setElementClass(AbstractJClass elementClass) {
         this.elementClass = elementClass;
     }
 
-    public JType getRequestBodyClass() {
+    public AbstractJType getRequestBodyClass() {
         return requestBodyClass;
     }
 
-    public void setRequestBodyClass(JType requestBodyClass) {
+    public void setRequestBodyClass(AbstractJType requestBodyClass) {
         this.requestBodyClass = requestBodyClass;
     }
 
@@ -246,7 +246,7 @@ public class ServiceMethodGenerator extends BaseCMGenerator {
                                                     this.elementClass)));
                     JVar responseBodyVar = this.composeResponseBody(0, serviceMockMethodBlock, commonMethod.getResponse
                             (), this.elementClass);
-                    serviceMockMethodBlock.invoke(responseVar, "add").arg(responseBodyVar);
+                    serviceMockMethodBlock.add(responseVar.invoke("add").arg(responseBodyVar));
                     serviceMockMethodBlock._return(responseVar);
                 }
 
@@ -257,14 +257,14 @@ public class ServiceMethodGenerator extends BaseCMGenerator {
     }
 
     private JVar composeResponseBody(int loopSeq, JBlock methodBlk, PacketObject responseBody,
-                                     JType responseBodyClass) {
+                                     AbstractJType responseBodyClass) {
         JVar responseVar = composeResponseBodyField(loopSeq, methodBlk, responseBody, responseBodyClass);
         int start = 1;
         Map<String, PacketObject> packetObjectMap = responseBody.getObjects();
         if (packetObjectMap != null && packetObjectMap.size() > 0) {
             for (String reName : packetObjectMap.keySet()) {
                 PacketObject ro = packetObjectMap.get(reName);
-                JClass roClass = cm.ref(this.packageNamePrefix + ro.get_class());
+                AbstractJClass roClass = cm.ref(this.packageNamePrefix + ro.get_class());
                 if (!ro.is_new()) {
                     roClass = cm.ref(ro.get_class());
                 }
@@ -276,7 +276,7 @@ public class ServiceMethodGenerator extends BaseCMGenerator {
                         tterMethodName = StringHelper.toUpperCaseFirstOne(reName);
                     }
                 }
-                methodBlk.invoke(responseVar, "set" + tterMethodName).arg(roVar);
+                methodBlk.add(responseVar.invoke("set" + tterMethodName).arg(roVar));
             }
         }
         Map<String, PacketObject> roList = responseBody.getLists();
@@ -284,7 +284,7 @@ public class ServiceMethodGenerator extends BaseCMGenerator {
             for (String listName : roList.keySet()) {
                 int index = 0;
                 PacketObject ro = roList.get(listName);
-                JType roListEntityClass = cm.ref(this.packageNamePrefix + ro.get_class());
+                AbstractJType roListEntityClass = cm.ref(this.packageNamePrefix + ro.get_class());
                 if (!ro.is_new()) {
                     roListEntityClass = cm.ref(ro.get_class());
                 }
@@ -301,7 +301,7 @@ public class ServiceMethodGenerator extends BaseCMGenerator {
                 forLoop.update(iVar.incr());
                 JBlock forBody = forLoop.body();
                 JVar roVar = composeResponseBody(loopSeq + start++, forBody, ro, roListEntityClass);
-                forBody.invoke(listsVar, "add").arg(roVar);
+                forBody.add(listsVar.invoke("add").arg(roVar));
                 String tterMethodName = listName;
                 if (listName.length() > 1) {
                     String char2 = String.valueOf(listName.charAt(1));
@@ -309,14 +309,14 @@ public class ServiceMethodGenerator extends BaseCMGenerator {
                         tterMethodName = StringHelper.toUpperCaseFirstOne(listName);
                     }
                 }
-                methodBlk.invoke(responseVar, "set" + tterMethodName).arg(listsVar);
+                methodBlk.add(responseVar.invoke("set" + tterMethodName).arg(listsVar));
                 index++;
             }
         }
         return responseVar;
     }
 
-    private JVar composeResponseBodyField(int loopSeq, JBlock methodBlk, PacketObject responseBody, JType
+    private JVar composeResponseBodyField(int loopSeq, JBlock methodBlk, PacketObject responseBody, AbstractJType
             responseBodyClass) {
         String varNamePrefix = StringHelper
                 .toLowerCaseFirstOne(responseBody.get_class().substring(responseBody.get_class().lastIndexOf(".") + 1))
@@ -328,7 +328,7 @@ public class ServiceMethodGenerator extends BaseCMGenerator {
                 PacketField restField = restFields.get(fieldName);
                 String dataType = restField.getDatatype();
                 String length = restField.getLength();
-                JType jType;
+                AbstractJType jType;
                 String primitiveType = null;
                 if (dataType.endsWith(":List")) {
                     primitiveType = dataType.split(":")[0];
@@ -343,62 +343,62 @@ public class ServiceMethodGenerator extends BaseCMGenerator {
                         tterMethodName = StringHelper.toUpperCaseFirstOne(fieldName);
                     }
                 }
+                String setter = restField.getSetter();
+                if (setter == null || setter.equals("")) {
+                    tterMethodName = "set" + tterMethodName;
+                }
                 if (primitiveType != null) {
                     if (primitiveType.endsWith("String")) {
-                        methodBlk.invoke(reponseBodyVar, "set" + tterMethodName)
+                        methodBlk.add(reponseBodyVar.invoke(tterMethodName)
                                 .arg((cm.ref(mockHelperClassName).staticInvoke("geStringListWithAscii")
-                                              .arg(JExpr.lit(10))));
+                                              .arg(JExpr.lit(10)))));
                     } else if (primitiveType.endsWith("Boolean")) {
-                        methodBlk.invoke(reponseBodyVar, "set" + tterMethodName)
-                                .arg((cm.ref(mockHelperClassName).staticInvoke("geBooleanList").arg(JExpr.lit(10))));
+                        methodBlk.add(reponseBodyVar.invoke(tterMethodName)
+                                .arg((cm.ref(mockHelperClassName).staticInvoke("geBooleanList").arg(JExpr.lit(10)))));
                     } else if (primitiveType.endsWith("Integer")) {
-                        methodBlk.invoke(reponseBodyVar, "set" + tterMethodName)
-                                .arg((cm.ref(mockHelperClassName).staticInvoke("geIntegerList").arg(JExpr.lit(10))));
+                        methodBlk.add(reponseBodyVar.invoke(tterMethodName)
+                                .arg((cm.ref(mockHelperClassName).staticInvoke("geIntegerList").arg(JExpr.lit(10)))));
                     } else if (primitiveType.endsWith("Long")) {
-                        methodBlk.invoke(reponseBodyVar, "set" + tterMethodName)
-                                .arg((cm.ref(mockHelperClassName).staticInvoke("geLongList").arg(JExpr.lit(10))));
+                        methodBlk.add(reponseBodyVar.invoke(tterMethodName)
+                                .arg((cm.ref(mockHelperClassName).staticInvoke("geLongList").arg(JExpr.lit(10)))));
                     } else if (primitiveType.endsWith("Float")) {
-                        methodBlk.invoke(reponseBodyVar, "set" + tterMethodName)
-                                .arg((cm.ref(mockHelperClassName).staticInvoke("geFloatList").arg(JExpr.lit(10))));
+                        methodBlk.add(reponseBodyVar.invoke(tterMethodName)
+                                .arg((cm.ref(mockHelperClassName).staticInvoke("geFloatList").arg(JExpr.lit(10)))));
                     } else if (primitiveType.endsWith("Double")) {
-                        methodBlk.invoke(reponseBodyVar, "set" + tterMethodName)
-                                .arg((cm.ref(mockHelperClassName).staticInvoke("geDoubleList").arg(JExpr.lit(10))));
+                        methodBlk.add(reponseBodyVar.invoke(tterMethodName)
+                                .arg((cm.ref(mockHelperClassName).staticInvoke("geDoubleList").arg(JExpr.lit(10)))));
                     } else if (primitiveType.endsWith("Date")) {
-                        methodBlk.invoke(reponseBodyVar, "set" + tterMethodName)
-                                .arg((cm.ref(mockHelperClassName).staticInvoke("geDateList").arg(JExpr.lit(10))));
+                        methodBlk.add(reponseBodyVar.invoke(tterMethodName)
+                                .arg((cm.ref(mockHelperClassName).staticInvoke("geDateList").arg(JExpr.lit(10)))));
                     } else {
                         throw new CodeGException("CG504",
-                                responseBodyClass.name() + "-" + tterMethodName + " handled failed:for" + dataType);
+                                responseBodyClass.name() + "." + tterMethodName + " handled failed:for" + dataType);
                     }
                 } else if (jType.name().endsWith("String")) {
-                    methodBlk.invoke(reponseBodyVar, "set" + tterMethodName).arg(
+                    methodBlk.add(reponseBodyVar.invoke(tterMethodName).arg(
                             (cm.ref(mockHelperClassName).staticInvoke("geStringWithAscii")
-                                     .arg(JExpr.lit(Integer.parseInt(length)))));
+                                     .arg(JExpr.lit(Integer.parseInt(length))))));
                 } else if (jType.name().endsWith("Boolean")) {
-                    String setter = restField.getSetter();
-                    if (setter == null || setter.equals("")) {
-                        setter = "set" + tterMethodName;
-                    }
-                    methodBlk.invoke(reponseBodyVar, setter)
-                            .arg((cm.ref(mockHelperClassName).staticInvoke("geBoolean")));
+                    methodBlk.add(reponseBodyVar.invoke(tterMethodName)
+                            .arg((cm.ref(mockHelperClassName).staticInvoke("geBoolean"))));
                 } else if (jType.name().endsWith("Integer")) {
-                    methodBlk.invoke(reponseBodyVar, "set" + tterMethodName)
-                            .arg((cm.ref(mockHelperClassName).staticInvoke("geInteger").arg(JExpr.lit(100))));
+                    methodBlk.add(reponseBodyVar.invoke(tterMethodName)
+                            .arg((cm.ref(mockHelperClassName).staticInvoke("geInteger").arg(JExpr.lit(100)))));
                 } else if (jType.name().endsWith("Long")) {
-                    methodBlk.invoke(reponseBodyVar, "set" + tterMethodName)
-                            .arg((cm.ref(mockHelperClassName).staticInvoke("geLong").arg(JExpr.lit(100))));
+                    methodBlk.add(reponseBodyVar.invoke(tterMethodName)
+                            .arg((cm.ref(mockHelperClassName).staticInvoke("geLong").arg(JExpr.lit(100)))));
                 } else if (jType.name().endsWith("Float")) {
-                    methodBlk.invoke(reponseBodyVar, "set" + tterMethodName)
-                            .arg((cm.ref(mockHelperClassName).staticInvoke("geFloat").arg(JExpr.lit(100))));
+                    methodBlk.add(reponseBodyVar.invoke(tterMethodName)
+                            .arg((cm.ref(mockHelperClassName).staticInvoke("geFloat").arg(JExpr.lit(100)))));
                 } else if (jType.name().endsWith("Double")) {
-                    methodBlk.invoke(reponseBodyVar, "set" + tterMethodName)
-                            .arg((cm.ref(mockHelperClassName).staticInvoke("geDouble").arg(JExpr.lit(100))));
+                    methodBlk.add(reponseBodyVar.invoke(tterMethodName)
+                            .arg((cm.ref(mockHelperClassName).staticInvoke("geDouble").arg(JExpr.lit(100)))));
                 } else if (jType.name().endsWith("Date")) {
-                    methodBlk.invoke(reponseBodyVar, "set" + tterMethodName)
-                            .arg((cm.ref(mockHelperClassName).staticInvoke("geDate").arg(JExpr.lit(100))));
+                    methodBlk.add(reponseBodyVar.invoke(tterMethodName)
+                            .arg((cm.ref(mockHelperClassName).staticInvoke("geDate").arg(JExpr.lit(100)))));
                 } else {
                     throw new CodeGException("CG504",
-                            responseBodyClass.name() + "-" + tterMethodName + " handled failed:for" + dataType);
+                            responseBodyClass.name() + "." + tterMethodName + " handled failed:for" + dataType);
                 }
             }
         }

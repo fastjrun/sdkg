@@ -1,21 +1,20 @@
 package com.fastjrun.codeg.common;
 
-import com.fastjrun.codeg.generator.BaseGenerator;
+import com.fastjrun.codeg.generator.common.BaseGenerator;
 
-public class BaseCodeGenerableObject implements CodeGenerable {
+public abstract class BaseCodeGenerableObject<T extends BaseGenerator> {
 
-    BaseGenerator codeGenerator;
+    T codeGenerator;
 
-    public BaseGenerator getCodeGenerator() {
+    public T getCodeGenerator() {
         return codeGenerator;
     }
 
-    public void setCodeGenerator(BaseGenerator codeGenerator) {
+    public void setCodeGenerator(T codeGenerator) {
         this.codeGenerator = codeGenerator;
     }
 
-    @Override
-    public boolean genearte() {
-        return this.codeGenerator.generate(this);
+    public void genearte() {
+        this.codeGenerator.generate();
     }
 }

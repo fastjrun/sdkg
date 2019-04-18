@@ -12,6 +12,6 @@ public interface CodeGService extends CodeGConstants {
 
     boolean generateBundle(String bundleFiles, String moduleName, MockModel mockModel);
 
-    boolean generateBase(String sqlFile, String moduleName);
+    boolean generateBase(String sqlFile, boolean supportController, boolean supportTest, String moduleName);
 
 }

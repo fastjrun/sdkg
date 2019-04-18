@@ -10,26 +10,26 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fastjrun.codeg.common.CommonController;
 import com.fastjrun.codeg.common.PacketField;
 import com.fastjrun.codeg.common.PacketObject;
-import com.fastjrun.codeg.generator.BaseCMGenerator;
-import com.fastjrun.codeg.generator.BaseControllerGenerator;
+import com.fastjrun.codeg.generator.common.BaseCMGenerator;
+import com.fastjrun.codeg.generator.common.BaseControllerGenerator;
 import com.fastjrun.codeg.processer.ExchangeProcessor;
 import com.fastjrun.helper.StringHelper;
 import com.fastjrun.utils.JacksonUtils;
-import com.sun.codemodel.JAnnotationArrayMember;
-import com.sun.codemodel.JAnnotationUse;
-import com.sun.codemodel.JBlock;
-import com.sun.codemodel.JCatchBlock;
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JConditional;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JForLoop;
-import com.sun.codemodel.JInvocation;
-import com.sun.codemodel.JMethod;
-import com.sun.codemodel.JMod;
-import com.sun.codemodel.JTryBlock;
-import com.sun.codemodel.JType;
-import com.sun.codemodel.JVar;
+import com.helger.jcodemodel.AbstractJClass;
+import com.helger.jcodemodel.AbstractJType;
+import com.helger.jcodemodel.JAnnotationArrayMember;
+import com.helger.jcodemodel.JAnnotationUse;
+import com.helger.jcodemodel.JBlock;
+import com.helger.jcodemodel.JCatchBlock;
+import com.helger.jcodemodel.JConditional;
+import com.helger.jcodemodel.JDefinedClass;
+import com.helger.jcodemodel.JExpr;
+import com.helger.jcodemodel.JForLoop;
+import com.helger.jcodemodel.JInvocation;
+import com.helger.jcodemodel.JMethod;
+import com.helger.jcodemodel.JMod;
+import com.helger.jcodemodel.JTryBlock;
+import com.helger.jcodemodel.JVar;
 
 public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
 
@@ -119,7 +119,7 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
                         reqParamsJsonStrAndAssertJVar.invoke("split").arg(",assert="));
         JVar reqParamsJsonStrJVar = methodTestBlk
                 .decl(cm.ref("String"), "reqParamsJsonStr", reqParamsJsonStrAndAssertArrayJVar.component(JExpr.lit(0)));
-        methodTestBlk.invoke(JExpr.ref("log"), "debug").arg(reqParamsJsonStrJVar);
+        methodTestBlk.add(JExpr.ref("log").invoke("debug").arg(reqParamsJsonStrJVar));
         JVar reqParamsJsonJVar = methodTestBlk.decl(cm.ref(JSONObjectClassName), "reqParamsJson", cmTest
                 .ref(JacksonUtilsClassName).staticInvoke("toJsonNode")
                 .arg(reqParamsJsonStrJVar));
@@ -174,7 +174,7 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
                     methodTestBlk._if(requestBodyStrVar.ne(JExpr._null()))._then();
             jNotNullBlock.assign(requestBodyVar, cm.ref(JacksonUtilsClassName).staticInvoke("readValue")
                     .arg(requestBodyStrVar.invoke("toString"))
-                    .arg(((JClass) this.serviceMethodGenerator.getRequestBodyClass()).dotclass()));
+                    .arg(((AbstractJClass) this.serviceMethodGenerator.getRequestBodyClass()).dotclass()));
             jInvocationTest.arg(requestBodyVar);
         }
         JVar assertJsonJVar = methodTestBlk.decl(cm.ref(JSONObjectClassName), "assertJson", JExpr._null());
@@ -198,14 +198,15 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
             JCatchBlock jCatchBlock = jTry._catch(cmTest.ref("com.fastjrun.common.ClientException"));
             JVar jExceptionVar = jCatchBlock.param("e");
             JBlock jCatchBlockBody = jCatchBlock.body();
-            jCatchBlockBody.staticInvoke(cmTest.ref("org.testng.Assert"), "assertEquals")
+            jCatchBlockBody.add(cmTest.ref("org.testng.Assert").staticInvoke("assertEquals")
                     .arg(jExceptionVar.invoke("getCode")).arg(codeNodeJVar.invoke("asText"))
-                    .arg(JExpr.lit("返回消息码不是指定消息码：").plus(codeNodeJVar.invoke("asText")));
+                    .arg(JExpr.lit("返回消息码不是指定消息码：").plus(codeNodeJVar.invoke("asText"))));
             jConditional2._else().assign(responseBodyVar, jInvocationTest);
             jConditional1._else().assign(responseBodyVar, jInvocationTest);
 
-            methodTestBlk.invoke(JExpr.refthis("log"), "debug").arg(cm.ref(JacksonUtilsClassName).staticInvoke("toJSon")
-                    .arg(responseBodyVar));
+            methodTestBlk
+                    .add(JExpr.refthis("log").invoke("debug").arg(cm.ref(JacksonUtilsClassName).staticInvoke("toJSon")
+                            .arg(responseBodyVar)));
             JBlock ifBlock1 = methodTestBlk._if(responseBodyVar.ne(JExpr._null()))._then();
             if (this.serviceMethodGenerator.getCommonMethod().isResponseIsArray()) {
                 JForLoop forLoop = ifBlock1._for();
@@ -225,8 +226,8 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
                 this.logResponseBody(1, this.serviceMethodGenerator.getCommonMethod().getResponse(), responseBodyVar,
                         ifBlock1);
             }
-            ifBlock1.invoke(JExpr._this(), "processAssertion").arg(assertJsonJVar).arg(responseBodyVar)
-                    .arg(JExpr.dotclass((JClass) this.serviceMethodGenerator.getResponseBodyClass()));
+            ifBlock1.add(JExpr._this().invoke("processAssertion").arg(assertJsonJVar).arg(responseBodyVar)
+                    .arg(JExpr.dotClass(this.serviceMethodGenerator.getResponseBodyClass())));
 
         } else {
             JConditional jConditional1 = methodTestBlk._if(assertJsonJVar.ne(JExpr._null()));
@@ -241,16 +242,16 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
             JCatchBlock jCatchBlock = jTry._catch(cmTest.ref("com.fastjrun.common.ClientException"));
             JVar jExceptionVar = jCatchBlock.param("e");
             JBlock jCatchBlockBody = jCatchBlock.body();
-            jCatchBlockBody.staticInvoke(cmTest.ref("org.testng.Assert"), "assertEquals")
+            jCatchBlockBody.add(cmTest.ref("org.testng.Assert").staticInvoke("assertEquals")
                     .arg(jExceptionVar.invoke("getCode")).arg(codeNodeJVar.invoke("asText"))
-                    .arg(JExpr.lit("返回消息码不是指定消息码：").plus(codeNodeJVar.invoke("asText")));
+                    .arg(JExpr.lit("返回消息码不是指定消息码：").plus(codeNodeJVar.invoke("asText"))));
             jConditional2._else().add(jInvocationTest);
             jConditional1._else().add(jInvocationTest);
         }
     }
 
     private void processMethodCommonVariables(JBlock methodTestBlk, JVar reqParamsJsonJVar, PacketField parameter) {
-        JClass jType = cmTest.ref(parameter.getDatatype());
+        AbstractJClass jType = cmTest.ref(parameter.getDatatype());
         String paramterName = parameter.getName();
         if (parameter.getNameAlias() != null && !parameter.getNameAlias().equals("")) {
             paramterName = parameter.getNameAlias();
@@ -261,23 +262,7 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
         JBlock jNotNullBlock =
                 methodTestBlk._if(jJsonVar.ne(JExpr._null()))
                         ._then();
-        String jsonInvokeMethodName = "asText";
-        switch (jType.name()) {
-            case "Boolean":
-                jsonInvokeMethodName = "asBoolean";
-                break;
-            case "Integer":
-                jsonInvokeMethodName = "asInt";
-                break;
-            case "Long":
-                jsonInvokeMethodName = "asLong";
-                break;
-            case "Double":
-                jsonInvokeMethodName = "asDouble";
-                break;
-            default:
-                break;
-        }
+        String jsonInvokeMethodName = JacksonUtils.invokeMethodName(jType.name());
         jNotNullBlock.assign(jVar, jJsonVar.invoke(jsonInvokeMethodName));
     }
 
@@ -289,8 +274,8 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
                 PacketField restField = fields.get(fieldName);
                 boolean canBeNull = restField.isCanBeNull();
                 String dataType = restField.getDatatype();
-                JClass jType;
-                JClass primitiveType = null;
+                AbstractJClass jType;
+                AbstractJClass primitiveType = null;
                 if (dataType.endsWith(":List")) {
                     primitiveType = cmTest.ref(dataType.split(":")[0]);
                     jType = cmTest.ref("java.util.List").narrow(primitiveType);
@@ -322,7 +307,7 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
                         .decl(jType, StringHelper.toLowerCaseFirstOne(responseBodyVar.type().name()) + loopSeq
                                         + tterMethodName,
                                 responseBodyVar.invoke(getter));
-                methodTestBlk.invoke(JExpr.ref("log"), "debug").arg(fieldNameVar);
+                methodTestBlk.add(JExpr.ref("log").invoke("debug").arg(fieldNameVar));
                 if (!canBeNull) {
                     methodTestBlk.add(cmTest.ref("org.testng.Assert").staticInvoke("assertNotNull").arg(fieldNameVar));
                 }
@@ -360,7 +345,7 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
                         tterMethodName = StringHelper.toUpperCaseFirstOne(reName);
                     }
                 }
-                JClass roClass;
+                AbstractJClass roClass;
                 if (ro.is_new()) {
                     roClass = cmTest.ref(this.packageNamePrefix + ro.get_class());
                 } else {
@@ -385,7 +370,7 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
                         tterMethodName = StringHelper.toUpperCaseFirstOne(roName);
                     }
                 }
-                JClass roClass;
+                AbstractJClass roClass;
                 if (ro.is_new()) {
                     roClass = cmTest.ref(this.packageNamePrefix + ro.get_class());
                 } else {
@@ -493,8 +478,8 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
             for (String fieldName : fields.keySet()) {
                 PacketField restField = fields.get(fieldName);
                 String dataType = restField.getDatatype();
-                JClass jType;
-                JClass primitiveType;
+                AbstractJClass jType;
+                AbstractJClass primitiveType;
                 if (dataType.endsWith(":List")) {
                     primitiveType = cmTest.ref(dataType.split(":")[0]);
                     jType = cmTest.ref("java.util.List").narrow(primitiveType);
@@ -564,7 +549,7 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
         if (headVariables != null && headVariables.size() > 0) {
             for (int index = 0; index < headVariables.size(); index++) {
                 PacketField headVariable = headVariables.get(index);
-                JType jType = cm.ref(headVariable.getDatatype());
+                AbstractJType jType = cm.ref(headVariable.getDatatype());
                 JVar headVariableJVar = this.jcontrollerMethod.param(jType, headVariable.getName());
                 headVariableJVar.annotate(cm.ref("org.springframework.web.bind.annotation.RequestHeader"))
                         .param("name", headVariable.getName()).param("required", true);
@@ -580,7 +565,7 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
         if (pathVariables != null && pathVariables.size() > 0) {
             for (int index = 0; index < pathVariables.size(); index++) {
                 PacketField pathVariable = pathVariables.get(index);
-                JType jType = cm.ref(pathVariable.getDatatype());
+                AbstractJType jType = cm.ref(pathVariable.getDatatype());
                 JVar pathVariableJVar = this.jcontrollerMethod.param(jType, pathVariable.getName());
                 pathVariableJVar.annotate(cm.ref("org.springframework.web.bind.annotation.PathVariable"))
                         .param("name", pathVariable.getName()).param("required", true);
@@ -598,7 +583,7 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
         if (parameters != null && parameters.size() > 0) {
             for (int index = 0; index < parameters.size(); index++) {
                 PacketField parameter = parameters.get(index);
-                JClass jClass = cm.ref(parameter.getDatatype());
+                AbstractJClass jClass = cm.ref(parameter.getDatatype());
                 JVar parameterJVar = this.jcontrollerMethod.param(jClass, parameter.getName());
 
                 parameterJVar.annotate(cm.ref("org.springframework.web.bind.annotation.RequestParam"))
@@ -630,7 +615,7 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
         if (cookieVariables != null && cookieVariables.size() > 0) {
             for (int index = 0; index < cookieVariables.size(); index++) {
                 PacketField cookieVariable = cookieVariables.get(index);
-                JType jType = cm.ref(cookieVariable.getDatatype());
+                AbstractJType jType = cm.ref(cookieVariable.getDatatype());
                 JVar cookieJVar = this.jcontrollerMethod.param(jType, cookieVariable.getName());
                 cookieJVar.annotate(cm.ref("org.springframework.web.bind.annotation.CookieValue"))
                         .param("name", cookieVariable.getName()).param("required", true);
@@ -641,7 +626,7 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
                             .param("value", "cookie:" + cookieVariable.getRemark())
                             .param("required", true);
                 }
-                controllerMethodBlk.invoke(JExpr.ref("log"), "debug").arg(cookieJVar);
+                controllerMethodBlk.add(JExpr.ref("log").invoke("debug").arg(cookieJVar));
             }
         }
 

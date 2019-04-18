@@ -34,7 +34,8 @@
                     <groupId>org.apache.maven</groupId>
                 </exclusion>
             </exclusions>
-            <optional>true</optional> <!-- annotations are not used at runtime because @Retention(value=CLASS), they are needed only to build the plugin -->
+            <optional>true
+            </optional> <!-- annotations are not used at runtime because @Retention(value=CLASS), they are needed only to build the plugin -->
         </dependency>
         <dependency>
             <groupId>com.fastjrun.codeg</groupId>

@@ -133,4 +133,25 @@ public class JacksonUtils {
 
         return null;
     }
+
+    public static String invokeMethodName(String jTypeName) {
+        String jsonInvokeMethodName = "asText";
+        switch (jTypeName) {
+            case "Boolean":
+                jsonInvokeMethodName = "asBoolean";
+                break;
+            case "Integer":
+                jsonInvokeMethodName = "asInt";
+                break;
+            case "Long":
+                jsonInvokeMethodName = "asLong";
+                break;
+            case "Double":
+                jsonInvokeMethodName = "asDouble";
+                break;
+            default:
+                break;
+        }
+        return jsonInvokeMethodName;
+    }
 }

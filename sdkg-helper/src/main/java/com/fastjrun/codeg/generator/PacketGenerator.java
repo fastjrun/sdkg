@@ -6,27 +6,28 @@ import com.fastjrun.codeg.common.CodeGException;
 import com.fastjrun.codeg.common.CodeGMsgContants;
 import com.fastjrun.codeg.common.PacketField;
 import com.fastjrun.codeg.common.PacketObject;
+import com.fastjrun.codeg.generator.common.BaseCMGenerator;
 import com.fastjrun.helper.StringHelper;
-import com.sun.codemodel.JBlock;
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JClassAlreadyExistsException;
-import com.sun.codemodel.JConditional;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JDocComment;
-import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JFieldRef;
-import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JForLoop;
-import com.sun.codemodel.JMethod;
-import com.sun.codemodel.JMod;
-import com.sun.codemodel.JType;
-import com.sun.codemodel.JVar;
+import com.helger.jcodemodel.AbstractJClass;
+import com.helger.jcodemodel.AbstractJType;
+import com.helger.jcodemodel.JBlock;
+import com.helger.jcodemodel.JClassAlreadyExistsException;
+import com.helger.jcodemodel.JConditional;
+import com.helger.jcodemodel.JDefinedClass;
+import com.helger.jcodemodel.JDocComment;
+import com.helger.jcodemodel.JExpr;
+import com.helger.jcodemodel.JFieldRef;
+import com.helger.jcodemodel.JFieldVar;
+import com.helger.jcodemodel.JForLoop;
+import com.helger.jcodemodel.JMethod;
+import com.helger.jcodemodel.JMod;
+import com.helger.jcodemodel.JVar;
 
 public class PacketGenerator extends BaseCMGenerator {
 
     private PacketObject packetObject;
 
-    private JClass packetObjectJClass;
+    private AbstractJClass packetObjectJClass;
 
     public PacketObject getPacketObject() {
         return packetObject;
@@ -36,11 +37,11 @@ public class PacketGenerator extends BaseCMGenerator {
         this.packetObject = packetObject;
     }
 
-    public JClass getPacketObjectJClass() {
+    public AbstractJClass getPacketObjectJClass() {
         return packetObjectJClass;
     }
 
-    public void setPacketObjectJClass(JClass packetObjectJClass) {
+    public void setPacketObjectJClass(AbstractJClass packetObjectJClass) {
         this.packetObjectJClass = packetObjectJClass;
     }
 
@@ -68,25 +69,25 @@ public class PacketGenerator extends BaseCMGenerator {
             JBlock toStringMethodBlk = toStringMethod.body();
             JVar toStringSBVar = toStringMethodBlk.decl(cm.ref("StringBuilder"), "sb",
                     JExpr._new(cm.ref("StringBuilder")));
-            toStringMethodBlk.invoke(toStringSBVar, "append").arg(JExpr.lit(dc.name()).plus(JExpr.lit(" [")));
+            toStringMethodBlk.add(toStringSBVar.invoke("append").arg(JExpr.lit(dc.name()).plus(JExpr.lit(" ["))));
             if (fields != null && fields.size() > 0) {
                 int index = 0;
-                toStringMethodBlk.invoke(toStringSBVar, "append").arg(JExpr.lit("field ["));
+                toStringMethodBlk.add(toStringSBVar.invoke("append").arg(JExpr.lit("field [")));
                 for (PacketField field : fields.values()) {
                     this.processField(index, field, dc, hashCode, toStringMethodBlk, toStringSBVar);
                     index++;
                 }
-                toStringMethodBlk.invoke(toStringSBVar, "append").arg(JExpr.lit("]"));
+                toStringMethodBlk.add(toStringSBVar.invoke("append").arg(JExpr.lit("]")));
             }
 
             Map<String, PacketObject> objects = packetObject.getObjects();
             if (objects != null && objects.size() > 0) {
                 int index = 0;
-                toStringMethodBlk.invoke(toStringSBVar, "append").arg(JExpr.lit("object ["));
+                toStringMethodBlk.add(toStringSBVar.invoke("append").arg(JExpr.lit("object [")));
                 for (String key : objects.keySet()) {
                     hashCode += key.hashCode();
                     PacketObject object = objects.get(key);
-                    JClass jObjectClass =
+                    AbstractJClass jObjectClass =
                             this.processObjectORList(key, object, true, hashCode, dc, index, toStringMethodBlk,
                                     toStringSBVar);
                     hashCode += jObjectClass.hashCode();
@@ -116,26 +117,26 @@ public class PacketGenerator extends BaseCMGenerator {
                     getMethodBlk._return(nameRef);
 
                     if (index > 0) {
-                        toStringMethodBlk.invoke(toStringSBVar, "append").arg(JExpr.lit(","));
+                        toStringMethodBlk.add(toStringSBVar.invoke("append").arg(JExpr.lit(",")));
                     }
-                    toStringMethodBlk.invoke(toStringSBVar, "append").arg(JExpr.lit(key));
-                    toStringMethodBlk.invoke(toStringSBVar, "append").arg(JExpr.lit("="));
+                    toStringMethodBlk.add(toStringSBVar.invoke("append").arg(JExpr.lit(key)));
+                    toStringMethodBlk.add(toStringSBVar.invoke("append").arg(JExpr.lit("=")));
                     JConditional jConditional = toStringMethodBlk._if(nameRef.ne(JExpr._null()));
-                    jConditional._else().invoke(toStringSBVar, "append").arg(JExpr.lit("null"));
+                    jConditional._else().add(toStringSBVar.invoke("append").arg(JExpr.lit("null")));
                     JBlock jThenBlock = jConditional._then();
-                    jThenBlock.invoke(toStringSBVar, "append").arg(nameRef);
+                    jThenBlock.add(toStringSBVar.invoke("append").arg(nameRef));
                 }
-                toStringMethodBlk.invoke(toStringSBVar, "append").arg(JExpr.lit("]"));
+                toStringMethodBlk.add(toStringSBVar.invoke("append").arg(JExpr.lit("]")));
             }
 
             Map<String, PacketObject> lists = packetObject.getLists();
             if (lists != null && lists.size() > 0) {
                 int index = 0;
-                toStringMethodBlk.invoke(toStringSBVar, "append").arg(JExpr.lit("list ["));
+                toStringMethodBlk.add(toStringSBVar.invoke("append").arg(JExpr.lit("list [")));
                 for (String key : lists.keySet()) {
                     hashCode += key.hashCode();
                     PacketObject list = lists.get(key);
-                    JClass jListObject =
+                    AbstractJClass jListObject =
                             this.processObjectORList(key, list, false, hashCode, dc, index, toStringMethodBlk,
                                     toStringSBVar);
                     hashCode += jListObject.hashCode();
@@ -167,12 +168,12 @@ public class PacketGenerator extends BaseCMGenerator {
                     getMethodBlk._return(nameRef);
 
                     if (index > 0) {
-                        toStringMethodBlk.invoke(toStringSBVar, "append").arg(JExpr.lit(","));
+                        toStringMethodBlk.add(toStringSBVar.invoke("append").arg(JExpr.lit(",")));
                     }
-                    toStringMethodBlk.invoke(toStringSBVar, "append").arg(JExpr.lit(key));
-                    toStringMethodBlk.invoke(toStringSBVar, "append").arg(JExpr.lit("="));
+                    toStringMethodBlk.add(toStringSBVar.invoke("append").arg(JExpr.lit(key)));
+                    toStringMethodBlk.add(toStringSBVar.invoke("append").arg(JExpr.lit("=")));
                     JConditional jConditional = toStringMethodBlk._if(nameRef.ne(JExpr._null()));
-                    jConditional._else().invoke(toStringSBVar, "append").arg(JExpr.lit("null"));
+                    jConditional._else().add(toStringSBVar.invoke("append").arg(JExpr.lit("null")));
                     JBlock jThenBlock = jConditional._then();
                     JForLoop forLoop = jThenBlock._for();
                     JVar iVar = forLoop.init(cm.INT, "i", JExpr.lit(0));
@@ -181,19 +182,19 @@ public class PacketGenerator extends BaseCMGenerator {
                     JBlock forBody = forLoop.body();
                     String poDcName = StringHelper.toLowerCaseFirstOne(jListObject.name());
                     JVar poDcObjectVar = forBody.decl(jListObject, poDcName, nameRef.invoke("get").arg(iVar));
-                    forBody._if(iVar.eq(JExpr.lit(0)))._then().invoke(toStringSBVar, "append").arg(JExpr.lit("["));
-                    forBody._if(iVar.gt(JExpr.lit(0)))._then().invoke(toStringSBVar, "append").arg(JExpr.lit(","));
-                    forBody.invoke(toStringSBVar, "append").arg(JExpr.lit("list."));
-                    forBody.invoke(toStringSBVar, "append").arg(iVar);
-                    forBody.invoke(toStringSBVar, "append").arg(JExpr.lit("="));
-                    forBody.invoke(toStringSBVar, "append").arg(poDcObjectVar);
-                    jThenBlock.invoke(toStringSBVar, "append").arg(JExpr.lit("]"));
+                    forBody._if(iVar.eq(JExpr.lit(0)))._then().add(toStringSBVar.invoke("append").arg(JExpr.lit("[")));
+                    forBody._if(iVar.gt(JExpr.lit(0)))._then().add(toStringSBVar.invoke("append").arg(JExpr.lit(",")));
+                    forBody.add(toStringSBVar.invoke("append").arg(JExpr.lit("list.")));
+                    forBody.add(toStringSBVar.invoke("append").arg(iVar));
+                    forBody.add(toStringSBVar.invoke("append").arg(JExpr.lit("=")));
+                    forBody.add(toStringSBVar.invoke("append").arg(poDcObjectVar));
+                    jThenBlock.add(toStringSBVar.invoke("append").arg(JExpr.lit("]")));
 
                 }
-                toStringMethodBlk.invoke(toStringSBVar, "append").arg(JExpr.lit("]"));
+                toStringMethodBlk.add(toStringSBVar.invoke("append").arg(JExpr.lit("]")));
             }
             dc.field(JMod.PRIVATE + JMod.STATIC + JMod.FINAL, cm.LONG, "serialVersionUID", JExpr.lit(hashCode));
-            toStringMethodBlk.invoke(toStringSBVar, "append").arg(JExpr.lit("]"));
+            toStringMethodBlk.add(toStringSBVar.invoke("append").arg(JExpr.lit("]")));
             toStringMethodBlk._return(toStringSBVar.invoke("toString"));
             this.addClassDeclaration(dc);
         }
@@ -205,7 +206,7 @@ public class PacketGenerator extends BaseCMGenerator {
         String fieldName = field.getName();
         String dataType = field.getDatatype();
         hashCode += fieldName.hashCode();
-        JType jType;
+        AbstractJType jType;
         if (dataType.endsWith(":List")) {
             String primitiveType = dataType.split(":")[0];
             jType = cm.ref("java.util.List").narrow(cm.ref(primitiveType));
@@ -222,12 +223,12 @@ public class PacketGenerator extends BaseCMGenerator {
         jdoc.add(field.getRemark());
         JFieldRef nameRef = JExpr.refthis(fieldName);
         if (index > 0) {
-            toStringMethodBlk.invoke(toStringSBVar, "append").arg(JExpr.lit(","));
+            toStringMethodBlk.add(toStringSBVar.invoke("append").arg(JExpr.lit(",")));
         }
 
-        toStringMethodBlk.invoke(toStringSBVar, "append").arg(JExpr.lit(fieldName));
-        toStringMethodBlk.invoke(toStringSBVar, "append").arg(JExpr.lit("="));
-        toStringMethodBlk.invoke(toStringSBVar, "append").arg(nameRef);
+        toStringMethodBlk.add(toStringSBVar.invoke("append").arg(JExpr.lit(fieldName)));
+        toStringMethodBlk.add(toStringSBVar.invoke("append").arg(JExpr.lit("=")));
+        toStringMethodBlk.add(toStringSBVar.invoke("append").arg(nameRef));
 
         // javabean命名规范：属性第二字母大写，则setter和getter方法首字母和第二字母都大写
 
@@ -259,9 +260,9 @@ public class PacketGenerator extends BaseCMGenerator {
         }
     }
 
-    public JClass processObjectORList(String key, PacketObject po, boolean isObject, Long hashCode,
-                                      JDefinedClass dc, int index, JBlock toStringMethodBlk,
-                                      JVar toStringSBVar) {
+    public AbstractJClass processObjectORList(String key, PacketObject po, boolean isObject, Long hashCode,
+                                              JDefinedClass dc, int index, JBlock toStringMethodBlk,
+                                              JVar toStringSBVar) {
         if (po.is_new()) {
             return cm.ref(this.packageNamePrefix + po.get_class());
         } else {

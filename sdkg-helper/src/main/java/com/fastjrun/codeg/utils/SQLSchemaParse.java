@@ -79,8 +79,6 @@ public class SQLSchemaParse {
         return dataBaseObject;
     }
 
-    ;
-
     private static FJTable parseTable(CreateTable createTable) {
         FJTable table = new FJTable();
         // 表名

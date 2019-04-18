@@ -1,9 +1,9 @@
 package com.fastjrun.codeg.processer;
 
-import com.sun.codemodel.JBlock;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JInvocation;
+import com.helger.jcodemodel.JBlock;
+import com.helger.jcodemodel.JCodeModel;
+import com.helger.jcodemodel.JExpr;
+import com.helger.jcodemodel.JInvocation;
 
 public class DefaultResponseWithoutHeadProcessor extends BaseResponseProcessor {
     @Override
@@ -17,7 +17,7 @@ public class DefaultResponseWithoutHeadProcessor extends BaseResponseProcessor {
             } else {
                 methodBlk.decl(this.elementClass, "responseBody", jInvocation);
             }
-            methodBlk.invoke(JExpr.ref("log"), "debug").arg(JExpr.ref("responseBody"));
+            methodBlk.add(JExpr.ref("log").invoke("debug").arg(JExpr.ref("responseBody")));
             methodBlk._return(JExpr.ref("responseBody"));
         }
     }

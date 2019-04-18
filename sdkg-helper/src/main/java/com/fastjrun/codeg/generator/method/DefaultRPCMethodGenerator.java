@@ -1,6 +1,6 @@
 package com.fastjrun.codeg.generator.method;
 
-import com.sun.codemodel.JInvocation;
+import com.helger.jcodemodel.JInvocation;
 
 public class DefaultRPCMethodGenerator extends BaseRPCMethodGenerator {
     @Override

@@ -24,11 +24,6 @@
             <artifactId>log4j-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.sun.codemodel</groupId>
-            <artifactId>codemodel</artifactId>
-            <version>${codemodel.version}</version>
-        </dependency>
-        <dependency>
             <groupId>com.helger</groupId>
             <artifactId>jcodemodel</artifactId>
             <version>${jcodemodel.version}</version>
@@ -94,8 +89,7 @@
     <properties>
         <junit.version>4.12</junit.version>
         <swagger2.version>2.7.0</swagger2.version>
-        <codemodel.version>2.6</codemodel.version>
-        <jcodemodel.version>3.2.0</jcodemodel.version>
+        <jcodemodel.version>3.2.1</jcodemodel.version>
         <dom4j.version>[2.1.1,)</dom4j.version>
         <validation-api.version>1.1.0.Final</validation-api.version>
     </properties>

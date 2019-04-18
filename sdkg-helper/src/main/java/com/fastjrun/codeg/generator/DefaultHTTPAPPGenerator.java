@@ -21,7 +21,7 @@ public class DefaultHTTPAPPGenerator extends BaseHTTPGenerator {
 
     static final String APP_REQUEST_HEAD_CLASS_NAME = "com.fastjrun.dto.AppRequestHead";
 
-    public DefaultHTTPAPPGenerator(){
+    public DefaultHTTPAPPGenerator() {
         this.webPackageName = WEB_PACKAGE_NAME;
     }
 

@@ -8,5 +8,4 @@ public abstract class BaseController {
 
     protected final String PAGE_SIZE = "10";
 
-
 }

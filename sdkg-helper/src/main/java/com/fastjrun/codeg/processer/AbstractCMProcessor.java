@@ -4,8 +4,7 @@
 package com.fastjrun.codeg.processer;
 
 import com.fastjrun.codeg.common.CodeGConstants;
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JCodeModel;
+import com.helger.jcodemodel.JCodeModel;
 
 public abstract class AbstractCMProcessor implements CodeGConstants {
 

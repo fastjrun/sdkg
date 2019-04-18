@@ -14,7 +14,6 @@
 - 快嘉代码生成Maven插件使用dom4j解析接口文档，用codelmodel输出代码
 
 ### to be continued
-#### codemodel重构
 #### 支持自定义协议api和provider的代码生成
 
 ## 版本说明：
@@ -26,6 +25,7 @@
 #### 新增web模块进一步优化
 #### 新增接口协议，支持web方式
 #### base模板新增BaseService、BaseController
+#### codemodel切换成大神的jcodemodel ：https://github.com/phax/jcodemodel
 
 ### v2.0.1 升级说明
 #### bugfix

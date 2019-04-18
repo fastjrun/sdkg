@@ -1,10 +1,8 @@
 package com.fastjrun.exchange;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fastjrun.common.ClientException;
@@ -36,7 +34,7 @@ public abstract class BaseHTTPResponseDecoder extends BaseResponseDecoder {
 
     public <T> List<T> parseListFromResponse(String responseResult, Class<T> valueType) {
         JsonNode data = this.parseBodyFromResponse(responseResult);
-        return JacksonUtils.readList(data,valueType);
+        return JacksonUtils.readList(data, valueType);
     }
 
     protected abstract JsonNode parseBodyFromResponse(String responseResult);

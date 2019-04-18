@@ -1,26 +1,25 @@
 package com.fastjrun.codeg.processer;
 
-import com.fastjrun.codeg.common.CodeGConstants;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JInvocation;
-import com.sun.codemodel.JMethod;
+import com.helger.jcodemodel.JCodeModel;
+import com.helger.jcodemodel.JExpr;
+import com.helger.jcodemodel.JInvocation;
+import com.helger.jcodemodel.JMethod;
 
 public class GenericRequestProcessor extends BaseRequestProcessor {
 
     @Override
-    public String processHTTPRequest(JMethod method, JInvocation jInvocation, MockModel mockModel,JCodeModel cm) {
+    public String processHTTPRequest(JMethod method, JInvocation jInvocation, MockModel mockModel, JCodeModel cm) {
         return "";
     }
 
     @Override
-    public void processRPCRequest(JMethod method, JInvocation jInvocation,JCodeModel cm) {
+    public void processRPCRequest(JMethod method, JInvocation jInvocation, JCodeModel cm) {
         if (this.requestClass != null) {
             method.param(this.requestClass, "request");
             jInvocation.arg(JExpr.ref("request"));
-            method.body().invoke(JExpr.ref("log"), "debug")
+            method.body().add(JExpr.ref("log").invoke("debug")
                     .arg(cm.ref(JacksonUtilsClassName)
-                            .staticInvoke("toJSon").arg(JExpr.ref("request")));
+                            .staticInvoke("toJSon").arg(JExpr.ref("request"))));
         }
     }
 

@@ -15,7 +15,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
+import org.testng.annotations.Optional;
+import org.testng.annotations.Parameters;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fastjrun.utils.JacksonUtils;
 
 @ContextConfiguration(locations = {"classpath*:applicationContext.xml"})
 public abstract class AbstractAdVancedTestNGSpringContextTest extends
@@ -24,7 +30,11 @@ public abstract class AbstractAdVancedTestNGSpringContextTest extends
 
     protected Properties propParams = new Properties();
 
-    protected void initParam(String envName) {
+    @BeforeClass
+    @Parameters({
+            "envName"
+    })
+    protected void initParam(@Optional("unitTest") String envName) {
         try {
             InputStream inParam =
                     this.getClass().getResourceAsStream((("/testdata/" + envName) + ".properties"));
@@ -52,6 +62,13 @@ public abstract class AbstractAdVancedTestNGSpringContextTest extends
             System.arraycopy(str, 0, object[i], 0, str.length);
         }
         return object;
+    }
+
+    protected JsonNode generateParamJson(String reqParamsJsonStrAndAssert) {
+        String[] reqParamsJsonStrAndAssertArray = reqParamsJsonStrAndAssert.split(",assert=");
+        String reqParamsJsonStr = reqParamsJsonStrAndAssertArray[0];
+        log.debug(reqParamsJsonStr);
+        return JacksonUtils.toJsonNode(reqParamsJsonStr);
     }
 
 }

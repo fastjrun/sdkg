@@ -3,9 +3,10 @@ package com.fastjrun.codeg.generator;
 import com.fastjrun.codeg.common.CodeGException;
 import com.fastjrun.codeg.common.CodeGMsgContants;
 import com.fastjrun.codeg.common.CommonService;
-import com.sun.codemodel.ClassType;
-import com.sun.codemodel.JClassAlreadyExistsException;
-import com.sun.codemodel.JDefinedClass;
+import com.fastjrun.codeg.generator.common.BaseCMGenerator;
+import com.helger.jcodemodel.EClassType;
+import com.helger.jcodemodel.JClassAlreadyExistsException;
+import com.helger.jcodemodel.JDefinedClass;
 
 public class ServiceGenerator extends BaseCMGenerator {
 
@@ -59,7 +60,7 @@ public class ServiceGenerator extends BaseCMGenerator {
     protected void processService() {
         try {
             this.serviceClass = cm._class(this.packageNamePrefix + this.servicePackageName + commonService.get_class(),
-                    ClassType.INTERFACE);
+                    EClassType.INTERFACE);
         } catch (JClassAlreadyExistsException e) {
             String msg = commonService.get_class() + " is already exists.";
             log.error(msg, e);
@@ -72,7 +73,7 @@ public class ServiceGenerator extends BaseCMGenerator {
         try {
             this.serviceTestClass = cmTest._class(this.packageNamePrefix + this.servicePackageName + commonService
                             .get_class() + serviceTestSuffix,
-                    ClassType.INTERFACE);
+                    EClassType.INTERFACE);
         } catch (JClassAlreadyExistsException e) {
             String msg = commonService.get_class() + serviceTestSuffix + " is already exists.";
             log.error(msg, e);

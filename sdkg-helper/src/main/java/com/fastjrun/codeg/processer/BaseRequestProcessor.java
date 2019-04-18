@@ -1,23 +1,23 @@
 package com.fastjrun.codeg.processer;
 
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JType;
+import com.helger.jcodemodel.AbstractJType;
+import com.helger.jcodemodel.JCodeModel;
 
 public abstract class BaseRequestProcessor implements RequestProcessor {
 
     protected String baseRequestClassName;
 
-    protected JType requestBodyClass;
+    protected AbstractJType requestBodyClass;
 
-    protected JType requestClass;
+    protected AbstractJType requestClass;
 
-    protected JType requestHeadClass;
+    protected AbstractJType requestHeadClass;
 
-    public JType getRequestHeadClass() {
+    public AbstractJType getRequestHeadClass() {
         return requestHeadClass;
     }
 
-    public void setRequestHeadClass(JType requestHeadClass) {
+    public void setRequestHeadClass(AbstractJType requestHeadClass) {
         this.requestHeadClass = requestHeadClass;
     }
 
@@ -29,19 +29,19 @@ public abstract class BaseRequestProcessor implements RequestProcessor {
         this.baseRequestClassName = baseRequestClassName;
     }
 
-    public JType getRequestBodyClass() {
+    public AbstractJType getRequestBodyClass() {
         return requestBodyClass;
     }
 
-    public void setRequestBodyClass(JType requestBodyClass) {
+    public void setRequestBodyClass(AbstractJType requestBodyClass) {
         this.requestBodyClass = requestBodyClass;
     }
 
-    public JType getRequestClass() {
+    public AbstractJType getRequestClass() {
         return requestClass;
     }
 
-    public void setRequestClass(JType requestClass) {
+    public void setRequestClass(AbstractJType requestClass) {
         this.requestClass = requestClass;
     }
 
