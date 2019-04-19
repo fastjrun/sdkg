@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fastjrun.codeg.common.FJColumn;
 import com.fastjrun.codeg.common.FJTable;
 import com.fastjrun.codeg.generator.common.BaseCMGenerator;
+import com.fastjrun.codeg.generator.common.MybatisAFDaoConstants;
 import com.fastjrun.helper.StringHelper;
 import com.fastjrun.utils.JacksonUtils;
 import com.helger.jcodemodel.AbstractJClass;
@@ -24,7 +25,7 @@ import com.helger.jcodemodel.JVar;
 /**
  * Mybatis Annotation
  */
-public class MybatisDaoTestMethodGenerator extends BaseCMGenerator {
+public class MybatisDaoTestMethodGenerator extends BaseCMGenerator implements MybatisAFDaoConstants {
 
     protected FJTable fjTable;
     protected AbstractJClass entityClass;
@@ -75,11 +76,8 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator {
 
     protected void processInsert() {
         // testInsert方法
-        JMethod method = this.daoTestClass.method(JMod.NONE, cmTest.VOID, "testInsert");
-        JAnnotationUse jAnnotationUse = method
-                .annotate(cmTest.ref("org.testng.annotations.Test"));
+        JMethod method = this.prepareMethod(DAO_METHOD_NAME_INSERT);
         JBlock methodBlk = method.body();
-        jAnnotationUse.param("dataProvider", "loadParam");
         JVar reqParamsJsonStrAndAssertJVar = method.param(cmTest.ref("String"),
                 "reqParamsJsonStrAndAssert");
         JVar paramsJsonJVar = methodBlk.decl(cmTest.ref(JSONObjectClassName), "paramsJson", JExpr._this()
@@ -95,28 +93,33 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator {
                 .arg(paramsJsonJVar.invoke("toString"))
                 .arg(this.entityClass.dotclass()));
         JInvocation jInvocationTest =
-                JExpr.invoke(fieldVar, "insert").arg(entityVar);
+                JExpr.invoke(fieldVar, DAO_METHOD_NAME_INSERT).arg(entityVar);
 
         ObjectNode methodParamInJsonObject = JacksonUtils.createObjectNode();
         methodParamInJsonObject.put(lowerCaseFirstOneClassName, this.fjTable.parseDescToJson());
 
-        StringBuilder sb = new StringBuilder(this.daoTestClass.name()).append(".testInsert.n");
-        this.daoTestParam.put(sb.toString(), methodParamInJsonObject
-                .toString().replaceAll("\n", "").replaceAll("\r", "")
-                .trim());
+        this.putIntoTestParam(methodParamInJsonObject, DAO_METHOD_NAME_INSERT);
 
         JVar resJVar = methodBlk.decl(cmTest.INT, "res", jInvocationTest);
         methodBlk.add(JExpr.ref("log").invoke("debug").arg(JExpr.lit("res={}")).arg(resJVar));
 
     }
 
+    private void putIntoTestParam(ObjectNode methodParamInJsonObject, String methodName) {
+        StringBuilder sb = new StringBuilder(this.daoTestClass.name()).append(".test")
+                .append(StringHelper.toUpperCaseFirstOne(methodName)).append(".n");
+        this.daoTestParam.put(sb.toString(), methodParamInJsonObject
+                .toString().replaceAll("\n", "").replaceAll("\r", "")
+                .trim());
+    }
+
     protected void processSelectByPK() {
         List<String> primaryKeyColumnNames = fjTable.getPrimaryKeyColumnNames();
         if (primaryKeyColumnNames != null) {
             JInvocation jInvocationTest =
-                    JExpr.invoke(fieldVar, "selectByPK");
+                    JExpr.invoke(fieldVar, DAO_METHOD_NAME_SELECTBYPK);
             // testSelectByPK方法
-            JBlock methodBlk = this.processMethod("selectByPK", primaryKeyColumnNames, jInvocationTest);
+            JBlock methodBlk = this.processMethod(DAO_METHOD_NAME_SELECTBYPK, primaryKeyColumnNames, jInvocationTest);
 
             JVar entityJVar = methodBlk.decl(this.entityClass, lowerCaseFirstOneClassName, jInvocationTest);
             methodBlk.add(JExpr.ref("log").invoke("debug").arg(JExpr.lit(lowerCaseFirstOneClassName + "={}")).arg
@@ -150,11 +153,7 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator {
             jNotNullBlock.assign(selectFieldVar, selectFieldStrVar.invoke(jsonInvokeMethodName));
             jInvocationTest.arg(selectFieldVar);
         }
-        StringBuilder sb = new StringBuilder(this.daoTestClass.name()).append(".test")
-                .append(StringHelper.toUpperCaseFirstOne(methodName)).append(".n");
-        this.daoTestParam.put(sb.toString(), methodParamInJsonObject
-                .toString().replaceAll("\n", "").replaceAll("\r", "")
-                .trim());
+        this.putIntoTestParam(methodParamInJsonObject, methodName);
         return methodBlk;
     }
 
@@ -169,7 +168,7 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator {
 
     protected void processUpdateByPK() {
         // testUpdateByPK方法
-        JMethod method = this.prepareMethod("testUpdateByPK");
+        JMethod method = this.prepareMethod(DAO_METHOD_NAME_UPDATEBYPK);
         JBlock methodBlk = method.body();
         JVar reqParamsJsonStrAndAssertJVar = method.param(cmTest.ref("String"),
                 "reqParamsJsonStrAndAssert");
@@ -186,14 +185,11 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator {
                 .arg(paramsJsonJVar.invoke("toString"))
                 .arg(this.entityClass.dotclass()));
         JInvocation jInvocationTest =
-                JExpr.invoke(fieldVar, "updateByPK").arg(entityVar);
+                JExpr.invoke(fieldVar, DAO_METHOD_NAME_UPDATEBYPK).arg(entityVar);
         ObjectNode methodParamInJsonObject = JacksonUtils.createObjectNode();
         methodParamInJsonObject.put(lowerCaseFirstOneClassName, this.fjTable.parseDescToJson());
 
-        StringBuilder sb = new StringBuilder(this.daoTestClass.name()).append(".testUpdateByPK.n");
-        this.daoTestParam.put(sb.toString(), methodParamInJsonObject
-                .toString().replaceAll("\n", "").replaceAll("\r", "")
-                .trim());
+        this.putIntoTestParam(methodParamInJsonObject, DAO_METHOD_NAME_UPDATEBYPK);
 
         JVar resJVar = methodBlk.decl(cmTest.INT, "res", jInvocationTest);
         methodBlk.add(JExpr.ref("log").invoke("debug").arg(JExpr.lit("res={}")).arg(resJVar));
@@ -203,9 +199,9 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator {
         List<String> primaryKeyColumnNames = fjTable.getPrimaryKeyColumnNames();
         if (primaryKeyColumnNames != null) {
             JInvocation jInvocationTest =
-                    JExpr.invoke(fieldVar, "deleteByPK");
+                    JExpr.invoke(fieldVar, DAO_METHOD_NAME_DELETEBYPK);
             // testDeleteByPK方法
-            JBlock methodBlk = this.processMethod("deleteByPK", primaryKeyColumnNames, jInvocationTest);
+            JBlock methodBlk = this.processMethod(DAO_METHOD_NAME_DELETEBYPK, primaryKeyColumnNames, jInvocationTest);
 
             JVar resJVar = methodBlk.decl(cmTest.INT, "res", jInvocationTest);
             methodBlk.add(JExpr.ref("log").invoke("debug").arg(JExpr.lit("res={}")).arg(resJVar));
@@ -214,18 +210,17 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator {
 
     protected void processTotalCount() {
         // testTotalCount总数
-        JMethod method = this.prepareMethod("testTotalCount");
+        JMethod method = this.prepareMethod(DAO_METHOD_NAME_TOTALCOUNT);
         JBlock methodBlk = method.body();
 
+        method.param(cmTest.ref("String"),
+                "reqParamsJsonStrAndAssert");
         JInvocation jInvocationTest =
-                JExpr.invoke(fieldVar, "totalCount");
+                JExpr.invoke(fieldVar, DAO_METHOD_NAME_TOTALCOUNT);
 
         ObjectNode methodParamInJsonObject = JacksonUtils.createObjectNode();
 
-        StringBuilder sb = new StringBuilder(this.daoTestClass.name()).append(".testTotalCount.n");
-        this.daoTestParam.put(sb.toString(), methodParamInJsonObject
-                .toString().replaceAll("\n", "").replaceAll("\r", "")
-                .trim());
+        this.putIntoTestParam(methodParamInJsonObject, DAO_METHOD_NAME_TOTALCOUNT);
 
         JVar resJVar = methodBlk.decl(cmTest.INT, "res", jInvocationTest);
         methodBlk.add(JExpr.ref("log").invoke("debug").arg(JExpr.lit("res={}")).arg(resJVar));
@@ -233,17 +228,16 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator {
 
     protected void processQueryForList() {
         // testQueryForList查询
-        JMethod method = this.prepareMethod("testQueryForList");
+        JMethod method = this.prepareMethod(DAO_METHOD_NAME_QUERYFORLIST);
         JBlock methodBlk = method.body();
 
+        method.param(cmTest.ref("String"),
+                "reqParamsJsonStrAndAssert");
         JInvocation jInvocationTest =
-                JExpr.invoke(fieldVar, "queryForList");
+                JExpr.invoke(fieldVar, DAO_METHOD_NAME_QUERYFORLIST);
         ObjectNode methodParamInJsonObject = JacksonUtils.createObjectNode();
 
-        StringBuilder sb = new StringBuilder(this.daoTestClass.name()).append(".testQueryForList.n");
-        this.daoTestParam.put(sb.toString(), methodParamInJsonObject
-                .toString().replaceAll("\n", "").replaceAll("\r", "")
-                .trim());
+        this.putIntoTestParam(methodParamInJsonObject, DAO_METHOD_NAME_QUERYFORLIST);
 
         JVar listJVar = methodBlk.decl(cmTest.ref("java.util.List").narrow(this.entityClass), "list", jInvocationTest);
         JBlock jNotNullBlock =
@@ -262,7 +256,7 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator {
 
     protected void processQueryForLimitList() {
         // testQueryForLimitList分页查询
-        JMethod method = this.prepareMethod("testQueryForLimitList");
+        JMethod method = this.prepareMethod(DAO_METHOD_NAME_QUERYFORLIMITLIST);
         JBlock methodBlk = method.body();
 
         JVar reqParamsJsonStrAndAssertJVar = method.param(cmTest.ref("String"),
@@ -280,7 +274,7 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator {
                 .arg(rowBoundsStrVar.invoke("toString"))
                 .arg(cmTest.ref("org.apache.ibatis.session.RowBounds").dotclass()));
         JInvocation jInvocationTest =
-                JExpr.invoke(fieldVar, "queryForLimitList").arg(rowBoundsVar);
+                JExpr.invoke(fieldVar, DAO_METHOD_NAME_QUERYFORLIMITLIST).arg(rowBoundsVar);
 
         ObjectNode methodParamInJsonObject = JacksonUtils.createObjectNode();
         ObjectNode rowBoundsInJsonObject = JacksonUtils.createObjectNode();
@@ -288,10 +282,7 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator {
         rowBoundsInJsonObject.put("limit", "int");
         methodParamInJsonObject.put("rowBounds", rowBoundsInJsonObject.toString());
 
-        StringBuilder sb = new StringBuilder(this.daoTestClass.name()).append(".testQueryForLimitList.n");
-        this.daoTestParam.put(sb.toString(), methodParamInJsonObject
-                .toString().replaceAll("\n", "").replaceAll("\r", "")
-                .trim());
+        this.putIntoTestParam(methodParamInJsonObject, DAO_METHOD_NAME_QUERYFORLIMITLIST);
 
         JVar listJVar = methodBlk.decl(cmTest.ref("java.util.List").narrow(this.entityClass), "list", jInvocationTest);
 
@@ -310,7 +301,7 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator {
 
     protected void processTotalCountCondition() {
         // testTotalCountCondition总数
-        JMethod method = this.prepareMethod("testTotalCountCondition");
+        JMethod method = this.prepareMethod(DAO_METHOD_NAME_TOTALCOUNTCONDITION);
         JBlock methodBlk = method.body();
 
         JVar reqParamsJsonStrAndAssertJVar = method.param(cmTest.ref("String"),
@@ -326,15 +317,12 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator {
                 methodBlk._if(conditionStrVar.ne(JExpr._null()))._then();
         jNotNullBlock.assign(conditionVar, conditionStrVar.invoke("asText"));
         JInvocation jInvocationTest =
-                JExpr.invoke(fieldVar, "totalCountCondition").arg(conditionVar);
+                JExpr.invoke(fieldVar, DAO_METHOD_NAME_TOTALCOUNTCONDITION).arg(conditionVar);
 
         ObjectNode methodParamInJsonObject = JacksonUtils.createObjectNode();
         methodParamInJsonObject.put("condition", "String");
 
-        StringBuilder sb = new StringBuilder(this.daoTestClass.name()).append(".testTotalCountCondition.n");
-        this.daoTestParam.put(sb.toString(), methodParamInJsonObject
-                .toString().replaceAll("\n", "").replaceAll("\r", "")
-                .trim());
+        this.putIntoTestParam(methodParamInJsonObject, DAO_METHOD_NAME_TOTALCOUNTCONDITION);
 
         JVar resJVar = methodBlk.decl(cmTest.INT, "res", jInvocationTest);
         methodBlk.add(JExpr.ref("log").invoke("debug").arg(JExpr.lit("res={}")).arg(resJVar));
@@ -343,7 +331,7 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator {
 
     protected void processSelectOneCondition() {
         // testSelectOneCondition查询
-        JMethod method = this.prepareMethod("testSelectOneCondition");
+        JMethod method = this.prepareMethod(DAO_METHOD_NAME_SELECTONECONDITION);
         JBlock methodBlk = method.body();
 
         JVar reqParamsJsonStrAndAssertJVar = method.param(cmTest.ref("String"),
@@ -359,15 +347,12 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator {
                 methodBlk._if(conditionStrVar.ne(JExpr._null()))._then();
         jNotNullBlock.assign(conditionVar, conditionStrVar.invoke("asText"));
         JInvocation jInvocationTest =
-                JExpr.invoke(fieldVar, "selectOneCondition").arg(conditionVar);
+                JExpr.invoke(fieldVar, DAO_METHOD_NAME_SELECTONECONDITION).arg(conditionVar);
 
         ObjectNode methodParamInJsonObject = JacksonUtils.createObjectNode();
         methodParamInJsonObject.put("condition", "String");
 
-        StringBuilder sb = new StringBuilder(this.daoTestClass.name()).append(".testSelectOneCondition.n");
-        this.daoTestParam.put(sb.toString(), methodParamInJsonObject
-                .toString().replaceAll("\n", "").replaceAll("\r", "")
-                .trim());
+        this.putIntoTestParam(methodParamInJsonObject, DAO_METHOD_NAME_SELECTONECONDITION);
 
         JVar entityJVar = methodBlk.decl(this.entityClass, lowerCaseFirstOneClassName, jInvocationTest);
         methodBlk.add(JExpr.ref("log").invoke("debug").arg(JExpr.lit(lowerCaseFirstOneClassName + "={}")).arg
@@ -376,7 +361,7 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator {
 
     protected void processQueryForListCondition() {
         // testQueryForListCondition查询
-        JMethod method = this.prepareMethod("testQueryForListCondition");
+        JMethod method = this.prepareMethod(DAO_METHOD_NAME_QUERYFORLISTCONDITION);
         JBlock methodBlk = method.body();
 
         JVar reqParamsJsonStrAndAssertJVar = method.param(cmTest.ref("String"),
@@ -392,15 +377,12 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator {
                 methodBlk._if(conditionStrVar.ne(JExpr._null()))._then();
         jNotNullBlock.assign(conditionVar, conditionStrVar.invoke("asText"));
         JInvocation jInvocationTest =
-                JExpr.invoke(fieldVar, "queryForListCondition").arg(conditionVar);
+                JExpr.invoke(fieldVar, DAO_METHOD_NAME_QUERYFORLISTCONDITION).arg(conditionVar);
 
         ObjectNode methodParamInJsonObject = JacksonUtils.createObjectNode();
         methodParamInJsonObject.put("condition", "String");
 
-        StringBuilder sb = new StringBuilder(this.daoTestClass.name()).append(".testSelectOneCondition.n");
-        this.daoTestParam.put(sb.toString(), methodParamInJsonObject
-                .toString().replaceAll("\n", "").replaceAll("\r", "")
-                .trim());
+        this.putIntoTestParam(methodParamInJsonObject, DAO_METHOD_NAME_QUERYFORLISTCONDITION);
 
         JVar listJVar = methodBlk.decl(cmTest.ref("java.util.List").narrow(this.entityClass), "list", jInvocationTest);
         jNotNullBlock = methodBlk._if(listJVar.ne(JExpr._null()))._then();
@@ -418,7 +400,7 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator {
 
     protected void processQueryForLimitListCondition() {
         // testQueryForLimitListCondition分页查询
-        JMethod method = this.prepareMethod("testQueryForLimitListCondition");
+        JMethod method = this.prepareMethod(DAO_METHOD_NAME_QUERYFORLIMITLISTCONDITION);
         JBlock methodBlk = method.body();
 
         JVar reqParamsJsonStrAndAssertJVar = method.param(cmTest.ref("String"),
@@ -434,7 +416,7 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator {
                 methodBlk._if(conditionStrVar.ne(JExpr._null()))._then();
         jNotNullBlock.assign(conditionVar, conditionStrVar.invoke("asText"));
         JInvocation jInvocationTest =
-                JExpr.invoke(fieldVar, "queryForLimitListCondition").arg(conditionVar);
+                JExpr.invoke(fieldVar, DAO_METHOD_NAME_QUERYFORLIMITLISTCONDITION).arg(conditionVar);
         JVar rowBoundsVar =
                 methodBlk.decl(cmTest.ref("org.apache.ibatis.session.RowBounds"), "rowBounds", JExpr._null());
         JVar rowBoundsStrVar = methodBlk.decl(cmTest.ref(JSONObjectClassName),
@@ -454,10 +436,7 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator {
         methodParamInJsonObject.put("rowBounds", rowBoundsInJsonObject.toString());
         methodParamInJsonObject.put("condition", "String");
 
-        StringBuilder sb = new StringBuilder(this.daoTestClass.name()).append(".testQueryForLimitListCondition.n");
-        this.daoTestParam.put(sb.toString(), methodParamInJsonObject
-                .toString().replaceAll("\n", "").replaceAll("\r", "")
-                .trim());
+        this.putIntoTestParam(methodParamInJsonObject, DAO_METHOD_NAME_QUERYFORLIMITLISTCONDITION);
 
         JVar listJVar = methodBlk.decl(cmTest.ref("java.util.List").narrow(this.entityClass), "list", jInvocationTest);
 
@@ -476,7 +455,7 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator {
 
     protected void processInsertAll() {
         // testInsertAll方法批量插入
-        JMethod method = this.prepareMethod("testInsertAll");
+        JMethod method = this.prepareMethod(DAO_METHOD_NAME_INSERTALL);
         JBlock methodBlk = method.body();
 
         JVar reqParamsJsonStrAndAssertJVar = method.param(cmTest.ref("String"),
@@ -494,7 +473,7 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator {
         jNotNullBlock.assign(listVar, cmTest.ref(JacksonUtilsClassName).staticInvoke("readList")
                 .arg(listStrVar).arg(this.entityClass.dotclass()));
         JInvocation jInvocationTest =
-                JExpr.invoke(fieldVar, "insertAll").arg(listVar);
+                JExpr.invoke(fieldVar, DAO_METHOD_NAME_INSERTALL).arg(listVar);
 
         JVar resJVar = methodBlk.decl(cmTest.INT, "res", jInvocationTest);
         methodBlk.add(JExpr.ref("log").invoke("debug").arg(JExpr.lit("res={}")).arg(resJVar));

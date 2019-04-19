@@ -9,6 +9,8 @@ import com.fastjrun.codeg.common.CodeGMsgContants;
 import com.fastjrun.codeg.common.FJColumn;
 import com.fastjrun.codeg.common.FJTable;
 import com.fastjrun.codeg.generator.common.BaseCMGenerator;
+import com.fastjrun.codeg.generator.common.MybatisAFDaoConstants;
+import com.fastjrun.codeg.generator.common.MybatisAFServiceConstants;
 import com.fastjrun.codeg.helper.MysqlSqlHelper;
 import com.fastjrun.codeg.helper.SQLHelperFactory;
 import com.fastjrun.codeg.helper.SqlHelper;
@@ -32,7 +34,7 @@ import com.helger.jcodemodel.JVar;
 /**
  * Mybatis Annotation FrameWork
  */
-public class MybatisAFGenerator extends BaseCMGenerator {
+public class MybatisAFGenerator extends BaseCMGenerator implements MybatisAFDaoConstants, MybatisAFServiceConstants {
 
     static String PACKAGE_ENTITY_NAME = "entity.";
 
@@ -221,7 +223,7 @@ public class MybatisAFGenerator extends BaseCMGenerator {
 
         SqlHelper sqlHelper = SQLHelperFactory.getSQLHelper("mysql", fjTable);
         // insert方法
-        JMethod insertMethod = this.daoClass.method(JMod.NONE, cm.INT, "insert");
+        JMethod insertMethod = this.daoClass.method(JMod.NONE, cm.INT, DAO_METHOD_NAME_INSERT);
         insertMethod.param(this.entityClass, lowerCaseFirstOneClassName);
         insertMethod.annotate(
                 cm.ref("org.apache.ibatis.annotations.Insert")).param(
@@ -240,7 +242,7 @@ public class MybatisAFGenerator extends BaseCMGenerator {
             }
             // selectByPK方法
             JMethod selectByPKMethod = this.daoClass.method(JMod.NONE, this.entityClass,
-                    "selectByPK");
+                    DAO_METHOD_NAME_SELECTBYPK);
             selectByPKMethod.annotate(
                     cm.ref("org.apache.ibatis.annotations.Select")).param(
                     "value", sqlHelper.getSelectByPK());
@@ -249,13 +251,13 @@ public class MybatisAFGenerator extends BaseCMGenerator {
                     "flushCache", true);
             // deleteByPK方法
             JMethod deleteByPKMethod = this.daoClass.method(JMod.NONE, cm.INT,
-                    "deleteByPK");
+                    DAO_METHOD_NAME_DELETEBYPK);
             deleteByPKMethod.annotate(
                     cm.ref("org.apache.ibatis.annotations.Delete")).param(
                     "value", sqlHelper.getDeleteByPK());
             // updateByPK方法
             JMethod updateByPKMethod = this.daoClass.method(JMod.NONE, cm.INT,
-                    "updateByPK");
+                    DAO_METHOD_NAME_UPDATEBYPK);
             updateByPKMethod.annotate(
                     cm.ref("org.apache.ibatis.annotations.Update")).param(
                     "value", sqlHelper.getUpdateByPK());
@@ -279,7 +281,7 @@ public class MybatisAFGenerator extends BaseCMGenerator {
         }
         // totalCount总数
         JMethod totalCountMethod = this.daoClass.method(JMod.NONE, cm.INT,
-                "totalCount");
+                DAO_METHOD_NAME_TOTALCOUNT);
         totalCountMethod.annotate(
                 cm.ref("org.apache.ibatis.annotations.Select")).param(
                 "value", sqlHelper.getTotalCount(0));
@@ -287,7 +289,7 @@ public class MybatisAFGenerator extends BaseCMGenerator {
         JMethod queryForListMethod = this.daoClass
                 .method(JMod.NONE,
                         cm.ref("java.util.List").narrow(this.entityClass),
-                        "queryForList");
+                        DAO_METHOD_NAME_QUERYFORLIST);
         queryForListMethod.annotate(
                 cm.ref("org.apache.ibatis.annotations.Select")).param(
                 "value", sqlHelper.getQueryForList(0));
@@ -297,7 +299,7 @@ public class MybatisAFGenerator extends BaseCMGenerator {
         // queryForLimitList分页查询
         JMethod queryForLimitListMethod = this.daoClass.method(JMod.NONE,
                 cm.ref("java.util.List").narrow(this.entityClass),
-                "queryForLimitList");
+                DAO_METHOD_NAME_QUERYFORLIMITLIST);
         queryForLimitListMethod.param(
                 cm.ref("org.apache.ibatis.session.RowBounds"), "rowBounds");
         queryForLimitListMethod.annotate(
@@ -309,7 +311,7 @@ public class MybatisAFGenerator extends BaseCMGenerator {
 
         // totalCountCondition总数
         JMethod totalCountConditionMethod = this.daoClass.method(JMod.NONE, cm.INT,
-                "totalCountCondition");
+                DAO_METHOD_NAME_TOTALCOUNTCONDITION);
         totalCountConditionMethod
                 .annotate(
                         cm.ref("org.apache.ibatis.annotations.SelectProvider"))
@@ -322,7 +324,7 @@ public class MybatisAFGenerator extends BaseCMGenerator {
                 .param("value", "condition");
         // selectOneCondition查询
         JMethod selectOneConditionMethod = this.daoClass.method(JMod.NONE,
-                this.entityClass, "selectOneCondition");
+                this.entityClass, DAO_METHOD_NAME_SELECTONECONDITION);
         selectOneConditionMethod
                 .annotate(
                         cm.ref("org.apache.ibatis.annotations.SelectProvider"))
@@ -336,7 +338,7 @@ public class MybatisAFGenerator extends BaseCMGenerator {
         // queryForListCondition查询
         JMethod queryForListConditionMethod = this.daoClass.method(JMod.NONE, cm
                         .ref("java.util.List").narrow(this.entityClass),
-                "queryForListCondition");
+                DAO_METHOD_NAME_QUERYFORLISTCONDITION);
         queryForListConditionMethod
                 .annotate(
                         cm.ref("org.apache.ibatis.annotations.SelectProvider"))
@@ -350,7 +352,7 @@ public class MybatisAFGenerator extends BaseCMGenerator {
         // queryForLimitListCondition分页查询
         JMethod queryForLimitListConditionMethod = this.daoClass.method(JMod.NONE,
                 cm.ref("java.util.List").narrow(this.entityClass),
-                "queryForLimitListCondition");
+                DAO_METHOD_NAME_QUERYFORLIMITLISTCONDITION);
         queryForLimitListConditionMethod
                 .annotate(
                         cm.ref("org.apache.ibatis.annotations.SelectProvider"))
@@ -365,7 +367,7 @@ public class MybatisAFGenerator extends BaseCMGenerator {
                 cm.ref("org.apache.ibatis.session.RowBounds"), "rowBounds");
         // insertAll方法批量插入
         JMethod insertAllMethod = this.daoClass.method(JMod.NONE, cm.INT,
-                "insertAll");
+                DAO_METHOD_NAME_INSERTALL);
         insertAllMethod.param(cm.ref("java.util.List").narrow(this.entityClass),
                 lowerCaseFirstOneClassName + "s"); // 复数形式
         insertAllMethod
@@ -389,20 +391,20 @@ public class MybatisAFGenerator extends BaseCMGenerator {
         }
         this.addClassDeclaration(this.serviceClass);
         // insert方法
-        JMethod insertMethod = this.serviceClass.method(JMod.NONE, cm.INT, "insert");
+        JMethod insertMethod = this.serviceClass.method(JMod.NONE, cm.INT, SERVICE_METHOD_NAME_INSERT);
         insertMethod.param(this.entityClass, lowerCaseFirstOneClassName);
 
         List<String> primaryKeyColumnNames = fjTable.getPrimaryKeyColumnNames();
         if (primaryKeyColumnNames != null) {
             // selectByPK方法
             JMethod selectByPKMethod = this.serviceClass.method(JMod.NONE, this.entityClass,
-                    "selectByPK");
+                    SERVICE_METHOD_NAME_SELECTBYPK);
             // deleteByPK方法
             JMethod deleteByPKMethod = this.serviceClass.method(JMod.NONE, cm.INT,
-                    "deleteByPK");
+                    SERVICE_METHOD_NAME_DELETEBYPK);
             // updateByPK方法
             JMethod updateByPKMethod = this.serviceClass.method(JMod.NONE, cm.INT,
-                    "updateByPK");
+                    SERVICE_METHOD_NAME_UPDATEBYPK);
             updateByPKMethod.param(this.entityClass, lowerCaseFirstOneClassName);
             for (int i = 0; i < primaryKeyColumnNames.size(); i++) {
                 String key = primaryKeyColumnNames.get(i);
@@ -417,12 +419,12 @@ public class MybatisAFGenerator extends BaseCMGenerator {
         }
         // totalCount总数
         JMethod totalCountMethod = this.serviceClass.method(JMod.NONE, cm.INT,
-                "totalCount");
+                SERVICE_METHOD_NAME_TOTALCOUNT);
 
         // queryForLimitList分页查询
         JMethod queryForLimitListMethod = this.serviceClass.method(JMod.NONE,
                 cm.ref("java.util.List").narrow(this.entityClass),
-                "queryForLimitList");
+                SERVICE_METHOD_NAME_QUERYFORLIMITLIST);
         queryForLimitListMethod.param(cm.INT, "pageNum");
         queryForLimitListMethod.param(cm.INT, "pageSize");
     }
@@ -452,7 +454,7 @@ public class MybatisAFGenerator extends BaseCMGenerator {
         fieldVar.annotate(cm.ref("org.springframework.beans.factory.annotation.Autowired"));
 
         // insert方法
-        JMethod insertMethod = this.serviceImplClass.method(JMod.PUBLIC, cm.INT, "insert");
+        JMethod insertMethod = this.serviceImplClass.method(JMod.PUBLIC, cm.INT, DAO_METHOD_NAME_INSERT);
         insertMethod.annotate(cm.ref("java.lang.Override"));
         JVar insertParamJVar = insertMethod.param(this.entityClass, lowerCaseFirstOneClassName);
         insertMethod.body()._return(fieldVar.invoke("insert").arg(insertParamJVar));
@@ -460,21 +462,21 @@ public class MybatisAFGenerator extends BaseCMGenerator {
         if (primaryKeyColumnNames != null) {
             // selectByPK方法
             JMethod selectByPKMethod = this.serviceImplClass.method(JMod.PUBLIC, this.entityClass,
-                    "selectByPK");
+                    SERVICE_METHOD_NAME_SELECTBYPK);
             selectByPKMethod.annotate(cm.ref("java.lang.Override"));
             // deleteByPK方法
             JMethod deleteByPKMethod = this.serviceImplClass.method(JMod.PUBLIC, cm.INT,
-                    "deleteByPK");
+                    SERVICE_METHOD_NAME_DELETEBYPK);
             deleteByPKMethod.annotate(cm.ref("java.lang.Override"));
             // updateByPK方法
             JMethod updateByPKMethod = this.serviceImplClass.method(JMod.PUBLIC, cm.INT,
-                    "updateByPK");
+                    SERVICE_METHOD_NAME_UPDATEBYPK);
             updateByPKMethod.annotate(cm.ref("java.lang.Override"));
             JVar updateByPKParamJVar = updateByPKMethod.param(this.entityClass, lowerCaseFirstOneClassName);
             updateByPKMethod.body()._return(fieldVar.invoke("insert").arg(updateByPKParamJVar));
 
-            JInvocation jSelectByPKJInvocation = fieldVar.invoke("selectByPK");
-            JInvocation jDeleteByPKJInvocation = fieldVar.invoke("deleteByPK");
+            JInvocation jSelectByPKJInvocation = fieldVar.invoke(DAO_METHOD_NAME_SELECTBYPK);
+            JInvocation jDeleteByPKJInvocation = fieldVar.invoke(DAO_METHOD_NAME_DELETEBYPK);
             for (int i = 0; i < primaryKeyColumnNames.size(); i++) {
                 String key = primaryKeyColumnNames.get(i);
                 FJColumn fjColumn = fjTable.getColumns().get(key);
@@ -492,13 +494,13 @@ public class MybatisAFGenerator extends BaseCMGenerator {
         }
         // totalCount总数
         JMethod totalCountMethod = this.serviceImplClass.method(JMod.PUBLIC, cm.INT,
-                "totalCount");
+                SERVICE_METHOD_NAME_TOTALCOUNT);
         totalCountMethod.annotate(cm.ref("java.lang.Override"));
         // queryForLimitList分页查询
-        totalCountMethod.body()._return(fieldVar.invoke("totalCount"));
+        totalCountMethod.body()._return(fieldVar.invoke(DAO_METHOD_NAME_TOTALCOUNT));
         JMethod queryForLimitListMethod = this.serviceImplClass.method(JMod.PUBLIC,
                 cm.ref("java.util.List").narrow(this.entityClass),
-                "queryForLimitList");
+                SERVICE_METHOD_NAME_QUERYFORLIMITLIST);
         queryForLimitListMethod.annotate(cm.ref("java.lang.Override"));
         JVar pageNumJVar = queryForLimitListMethod.param(cm.INT, "pageNum");
         JVar pageSizeJVar = queryForLimitListMethod.param(cm.INT, "pageSize");
@@ -507,7 +509,7 @@ public class MybatisAFGenerator extends BaseCMGenerator {
                 "rowBounds", JExpr._new(cm.ref("org.apache.ibatis.session.RowBounds")).arg(pageNumJVar.minus(JExpr.lit
                         (1)).mul(pageSizeJVar)).arg(pageNumJVar.mul(pageSizeJVar).minus(JExpr.lit
                         (1))));
-        queryForLimitListMethodBlk._return(fieldVar.invoke("queryForLimitList").arg(rowBoundsJVar));
+        queryForLimitListMethodBlk._return(fieldVar.invoke(DAO_METHOD_NAME_QUERYFORLIMITLIST).arg(rowBoundsJVar));
     }
 
     /**

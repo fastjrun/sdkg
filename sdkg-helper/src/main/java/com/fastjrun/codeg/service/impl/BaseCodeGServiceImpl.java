@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dom4j.Document;
@@ -231,7 +232,11 @@ public abstract class BaseCodeGServiceImpl implements CodeGService, CodeGConstan
                 }
                 try {
                     FileWriter resFw = new FileWriter(outFile);
-                    testParams.store(resFw, "ok");
+                    for (String pKey : testParams.stringPropertyNames()) {
+                        resFw.write(pKey.concat("=").concat(StringEscapeUtils.unescapeJavaScript(testParams
+                                .getProperty(pKey))).concat
+                                (System.lineSeparator()));
+                    }
                     resFw.close();
                 } catch (IOException e) {
                     e.printStackTrace();
