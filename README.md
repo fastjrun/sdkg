@@ -15,6 +15,7 @@
 
 ### to be continued
 rpc相关代码生成需要重新调试
+client端代码需要测试下
 
 
 ## 版本说明：
