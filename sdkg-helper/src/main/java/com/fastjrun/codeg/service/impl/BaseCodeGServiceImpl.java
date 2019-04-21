@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2019 fastjrun, Inc. All Rights Reserved.
+ */
 package com.fastjrun.codeg.service.impl;
 
 import java.io.File;
@@ -7,37 +10,34 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.fastjrun.codeg.common.CodeGConstants;
 import com.fastjrun.codeg.common.CodeGException;
 import com.fastjrun.codeg.common.CodeGMsgContants;
-import com.fastjrun.codeg.common.CodeModelConstants;
 import com.fastjrun.codeg.common.CommonController;
-import com.fastjrun.codeg.common.CommonLog;
 import com.fastjrun.codeg.common.CommonMethod;
 import com.fastjrun.codeg.common.CommonService;
 import com.fastjrun.codeg.common.DataBaseObject;
 import com.fastjrun.codeg.common.FJTable;
 import com.fastjrun.codeg.common.PacketObject;
-import com.fastjrun.codeg.generator.BaseControllerGenerator;
-import com.fastjrun.codeg.generator.BaseMybatisAFGenerator;
+import com.fastjrun.codeg.generator.MybatisAFGenerator;
 import com.fastjrun.codeg.generator.PacketGenerator;
 import com.fastjrun.codeg.generator.ServiceGenerator;
+import com.fastjrun.codeg.generator.common.BaseControllerGenerator;
 import com.fastjrun.codeg.generator.method.BaseControllerMethodGenerator;
 import com.fastjrun.codeg.generator.method.ServiceMethodGenerator;
 import com.fastjrun.codeg.helper.CodeGeneratorFactory;
@@ -46,10 +46,12 @@ import com.fastjrun.codeg.service.CodeGService;
 import com.fastjrun.codeg.util.BundleXMLParser;
 import com.fastjrun.codeg.utils.SQLSchemaParse;
 import com.fastjrun.helper.StringHelper;
-import com.sun.codemodel.CodeWriter;
-import com.sun.codemodel.writer.FileCodeWriter;
+import com.helger.jcodemodel.JCodeModel;
+import com.helger.jcodemodel.writer.AbstractCodeWriter;
+import com.helger.jcodemodel.writer.FileCodeWriter;
+import com.helger.jcodemodel.writer.JCMWriter;
 
-public abstract class BaseCodeGServiceImpl implements CodeGService, CodeModelConstants {
+public abstract class BaseCodeGServiceImpl implements CodeGService, CodeGConstants {
 
     static String TESTNG_XML_FILENAME = "testng.xml";
 
@@ -57,11 +59,9 @@ public abstract class BaseCodeGServiceImpl implements CodeGService, CodeModelCon
 
     static String DUBBO_CONSUME_FILENAME = "applicationContext-dubbo-consumer.xml";
 
-    protected CommonLog commonLog = new CommonLog();
+    protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
     protected String packageNamePrefix;
-    protected String[] bundleFiles;
-    protected String sqlFile;
     protected String author;
     protected String company;
 
@@ -95,14 +95,6 @@ public abstract class BaseCodeGServiceImpl implements CodeGService, CodeModelCon
 
     public void setTestResourcesName(String testResourcesName) {
         this.testResourcesName = testResourcesName;
-    }
-
-    public String[] getBundleFiles() {
-        return bundleFiles;
-    }
-
-    public void setBundleFiles(String[] bundleFiles) {
-        this.bundleFiles = bundleFiles;
     }
 
     public String getResourcesName() {
@@ -151,14 +143,6 @@ public abstract class BaseCodeGServiceImpl implements CodeGService, CodeModelCon
 
     public void setTestSrcDir(File testSrcDir) {
         this.testSrcDir = testSrcDir;
-    }
-
-    public String getSqlFile() {
-        return sqlFile;
-    }
-
-    public void setSqlFile(String sqlFile) {
-        this.sqlFile = sqlFile;
     }
 
     public String getPackageNamePrefix() {
@@ -226,37 +210,41 @@ public abstract class BaseCodeGServiceImpl implements CodeGService, CodeModelCon
             try {
                 xmlWriter.close();
             } catch (IOException e) {
-                this.commonLog.getLog().error("XMLUtil.close error: " + e);
+                log.error("XMLUtil.close error: " + e);
             }
-            xmlWriter = null;
         }
 
         if (outputStream != null) {
             try {
                 outputStream.close();
             } catch (IOException e) {
-                this.commonLog.getLog().error("XMLUtil.close error: " + e);
+                log.error("XMLUtil.close error: " + e);
             }
-            outputStream = null;
         }
     }
 
-    void saveTestParams(String moduleName, Map<String, Properties> clientTestParamMap) {
-        for (String key : clientTestParamMap.keySet()) {
-            Properties testParams = clientTestParamMap.get(key);
-            File outFile = new File(moduleName + this.getTestDataName() + File.separator
-                    + key + ".properties");
-            outFile.getParentFile().mkdirs();
-            if (outFile.exists()) {
-                outFile.delete();
-            }
-            try {
-                FileWriter resFw = new FileWriter(outFile);
-                testParams.store(resFw, "ok");
-                resFw.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    void saveTestParams(String moduleName, Map<String, Properties> testParamMap) {
+        if (testParamMap != null && testParamMap.size() > 0) {
+            testParamMap.keySet().stream().parallel().forEach(key -> {
+                Properties testParams = testParamMap.get(key);
+                File outFile = new File(moduleName + this.getTestDataName() + File.separator
+                        + key + ".properties");
+                outFile.getParentFile().mkdirs();
+                if (outFile.exists()) {
+                    outFile.delete();
+                }
+                try {
+                    FileWriter resFw = new FileWriter(outFile);
+                    for (String pKey : testParams.stringPropertyNames()) {
+                        resFw.write(pKey.concat("=").concat(StringEscapeUtils.unescapeJavaScript(testParams
+                                .getProperty(pKey))).concat
+                                (System.lineSeparator()));
+                    }
+                    resFw.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
         }
 
     }
@@ -364,11 +352,12 @@ public abstract class BaseCodeGServiceImpl implements CodeGService, CodeModelCon
 
     }
 
-    protected Map<String, CommonController> generateCode(String moduleName, MockModel mockModel, boolean isApi,
+    protected Map<String, CommonController> generateCode(String bundleFiles, String moduleName, MockModel mockModel,
+                                                         boolean isApi,
                                                          boolean isClient) {
 
-        ExecutorService threadPool = Executors.newSingleThreadExecutor();
-        CompletionService<Boolean> completionService = new ExecutorCompletionService<>(threadPool);
+        JCodeModel cm = new JCodeModel();
+        JCodeModel cmTest = new JCodeModel();
 
         Map<String, PacketObject> packetAllMap = new HashMap<>();
         Map<String, CommonService> serviceAllMap = new HashMap<>();
@@ -376,88 +365,56 @@ public abstract class BaseCodeGServiceImpl implements CodeGService, CodeModelCon
 
         Map<String, Properties> clientTestParamMap = new HashMap<>();
 
-        if (this.bundleFiles != null && this.bundleFiles.length > 0) {
-            for (String bundleFile : bundleFiles) {
-                BundleXMLParser bundleXMLParser = new BundleXMLParser();
-                bundleXMLParser.init();
-                bundleXMLParser.setBundleFile(bundleFile);
-                bundleXMLParser.doParse();
-                packetAllMap.putAll(bundleXMLParser.getPacketMap());
-                serviceAllMap.putAll(bundleXMLParser.getServiceMap());
-                controllerAllMap.putAll(bundleXMLParser.getControllerMap());
-            }
+        String[] bundleFileArray = bundleFiles.split(",");
+        for (String bundleFile : bundleFileArray) {
+            BundleXMLParser bundleXMLParser = new BundleXMLParser();
+            bundleXMLParser.init();
+            bundleXMLParser.setBundleFile(bundleFile);
+            bundleXMLParser.doParse();
+            packetAllMap.putAll(bundleXMLParser.getPacketMap());
+            serviceAllMap.putAll(bundleXMLParser.getServiceMap());
+            controllerAllMap.putAll(bundleXMLParser.getControllerMap());
         }
 
         for (PacketObject packetObject : packetAllMap.values()) {
             PacketGenerator packetGenerator = CodeGeneratorFactory
                     .createPacketGenerator(this.packageNamePrefix, mockModel, this.author, this.company);
+            packetGenerator.setCm(cm);
+            packetGenerator.setCmTest(cmTest);
             packetGenerator.setPacketObject(packetObject);
-            Callable<Boolean> callable = () -> {
-                packetGenerator.generate();
-                return true;
-            };
-            completionService.submit(callable);
-        }
-
-        for (int i = 0; i < packetAllMap.size(); i++) {
-            try {
-                completionService.take().get();
-            } catch (InterruptedException | ExecutionException e) {
-                this.commonLog.getLog().error("" + e);
-            }
+            packetGenerator.generate();
         }
 
         Map<CommonService, ServiceGenerator> serviceGeneratorMap = new HashMap<>();
 
         for (CommonService commonService : serviceAllMap.values()) {
-            Callable<Boolean> callable = () -> {
-                ServiceGenerator serviceGenerator = CodeGeneratorFactory
-                        .createServiceGenerator(this.packageNamePrefix, mockModel, this.author, this.company);
-                serviceGenerator.setCommonService(commonService);
-                serviceGenerator.setApi(isApi);
-                serviceGenerator.setClient(isClient);
-                serviceGenerator.generate();
-                serviceGeneratorMap.put(commonService, serviceGenerator);
-                return true;
-            };
-            completionService.submit(callable);
-        }
+            ServiceGenerator serviceGenerator = CodeGeneratorFactory
+                    .createServiceGenerator(this.packageNamePrefix, mockModel, this.author, this.company);
+            serviceGenerator.setCommonService(commonService);
+            serviceGenerator.setApi(isApi);
+            serviceGenerator.setClient(isClient);
+            serviceGenerator.setCm(cm);
+            serviceGenerator.setCmTest(cmTest);
+            serviceGenerator.generate();
+            serviceGeneratorMap.put(commonService, serviceGenerator);
 
-        for (int i = 0; i < serviceAllMap.size(); i++) {
-            try {
-                completionService.take().get();
-            } catch (InterruptedException | ExecutionException e) {
-                this.commonLog.getLog().error("" + e);
-            }
         }
 
         Map<CommonController, BaseControllerGenerator> baseControllerGeneratorMap = new HashMap<>();
 
         for (CommonController commonController : controllerAllMap.values()) {
-            Callable<Boolean> callable = () -> {
-                BaseControllerGenerator baseControllerGenerator = CodeGeneratorFactory
-                        .createBaseControllerGenerator(this.packageNamePrefix, mockModel, this.author, this
-                                .company, commonController);
-                baseControllerGenerator.setApi(isApi);
-                baseControllerGenerator.setClient(isClient);
-                CommonService commonService = commonController.getService();
-                baseControllerGenerator.setServiceGenerator(serviceGeneratorMap.get(commonService));
-                baseControllerGenerator.generate();
-                baseControllerGeneratorMap.put(commonController, baseControllerGenerator);
-                return true;
-            };
-            completionService.submit(callable);
+            BaseControllerGenerator baseControllerGenerator = CodeGeneratorFactory
+                    .createBaseControllerGenerator(this.packageNamePrefix, mockModel, this.author, this
+                            .company, commonController);
+            baseControllerGenerator.setApi(isApi);
+            baseControllerGenerator.setClient(isClient);
+            CommonService commonService = commonController.getService();
+            baseControllerGenerator.setServiceGenerator(serviceGeneratorMap.get(commonService));
+            baseControllerGenerator.setCm(cm);
+            baseControllerGenerator.setCmTest(cmTest);
+            baseControllerGenerator.generate();
+            baseControllerGeneratorMap.put(commonController, baseControllerGenerator);
         }
-
-        for (int i = 0; i < controllerAllMap.size(); i++) {
-            try {
-                completionService.take().get();
-            } catch (InterruptedException | ExecutionException e) {
-                this.commonLog.getLog().error("" + e);
-            }
-        }
-
-        int methodSize = 0;
 
         for (CommonService commonService : serviceGeneratorMap.keySet()) {
             ServiceGenerator serviceGenerator = serviceGeneratorMap.get(commonService);
@@ -465,7 +422,6 @@ public abstract class BaseCodeGServiceImpl implements CodeGService, CodeModelCon
             List<CommonController> commonControllers = commonService.getCommonControllers();
 
             for (CommonMethod commonMethod : commonMethods) {
-                methodSize++;
                 ServiceMethodGenerator serviceMethodGenerator = new ServiceMethodGenerator();
                 serviceMethodGenerator.setPackageNamePrefix(packageNamePrefix);
                 serviceMethodGenerator.setMockModel(mockModel);
@@ -475,90 +431,147 @@ public abstract class BaseCodeGServiceImpl implements CodeGService, CodeModelCon
                 serviceMethodGenerator.setClient(isClient);
                 serviceMethodGenerator.setServiceGenerator(serviceGenerator);
                 serviceMethodGenerator.setCommonMethod(commonMethod);
-                Callable<Boolean> callable = () -> {
-                    serviceMethodGenerator.generate();
-                    for (CommonController commonController : commonControllers) {
-                        BaseControllerGenerator baseControllerGenerator =
-                                baseControllerGeneratorMap.get(commonController);
-                        BaseControllerMethodGenerator baseControllerMethodGenerator = baseControllerGenerator
-                                .prepareBaseControllerMethodGenerator(serviceMethodGenerator);
-                        baseControllerMethodGenerator.setApi(isApi);
-                        baseControllerMethodGenerator.setClient(isClient);
-                        baseControllerMethodGenerator.generate();
-                        if (!isApi && isClient) {
-                            clientTestParamMap.put(baseControllerGenerator.getClientName() + "Test",
-                                    baseControllerGenerator
-                                            .getClientTestParam());
-                        }
-
+                serviceMethodGenerator.setCm(cm);
+                serviceMethodGenerator.setCmTest(cmTest);
+                serviceMethodGenerator.generate();
+                for (CommonController commonController : commonControllers) {
+                    BaseControllerGenerator baseControllerGenerator =
+                            baseControllerGeneratorMap.get(commonController);
+                    BaseControllerMethodGenerator baseControllerMethodGenerator = baseControllerGenerator
+                            .prepareBaseControllerMethodGenerator(serviceMethodGenerator);
+                    baseControllerMethodGenerator.setApi(isApi);
+                    baseControllerMethodGenerator.setClient(isClient);
+                    baseControllerMethodGenerator.setCm(cm);
+                    baseControllerMethodGenerator.setCmTest(cmTest);
+                    baseControllerMethodGenerator.generate();
+                    if (!isApi && isClient) {
+                        clientTestParamMap.put(baseControllerGenerator.getClientName() + "Test",
+                                baseControllerGenerator
+                                        .getClientTestParam());
                     }
-                    return true;
-                };
-                completionService.submit(callable);
+
+                }
             }
 
         }
-
-        for (int i = 0; i < methodSize; i++) {
-            try {
-                completionService.take().get();
-            } catch (InterruptedException | ExecutionException e) {
-                this.commonLog.getLog().error("" + e);
-            }
-        }
-
-        if (clientTestParamMap != null && clientTestParamMap.size() > 0) {
-            this.saveTestParams(moduleName, clientTestParamMap);
-        }
-
-        threadPool.shutdown();
-
         try {
             // 生成代码为UTF-8编码
-            CodeWriter src = new FileCodeWriter(this.srcDir, "UTF-8");
+            AbstractCodeWriter src = new FileCodeWriter(this.srcDir, Charset.forName("UTF-8"));
             // 自上而下地生成类、方法等
-            cm.build(src);
+            new JCMWriter(cm).build(src);
             if (isClient) {
-                CodeWriter srcTest = new FileCodeWriter(this.testSrcDir, "UTF-8");
-                cmTest.build(srcTest);
+                AbstractCodeWriter srcTest = new FileCodeWriter(this.testSrcDir, Charset.forName("UTF-8"));
+                new JCMWriter(cmTest).build(srcTest);
             }
 
         } catch (IOException e) {
-            this.commonLog.getLog().error("", e);
+            log.error("", e);
             throw new CodeGException(CodeGMsgContants.CODEG_CODEG_FAIL, "code generating failed", e);
         }
+
+        this.saveTestParams(moduleName, clientTestParamMap);
 
         return controllerAllMap;
     }
 
-    protected boolean generateMybatisAnnotationCode(String moduleName, boolean supportController) {
+    protected boolean generateMybatisAnnotationCode(String sqlFile, boolean supportController, boolean supportTest,
+                                                    String moduleName) {
 
-        ExecutorService threadPool = Executors.newSingleThreadExecutor();
-        CompletionService<Boolean> completionService = new ExecutorCompletionService<>(threadPool);
-
+        JCodeModel cm = new JCodeModel();
+        JCodeModel cmTest = new JCodeModel();
+        Map<String, Properties> daoTestParamMap = new HashMap<>();
         DataBaseObject dataBaseObject =
-                SQLSchemaParse.process(SQLSchemaParse.TargetType.TargetType_Mysql, this.sqlFile);
+                SQLSchemaParse.process(SQLSchemaParse.TargetType.TargetType_Mysql, sqlFile);
+
         Map<String, FJTable> fjTableMap = dataBaseObject.getTableMap();
+
+        //        BlockingQueue<Runnable> queue = new ArrayBlockingQueue<>(100);
+        //        ExecutorService threadPool = new ThreadPoolExecutor(50, 150,
+        //                0L, TimeUnit.MILLISECONDS,
+        //                queue);
+        //        CompletionService<Boolean> completionService = new ExecutorCompletionService<>(threadPool);
+        //        for (String key : fjTableMap.keySet()) {
+        //            FJTable fjTable = fjTableMap.get(key);
+        //            Callable<Boolean> callable = () -> {
+        //                MybatisAFGenerator mybatisAFGenerator =
+        //                        CodeGeneratorFactory
+        //                                .createBaseMybatisAFGenerator(this.packageNamePrefix, this.author, this
+        // .company
+        //                                        , fjTable);
+        //                mybatisAFGenerator.setCm(cm);
+        //                mybatisAFGenerator.setCmTest(cmTest);
+        //                mybatisAFGenerator.setSupportController(supportController);
+        //                mybatisAFGenerator.setSupportTest(supportTest);
+        //                mybatisAFGenerator.generate();
+        //                if (supportTest) {
+        //                    daoTestParamMap.put(key, mybatisAFGenerator.getDaoTestParam());
+        //                }
+        //                return true;
+        //            };
+        //            completionService.submit(callable);
+        //        }
+        //
+        //
+        //        for (int i = 0; i < fjTableMap.keySet().size(); i++) {
+        //            try {
+        //                completionService.take().get();
+        //            } catch (InterruptedException | ExecutionException e) {
+        //                log.error("" + e);
+        //            }
+        //        }
+        //
+        //        threadPool.shutdown();
+
+        //                fjTableMap.keySet().stream().parallel().forEach(key -> {
+        //                    FJTable fjTable = fjTableMap.get(key);
+        //                    MybatisAFGenerator mybatisAFGenerator =
+        //                            CodeGeneratorFactory
+        //                                    .createBaseMybatisAFGenerator(this.packageNamePrefix, this.author, this
+        // .company
+        //                                            , fjTable);
+        //                    mybatisAFGenerator.setCm(cm);
+        //                    mybatisAFGenerator.setCmTest(cmTest);
+        //                    mybatisAFGenerator.setSupportController(supportController);
+        //                    mybatisAFGenerator.setSupportTest(supportTest);
+        //                    mybatisAFGenerator.generate();
+        //                    if (supportTest) {
+        //                        daoTestParamMap.put(key, mybatisAFGenerator.getDaoTestParam());
+        //                    }
+        //                });
+
         for (String key : fjTableMap.keySet()) {
             FJTable fjTable = fjTableMap.get(key);
-            BaseMybatisAFGenerator baseMybatisAFGenerator =
-                    CodeGeneratorFactory.createBaseMybatisAFGenerator(this.packageNamePrefix, this.author, this.company
-                            , fjTable);
-            baseMybatisAFGenerator.generate();
+            MybatisAFGenerator mybatisAFGenerator =
+                    CodeGeneratorFactory
+                            .createBaseMybatisAFGenerator(this.packageNamePrefix, this.author, this.company
+                                    , fjTable);
+            mybatisAFGenerator.setCm(cm);
+            mybatisAFGenerator.setCmTest(cmTest);
+            mybatisAFGenerator.setSupportController(supportController);
+            mybatisAFGenerator.setSupportTest(supportTest);
+            mybatisAFGenerator.generate();
+            if (supportTest) {
+                daoTestParamMap.put(key, mybatisAFGenerator.getDaoTestParam());
+            }
         }
-
-        threadPool.shutdown();
 
         try {
             // 生成代码为UTF-8编码
-            CodeWriter src = new FileCodeWriter(this.srcDir, "UTF-8");
+            AbstractCodeWriter src = new FileCodeWriter(this.srcDir, Charset.forName("UTF-8"));
             // 自上而下地生成类、方法等
-            cm.build(src);
+            new JCMWriter(cm).build(src);
+
+            if (supportTest) {
+                AbstractCodeWriter srcTest = new FileCodeWriter(this.testSrcDir, Charset.forName("UTF-8"));
+                new JCMWriter(cmTest).build(srcTest);
+            }
 
         } catch (IOException e) {
-            this.commonLog.getLog().error("", e);
+            log.error("", e);
             throw new CodeGException(CodeGMsgContants.CODEG_CODEG_FAIL, "code generating failed", e);
         }
+
+        this.saveTestParams(moduleName, daoTestParamMap);
 
         return true;
     }

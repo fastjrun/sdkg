@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2019 fastjrun, Inc. All Rights Reserved.
+ */
 package com.fastjrun.codeg.utils;
 
 import java.io.IOException;
@@ -78,8 +81,6 @@ public class SQLSchemaParse {
         dataBaseObject.setTableMap(tableMap);
         return dataBaseObject;
     }
-
-    ;
 
     private static FJTable parseTable(CreateTable createTable) {
         FJTable table = new FJTable();

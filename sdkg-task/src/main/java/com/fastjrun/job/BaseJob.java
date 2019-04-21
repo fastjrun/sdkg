@@ -1,14 +1,13 @@
 /*
- * Copyright (C) 2019 Fastjrun, Inc. All Rights Reserved.
+ * Copyright (C) 2019 fastjrun, Inc. All Rights Reserved.
  */
 package com.fastjrun.job;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class BaseJob {
-
-    protected final Logger log = LogManager.getLogger(this.getClass());
+    protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
     abstract public void execute();
 }

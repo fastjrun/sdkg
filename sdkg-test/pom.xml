@@ -10,13 +10,14 @@
     <parent>
         <groupId>com.fastjrun.codeg</groupId>
         <artifactId>sdkg-parent</artifactId>
-        <version>2.0.1</version>
+        <version>2.1</version>
     </parent>
     <artifactId>sdkg-test</artifactId>
     <dependencies>
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
+            <groupId>com.fastjrun.codeg</groupId>
+            <artifactId>sdkg-common</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>

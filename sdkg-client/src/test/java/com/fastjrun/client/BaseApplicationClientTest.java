@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2019 fastjrun, Inc. All Rights Reserved.
+ */
 package com.fastjrun.client;
 
 import java.io.IOException;
@@ -13,25 +16,16 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fastjrun.helper.StringHelper;
 
-/*
- * *
- *  * 注意：本内容仅限于公司内部传阅，禁止外泄以及用于其他的商业目的
- *  *
- *  * @Copyright 2018 快嘉框架. All rights reserved.
- *
- */
-
 public abstract class BaseApplicationClientTest<T extends BaseApplicationClient> {
-
-    protected final Logger log = LogManager.getLogger(this.getClass());
+    protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
     protected Properties propParams = new Properties();
 

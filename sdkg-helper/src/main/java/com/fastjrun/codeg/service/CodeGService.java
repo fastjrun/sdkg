@@ -1,17 +1,20 @@
+/*
+ * Copyright (C) 2019 fastjrun, Inc. All Rights Reserved.
+ */
 package com.fastjrun.codeg.service;
 
 import com.fastjrun.codeg.common.CodeGConstants;
 
 public interface CodeGService extends CodeGConstants {
 
-    boolean generateAPI(String moduleName);
+    boolean generateAPI(String bundleFiles, String moduleName);
 
-    boolean generateClient(String moduleName);
+    boolean generateClient(String bundleFiles, String moduleName);
 
-    boolean generateProvider(String moduleName);
+    boolean generateProvider(String bundleFiles, String moduleName);
 
-    boolean generateBundle(String moduleName, MockModel mockModel);
+    boolean generateBundle(String bundleFiles, String moduleName, MockModel mockModel);
 
-    boolean generateBase(String moduleName);
+    boolean generateBase(String sqlFile, boolean supportController, boolean supportTest, String moduleName);
 
 }

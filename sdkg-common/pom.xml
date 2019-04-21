@@ -7,14 +7,17 @@
     <parent>
         <groupId>com.fastjrun.codeg</groupId>
         <artifactId>sdkg-parent</artifactId>
-        <version>2.0.1</version>
+        <version>2.1</version>
     </parent>
     <artifactId>sdkg-common</artifactId>
     <dependencies>
         <dependency>
-            <groupId>com.fastjrun.codeg</groupId>
-            <artifactId>sdkg-api</artifactId>
-            <version>${project.version}</version>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
         </dependency>
     </dependencies>
 </project>

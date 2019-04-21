@@ -1,20 +1,17 @@
+/*
+ * Copyright (C) 2019 fastjrun, Inc. All Rights Reserved.
+ */
 package com.fastjrun.utils;
 
-/*
- * *
- *  * 注意：本内容仅限于公司内部传阅，禁止外泄以及用于其他的商业目的
- *  *
- *  * @author fastjrun
- *  * @Copyright 2018 快嘉框架. All rights reserved.
- *
- */
+import java.util.ArrayList;
+import java.util.List;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fastjrun.util.FastJsonObjectMapper;
+import com.fastjrun.common.util.FastJsonObjectMapper;
 
 public class JacksonUtils {
 
@@ -43,21 +40,24 @@ public class JacksonUtils {
     /**
      * json数组转List
      *
-     * @param <T>          This is the type parameter
-     * @param jsonStr      jsonStr
-     * @param valueTypeRef valueTypeRef
+     * @param <T>       This is the type parameter
+     * @param jsonNode  jsonNode
+     * @param valueType valueType
      *
      * @return Object Array
      */
-    public static <T> T readValue(String jsonStr, TypeReference<T> valueTypeRef) {
+    public static <T> List<T> readList(JsonNode jsonNode, Class<T> valueType) {
+        JavaType javaType =
+                objectMapper.getTypeFactory().constructParametricType(List.class, valueType);
+        List<T> list = new ArrayList<>();
 
-        try {
-            return objectMapper.readValue(jsonStr, valueTypeRef);
-        } catch (Exception e) {
-            e.printStackTrace();
+        while (jsonNode.elements().hasNext()) {
+            JsonNode element = jsonNode.elements().next();
+            T t = readValue(element.toString(), valueType);
+            list.add(t);
         }
 
-        return null;
+        return list;
     }
 
     /**
@@ -126,5 +126,26 @@ public class JacksonUtils {
         }
 
         return null;
+    }
+
+    public static String invokeMethodName(String jTypeName) {
+        String jsonInvokeMethodName = "asText";
+        switch (jTypeName) {
+            case "Boolean":
+                jsonInvokeMethodName = "asBoolean";
+                break;
+            case "Integer":
+                jsonInvokeMethodName = "asInt";
+                break;
+            case "Long":
+                jsonInvokeMethodName = "asLong";
+                break;
+            case "Double":
+                jsonInvokeMethodName = "asDouble";
+                break;
+            default:
+                break;
+        }
+        return jsonInvokeMethodName;
     }
 }

@@ -11,23 +11,26 @@
 
 ### 实现原理
 - 基于maven插件实现
-- 快嘉代码生成Maven插件使用dom4j解析接口文档，用codelmodel输出代码
-
-### 常见问题
-
-
-### 基于sdkg命令生成代码参考示例
-```
-# 本地参考安装codeg-helper插件
-mvn clean install -pl codeg-helper -am
-```
-更多命令参考工程下的build.sh
+- 快嘉代码生成Maven插件使用dom4j解析接口文档，用jcodemodel输出代码
 
 ### to be continued
-#### codemodel重构
-#### 支持自定义协议api和provider的代码生成
+rpc相关代码生成需要重新调试
+client端代码需要测试下
+
 
 ## 版本说明：
+### v2.1 升级说明
+#### 项目结构进一步解耦，将代码生成功能和插件分开,从codeg-helper中拆分出codeg-plugin模块
+#### 抽离出codeg-test的单测模块
+#### 优化代码生成逻辑
+#### 调整web和provider模块的代码生成位置区分package
+#### 新增web模块进一步优化
+#### 新增接口协议，支持web方式
+#### base模板新增BaseService、BaseController
+#### codemodel切换成大神的jcodemodel ：https://github.com/phax/jcodemodel
+#### 项目结构进一步解耦，抽离出项目自带协议和自定义协议代码生成器放在sdkg-example模块下
+#### 日志组件切换成slf4j+log4j2
+
 ### v2.0.1 升级说明
 #### bugfix
 ### v2.0 升级说明

@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2019 fastjrun, Inc. All Rights Reserved.
+ */
 package com.fastjrun.codeg.helper;
 
 import com.fastjrun.codeg.common.CodeGConstants;
@@ -5,10 +8,10 @@ import com.fastjrun.codeg.common.CodeGException;
 import com.fastjrun.codeg.common.CodeGMsgContants;
 import com.fastjrun.codeg.common.CommonController;
 import com.fastjrun.codeg.common.FJTable;
-import com.fastjrun.codeg.generator.BaseControllerGenerator;
-import com.fastjrun.codeg.generator.BaseMybatisAFGenerator;
+import com.fastjrun.codeg.generator.MybatisAFGenerator;
 import com.fastjrun.codeg.generator.PacketGenerator;
 import com.fastjrun.codeg.generator.ServiceGenerator;
+import com.fastjrun.codeg.generator.common.BaseControllerGenerator;
 
 public abstract class CodeGeneratorFactory implements CodeGConstants {
 
@@ -37,7 +40,6 @@ public abstract class CodeGeneratorFactory implements CodeGConstants {
             serviceGenerator.setMockModel(mockModel);
             serviceGenerator.setAuthor(author);
             serviceGenerator.setCompany(company);
-
         }
         return serviceGenerator;
     }
@@ -50,7 +52,7 @@ public abstract class CodeGeneratorFactory implements CodeGConstants {
             PacketGenerator packetGeneratorTmp = (PacketGenerator) packetGenerator.clone();
             return packetGeneratorTmp;
         } catch (CloneNotSupportedException e) {
-            throw new CodeGException(CodeGMsgContants.CODEG_NOT_SUPPORT, "不支持packetObject这个生成器", e);
+            throw new CodeGException(CodeGMsgContants.CODEG_NOT_SUPPORT, "不支持PacketObject这个生成器", e);
         }
 
     }
@@ -72,7 +74,7 @@ public abstract class CodeGeneratorFactory implements CodeGConstants {
                                                                         MockModel mockModel, String
                                                                                 author, String company,
                                                                         CommonController commonController) {
-        BaseControllerGenerator baseControllerGenerator = null;
+        BaseControllerGenerator baseControllerGenerator;
         try {
             baseControllerGenerator =
                     (BaseControllerGenerator) Class
@@ -91,14 +93,14 @@ public abstract class CodeGeneratorFactory implements CodeGConstants {
         return baseControllerGenerator;
     }
 
-    public static BaseMybatisAFGenerator createBaseMybatisAFGenerator(String packageNamePrefix, String
+    public static MybatisAFGenerator createBaseMybatisAFGenerator(String packageNamePrefix, String
             author, String company,
-                                                                      FJTable fjTable) {
-        BaseMybatisAFGenerator baseMybatisAFGenerator = new BaseMybatisAFGenerator();
-        baseMybatisAFGenerator.setPackageNamePrefix(packageNamePrefix);
-        baseMybatisAFGenerator.setFjTable(fjTable);
-        baseMybatisAFGenerator.setAuthor(author);
-        baseMybatisAFGenerator.setCompany(company);
-        return baseMybatisAFGenerator;
+                                                                  FJTable fjTable) {
+        MybatisAFGenerator mybatisAFGenerator = new MybatisAFGenerator();
+        mybatisAFGenerator.setPackageNamePrefix(packageNamePrefix);
+        mybatisAFGenerator.setFjTable(fjTable);
+        mybatisAFGenerator.setAuthor(author);
+        mybatisAFGenerator.setCompany(company);
+        return mybatisAFGenerator;
     }
 }

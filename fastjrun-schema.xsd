@@ -116,6 +116,13 @@
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
+            <xs:element name="extraParameters" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="parameter" type="commonParameter" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
             <xs:element name="request" type="bodyObject" minOccurs="0"/>
             <xs:element name="response" type="bodyObject" minOccurs="0"/>
         </xs:sequence>
@@ -191,6 +198,6 @@
         <xs:attribute name="clientName" type="xs:string" use="required"/>
         <xs:attribute name="remark" type="xs:string" use="required"/>
         <xs:attribute name="tags" type="xs:string" use="required"/>
-        <xs:attribute name="new" type="xs:boolean" default="false"/>
+        <xs:attribute name="new" type="xs:boolean" default="true"/>
     </xs:complexType>
 </xs:schema>
