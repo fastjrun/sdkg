@@ -33,6 +33,11 @@
                 <version>${log4j2.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context</artifactId>
                 <version>${springframework.version}</version>
@@ -296,7 +301,6 @@
         </profile>
     </profiles>
     <modules>
-        <module>sdkg-api</module>
         <module>sdkg-test</module>
         <module>sdkg-common</module>
         <module>sdkg-client</module>
@@ -304,14 +308,17 @@
         <module>sdkg-task</module>
         <module>sdkg-provider</module>
         <module>sdkg-helper</module>
+        <module>sdkg-generator</module>
         <module>codeg-test</module>
         <module>sdkg-plugin</module>
+        <module>sdkg-example</module>
     </modules>
     <properties>
         <mycompany-nexus>http://www.mycompany.com</mycompany-nexus>
         <mycompany-snapshots-url-suffix>/repository/maven-snapshots/</mycompany-snapshots-url-suffix>
         <mycompany-releases-url-suffix>/repository/maven-releases/</mycompany-releases-url-suffix>
         <log4j2.version>2.11.0</log4j2.version>
+        <slf4j.version>1.8.0-beta4</slf4j.version>
         <springframework.version>4.3.15.RELEASE</springframework.version>
         <h2.version>1.4.197</h2.version>
         <junit.version>4.12</junit.version>

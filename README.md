@@ -11,10 +11,11 @@
 
 ### 实现原理
 - 基于maven插件实现
-- 快嘉代码生成Maven插件使用dom4j解析接口文档，用codelmodel输出代码
+- 快嘉代码生成Maven插件使用dom4j解析接口文档，用jcodemodel输出代码
 
 ### to be continued
-#### 支持自定义协议api和provider的代码生成
+rpc相关代码生成需要重新调试
+
 
 ## 版本说明：
 ### v2.1 升级说明
@@ -26,6 +27,8 @@
 #### 新增接口协议，支持web方式
 #### base模板新增BaseService、BaseController
 #### codemodel切换成大神的jcodemodel ：https://github.com/phax/jcodemodel
+#### 项目结构进一步解耦，抽离出项目自带协议和自定义协议代码生成器放在sdkg-example模块下
+#### 日志组件切换成slf4j+log4j2
 
 ### v2.0.1 升级说明
 #### bugfix

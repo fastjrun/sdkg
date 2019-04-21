@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2019 fastjrun, Inc. All Rights Reserved.
+ */
 package com.fastjrun.codeg.service.impl;
 
 import java.io.File;

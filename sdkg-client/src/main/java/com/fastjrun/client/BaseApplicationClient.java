@@ -1,20 +1,15 @@
+/*
+ * Copyright (C) 2019 fastjrun, Inc. All Rights Reserved.
+ */
 package com.fastjrun.client;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.fastjrun.client.exchange.BaseExchangeHandleClient;
+import com.fastjrun.common.client.BaseClient;
 
-/*
- * *
- *  * 注意：本内容仅限于公司内部传阅，禁止外泄以及用于其他的商业目的
- *  *
- *  * @Copyright 2018 快嘉框架. All rights reserved.
- *
- */
-
-public abstract class BaseApplicationClient<T extends BaseExchangeHandleClient> {
-    protected final Logger log = LogManager.getLogger(this.getClass());
+public abstract class BaseApplicationClient<T extends BaseClient> {
+    protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
     protected T baseClient;
 

@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2019 fastjrun, Inc. All Rights Reserved.
+ */
 package com.fastjrun.codeg.helper;
 
 import com.fastjrun.codeg.common.CodeGConstants;

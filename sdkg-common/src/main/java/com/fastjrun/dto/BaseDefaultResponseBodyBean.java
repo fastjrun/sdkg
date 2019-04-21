@@ -1,16 +1,19 @@
+/*
+ * Copyright (C) 2019 fastjrun, Inc. All Rights Reserved.
+ */
 package com.fastjrun.dto;
 
 import com.fastjrun.entity.BaseEntity;
 
-public class BaseDefaultResponseBodyBean {
+public abstract class BaseDefaultResponseBodyBean<T extends BaseEntity> {
 
-    private BaseEntity baseEntity;
+    private T baseEntity;
 
-    public BaseEntity getBaseEntity() {
+    public T getBaseEntity() {
         return baseEntity;
     }
 
-    public void setBaseEntity(BaseEntity baseEntity) {
+    public void setBaseEntity(T baseEntity) {
         this.baseEntity = baseEntity;
     }
 }

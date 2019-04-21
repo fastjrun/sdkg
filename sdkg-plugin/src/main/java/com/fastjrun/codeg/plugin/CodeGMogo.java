@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2019 fastjrun, Inc. All Rights Reserved.
+ */
 package com.fastjrun.codeg.plugin;
 
 import org.apache.maven.plugin.AbstractMojo;

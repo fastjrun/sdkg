@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Fastjrun, Inc. All Rights Reserved.
+ * Copyright (C) 2019 fastjrun, Inc. All Rights Reserved.
  */
 package com.fastjrun.mybatis;
 

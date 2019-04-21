@@ -1,11 +1,11 @@
+/*
+ * Copyright (C) 2019 fastjrun, Inc. All Rights Reserved.
+ */
 package com.fastjrun.web.controller;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class BaseController {
-    protected final Logger log = LogManager.getLogger(this.getClass());
-
-    protected final String PAGE_SIZE = "10";
-
+    protected final Logger log = LoggerFactory.getLogger(this.getClass());
 }

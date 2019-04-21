@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2019 fastjrun, Inc. All Rights Reserved.
+ */
 package com.fastjrun.codeg.service.impl;
 
 import java.io.File;
@@ -14,13 +17,13 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fastjrun.codeg.common.CodeGConstants;
 import com.fastjrun.codeg.common.CodeGException;
@@ -56,7 +59,7 @@ public abstract class BaseCodeGServiceImpl implements CodeGService, CodeGConstan
 
     static String DUBBO_CONSUME_FILENAME = "applicationContext-dubbo-consumer.xml";
 
-    protected final Logger log = LogManager.getLogger(this.getClass());
+    protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
     protected String packageNamePrefix;
     protected String author;
