@@ -6,7 +6,7 @@
     <groupId>com.fastjrun.codeg</groupId>
     <artifactId>sdkg-parent</artifactId>
     <packaging>pom</packaging>
-    <version>2.1</version>
+    <version>2.1.1</version>
     <name>sdkg</name>
     <description>快嘉代码生成Maven插件</description>
     <url>http://fastjrun.com/</url>
@@ -318,7 +318,7 @@
         <mycompany-snapshots-url-suffix>/repository/maven-snapshots/</mycompany-snapshots-url-suffix>
         <mycompany-releases-url-suffix>/repository/maven-releases/</mycompany-releases-url-suffix>
         <log4j2.version>2.11.0</log4j2.version>
-        <slf4j.version>1.8.0-beta4</slf4j.version>
+        <slf4j.version>1.7.25</slf4j.version>
         <springframework.version>4.3.15.RELEASE</springframework.version>
         <h2.version>1.4.197</h2.version>
         <junit.version>4.12</junit.version>
