@@ -3,67 +3,28 @@
  */
 package com.fastjrun.client;
 
-import java.io.IOException;
-import java.io.InputStream;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fastjrun.helper.StringHelper;
+import com.fastjrun.test.AbstractAdVancedTestNGSpringContextTest;
+import org.testng.Assert;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.testng.Assert;
-import org.testng.annotations.DataProvider;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fastjrun.helper.StringHelper;
-
-public abstract class BaseApplicationClientTest<T extends BaseApplicationClient> {
-    protected final Logger log = LoggerFactory.getLogger(this.getClass());
-
-    protected Properties propParams = new Properties();
+public abstract class BaseApplicationClientTest<T extends BaseApplicationClient>
+  extends AbstractAdVancedTestNGSpringContextTest {
 
     protected T baseApplicationClient;
 
-    public abstract void prepareApplicationClient(String envName);
+    public abstract void prepareApplicationClient();
 
-    protected void init(String envName) {
-        baseApplicationClient.initSDKConfig();
-        try {
-            InputStream inParam =
-                    this.getClass().getResourceAsStream((("/testdata/" + envName) + ".properties"));
-            propParams.load(inParam);
-        } catch (IOException e) {
-            log.error("load config for error:{}", e);
-        }
-    }
-
-    @DataProvider(name = "loadParam")
-    public Object[][] loadParam(Method method) {
-        Set<String> keys = propParams.stringPropertyNames();
-        List<String[]> parameters = new ArrayList<>();
-        for (String key : keys) {
-            if (key.startsWith(((this.getClass().getSimpleName() + ".") + (method.getName() + ".")))) {
-                String value = propParams.getProperty(key);
-                parameters.add(new String[] {value});
-            }
-        }
-        Object[][] object = new Object[parameters.size()][];
-        for (int i = 0; (i < object.length); i++) {
-            String[] str = parameters.get(i);
-            object[i] = new String[str.length];
-            System.arraycopy(str, 0, object[i], 0, str.length);
-        }
-        return object;
-    }
-
-    protected <T> void processAssertion(JsonNode assertJson, Object responseBody, Class<T> classType) {
+    protected <T> void processAssertion(JsonNode assertJson, Object responseBody,
+      Class<T> classType) {
 
         if (assertJson != null && assertJson.isObject()) {
             Iterator<Map.Entry<String, JsonNode>> it = assertJson.fields();
@@ -80,7 +41,8 @@ public abstract class BaseApplicationClientTest<T extends BaseApplicationClient>
 
     }
 
-    private <T> void processObject(String key, Object object, Class<T> classType, String expectedValue, String info) {
+    private <T> void processObject(String key, Object object, Class<T> classType,
+      String expectedValue, String info) {
 
         String[] keyFields = key.split("\\.");
         // 只有一级属性
@@ -114,7 +76,8 @@ public abstract class BaseApplicationClientTest<T extends BaseApplicationClient>
                     info = info + "[" + indexStr + "]";
                     int index = Integer.parseInt(indexStr);
                     if (size > index) {
-                        returnValue = List.class.getMethod("get", int.class).invoke(returnValue, index);
+                        returnValue =
+                          List.class.getMethod("get", int.class).invoke(returnValue, index);
                     } else {
                         Assert.fail(info + " is null");
                     }
@@ -129,8 +92,7 @@ public abstract class BaseApplicationClientTest<T extends BaseApplicationClient>
                         }
                     }
                     if (!isEqual) {
-                        Assert.fail(info + " doesn't have"
-                                + " value:" + expectedValue);
+                        Assert.fail(info + " doesn't have" + " value:" + expectedValue);
                     }
                 }
 
@@ -141,7 +103,8 @@ public abstract class BaseApplicationClientTest<T extends BaseApplicationClient>
             if (length == 1) {
                 Assert.assertEquals(returnValue, expectedValue, info);
             } else {
-                this.processObject(key.substring(key.indexOf(".") + 1), returnValue, newClassType, expectedValue, info);
+                this.processObject(key.substring(key.indexOf(".") + 1), returnValue, newClassType,
+                  expectedValue, info);
             }
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
