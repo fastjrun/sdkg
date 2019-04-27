@@ -116,7 +116,7 @@ public class DefaultHTTPUtilClient extends BaseHTTPUtilClient {
             if (response.isSuccessful()) {
                 result = response.body().string();
                 if (log.isDebugEnabled()) {
-                    log.debug(result);
+                    log.debug("result={}",result);
                 }
             } else {
                 throw new ClientException(CodeMsgConstants.CodeMsg.ClIENT_NETWORK_RESPONSE_NOT_OK);
