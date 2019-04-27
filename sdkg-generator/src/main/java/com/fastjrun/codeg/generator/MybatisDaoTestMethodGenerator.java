@@ -3,9 +3,6 @@
  */
 package com.fastjrun.codeg.generator;
 
-import java.util.List;
-import java.util.Properties;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fastjrun.codeg.common.FJColumn;
 import com.fastjrun.codeg.common.FJTable;
@@ -13,17 +10,10 @@ import com.fastjrun.codeg.generator.common.BaseCMGenerator;
 import com.fastjrun.codeg.generator.common.MybatisAFDaoConstants;
 import com.fastjrun.helper.StringHelper;
 import com.fastjrun.utils.JacksonUtils;
-import com.helger.jcodemodel.AbstractJClass;
-import com.helger.jcodemodel.JAnnotationUse;
-import com.helger.jcodemodel.JBlock;
-import com.helger.jcodemodel.JDefinedClass;
-import com.helger.jcodemodel.JExpr;
-import com.helger.jcodemodel.JFieldVar;
-import com.helger.jcodemodel.JForLoop;
-import com.helger.jcodemodel.JInvocation;
-import com.helger.jcodemodel.JMethod;
-import com.helger.jcodemodel.JMod;
-import com.helger.jcodemodel.JVar;
+import com.helger.jcodemodel.*;
+
+import java.util.List;
+import java.util.Properties;
 
 /**
  * Mybatis Annotation
@@ -84,7 +74,7 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator implements My
         JVar reqParamsJsonStrAndAssertJVar = method.param(cmTest.ref("String"),
                 "reqParamsJsonStrAndAssert");
         JVar paramsJsonJVar = methodBlk.decl(cmTest.ref(JSONOBJECTCLASS_NAME), "paramsJson", JExpr._this()
-                .invoke("generateParamJson").arg(reqParamsJsonStrAndAssertJVar));
+                .invoke("parseStr2JsonArray").arg(reqParamsJsonStrAndAssertJVar).component(0));
         JVar entityVar =
                 methodBlk.decl(this.entityClass, lowerCaseFirstOneClassName, JExpr._null());
         JVar entityStrVar = methodBlk.decl(cmTest.ref(JSONOBJECTCLASS_NAME),
@@ -137,7 +127,7 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator implements My
         JVar reqParamsJsonStrAndAssertJVar = method.param(cmTest.ref("String"),
                 "reqParamsJsonStrAndAssert");
         JVar paramsJsonJVar = methodBlk.decl(cmTest.ref(JSONOBJECTCLASS_NAME), "paramsJson", JExpr._this()
-                .invoke("generateParamJson").arg(reqParamsJsonStrAndAssertJVar));
+                .invoke("parseStr2JsonArray").arg(reqParamsJsonStrAndAssertJVar).component(0));
 
         ObjectNode methodParamInJsonObject = JacksonUtils.createObjectNode();
         for (int i = 0; i < primaryKeyColumnNames.size(); i++) {
@@ -176,7 +166,7 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator implements My
         JVar reqParamsJsonStrAndAssertJVar = method.param(cmTest.ref("String"),
                 "reqParamsJsonStrAndAssert");
         JVar paramsJsonJVar = methodBlk.decl(cmTest.ref(JSONOBJECTCLASS_NAME), "paramsJson", JExpr._this()
-                .invoke("generateParamJson").arg(reqParamsJsonStrAndAssertJVar));
+                .invoke("parseStr2JsonArray").arg(reqParamsJsonStrAndAssertJVar).component(0));
         JVar entityVar =
                 methodBlk.decl(this.entityClass, lowerCaseFirstOneClassName, JExpr._null());
         JVar entityStrVar = methodBlk.decl(cmTest.ref(JSONOBJECTCLASS_NAME),
@@ -265,7 +255,7 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator implements My
         JVar reqParamsJsonStrAndAssertJVar = method.param(cmTest.ref("String"),
                 "reqParamsJsonStrAndAssert");
         JVar paramsJsonJVar = methodBlk.decl(cmTest.ref(JSONOBJECTCLASS_NAME), "paramsJson", JExpr._this()
-                .invoke("generateParamJson").arg(reqParamsJsonStrAndAssertJVar));
+                .invoke("parseStr2JsonArray").arg(reqParamsJsonStrAndAssertJVar).component(0));
         JVar rowBoundsVar =
                 methodBlk.decl(cmTest.ref("org.apache.ibatis.session.RowBounds"), "rowBounds", JExpr._null());
         JVar rowBoundsStrVar = methodBlk.decl(cmTest.ref(JSONOBJECTCLASS_NAME),
@@ -310,7 +300,7 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator implements My
         JVar reqParamsJsonStrAndAssertJVar = method.param(cmTest.ref("String"),
                 "reqParamsJsonStrAndAssert");
         JVar paramsJsonJVar = methodBlk.decl(cmTest.ref(JSONOBJECTCLASS_NAME), "paramsJson", JExpr._this()
-                .invoke("generateParamJson").arg(reqParamsJsonStrAndAssertJVar));
+                .invoke("parseStr2JsonArray").arg(reqParamsJsonStrAndAssertJVar).component(0));
         JVar conditionVar =
                 methodBlk.decl(cmTest.ref("String"), "condition", JExpr._null());
         JVar conditionStrVar = methodBlk.decl(cmTest.ref(JSONOBJECTCLASS_NAME),
@@ -340,7 +330,7 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator implements My
         JVar reqParamsJsonStrAndAssertJVar = method.param(cmTest.ref("String"),
                 "reqParamsJsonStrAndAssert");
         JVar paramsJsonJVar = methodBlk.decl(cmTest.ref(JSONOBJECTCLASS_NAME), "paramsJson", JExpr._this()
-                .invoke("generateParamJson").arg(reqParamsJsonStrAndAssertJVar));
+                .invoke("parseStr2JsonArray").arg(reqParamsJsonStrAndAssertJVar).component(0));
         JVar conditionVar =
                 methodBlk.decl(cmTest.ref("String"), "condition", JExpr._null());
         JVar conditionStrVar = methodBlk.decl(cmTest.ref(JSONOBJECTCLASS_NAME),
@@ -370,7 +360,7 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator implements My
         JVar reqParamsJsonStrAndAssertJVar = method.param(cmTest.ref("String"),
                 "reqParamsJsonStrAndAssert");
         JVar paramsJsonJVar = methodBlk.decl(cmTest.ref(JSONOBJECTCLASS_NAME), "paramsJson", JExpr._this()
-                .invoke("generateParamJson").arg(reqParamsJsonStrAndAssertJVar));
+                .invoke("parseStr2JsonArray").arg(reqParamsJsonStrAndAssertJVar).component(0));
         JVar conditionVar =
                 methodBlk.decl(cmTest.ref("String"), "condition", JExpr._null());
         JVar conditionStrVar = methodBlk.decl(cmTest.ref(JSONOBJECTCLASS_NAME),
@@ -409,7 +399,7 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator implements My
         JVar reqParamsJsonStrAndAssertJVar = method.param(cmTest.ref("String"),
                 "reqParamsJsonStrAndAssert");
         JVar paramsJsonJVar = methodBlk.decl(cmTest.ref(JSONOBJECTCLASS_NAME), "paramsJson", JExpr._this()
-                .invoke("generateParamJson").arg(reqParamsJsonStrAndAssertJVar));
+                .invoke("parseStr2JsonArray").arg(reqParamsJsonStrAndAssertJVar).component(0));
         JVar conditionVar =
                 methodBlk.decl(cmTest.ref("String"), "condition", JExpr._null());
         JVar conditionStrVar = methodBlk.decl(cmTest.ref(JSONOBJECTCLASS_NAME),
@@ -464,7 +454,7 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator implements My
         JVar reqParamsJsonStrAndAssertJVar = method.param(cmTest.ref("String"),
                 "reqParamsJsonStrAndAssert");
         JVar paramsJsonJVar = methodBlk.decl(cmTest.ref(JSONOBJECTCLASS_NAME), "paramsJson", JExpr._this()
-                .invoke("generateParamJson").arg(reqParamsJsonStrAndAssertJVar));
+                .invoke("parseStr2JsonArray").arg(reqParamsJsonStrAndAssertJVar).component(0));
         JVar listVar =
                 methodBlk.decl(cmTest.ref("java.util.List").narrow(this.entityClass), lowerCaseFirstOneClassName + "s",
                         JExpr._null());

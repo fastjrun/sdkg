@@ -170,15 +170,11 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
         this.addClassDeclaration(this.clientTestClass);
         JMethod clientTestPrepareApplicationClientMethod =
                 this.clientTestClass.method(JMod.PUBLIC, cmTest.VOID, "prepareApplicationClient");
-        JVar jVarEnvName = clientTestPrepareApplicationClientMethod.param(cmTest.ref("String"), "envName");
-        jVarEnvName.annotate(cmTest.ref("org.testng.annotations.Optional")).param("value", "unitTest");
         clientTestPrepareApplicationClientMethod.annotate(cmTest.ref("Override"));
-        clientTestPrepareApplicationClientMethod.annotate(cmTest.ref("org.testng.annotations.BeforeTest"));
-        clientTestPrepareApplicationClientMethod.annotate(cmTest.ref("org.testng.annotations.Parameters"))
-                .paramArray("value").param("envName");
+        clientTestPrepareApplicationClientMethod.annotate(cmTest.ref("org.testng.annotations.BeforeClass"));
         JBlock jBlock = clientTestPrepareApplicationClientMethod.body();
         jBlock.assign(JExpr.ref("baseApplicationClient"), JExpr._new(this.clientClass));
-        jBlock.add(JExpr._this().invoke("init").arg(jVarEnvName));
+        jBlock.add(JExpr.ref("baseApplicationClient").invoke("initSDKConfig"));
     }
 
     protected void processClient() {
