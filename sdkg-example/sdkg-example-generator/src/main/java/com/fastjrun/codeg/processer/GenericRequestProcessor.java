@@ -12,7 +12,8 @@ import com.helger.jcodemodel.JMethod;
 public class GenericRequestProcessor extends BaseRequestProcessor {
 
     @Override
-    public String processHTTPRequest(JMethod method, JInvocation jInvocation, MockModel mockModel, JCodeModel cm) {
+    public String processHTTPRequest(JMethod method, JInvocation jInvocation, MockModel mockModel,
+      JCodeModel cm) {
         return "";
     }
 
@@ -21,9 +22,9 @@ public class GenericRequestProcessor extends BaseRequestProcessor {
         if (this.requestClass != null) {
             method.param(this.requestClass, "request");
             jInvocation.arg(JExpr.ref("request"));
-            method.body().add(JExpr.ref("log").invoke("debug")
-                    .arg(cm.ref(CodeGConstants.JacksonUtilsClassName)
-                            .staticInvoke("toJSon").arg(JExpr.ref("request"))));
+            method.body().add(JExpr.ref("log").invoke("debug").arg(JExpr.lit("request={}")).arg(
+              cm.ref(CodeGConstants.JacksonUtilsClassName).staticInvoke("toJSon").arg(
+                JExpr.ref("request"))));
         }
     }
 

@@ -10,7 +10,7 @@ public abstract class BaseApiController extends BaseController {
 
     protected void processHead(ApiRequestHead head) {
 
-        log.debug("head=" + head);
+        log.debug("head={}",head);
 
     }
 
