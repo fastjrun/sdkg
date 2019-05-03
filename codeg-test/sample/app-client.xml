@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bundle xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        name="快嘉接口定义规范" xsi:noNamespaceSchemaLocation="fastjrun-schema.xsd">
+<!--
+  ~ Copyright (C) 2019 fastjrun, Inc. All Rights Reserved.
+  -->
+<bundle xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="fastjrun-example-schema.xsd">
     <packets>
         <packet class="packet.app.RegistserRestRequestBody" parent="com.fastjrun.packet.BaseRequestBody">
             <field name="loginId" dataType="String" length="12"
@@ -45,23 +47,14 @@
                 <request class="packet.app.RegistserRestRequestBody"/>
             </method>
             <method name="login" version="" path="login" remark="登录">
-                <extraParameters>
-                    <parameter name="deviceId" dataType="String" length="64" remark="设备ID"/>
-                </extraParameters>
                 <request class="packet.app.LoginRestRequestBody"/>
                 <response class="packet.app.LoginRestResponseBody"/>
             </method>
             <method name="login" version="v1_1" path="login" remark="登录v1.1">
-                <extraParameters>
-                    <parameter name="deviceId" dataType="String" length="64" remark="设备ID"/>
-                </extraParameters>
                 <request class="packet.app.LoginRestRequestBody"/>
                 <response class="packet.app.LoginRestResponseBody"/>
             </method>
             <method name="autoLogin" version="" path="autoLogin" remark="自动登录">
-                <extraParameters>
-                    <parameter name="deviceId" dataType="String" length="64" remark="设备ID"/>
-                </extraParameters>
                 <request class="packet.app.AutoLoginRestRequestBody"/>
                 <response class="packet.app.LoginRestResponseBody"/>
             </method>
