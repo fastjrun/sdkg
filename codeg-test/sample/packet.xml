@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C) 2019 fastjrun, Inc. All Rights Reserved.
+  -->
+<bundle xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="fastjrun-example-schema.xsd">
+    <packets>
+        <packet class="packet.generic.VersionListResponseBody">
+            <list name="list" class="packet.generic.Version">
+                <field name="id" dataType="Long" length="64" canBeNull="false"
+                       remark="版本Id"/>
+                <field name="versionNo" dataType="String" length="64"
+                       canBeNull="false" remark="版本号"/>
+                <field name="versionInfo" dataType="String" length="400"
+                       canBeNull="false" remark="版本信息"/>
+                <list name="list" class="packet.generic.VersionList">
+                    <field name="id" dataType="Long" length="64" canBeNull="false"
+                           remark="版本Id"/>
+                    <field name="versionNo" dataType="String" length="64"
+                           canBeNull="false" remark="版本号"/>
+                    <field name="versionInfo" dataType="String" length="400"
+                           canBeNull="false" remark="版本信息"/>
+                    <object name="object" class="packet.generic.VersionListObject">
+                        <field name="id" dataType="Long" length="64" canBeNull="false"
+                               remark="版本Id"/>
+                        <field name="versionNo" dataType="String" length="64"
+                               canBeNull="false" remark="版本号"/>
+                        <field name="versionInfo" dataType="String" length="400"
+                               canBeNull="false" remark="版本信息"/>
+                        <list name="list" class="packet.generic.VersionListObjectList">
+                            <field name="id" dataType="Long" length="64" canBeNull="false"
+                                   remark="版本Id"/>
+                            <field name="versionNo" dataType="String" length="64"
+                                   canBeNull="false" remark="版本号"/>
+                            <field name="versionInfo" dataType="String" length="400"
+                                   canBeNull="false" remark="版本信息"/>
+                        </list>
+                    </object>
+                </list>
+                <object name="object" class="packet.generic.VersionObject">
+                    <field name="id" dataType="Long" length="64" canBeNull="false"
+                           remark="版本Id"/>
+                    <field name="versionNo" dataType="String" length="64"
+                           canBeNull="false" remark="版本号"/>
+                    <field name="versionInfo" dataType="String" length="400"
+                           canBeNull="false" remark="版本信息"/>
+                    <list name="list" class="packet.generic.VersionObjectList">
+                        <field name="id" dataType="Long" length="64" canBeNull="false"
+                               remark="版本Id"/>
+                        <field name="versionNo" dataType="String" length="64"
+                               canBeNull="false" remark="版本号"/>
+                        <field name="versionInfo" dataType="String" length="400"
+                               canBeNull="false" remark="版本信息"/>
+                    </list>
+                </object>
+            </list>
+        </packet>
+    </packets>
+</bundle>
