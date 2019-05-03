@@ -34,7 +34,7 @@ public class TestUtils {
         for (String key : keys) {
             if (key.startsWith(className.concat(".").concat(method.getName()).concat("."))) {
                 String value = propParams.getProperty(key);
-                parameters.add(new String[] {value});
+                parameters.add(new String[] { value });
             }
         }
         Object[][] object = new Object[parameters.size()][];
