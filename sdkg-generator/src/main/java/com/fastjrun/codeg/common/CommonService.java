@@ -7,8 +7,8 @@ import java.util.List;
 
 public class CommonService {
 
-    private String name;
-    private String _class;
+    private String             name;
+    private String             _class;
     private List<CommonMethod> methods;
 
     public List<CommonMethod> getMethods() {

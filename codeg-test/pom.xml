@@ -24,8 +24,8 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.fastjrun.codeg</groupId>
-            <artifactId>sdkg-generator</artifactId>
+            <groupId>com.fastjrun.codeg.example</groupId>
+            <artifactId>sdkg-example-generator</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -35,9 +35,22 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <scope>test</scope>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <!-- 桥接：告诉Slf4j使用Log4j2 -->
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+        </dependency>
+        <dependency>
+            <!-- 桥接：告诉commons logging使用Log4j2 -->
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-jcl</artifactId>
         </dependency>
     </dependencies>
     <build>
@@ -53,6 +66,7 @@
                 <directory>src/test/resources</directory>
                 <includes>
                     <include>testdata/${envName}.properties</include>
+                    <include>log4j2.xml</include>
                 </includes>
             </testResource>
         </testResources>

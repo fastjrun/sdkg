@@ -107,7 +107,7 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
     }
 
     public abstract BaseControllerMethodGenerator prepareBaseControllerMethodGenerator(
-            ServiceMethodGenerator serviceMethodGenerator);
+      ServiceMethodGenerator serviceMethodGenerator);
 
     protected void processController() {
         ControllerType controllerType = commonController.getControllerType();
@@ -122,7 +122,8 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
 
         try {
             this.controlllerClass = cm._class(controllerPackageName + controllerName);
-            if (controllerType.providerParentName != null && !controllerType.providerParentName.equals("")) {
+            if (controllerType.providerParentName != null && !controllerType.providerParentName.equals(
+              "")) {
                 this.controlllerClass._extends(cm.ref(controllerType.providerParentName));
             }
 
@@ -131,39 +132,43 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
             log.error(msg, e);
             throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
         }
-        this.controlllerClass.annotate(cm.ref("org.springframework.web.bind.annotation.RestController"));
-        this.controlllerClass.annotate(cm.ref("org.springframework.web.bind.annotation.RequestMapping"))
-                .param("value", this.controllerPath);
+        this.controlllerClass.annotate(
+          cm.ref("org.springframework.web.bind.annotation.RestController"));
+        this.controlllerClass.annotate(
+          cm.ref("org.springframework.web.bind.annotation.RequestMapping")).param("value",
+          this.controllerPath);
         if (this.getMockModel() == CodeGConstants.MockModel.MockModel_Swagger) {
-            this.controlllerClass.annotate(cm.ref("io.swagger.annotations.Api"))
-                    .param("value", commonController.getRemark())
-                    .param("tags", commonController.getTags());
+            this.controlllerClass.annotate(cm.ref("io.swagger.annotations.Api")).param("value",
+              commonController.getRemark()).param("tags", commonController.getTags());
         }
         this.addClassDeclaration(this.controlllerClass);
 
         String serviceName = commonController.getServiceName();
         JFieldVar fieldVar =
-                this.controlllerClass.field(JMod.PRIVATE, this.serviceGenerator.getServiceClass(), serviceName);
+          this.controlllerClass.field(JMod.PRIVATE, this.serviceGenerator.getServiceClass(),
+            serviceName);
         fieldVar.annotate(cm.ref("org.springframework.beans.factory.annotation.Autowired"));
-        fieldVar.annotate(cm.ref("org.springframework.beans.factory.annotation.Qualifier")).param("value",
-                commonController.getServiceRef());
+        fieldVar.annotate(cm.ref("org.springframework.beans.factory.annotation.Qualifier")).param(
+          "value", commonController.getServiceRef());
     }
 
     protected void processClientTest() {
         try {
-            this.clientTestClass = cmTest._class(this.getPackageNamePrefix() + "client." + this.clientName + "Test");
+            this.clientTestClass =
+              cmTest._class(this.getPackageNamePrefix() + "client." + this.clientName + "Test");
         } catch (JClassAlreadyExistsException e) {
             String msg = commonController.getName() + "Test is already exists.";
             log.error(msg, e);
             throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
         }
-        this.clientTestClass._extends(cmTest.ref("com.fastjrun.client.BaseApplicationClientTest").narrow
-                (this.clientClass));
+        this.clientTestClass._extends(
+          cmTest.ref("com.fastjrun.client.BaseApplicationClientTest").narrow(this.clientClass));
         this.addClassDeclaration(this.clientTestClass);
         JMethod clientTestPrepareApplicationClientMethod =
-                this.clientTestClass.method(JMod.PUBLIC, cmTest.VOID, "prepareApplicationClient");
+          this.clientTestClass.method(JMod.PUBLIC, cmTest.VOID, "prepareApplicationClient");
         clientTestPrepareApplicationClientMethod.annotate(cmTest.ref("Override"));
-        clientTestPrepareApplicationClientMethod.annotate(cmTest.ref("org.testng.annotations.BeforeClass"));
+        clientTestPrepareApplicationClientMethod.annotate(
+          cmTest.ref("org.testng.annotations.BeforeClass"));
         JBlock jBlock = clientTestPrepareApplicationClientMethod.body();
         jBlock.assign(JExpr.ref("baseApplicationClient"), JExpr._new(this.clientClass));
         jBlock.add(JExpr.ref("baseApplicationClient").invoke("initSDKConfig"));
@@ -179,8 +184,7 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
 
         this.clientName = this.clientName + controllerType.clientSuffix;
         try {
-            this.clientClass = cm
-                    ._class(this.getPackageNamePrefix() + "client." + this.clientName);
+            this.clientClass = cm._class(this.getPackageNamePrefix() + "client." + this.clientName);
         } catch (JClassAlreadyExistsException e) {
             String msg = commonController.getName() + " is already exists.";
             log.error(msg, e);
@@ -189,7 +193,8 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
 
         AbstractJClass baseClientClass = cm.ref(controllerType.baseClient);
 
-        AbstractJClass jParentClass = cm.ref("com.fastjrun.client.BaseApplicationClient").narrow(baseClientClass);
+        AbstractJClass jParentClass =
+          cm.ref("com.fastjrun.client.BaseApplicationClient").narrow(baseClientClass);
 
         this.addClassDeclaration(this.clientClass);
 

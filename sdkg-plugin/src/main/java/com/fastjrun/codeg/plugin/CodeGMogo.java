@@ -3,11 +3,10 @@
  */
 package com.fastjrun.codeg.plugin;
 
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugins.annotations.Parameter;
-
 import com.fastjrun.codeg.common.CodeGConstants;
 import com.fastjrun.codeg.service.impl.DefaultCodeGService;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugins.annotations.Parameter;
 
 public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
 
