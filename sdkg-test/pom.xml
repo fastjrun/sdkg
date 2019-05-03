@@ -33,5 +33,10 @@
             <artifactId>spring-test</artifactId>
             <version>${springframework.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-testng</artifactId>
+            <version>${powermock.version}</version>
+        </dependency>
     </dependencies>
 </project>
