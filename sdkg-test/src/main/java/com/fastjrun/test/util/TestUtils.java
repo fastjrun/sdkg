@@ -3,6 +3,9 @@
  */
 package com.fastjrun.test.util;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fastjrun.utils.JacksonUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
@@ -12,6 +15,9 @@ import java.util.Properties;
 import java.util.Set;
 
 public class TestUtils {
+
+    public static final String ASSERTION_SPLITSTRING      = ",assert=";
+    public static final int    PARAM_ASSERTION_ARRAY_SIZE = 2;
 
     public static Properties initParam(String proptiesFileInClassPath) throws IOException {
         Properties properties = new Properties();
@@ -38,6 +44,18 @@ public class TestUtils {
             System.arraycopy(str, 0, object[i], 0, str.length);
         }
         return object;
+    }
+
+    public static JsonNode[] parseStr2JsonArray(String reqParamsJsonStrAndAssert) {
+        JsonNode[] jsonNodes = new JsonNode[2];
+        String[] reqParamsJsonStrAndAssertArray =
+          reqParamsJsonStrAndAssert.split(ASSERTION_SPLITSTRING);
+        String reqParamsJsonStr = reqParamsJsonStrAndAssertArray[0];
+        jsonNodes[0] = JacksonUtils.toJsonNode(reqParamsJsonStr);
+        if (reqParamsJsonStrAndAssertArray.length == PARAM_ASSERTION_ARRAY_SIZE) {
+            jsonNodes[1] = JacksonUtils.toJsonNode(reqParamsJsonStrAndAssertArray[1]);
+        }
+        return jsonNodes;
     }
 }
 
