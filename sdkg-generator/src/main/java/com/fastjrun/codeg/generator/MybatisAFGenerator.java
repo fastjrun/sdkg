@@ -3,10 +3,6 @@
  */
 package com.fastjrun.codeg.generator;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
 import com.fastjrun.codeg.common.CodeGException;
 import com.fastjrun.codeg.common.CodeGMsgContants;
 import com.fastjrun.codeg.common.FJColumn;
@@ -18,26 +14,17 @@ import com.fastjrun.codeg.helper.MysqlSqlHelper;
 import com.fastjrun.codeg.helper.SQLHelperFactory;
 import com.fastjrun.codeg.helper.SqlHelper;
 import com.fastjrun.helper.StringHelper;
-import com.helger.jcodemodel.AbstractJType;
-import com.helger.jcodemodel.EClassType;
-import com.helger.jcodemodel.JBlock;
-import com.helger.jcodemodel.JClassAlreadyExistsException;
-import com.helger.jcodemodel.JConditional;
-import com.helger.jcodemodel.JDefinedClass;
-import com.helger.jcodemodel.JDocComment;
-import com.helger.jcodemodel.JExpr;
-import com.helger.jcodemodel.JFieldRef;
-import com.helger.jcodemodel.JFieldVar;
-import com.helger.jcodemodel.JForLoop;
-import com.helger.jcodemodel.JInvocation;
-import com.helger.jcodemodel.JMethod;
-import com.helger.jcodemodel.JMod;
-import com.helger.jcodemodel.JVar;
+import com.helger.jcodemodel.*;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * Mybatis Annotation FrameWork
  */
-public class MybatisAFGenerator extends BaseCMGenerator implements MybatisAFDaoConstants, MybatisAFServiceConstants {
+public class MybatisAFGenerator extends BaseCMGenerator
+  implements MybatisAFDaoConstants, MybatisAFServiceConstants {
 
     static String PACKAGE_ENTITY_NAME = "entity.";
 
@@ -101,8 +88,7 @@ public class MybatisAFGenerator extends BaseCMGenerator implements MybatisAFDaoC
 
     protected void processEntity() {
 
-        String className = this.packageNamePrefix + PACKAGE_ENTITY_NAME
-                + fjTable.getClassName();
+        String className = this.packageNamePrefix + PACKAGE_ENTITY_NAME + fjTable.getClassName();
 
         try {
             this.entityClass = cm._class(className);
@@ -119,16 +105,14 @@ public class MybatisAFGenerator extends BaseCMGenerator implements MybatisAFDaoC
         hashCode += this.entityClass.getClass().getName().hashCode();
         this.addClassDeclaration(this.entityClass);
         Map<String, FJColumn> columns = fjTable.getColumns();
-        JMethod toStringMethod = this.entityClass.method(JMod.PUBLIC, cm.ref("String"),
-                "toString");
+        JMethod toStringMethod = this.entityClass.method(JMod.PUBLIC, cm.ref("String"), "toString");
         toStringMethod.annotate(cm.ref("Override"));
         JBlock toStringMethodBlk = toStringMethod.body();
-        JVar toStringSBVar = toStringMethodBlk.decl(
-                cm.ref("StringBuilder"), "sb",
-                JExpr._new(cm.ref("StringBuilder")));
+        JVar toStringSBVar = toStringMethodBlk.decl(cm.ref("StringBuilder"), "sb",
+          JExpr._new(cm.ref("StringBuilder")));
         int index = 0;
         toStringMethodBlk.add(toStringSBVar.invoke("append").arg(
-                JExpr.lit(fjTable.getClassName()).plus(JExpr.lit(" ["))));
+          JExpr.lit(fjTable.getClassName()).plus(JExpr.lit(" ["))));
 
         for (FJColumn FJColumn : columns.values()) {
             String name = FJColumn.getFieldName();
@@ -139,22 +123,18 @@ public class MybatisAFGenerator extends BaseCMGenerator implements MybatisAFDaoC
             JDocComment jdoc = fieldVar.javadoc();
             // 成员变量注释
             jdoc.add(FJColumn.getName());
-            if (FJColumn.getComment() != null
-                    && FJColumn.getComment().length() > 0) {
+            if (FJColumn.getComment() != null && FJColumn.getComment().length() > 0) {
                 // 注释换行
                 jdoc.add("<br/>\n");
                 jdoc.add(FJColumn.getComment());
             }
             JFieldRef nameRef = JExpr.refthis(name);
             if (index > 0) {
-                toStringMethodBlk.add(toStringSBVar.invoke("append").arg(
-                        JExpr.lit(",")));
+                toStringMethodBlk.add(toStringSBVar.invoke("append").arg(JExpr.lit(",")));
             }
             index++;
-            toStringMethodBlk.add(toStringSBVar.invoke("append").arg(
-                    JExpr.lit(name)));
-            toStringMethodBlk.add(toStringSBVar.invoke("append").arg(
-                    JExpr.lit("=")));
+            toStringMethodBlk.add(toStringSBVar.invoke("append").arg(JExpr.lit(name)));
+            toStringMethodBlk.add(toStringSBVar.invoke("append").arg(JExpr.lit("=")));
             toStringMethodBlk.add(toStringSBVar.invoke("append").arg(nameRef));
 
             // javabean命名规范：属性第二字母大写，则setter和getter方法首字母和第二字母都大写
@@ -166,43 +146,40 @@ public class MybatisAFGenerator extends BaseCMGenerator implements MybatisAFDaoC
                     tterMethodName = StringHelper.toUpperCaseFirstOne(name);
                 }
             }
-            JMethod getMethod = this.entityClass.method(JMod.PUBLIC, jType, "get"
-                    + tterMethodName);
+            JMethod getMethod = this.entityClass.method(JMod.PUBLIC, jType, "get" + tterMethodName);
             hashCode += getMethod.name().hashCode();
             JBlock getMethodBlk = getMethod.body();
             getMethodBlk._return(nameRef);
-            JMethod setMethod = this.entityClass.method(JMod.PUBLIC, cm.VOID, "set"
-                    + tterMethodName);
+            JMethod setMethod =
+              this.entityClass.method(JMod.PUBLIC, cm.VOID, "set" + tterMethodName);
             JVar jvar = setMethod.param(jType, name);
             hashCode += setMethod.name().hashCode();
             JBlock setMethodBlk = setMethod.body();
             setMethodBlk.assign(nameRef, jvar);
         }
-        toStringMethodBlk.add(toStringSBVar.invoke("append").arg(
-                JExpr.lit("]")));
+        toStringMethodBlk.add(toStringSBVar.invoke("append").arg(JExpr.lit("]")));
         toStringMethodBlk._return(toStringSBVar.invoke("toString"));
         // private static final long serialVersionUID = 1L;
-        this.entityClass.field(JMod.PRIVATE + JMod.STATIC + JMod.FINAL, cm.LONG,
-                "serialVersionUID", JExpr.lit(hashCode));
+        this.entityClass.field(JMod.PRIVATE + JMod.STATIC + JMod.FINAL, cm.LONG, "serialVersionUID",
+          JExpr.lit(hashCode));
     }
 
     protected void processDaoTest(MybatisDaoTestMethodGenerator mybatisDaoTestMethodGenerator) {
         // 生成测试类名：Base+fjTable.getClassName()+DaoTest
-        JDefinedClass daoTestClass = null;
+        JDefinedClass daoTestClass;
         try {
             daoTestClass = cmTest._class(
-                    this.packageNamePrefix + PACKAGE_DAO_WITH_BASE + fjTable.getClassName()
-                            + "DaoTest");
+              this.packageNamePrefix + PACKAGE_DAO_WITH_BASE + fjTable.getClassName() + "DaoTest");
         } catch (JClassAlreadyExistsException e) {
             String msg = "fjTable dao test class：" + fjTable.getName() + " is already exists.";
             log.error(msg, e);
             throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
         }
-        daoTestClass._extends(cmTest.ref("com.fastjrun.test.AbstractAdVancedTestNGSpringContextTest"));
+        daoTestClass._extends(
+          cmTest.ref("com.fastjrun.test.AbstractAdVancedTestNGSpringContextTest"));
         this.addClassDeclaration(daoTestClass);
         JFieldVar fieldVar =
-                daoTestClass.field(JMod.PRIVATE, this.daoClass,
-                        "base" + fjTable.getClassName() + "Dao");
+          daoTestClass.field(JMod.PRIVATE, this.daoClass, "base" + fjTable.getClassName() + "Dao");
         fieldVar.annotate(cmTest.ref("org.springframework.beans.factory.annotation.Autowired"));
         mybatisDaoTestMethodGenerator.setDaoTestClass(daoTestClass);
         mybatisDaoTestMethodGenerator.setFieldVar(fieldVar);
@@ -210,13 +187,13 @@ public class MybatisAFGenerator extends BaseCMGenerator implements MybatisAFDaoC
     }
 
     protected void processDao() {
-        String lowerCaseFirstOneClassName = StringHelper
-                .toLowerCaseFirstOne(fjTable.getClassName());
+        String lowerCaseFirstOneClassName =
+          StringHelper.toLowerCaseFirstOne(fjTable.getClassName());
         // 生成接口名：Base+fjTable.getClassName()+Dao
         try {
             this.daoClass = cm._class(
-                    this.packageNamePrefix + PACKAGE_DAO_WITH_BASE + fjTable.getClassName()
-                            + "Dao", EClassType.INTERFACE);
+              this.packageNamePrefix + PACKAGE_DAO_WITH_BASE + fjTable.getClassName() + "Dao",
+              EClassType.INTERFACE);
         } catch (JClassAlreadyExistsException e) {
             String msg = "fjTable dao class：" + fjTable.getName() + " is already exists.";
             log.error(msg, e);
@@ -228,165 +205,130 @@ public class MybatisAFGenerator extends BaseCMGenerator implements MybatisAFDaoC
         // insert方法
         JMethod insertMethod = this.daoClass.method(JMod.NONE, cm.INT, DAO_METHOD_NAME_INSERT);
         insertMethod.param(this.entityClass, lowerCaseFirstOneClassName);
-        insertMethod.annotate(
-                cm.ref("org.apache.ibatis.annotations.Insert")).param(
-                "value", sqlHelper.getInsert());
+        insertMethod.annotate(cm.ref("org.apache.ibatis.annotations.Insert")).param("value",
+          sqlHelper.getInsert());
         List<String> primaryKeyColumnNames = fjTable.getPrimaryKeyColumnNames();
         if (primaryKeyColumnNames != null) {
             if (primaryKeyColumnNames.size() == 1) {
                 FJColumn fjColumn = fjTable.getColumns().get(primaryKeyColumnNames.get(0));
                 if (fjColumn.isIdentity()) {
-                    insertMethod
-                            .annotate(
-                                    cm.ref("org.apache.ibatis.annotations.Options"))
-                            .param("useGeneratedKeys", true)
-                            .param("keyProperty", fjColumn.getFieldName());
+                    insertMethod.annotate(cm.ref("org.apache.ibatis.annotations.Options")).param(
+                      "useGeneratedKeys", true).param("keyProperty", fjColumn.getFieldName());
                 }
             }
             // selectByPK方法
-            JMethod selectByPKMethod = this.daoClass.method(JMod.NONE, this.entityClass,
-                    DAO_METHOD_NAME_SELECTBYPK);
-            selectByPKMethod.annotate(
-                    cm.ref("org.apache.ibatis.annotations.Select")).param(
-                    "value", sqlHelper.getSelectByPK());
-            selectByPKMethod.annotate(
-                    cm.ref("org.apache.ibatis.annotations.Options")).param(
-                    "flushCache", true);
+            JMethod selectByPKMethod =
+              this.daoClass.method(JMod.NONE, this.entityClass, DAO_METHOD_NAME_SELECTBYPK);
+            selectByPKMethod.annotate(cm.ref("org.apache.ibatis.annotations.Select")).param("value",
+              sqlHelper.getSelectByPK());
+            selectByPKMethod.annotate(cm.ref("org.apache.ibatis.annotations.Options")).param(
+              "flushCache", true);
             // deleteByPK方法
-            JMethod deleteByPKMethod = this.daoClass.method(JMod.NONE, cm.INT,
-                    DAO_METHOD_NAME_DELETEBYPK);
-            deleteByPKMethod.annotate(
-                    cm.ref("org.apache.ibatis.annotations.Delete")).param(
-                    "value", sqlHelper.getDeleteByPK());
+            JMethod deleteByPKMethod =
+              this.daoClass.method(JMod.NONE, cm.INT, DAO_METHOD_NAME_DELETEBYPK);
+            deleteByPKMethod.annotate(cm.ref("org.apache.ibatis.annotations.Delete")).param("value",
+              sqlHelper.getDeleteByPK());
             // updateByPK方法
-            JMethod updateByPKMethod = this.daoClass.method(JMod.NONE, cm.INT,
-                    DAO_METHOD_NAME_UPDATEBYPK);
-            updateByPKMethod.annotate(
-                    cm.ref("org.apache.ibatis.annotations.Update")).param(
-                    "value", sqlHelper.getUpdateByPK());
+            JMethod updateByPKMethod =
+              this.daoClass.method(JMod.NONE, cm.INT, DAO_METHOD_NAME_UPDATEBYPK);
+            updateByPKMethod.annotate(cm.ref("org.apache.ibatis.annotations.Update")).param("value",
+              sqlHelper.getUpdateByPK());
             updateByPKMethod.param(this.entityClass, lowerCaseFirstOneClassName);
             for (int i = 0; i < primaryKeyColumnNames.size(); i++) {
                 String key = primaryKeyColumnNames.get(i);
                 FJColumn fjColumn = fjTable.getColumns().get(key);
                 String fieldName = fjColumn.getFieldName();
-                JVar selectFieldNameParam = selectByPKMethod.param(
-                        cm.ref(fjColumn.getDatatype()), fieldName);
-                selectFieldNameParam.annotate(
-                        cm.ref("org.apache.ibatis.annotations.Param"))
-                        .param("value", fieldName);
-                JVar deleteFieldNameParam = deleteByPKMethod.param(
-                        cm.ref(fjColumn.getDatatype()), fieldName);
-                deleteFieldNameParam.annotate(
-                        cm.ref("org.apache.ibatis.annotations.Param"))
-                        .param("value", fieldName);
+                JVar selectFieldNameParam =
+                  selectByPKMethod.param(cm.ref(fjColumn.getDatatype()), fieldName);
+                selectFieldNameParam.annotate(cm.ref("org.apache.ibatis.annotations.Param")).param(
+                  "value", fieldName);
+                JVar deleteFieldNameParam =
+                  deleteByPKMethod.param(cm.ref(fjColumn.getDatatype()), fieldName);
+                deleteFieldNameParam.annotate(cm.ref("org.apache.ibatis.annotations.Param")).param(
+                  "value", fieldName);
             }
 
         }
         // totalCount总数
-        JMethod totalCountMethod = this.daoClass.method(JMod.NONE, cm.INT,
-                DAO_METHOD_NAME_TOTALCOUNT);
-        totalCountMethod.annotate(
-                cm.ref("org.apache.ibatis.annotations.Select")).param(
-                "value", sqlHelper.getTotalCount(0));
+        JMethod totalCountMethod =
+          this.daoClass.method(JMod.NONE, cm.INT, DAO_METHOD_NAME_TOTALCOUNT);
+        totalCountMethod.annotate(cm.ref("org.apache.ibatis.annotations.Select")).param("value",
+          sqlHelper.getTotalCount(0));
         // queryForList查询
-        JMethod queryForListMethod = this.daoClass
-                .method(JMod.NONE,
-                        cm.ref("java.util.List").narrow(this.entityClass),
-                        DAO_METHOD_NAME_QUERYFORLIST);
-        queryForListMethod.annotate(
-                cm.ref("org.apache.ibatis.annotations.Select")).param(
-                "value", sqlHelper.getQueryForList(0));
-        queryForListMethod.annotate(
-                cm.ref("org.apache.ibatis.annotations.Options")).param(
-                "flushCache", true);
+        JMethod queryForListMethod =
+          this.daoClass.method(JMod.NONE, cm.ref("java.util.List").narrow(this.entityClass),
+            DAO_METHOD_NAME_QUERYFORLIST);
+        queryForListMethod.annotate(cm.ref("org.apache.ibatis.annotations.Select")).param("value",
+          sqlHelper.getQueryForList(0));
+        queryForListMethod.annotate(cm.ref("org.apache.ibatis.annotations.Options")).param(
+          "flushCache", true);
         // queryForLimitList分页查询
-        JMethod queryForLimitListMethod = this.daoClass.method(JMod.NONE,
-                cm.ref("java.util.List").narrow(this.entityClass),
-                DAO_METHOD_NAME_QUERYFORLIMITLIST);
-        queryForLimitListMethod.param(
-                cm.ref("org.apache.ibatis.session.RowBounds"), "rowBounds");
-        queryForLimitListMethod.annotate(
-                cm.ref("org.apache.ibatis.annotations.Select")).param(
-                "value", sqlHelper.getQueryForList(0));
-        queryForLimitListMethod.annotate(
-                cm.ref("org.apache.ibatis.annotations.Options")).param(
-                "flushCache", true);
+        JMethod queryForLimitListMethod =
+          this.daoClass.method(JMod.NONE, cm.ref("java.util.List").narrow(this.entityClass),
+            DAO_METHOD_NAME_QUERYFORLIMITLIST);
+        queryForLimitListMethod.param(cm.ref("org.apache.ibatis.session.RowBounds"), "rowBounds");
+        queryForLimitListMethod.annotate(cm.ref("org.apache.ibatis.annotations.Select")).param(
+          "value", sqlHelper.getQueryForList(0));
+        queryForLimitListMethod.annotate(cm.ref("org.apache.ibatis.annotations.Options")).param(
+          "flushCache", true);
 
         // totalCountCondition总数
-        JMethod totalCountConditionMethod = this.daoClass.method(JMod.NONE, cm.INT,
-                DAO_METHOD_NAME_TOTALCOUNTCONDITION);
-        totalCountConditionMethod
-                .annotate(
-                        cm.ref("org.apache.ibatis.annotations.SelectProvider"))
-                .param("type", this.sqlBuilderClass)
-                .param("method", "totalCountCondition");
-        JVar conditionVar = totalCountConditionMethod.param(
-                cm.ref(String.class), "condition");
-        conditionVar
-                .annotate(cm.ref("org.apache.ibatis.annotations.Param"))
-                .param("value", "condition");
+        JMethod totalCountConditionMethod =
+          this.daoClass.method(JMod.NONE, cm.INT, DAO_METHOD_NAME_TOTALCOUNTCONDITION);
+        totalCountConditionMethod.annotate(
+          cm.ref("org.apache.ibatis.annotations.SelectProvider")).param("type",
+          this.sqlBuilderClass).param("method", "totalCountCondition");
+        JVar conditionVar = totalCountConditionMethod.param(cm.ref(String.class), "condition");
+        conditionVar.annotate(cm.ref("org.apache.ibatis.annotations.Param")).param("value",
+          "condition");
         // selectOneCondition查询
-        JMethod selectOneConditionMethod = this.daoClass.method(JMod.NONE,
-                this.entityClass, DAO_METHOD_NAME_SELECTONECONDITION);
-        selectOneConditionMethod
-                .annotate(
-                        cm.ref("org.apache.ibatis.annotations.SelectProvider"))
-                .param("type", this.sqlBuilderClass)
-                .param("method", "queryWithCondition");
-        conditionVar = selectOneConditionMethod.param(cm.ref("String"),
-                "condition");
-        conditionVar
-                .annotate(cm.ref("org.apache.ibatis.annotations.Param"))
-                .param("value", "condition");
+        JMethod selectOneConditionMethod =
+          this.daoClass.method(JMod.NONE, this.entityClass, DAO_METHOD_NAME_SELECTONECONDITION);
+        selectOneConditionMethod.annotate(
+          cm.ref("org.apache.ibatis.annotations.SelectProvider")).param("type",
+          this.sqlBuilderClass).param("method", "queryWithCondition");
+        conditionVar = selectOneConditionMethod.param(cm.ref("String"), "condition");
+        conditionVar.annotate(cm.ref("org.apache.ibatis.annotations.Param")).param("value",
+          "condition");
         // queryForListCondition查询
-        JMethod queryForListConditionMethod = this.daoClass.method(JMod.NONE, cm
-                        .ref("java.util.List").narrow(this.entityClass),
-                DAO_METHOD_NAME_QUERYFORLISTCONDITION);
-        queryForListConditionMethod
-                .annotate(
-                        cm.ref("org.apache.ibatis.annotations.SelectProvider"))
-                .param("type", this.sqlBuilderClass)
-                .param("method", "queryWithCondition");
-        conditionVar = queryForListConditionMethod.param(cm.ref("String"),
-                "condition");
-        conditionVar
-                .annotate(cm.ref("org.apache.ibatis.annotations.Param"))
-                .param("value", "condition");
+        JMethod queryForListConditionMethod =
+          this.daoClass.method(JMod.NONE, cm.ref("java.util.List").narrow(this.entityClass),
+            DAO_METHOD_NAME_QUERYFORLISTCONDITION);
+        queryForListConditionMethod.annotate(
+          cm.ref("org.apache.ibatis.annotations.SelectProvider")).param("type",
+          this.sqlBuilderClass).param("method", "queryWithCondition");
+        conditionVar = queryForListConditionMethod.param(cm.ref("String"), "condition");
+        conditionVar.annotate(cm.ref("org.apache.ibatis.annotations.Param")).param("value",
+          "condition");
         // queryForLimitListCondition分页查询
-        JMethod queryForLimitListConditionMethod = this.daoClass.method(JMod.NONE,
-                cm.ref("java.util.List").narrow(this.entityClass),
-                DAO_METHOD_NAME_QUERYFORLIMITLISTCONDITION);
-        queryForLimitListConditionMethod
-                .annotate(
-                        cm.ref("org.apache.ibatis.annotations.SelectProvider"))
-                .param("type", this.sqlBuilderClass)
-                .param("method", "queryWithCondition");
-        conditionVar = queryForLimitListConditionMethod.param(
-                cm.ref("String"), "condition");
-        conditionVar
-                .annotate(cm.ref("org.apache.ibatis.annotations.Param"))
-                .param("value", "condition");
-        queryForLimitListConditionMethod.param(
-                cm.ref("org.apache.ibatis.session.RowBounds"), "rowBounds");
+        JMethod queryForLimitListConditionMethod =
+          this.daoClass.method(JMod.NONE, cm.ref("java.util.List").narrow(this.entityClass),
+            DAO_METHOD_NAME_QUERYFORLIMITLISTCONDITION);
+        queryForLimitListConditionMethod.annotate(
+          cm.ref("org.apache.ibatis.annotations.SelectProvider")).param("type",
+          this.sqlBuilderClass).param("method", "queryWithCondition");
+        conditionVar = queryForLimitListConditionMethod.param(cm.ref("String"), "condition");
+        conditionVar.annotate(cm.ref("org.apache.ibatis.annotations.Param")).param("value",
+          "condition");
+        queryForLimitListConditionMethod.param(cm.ref("org.apache.ibatis.session.RowBounds"),
+          "rowBounds");
         // insertAll方法批量插入
-        JMethod insertAllMethod = this.daoClass.method(JMod.NONE, cm.INT,
-                DAO_METHOD_NAME_INSERTALL);
+        JMethod insertAllMethod =
+          this.daoClass.method(JMod.NONE, cm.INT, DAO_METHOD_NAME_INSERTALL);
         insertAllMethod.param(cm.ref("java.util.List").narrow(this.entityClass),
-                lowerCaseFirstOneClassName + "s"); // 复数形式
-        insertAllMethod
-                .annotate(
-                        cm.ref("org.apache.ibatis.annotations.InsertProvider"))
-                .param("type", this.sqlBuilderClass).param("method", "insertAll");
+          lowerCaseFirstOneClassName + "s"); // 复数形式
+        insertAllMethod.annotate(cm.ref("org.apache.ibatis.annotations.InsertProvider")).param(
+          "type", this.sqlBuilderClass).param("method", "insertAll");
     }
 
     protected void processService() {
-        String lowerCaseFirstOneClassName = StringHelper
-                .toLowerCaseFirstOne(fjTable.getClassName());
+        String lowerCaseFirstOneClassName =
+          StringHelper.toLowerCaseFirstOne(fjTable.getClassName());
         // 生成接口名：Base+fjTable.getClassName()+Service
         try {
             this.serviceClass = cm._class(
-                    this.packageNamePrefix + PACKAGE_SERVICE_WITH_BASE + fjTable.getClassName()
-                            + "Service", EClassType.INTERFACE);
+              this.packageNamePrefix + PACKAGE_SERVICE_WITH_BASE + fjTable.getClassName() + "Service",
+              EClassType.INTERFACE);
         } catch (JClassAlreadyExistsException e) {
             String msg = "fjTable service class：" + fjTable.getName() + " is already exists.";
             log.error(msg, e);
@@ -394,52 +336,50 @@ public class MybatisAFGenerator extends BaseCMGenerator implements MybatisAFDaoC
         }
         this.addClassDeclaration(this.serviceClass);
         // insert方法
-        JMethod insertMethod = this.serviceClass.method(JMod.NONE, cm.INT, SERVICE_METHOD_NAME_INSERT);
+        JMethod insertMethod =
+          this.serviceClass.method(JMod.NONE, cm.INT, SERVICE_METHOD_NAME_INSERT);
         insertMethod.param(this.entityClass, lowerCaseFirstOneClassName);
 
         List<String> primaryKeyColumnNames = fjTable.getPrimaryKeyColumnNames();
         if (primaryKeyColumnNames != null) {
             // selectByPK方法
-            JMethod selectByPKMethod = this.serviceClass.method(JMod.NONE, this.entityClass,
-                    SERVICE_METHOD_NAME_SELECTBYPK);
+            JMethod selectByPKMethod =
+              this.serviceClass.method(JMod.NONE, this.entityClass, SERVICE_METHOD_NAME_SELECTBYPK);
             // deleteByPK方法
-            JMethod deleteByPKMethod = this.serviceClass.method(JMod.NONE, cm.INT,
-                    SERVICE_METHOD_NAME_DELETEBYPK);
+            JMethod deleteByPKMethod =
+              this.serviceClass.method(JMod.NONE, cm.INT, SERVICE_METHOD_NAME_DELETEBYPK);
             // updateByPK方法
-            JMethod updateByPKMethod = this.serviceClass.method(JMod.NONE, cm.INT,
-                    SERVICE_METHOD_NAME_UPDATEBYPK);
+            JMethod updateByPKMethod =
+              this.serviceClass.method(JMod.NONE, cm.INT, SERVICE_METHOD_NAME_UPDATEBYPK);
             updateByPKMethod.param(this.entityClass, lowerCaseFirstOneClassName);
             for (int i = 0; i < primaryKeyColumnNames.size(); i++) {
                 String key = primaryKeyColumnNames.get(i);
                 FJColumn fjColumn = fjTable.getColumns().get(key);
                 String fieldName = fjColumn.getFieldName();
-                selectByPKMethod.param(
-                        cm.ref(fjColumn.getDatatype()), fieldName);
-                deleteByPKMethod.param(
-                        cm.ref(fjColumn.getDatatype()), fieldName);
+                selectByPKMethod.param(cm.ref(fjColumn.getDatatype()), fieldName);
+                deleteByPKMethod.param(cm.ref(fjColumn.getDatatype()), fieldName);
             }
 
         }
         // totalCount总数
-        JMethod totalCountMethod = this.serviceClass.method(JMod.NONE, cm.INT,
-                SERVICE_METHOD_NAME_TOTALCOUNT);
+        JMethod totalCountMethod =
+          this.serviceClass.method(JMod.NONE, cm.INT, SERVICE_METHOD_NAME_TOTALCOUNT);
 
         // queryForLimitList分页查询
-        JMethod queryForLimitListMethod = this.serviceClass.method(JMod.NONE,
-                cm.ref("java.util.List").narrow(this.entityClass),
-                SERVICE_METHOD_NAME_QUERYFORLIMITLIST);
+        JMethod queryForLimitListMethod =
+          this.serviceClass.method(JMod.NONE, cm.ref("java.util.List").narrow(this.entityClass),
+            SERVICE_METHOD_NAME_QUERYFORLIMITLIST);
         queryForLimitListMethod.param(cm.INT, "pageNum");
         queryForLimitListMethod.param(cm.INT, "pageSize");
     }
 
     protected void processServiceImpl() {
-        String lowerCaseFirstOneClassName = StringHelper
-                .toLowerCaseFirstOne(fjTable.getClassName());
+        String lowerCaseFirstOneClassName =
+          StringHelper.toLowerCaseFirstOne(fjTable.getClassName());
         // 生成接口名：Base+fjTable.getClassName()+Service
         try {
             this.serviceImplClass = cm._class(
-                    this.packageNamePrefix + PACKAGE_SERVICE_IMPL_WITH_BASE + fjTable.getClassName()
-                            + "ServiceImpl");
+              this.packageNamePrefix + PACKAGE_SERVICE_IMPL_WITH_BASE + fjTable.getClassName() + "ServiceImpl");
         } catch (JClassAlreadyExistsException e) {
             String msg = "fjTable service impl class：" + fjTable.getName() + " is already exists.";
             log.error(msg, e);
@@ -447,36 +387,38 @@ public class MybatisAFGenerator extends BaseCMGenerator implements MybatisAFDaoC
         }
 
         this.serviceImplClass._implements(this.serviceClass);
-        this.serviceImplClass.annotate(cm.ref("org.springframework.stereotype.Service")).param("value",
-                "base" + fjTable.getClassName() + "Service");
+        this.serviceImplClass.annotate(cm.ref("org.springframework.stereotype.Service")).param(
+          "value", "base" + fjTable.getClassName() + "Service");
         this.addClassDeclaration(this.serviceImplClass);
 
-        JFieldVar fieldVar =
-                this.serviceImplClass.field(JMod.PRIVATE, this.daoClass,
-                        "base" + fjTable.getClassName() + "Dao");
+        JFieldVar fieldVar = this.serviceImplClass.field(JMod.PRIVATE, this.daoClass,
+          "base" + fjTable.getClassName() + "Dao");
         fieldVar.annotate(cm.ref("org.springframework.beans.factory.annotation.Autowired"));
 
         // insert方法
-        JMethod insertMethod = this.serviceImplClass.method(JMod.PUBLIC, cm.INT, DAO_METHOD_NAME_INSERT);
+        JMethod insertMethod =
+          this.serviceImplClass.method(JMod.PUBLIC, cm.INT, SERVICE_METHOD_NAME_INSERT);
         insertMethod.annotate(cm.ref("java.lang.Override"));
         JVar insertParamJVar = insertMethod.param(this.entityClass, lowerCaseFirstOneClassName);
-        insertMethod.body()._return(fieldVar.invoke("insert").arg(insertParamJVar));
+        insertMethod.body()._return(fieldVar.invoke(DAO_METHOD_NAME_INSERT).arg(insertParamJVar));
         List<String> primaryKeyColumnNames = fjTable.getPrimaryKeyColumnNames();
         if (primaryKeyColumnNames != null) {
             // selectByPK方法
             JMethod selectByPKMethod = this.serviceImplClass.method(JMod.PUBLIC, this.entityClass,
-                    SERVICE_METHOD_NAME_SELECTBYPK);
+              SERVICE_METHOD_NAME_SELECTBYPK);
             selectByPKMethod.annotate(cm.ref("java.lang.Override"));
             // deleteByPK方法
-            JMethod deleteByPKMethod = this.serviceImplClass.method(JMod.PUBLIC, cm.INT,
-                    SERVICE_METHOD_NAME_DELETEBYPK);
+            JMethod deleteByPKMethod =
+              this.serviceImplClass.method(JMod.PUBLIC, cm.INT, SERVICE_METHOD_NAME_DELETEBYPK);
             deleteByPKMethod.annotate(cm.ref("java.lang.Override"));
             // updateByPK方法
-            JMethod updateByPKMethod = this.serviceImplClass.method(JMod.PUBLIC, cm.INT,
-                    SERVICE_METHOD_NAME_UPDATEBYPK);
+            JMethod updateByPKMethod =
+              this.serviceImplClass.method(JMod.PUBLIC, cm.INT, SERVICE_METHOD_NAME_UPDATEBYPK);
             updateByPKMethod.annotate(cm.ref("java.lang.Override"));
-            JVar updateByPKParamJVar = updateByPKMethod.param(this.entityClass, lowerCaseFirstOneClassName);
-            updateByPKMethod.body()._return(fieldVar.invoke("insert").arg(updateByPKParamJVar));
+            JVar updateByPKParamJVar =
+              updateByPKMethod.param(this.entityClass, lowerCaseFirstOneClassName);
+            updateByPKMethod.body()._return(
+              fieldVar.invoke(DAO_METHOD_NAME_UPDATEBYPK).arg(updateByPKParamJVar));
 
             JInvocation jSelectByPKJInvocation = fieldVar.invoke(DAO_METHOD_NAME_SELECTBYPK);
             JInvocation jDeleteByPKJInvocation = fieldVar.invoke(DAO_METHOD_NAME_DELETEBYPK);
@@ -484,11 +426,11 @@ public class MybatisAFGenerator extends BaseCMGenerator implements MybatisAFDaoC
                 String key = primaryKeyColumnNames.get(i);
                 FJColumn fjColumn = fjTable.getColumns().get(key);
                 String fieldName = fjColumn.getFieldName();
-                JVar selectByPKParamJVar = selectByPKMethod.param(
-                        cm.ref(fjColumn.getDatatype()), fieldName);
+                JVar selectByPKParamJVar =
+                  selectByPKMethod.param(cm.ref(fjColumn.getDatatype()), fieldName);
                 jSelectByPKJInvocation.arg(selectByPKParamJVar);
-                JVar deleteByPKParamJVar = deleteByPKMethod.param(
-                        cm.ref(fjColumn.getDatatype()), fieldName);
+                JVar deleteByPKParamJVar =
+                  deleteByPKMethod.param(cm.ref(fjColumn.getDatatype()), fieldName);
                 jDeleteByPKJInvocation.arg(deleteByPKParamJVar);
             }
             selectByPKMethod.body()._return(jSelectByPKJInvocation);
@@ -496,23 +438,24 @@ public class MybatisAFGenerator extends BaseCMGenerator implements MybatisAFDaoC
 
         }
         // totalCount总数
-        JMethod totalCountMethod = this.serviceImplClass.method(JMod.PUBLIC, cm.INT,
-                SERVICE_METHOD_NAME_TOTALCOUNT);
+        JMethod totalCountMethod =
+          this.serviceImplClass.method(JMod.PUBLIC, cm.INT, SERVICE_METHOD_NAME_TOTALCOUNT);
         totalCountMethod.annotate(cm.ref("java.lang.Override"));
         // queryForLimitList分页查询
         totalCountMethod.body()._return(fieldVar.invoke(DAO_METHOD_NAME_TOTALCOUNT));
         JMethod queryForLimitListMethod = this.serviceImplClass.method(JMod.PUBLIC,
-                cm.ref("java.util.List").narrow(this.entityClass),
-                SERVICE_METHOD_NAME_QUERYFORLIMITLIST);
+          cm.ref("java.util.List").narrow(this.entityClass), SERVICE_METHOD_NAME_QUERYFORLIMITLIST);
         queryForLimitListMethod.annotate(cm.ref("java.lang.Override"));
         JVar pageNumJVar = queryForLimitListMethod.param(cm.INT, "pageNum");
         JVar pageSizeJVar = queryForLimitListMethod.param(cm.INT, "pageSize");
         JBlock queryForLimitListMethodBlk = queryForLimitListMethod.body();
-        JVar rowBoundsJVar = queryForLimitListMethodBlk.decl(cm.ref("org.apache.ibatis.session.RowBounds"),
-                "rowBounds", JExpr._new(cm.ref("org.apache.ibatis.session.RowBounds")).arg(pageNumJVar.minus(JExpr.lit
-                        (1)).mul(pageSizeJVar)).arg(pageNumJVar.mul(pageSizeJVar).minus(JExpr.lit
-                        (1))));
-        queryForLimitListMethodBlk._return(fieldVar.invoke(DAO_METHOD_NAME_QUERYFORLIMITLIST).arg(rowBoundsJVar));
+        JVar rowBoundsJVar =
+          queryForLimitListMethodBlk.decl(cm.ref("org.apache.ibatis.session.RowBounds"),
+            "rowBounds", JExpr._new(cm.ref("org.apache.ibatis.session.RowBounds")).arg(
+              pageNumJVar.minus(JExpr.lit(1)).mul(pageSizeJVar)).arg(
+              pageNumJVar.mul(pageSizeJVar).minus(JExpr.lit(1))));
+        queryForLimitListMethodBlk._return(
+          fieldVar.invoke(DAO_METHOD_NAME_QUERYFORLIMITLIST).arg(rowBoundsJVar));
     }
 
     /**
@@ -524,116 +467,102 @@ public class MybatisAFGenerator extends BaseCMGenerator implements MybatisAFDaoC
     private void processSQLBuilder() {
         // 生成：Base+fjTable.getClassName()+SQLBuilder
 
-        String lowerCaseFirstOneClassName = StringHelper
-                .toLowerCaseFirstOne(fjTable.getClassName());
+        String lowerCaseFirstOneClassName =
+          StringHelper.toLowerCaseFirstOne(fjTable.getClassName());
 
         try {
-            this.sqlBuilderClass = cm._class(this.packageNamePrefix + PACKAGE_DAO_WITH_BASE
-                    + fjTable.getClassName() + "SqlBuilder");
+            this.sqlBuilderClass = cm._class(
+              this.packageNamePrefix + PACKAGE_DAO_WITH_BASE + fjTable.getClassName() + "SqlBuilder");
 
         } catch (JClassAlreadyExistsException e) {
             String msg = "fjTable SqlBuilder class：" + fjTable.getName() + " is already exists.";
             log.error(msg, e);
             throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
         }
-        SqlHelper sqlHelper = SQLHelperFactory.getSQLHelper(
-                "mysql", fjTable);
+        SqlHelper sqlHelper = SQLHelperFactory.getSQLHelper("mysql", fjTable);
         // totalCountCondition方法
 
-        JMethod totalCountConditionMethod = this.sqlBuilderClass.method(JMod.PUBLIC,
-                cm.ref("String"), "totalCountCondition");
+        JMethod totalCountConditionMethod =
+          this.sqlBuilderClass.method(JMod.PUBLIC, cm.ref("String"), "totalCountCondition");
 
         JVar parameterVar = totalCountConditionMethod.param(
-                cm.ref("java.util.Map").narrow(String.class)
-                        .narrow(String.class), "parameter");
-        JBlock totalCountConditionMethodBlk = totalCountConditionMethod
-                .body();
-        JVar totalCountConditionVar = totalCountConditionMethodBlk.decl(cm
-                .ref("String"), "condition", parameterVar.invoke("get")
-                .arg("condition"));
-        JVar totalCountConditionSbVar = totalCountConditionMethodBlk.decl(
-                cm.ref("StringBuilder"), "sb",
-                JExpr._new(cm.ref("StringBuilder")));
-        totalCountConditionMethodBlk.add(totalCountConditionSbVar.invoke("append").arg(
-                sqlHelper.getTotalCount(1)));
-        totalCountConditionMethodBlk.add(totalCountConditionSbVar.invoke("append").arg(
-                totalCountConditionVar));
+          cm.ref("java.util.Map").narrow(String.class).narrow(String.class), "parameter");
+        JBlock totalCountConditionMethodBlk = totalCountConditionMethod.body();
+        JVar totalCountConditionVar =
+          totalCountConditionMethodBlk.decl(cm.ref("String"), "condition",
+            parameterVar.invoke("get").arg("condition"));
+        JVar totalCountConditionSbVar =
+          totalCountConditionMethodBlk.decl(cm.ref("StringBuilder"), "sb",
+            JExpr._new(cm.ref("StringBuilder")));
+        totalCountConditionMethodBlk.add(
+          totalCountConditionSbVar.invoke("append").arg(sqlHelper.getTotalCount(1)));
+        totalCountConditionMethodBlk.add(
+          totalCountConditionSbVar.invoke("append").arg(totalCountConditionVar));
         totalCountConditionMethodBlk._return(totalCountConditionSbVar.invoke("toString"));
 
         // queryWithCondition方法
-        JMethod queryWithConditionMethod = this.sqlBuilderClass.method(JMod.PUBLIC,
-                cm.ref("String"), "queryWithCondition");
+        JMethod queryWithConditionMethod =
+          this.sqlBuilderClass.method(JMod.PUBLIC, cm.ref("String"), "queryWithCondition");
         parameterVar = queryWithConditionMethod.param(
-                cm.ref("java.util.Map").narrow(String.class)
-                        .narrow(String.class), "parameter");
-        JBlock queryWithConditionMethodBlk = queryWithConditionMethod
-                .body();
-        JVar queryWithConditionVar = queryWithConditionMethodBlk.decl(cm
-                .ref("String"), "condition", parameterVar.invoke("get")
-                .arg("condition"));
-        JVar queryWithConditionBbVar = queryWithConditionMethodBlk.decl(cm.ref("StringBuilder"),
-                "sb", JExpr._new(cm.ref("StringBuilder")));
-        queryWithConditionMethodBlk.add(queryWithConditionBbVar.invoke("append").arg(
-                sqlHelper.getQueryForList(1)));
-        queryWithConditionMethodBlk.add(queryWithConditionBbVar.invoke("append").arg(
-                queryWithConditionVar));
+          cm.ref("java.util.Map").narrow(String.class).narrow(String.class), "parameter");
+        JBlock queryWithConditionMethodBlk = queryWithConditionMethod.body();
+        JVar queryWithConditionVar = queryWithConditionMethodBlk.decl(cm.ref("String"), "condition",
+          parameterVar.invoke("get").arg("condition"));
+        JVar queryWithConditionBbVar =
+          queryWithConditionMethodBlk.decl(cm.ref("StringBuilder"), "sb",
+            JExpr._new(cm.ref("StringBuilder")));
+        queryWithConditionMethodBlk.add(
+          queryWithConditionBbVar.invoke("append").arg(sqlHelper.getQueryForList(1)));
+        queryWithConditionMethodBlk.add(
+          queryWithConditionBbVar.invoke("append").arg(queryWithConditionVar));
         queryWithConditionMethodBlk._return(queryWithConditionBbVar.invoke("toString"));
 
         // insertAll
-        JMethod insertAllMethod = this.sqlBuilderClass.method(JMod.PUBLIC, cm.ref("String"),
-                "insertAll");
-        parameterVar = insertAllMethod.param(cm
-                        .ref("java.util.Map")
-                        .narrow(cm.ref("String"))
-                        .narrow(cm.ref("java.util.List").narrow(this.entityClass)),
-                "parameter");
+        JMethod insertAllMethod =
+          this.sqlBuilderClass.method(JMod.PUBLIC, cm.ref("String"), "insertAll");
+        parameterVar = insertAllMethod.param(
+          cm.ref("java.util.Map").narrow(cm.ref("String")).narrow(
+            cm.ref("java.util.List").narrow(this.entityClass)), "parameter");
         JBlock insertAllMethodBlk = insertAllMethod.body();
-        JVar insertAllParameterVar = insertAllMethodBlk.decl(cm.ref("java.util.List")
-                        .narrow(this.entityClass), lowerCaseFirstOneClassName + "s",
-                parameterVar.invoke("get").arg(lowerCaseFirstOneClassName + "s"));
+        JVar insertAllParameterVar =
+          insertAllMethodBlk.decl(cm.ref("java.util.List").narrow(this.entityClass),
+            lowerCaseFirstOneClassName + "s",
+            parameterVar.invoke("get").arg(lowerCaseFirstOneClassName + "s"));
         JVar insertAllSbVar = insertAllMethodBlk.decl(cm.ref("StringBuilder"), "sb",
-                JExpr._new(cm.ref("StringBuilder")));
+          JExpr._new(cm.ref("StringBuilder")));
         String[] sqlParamAndValue = getAllFieldsForBatch(fjTable);
-        JVar messageFormatVar = insertAllMethodBlk.decl(
-                cm.ref("java.text.MessageFormat"),
-                "messageFormat",
-                JExpr._new(cm.ref("java.text.MessageFormat")).arg(
-                        sqlParamAndValue[1]));
+        JVar messageFormatVar =
+          insertAllMethodBlk.decl(cm.ref("java.text.MessageFormat"), "messageFormat",
+            JExpr._new(cm.ref("java.text.MessageFormat")).arg(sqlParamAndValue[1]));
         // mysql数据库
         if (sqlHelper instanceof MysqlSqlHelper) {
             insertAllMethodBlk.add(insertAllSbVar.invoke("append").arg(
-                    "INSERT INTO " + fjTable.getName() + sqlParamAndValue[0]
-                            + " VALUES"));
+              "INSERT INTO " + fjTable.getName() + sqlParamAndValue[0] + " VALUES"));
             JForLoop forLoop = insertAllMethodBlk._for();
             JVar i = forLoop.init(cm.INT, "i", JExpr.lit(0));
             forLoop.test(i.lt(insertAllParameterVar.invoke("size")));
             forLoop.update(i.incr());
             JBlock forBlk = forLoop.body();
-            forBlk.add(JExpr.ref("sb").invoke("append").arg(
-                    messageFormatVar.invoke("format").arg(
-                            JExpr.newArray(cm.ref("java.lang.Object")).add(
-                                    JExpr.ref("i")))));
-            JConditional jif = forBlk._if(JExpr.ref("i").lt(
-                    insertAllParameterVar.invoke("size").minus(JExpr.lit(1))));
+            forBlk.add(JExpr.ref("sb").invoke("append").arg(messageFormatVar.invoke("format").arg(
+              JExpr.newArray(cm.ref("java.lang.Object")).add(JExpr.ref("i")))));
+            JConditional jif = forBlk._if(
+              JExpr.ref("i").lt(insertAllParameterVar.invoke("size").minus(JExpr.lit(1))));
             JBlock ifBlk = jif._then();
             ifBlk.add(JExpr.ref("sb").invoke("append").arg(","));
         } else { // oracle数据库
             insertAllMethodBlk.add(insertAllSbVar.invoke("append").arg(
-                    "INSERT INTO " + fjTable.getName() + sqlParamAndValue[0]
-                            + " "));
+              "INSERT INTO " + fjTable.getName() + sqlParamAndValue[0] + " "));
             JForLoop forLoop = insertAllMethodBlk._for();
             JVar i = forLoop.init(cm.INT, "i", JExpr.lit(0));
             forLoop.test(i.lt(insertAllParameterVar.invoke("size")));
             forLoop.update(i.incr());
             JBlock forBlk = forLoop.body();
             forBlk.add(JExpr.ref("sb").invoke("append").arg("SELECT "));
-            forBlk.add(JExpr.ref("sb").invoke("append").arg(
-                    messageFormatVar.invoke("format").arg(
-                            JExpr.newArray(cm.ref("java.lang.Object")).add(
-                                    JExpr.ref("i")))));
+            forBlk.add(JExpr.ref("sb").invoke("append").arg(messageFormatVar.invoke("format").arg(
+              JExpr.newArray(cm.ref("java.lang.Object")).add(JExpr.ref("i")))));
             forBlk.add(JExpr.ref("sb").invoke("append").arg(" FROM DUAL "));
-            JConditional jif = forBlk._if(JExpr.ref("i").lt(
-                    insertAllParameterVar.invoke("size").minus(JExpr.lit(1))));
+            JConditional jif = forBlk._if(
+              JExpr.ref("i").lt(insertAllParameterVar.invoke("size").minus(JExpr.lit(1))));
             JBlock ifBlk = jif._then();
             ifBlk.add(JExpr.ref("sb").invoke("append").arg(" UNION ALL "));
         }
@@ -657,13 +586,12 @@ public class MybatisAFGenerator extends BaseCMGenerator implements MybatisAFDaoC
                 sqlValue.append(",");
             }
             sqlParam.append("`").append(name).append("`");
-            sqlValue.append("#'{'list[{0}].").append(fjColumn.getFieldName())
-                    .append("}");
+            sqlValue.append("#'{'list[{0}].").append(fjColumn.getFieldName()).append("}");
             i++;
         }
         sqlParam.append(")");
         sqlValue.append(")");
-        return new String[] {sqlParam.toString(), sqlValue.toString()};
+        return new String[] { sqlParam.toString(), sqlValue.toString() };
     }
 
     @Override
@@ -674,7 +602,8 @@ public class MybatisAFGenerator extends BaseCMGenerator implements MybatisAFDaoC
         this.processService();
         this.processServiceImpl();
         if (this.isSupportTest()) {
-            MybatisDaoTestMethodGenerator mybatisDaoTestMethodGenerator = new MybatisDaoTestMethodGenerator();
+            MybatisDaoTestMethodGenerator mybatisDaoTestMethodGenerator =
+              new MybatisDaoTestMethodGenerator();
             mybatisDaoTestMethodGenerator.setCmTest(this.cmTest);
             mybatisDaoTestMethodGenerator.setEntityClass(this.entityClass);
             mybatisDaoTestMethodGenerator.setFjTable(this.fjTable);

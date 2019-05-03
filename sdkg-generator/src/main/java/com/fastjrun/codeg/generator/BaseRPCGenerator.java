@@ -108,6 +108,7 @@ public abstract class BaseRPCGenerator extends BaseControllerGenerator {
                 }
             }
         }
+        this.generatorControllerMethod();
     }
 
 }

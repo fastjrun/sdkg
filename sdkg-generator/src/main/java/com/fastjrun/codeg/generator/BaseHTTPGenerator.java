@@ -3,9 +3,9 @@
  */
 package com.fastjrun.codeg.generator;
 
-import java.util.Properties;
-
 import com.fastjrun.codeg.generator.common.BaseControllerGenerator;
+
+import java.util.Properties;
 
 public abstract class BaseHTTPGenerator extends BaseControllerGenerator {
 
@@ -21,6 +21,7 @@ public abstract class BaseHTTPGenerator extends BaseControllerGenerator {
                 this.processController();
             }
         }
+        this.generatorControllerMethod();
     }
 
 }

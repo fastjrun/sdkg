@@ -11,10 +11,11 @@ public interface CodeGService extends CodeGConstants {
 
     boolean generateClient(String bundleFiles, String moduleName);
 
-    boolean generateProvider(String bundleFiles, String moduleName);
+    boolean generateProvider(String bundleFiles, String moduleName, boolean supportServiceTest);
 
-    boolean generateBundle(String bundleFiles, String moduleName, MockModel mockModel);
+    boolean generateProviderMock(String bundleFiles, String moduleName, MockModel mockModel);
 
-    boolean generateBase(String sqlFile, boolean supportController, boolean supportTest, String moduleName);
+    boolean generateBase(String sqlFile, String moduleName, boolean supportTest,
+      boolean supportController);
 
 }

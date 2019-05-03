@@ -3,19 +3,6 @@
  */
 package com.fastjrun.codeg.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.Element;
-import org.dom4j.Node;
-import org.dom4j.io.SAXReader;
-import org.springframework.http.MediaType;
-
 import com.fastjrun.codeg.common.CodeGConstants;
 import com.fastjrun.codeg.common.CodeGException;
 import com.fastjrun.codeg.common.CodeGMsgContants;
@@ -24,6 +11,18 @@ import com.fastjrun.codeg.common.CommonMethod;
 import com.fastjrun.codeg.common.CommonService;
 import com.fastjrun.codeg.common.PacketField;
 import com.fastjrun.codeg.common.PacketObject;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.Node;
+import org.dom4j.io.SAXReader;
+import org.springframework.http.MediaType;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class BundleXMLParser implements CodeGConstants {
 
@@ -45,7 +44,8 @@ public class BundleXMLParser implements CodeGConstants {
         return controllerTypeMap;
     }
 
-    private List<PacketField> parsePacketFields(Element elePacketFieldsRoot, String elePacketFieldName) {
+    private List<PacketField> parsePacketFields(Element elePacketFieldsRoot,
+      String elePacketFieldName) {
         List<PacketField> packetFields = new ArrayList<>();
         List<Element> eleCookieVariables = elePacketFieldsRoot.elements(elePacketFieldName);
         for (int index = 0; index < eleCookieVariables.size(); index++) {
@@ -87,8 +87,7 @@ public class BundleXMLParser implements CodeGConstants {
         return controllerMap;
     }
 
-    public void setControllerMap(
-            Map<String, CommonController> controllerMap) {
+    public void setControllerMap(Map<String, CommonController> controllerMap) {
         this.controllerMap = controllerMap;
     }
 
@@ -99,11 +98,16 @@ public class BundleXMLParser implements CodeGConstants {
     public void init() {
         this.contentType.put("json", MediaType.APPLICATION_JSON_UTF8_VALUE);
         this.contentType.put("xml", MediaType.APPLICATION_XML_VALUE);
-        this.contentType.put("json,xml", MediaType.APPLICATION_XML_VALUE + "," + MediaType.APPLICATION_XML_VALUE);
-        this.controllerTypeMap.put(CodeGConstants.ControllerType_APP.name, CodeGConstants.ControllerType_APP);
-        this.controllerTypeMap.put(CodeGConstants.ControllerType_API.name, CodeGConstants.ControllerType_API);
-        this.controllerTypeMap.put(CodeGConstants.ControllerType_GENERIC.name, CodeGConstants.ControllerType_GENERIC);
-        this.controllerTypeMap.put(CodeGConstants.ControllerType_DUBBO.name, CodeGConstants.ControllerType_DUBBO);
+        this.contentType.put("json,xml",
+          MediaType.APPLICATION_XML_VALUE + "," + MediaType.APPLICATION_XML_VALUE);
+        this.controllerTypeMap.put(CodeGConstants.ControllerType_APP.name,
+          CodeGConstants.ControllerType_APP);
+        this.controllerTypeMap.put(CodeGConstants.ControllerType_API.name,
+          CodeGConstants.ControllerType_API);
+        this.controllerTypeMap.put(CodeGConstants.ControllerType_GENERIC.name,
+          CodeGConstants.ControllerType_GENERIC);
+        this.controllerTypeMap.put(CodeGConstants.ControllerType_DUBBO.name,
+          CodeGConstants.ControllerType_DUBBO);
         this.processExtControllerType();
     }
 
@@ -116,7 +120,8 @@ public class BundleXMLParser implements CodeGConstants {
         try {
             document = reader.read(this.bundleFile);
         } catch (DocumentException e) {
-            throw new CodeGException(CodeGMsgContants.CODEG_BUNDLEFILE_INVALID, "bundleFile is wrong");
+            throw new CodeGException(CodeGMsgContants.CODEG_BUNDLEFILE_INVALID,
+              "bundleFile is wrong");
         }
         this.bundleRoot = document.getRootElement();
     }
@@ -131,7 +136,7 @@ public class BundleXMLParser implements CodeGConstants {
                 String childClassName = itera.next();
                 if (classMap.keySet().contains(childClassName)) {
                     throw new CodeGException(CodeGMsgContants.CODEG_CLASS_DUPLICATED,
-                            childClassName + " is duplicated");
+                      childClassName + " is duplicated");
                 }
                 classMap.put(childClassName, childClassMap.get(childClassName));
             }
@@ -141,7 +146,7 @@ public class BundleXMLParser implements CodeGConstants {
             String classP = ((Element) nodeService).attributeValue("class");
             if (classMap.keySet().contains(classP)) {
                 throw new CodeGException(CodeGMsgContants.CODEG_CLASS_DUPLICATED,
-                        "service." + classP + " is duplicated");
+                  "service." + classP + " is duplicated");
             }
             classMap.put(classP, (Element) nodeService);
 
@@ -151,7 +156,7 @@ public class BundleXMLParser implements CodeGConstants {
             String classP = ((Element) nodeController).attributeValue("name");
             if (classMap.keySet().contains(classP)) {
                 throw new CodeGException(CodeGMsgContants.CODEG_CLASS_DUPLICATED,
-                        "web.controller." + classP + " is duplicated");
+                  "web.controller." + classP + " is duplicated");
             }
             classMap.put(classP, (Element) nodeController);
         }
@@ -164,7 +169,8 @@ public class BundleXMLParser implements CodeGConstants {
         Map<String, Element> classMap = new HashMap<>();
         String classP = po.attributeValue("class");
         if (classMap.keySet().contains(classP)) {
-            throw new CodeGException(CodeGMsgContants.CODEG_CLASS_DUPLICATED, classP + " is duplicated");
+            throw new CodeGException(CodeGMsgContants.CODEG_CLASS_DUPLICATED,
+              classP + " is duplicated");
         }
         classMap.put(classP, po);
         for (Element element : elements) {
@@ -186,7 +192,7 @@ public class BundleXMLParser implements CodeGConstants {
                     String childClassName = itera.next();
                     if (classMap.keySet().contains(childClassName)) {
                         throw new CodeGException(CodeGMsgContants.CODEG_CLASS_DUPLICATED,
-                                childClassName + " is duplicated");
+                          childClassName + " is duplicated");
                     }
                     classMap.put(childClassName, childClassMap.get(childClassName));
                 }
@@ -224,12 +230,8 @@ public class BundleXMLParser implements CodeGConstants {
             commonController.setServiceName(serviceName);
             String serviceRef = eleService.attributeValue("ref");
             commonController.setServiceRef(serviceRef);
-
             CommonService service = serviceMap.get(serviceRef);
-
             commonController.setService(service);
-            List<CommonController> commonControllers = service.getCommonControllers();
-            commonControllers.add(commonController);
             this.controllerMap.put(name, commonController);
         }
     }
@@ -272,13 +274,11 @@ public class BundleXMLParser implements CodeGConstants {
             if (nodeMethods != null && nodeMethods.size() > 0) {
                 List<CommonMethod> methods = new ArrayList<>();
                 for (Node nodeMethod : nodeMethods) {
-                    CommonMethod method = processControllerMethod(nodeMethod);
+                    CommonMethod method = processCommonMethod(nodeMethod);
                     methods.add(method);
                 }
                 service.setMethods(methods);
             }
-            List<CommonController> commonControllers = new ArrayList<>();
-            service.setCommonControllers(commonControllers);
             this.serviceMap.put(name, service);
 
         }
@@ -371,7 +371,7 @@ public class BundleXMLParser implements CodeGConstants {
         }
     }
 
-    private CommonMethod processControllerMethod(Node nodeMethod) {
+    private CommonMethod processCommonMethod(Node nodeMethod) {
         CommonMethod method = new CommonMethod();
 
         Element eleMethod = (Element) nodeMethod;
@@ -438,20 +438,16 @@ public class BundleXMLParser implements CodeGConstants {
         }
         Element eleHeadVariablesRoot = eleMethod.element("headVariables");
         if (eleHeadVariablesRoot != null) {
-            List<PacketField> headVariables = parsePacketFields(eleHeadVariablesRoot, "headVariable");
+            List<PacketField> headVariables =
+              parsePacketFields(eleHeadVariablesRoot, "headVariable");
             method.setHeadVariables(headVariables);
         }
 
         Element eleCookieVariablesRoot = eleMethod.element("cookieVariables");
         if (eleCookieVariablesRoot != null) {
-            List<PacketField> cookieVariables = parsePacketFields(eleCookieVariablesRoot, "cookieVariable");
+            List<PacketField> cookieVariables =
+              parsePacketFields(eleCookieVariablesRoot, "cookieVariable");
             method.setCookieVariables(cookieVariables);
-        }
-
-        Element eleExtraParametersRoot = eleMethod.element("extraParameters");
-        if (eleExtraParametersRoot != null) {
-            List<PacketField> extraParameters = parsePacketFields(eleExtraParametersRoot, "parameter");
-            method.setExtraParameters(extraParameters);
         }
 
         return method;

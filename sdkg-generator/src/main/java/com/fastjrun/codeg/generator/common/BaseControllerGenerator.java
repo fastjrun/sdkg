@@ -3,12 +3,11 @@
  */
 package com.fastjrun.codeg.generator.common;
 
-import java.util.Properties;
-
 import com.fastjrun.codeg.common.CodeGConstants;
 import com.fastjrun.codeg.common.CodeGException;
 import com.fastjrun.codeg.common.CodeGMsgContants;
 import com.fastjrun.codeg.common.CommonController;
+import com.fastjrun.codeg.common.CommonMethod;
 import com.fastjrun.codeg.generator.ServiceGenerator;
 import com.fastjrun.codeg.generator.method.BaseControllerMethodGenerator;
 import com.fastjrun.codeg.generator.method.ServiceMethodGenerator;
@@ -20,7 +19,8 @@ import com.helger.jcodemodel.JExpr;
 import com.helger.jcodemodel.JFieldVar;
 import com.helger.jcodemodel.JMethod;
 import com.helger.jcodemodel.JMod;
-import com.helger.jcodemodel.JVar;
+
+import java.util.Properties;
 
 public abstract class BaseControllerGenerator extends BaseCMGenerator {
 
@@ -78,10 +78,6 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
         return clientClass;
     }
 
-    public void setClientClass(JDefinedClass clientClass) {
-        this.clientClass = clientClass;
-    }
-
     public JDefinedClass getClientTestClass() {
         return clientTestClass;
     }
@@ -92,10 +88,6 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
 
     public Properties getClientTestParam() {
         return clientTestParam;
-    }
-
-    public void setClientTestParam(Properties clientTestParam) {
-        this.clientTestParam = clientTestParam;
     }
 
     public CommonController getCommonController() {
@@ -217,6 +209,19 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
         if (version != null && !version.equals("")) {
             this.controllerPath = this.controllerPath + "/" + version;
         }
+    }
 
+    protected void generatorControllerMethod() {
+        for (CommonMethod commonMethod : this.commonController.getService().getMethods()) {
+            ServiceMethodGenerator serviceMethodGenerator =
+              this.serviceGenerator.getServiceMethodGeneratorMap().get(commonMethod);
+            BaseControllerMethodGenerator baseControllerMethodGenerator =
+              this.prepareBaseControllerMethodGenerator(serviceMethodGenerator);
+            baseControllerMethodGenerator.setApi(this.isApi());
+            baseControllerMethodGenerator.setClient(this.isClient());
+            baseControllerMethodGenerator.setCm(cm);
+            baseControllerMethodGenerator.setCmTest(cmTest);
+            baseControllerMethodGenerator.generate();
+        }
     }
 }
