@@ -3,12 +3,9 @@
  */
 package com.fastjrun.codeg.generator.method;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fastjrun.codeg.common.CommonController;
 import com.fastjrun.codeg.common.PacketField;
-import com.fastjrun.codeg.common.PacketObject;
-import com.fastjrun.codeg.generator.common.BaseCMGenerator;
 import com.fastjrun.codeg.generator.common.BaseControllerGenerator;
 import com.fastjrun.codeg.processer.ExchangeProcessor;
 import com.fastjrun.helper.StringHelper;
@@ -17,9 +14,8 @@ import com.helger.jcodemodel.*;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
-import java.util.Map;
 
-public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
+public abstract class BaseControllerMethodGenerator extends AbstractMethodGenerator {
 
     protected JMethod jClientMethod;
 
@@ -27,44 +23,22 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
 
     protected JMethod jcontrollerMethod;
 
-    protected ObjectNode methodParamInJsonObject;
+    protected ExchangeProcessor exchangeProcessor;
 
     protected ServiceMethodGenerator serviceMethodGenerator;
 
     protected BaseControllerGenerator baseControllerGenerator;
 
-    protected ExchangeProcessor exchangeProcessor;
-
-    public ServiceMethodGenerator getServiceMethodGenerator() {
-        return serviceMethodGenerator;
-    }
-
     public void setServiceMethodGenerator(ServiceMethodGenerator serviceMethodGenerator) {
         this.serviceMethodGenerator = serviceMethodGenerator;
-    }
-
-    public BaseControllerGenerator getBaseControllerGenerator() {
-        return baseControllerGenerator;
     }
 
     public void setBaseControllerGenerator(BaseControllerGenerator baseControllerGenerator) {
         this.baseControllerGenerator = baseControllerGenerator;
     }
 
-    public ExchangeProcessor getExchangeProcessor() {
-        return exchangeProcessor;
-    }
-
     public void setExchangeProcessor(ExchangeProcessor exchangeProcessor) {
         this.exchangeProcessor = exchangeProcessor;
-    }
-
-    public ObjectNode getMethodParamInJsonObject() {
-        return methodParamInJsonObject;
-    }
-
-    public void setMethodParamInJsonObject(ObjectNode methodParamInJsonObject) {
-        this.methodParamInJsonObject = methodParamInJsonObject;
     }
 
     public JMethod getjClientMethod() {
@@ -114,6 +88,7 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
 
         JInvocation jInvocationTest =
           JExpr.invoke(JExpr.ref("baseApplicationClient"), this.serviceMethodGenerator.methodName);
+        AbstractJClass exceptionClass = cmTest.ref("com.fastjrun.common.ClientException");
 
         // headParams
         List<PacketField> headVariables =
@@ -123,7 +98,8 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
             for (int index = 0; index < headVariables.size(); index++) {
                 PacketField headVariable = headVariables.get(index);
                 jInvocationTest.arg(JExpr.ref(headVariable.getNameAlias()));
-                processMethodCommonVariables(methodTestBlk, reqParamsJsonJVar, headVariable);
+                MethodGeneratorHelper.processMethodCommonVariables(cmTest, methodTestBlk,
+                  reqParamsJsonJVar, headVariable);
             }
 
         }
@@ -134,7 +110,8 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
             for (int index = 0; index < pathVariables.size(); index++) {
                 PacketField pathVariable = pathVariables.get(index);
                 jInvocationTest.arg(JExpr.ref(pathVariable.getName()));
-                processMethodCommonVariables(methodTestBlk, reqParamsJsonJVar, pathVariable);
+                MethodGeneratorHelper.processMethodCommonVariables(cmTest, methodTestBlk,
+                  reqParamsJsonJVar, pathVariable);
             }
         }
 
@@ -144,7 +121,8 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
             for (int index = 0; index < parameters.size(); index++) {
                 PacketField parameter = parameters.get(index);
                 jInvocationTest.arg(JExpr.ref(parameter.getName()));
-                processMethodCommonVariables(methodTestBlk, reqParamsJsonJVar, parameter);
+                MethodGeneratorHelper.processMethodCommonVariables(cmTest, methodTestBlk,
+                  reqParamsJsonJVar, parameter);
             }
         }
 
@@ -154,7 +132,8 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
             for (int index = 0; index < cookies.size(); index++) {
                 PacketField cookie = cookies.get(index);
                 jInvocationTest.arg(JExpr.ref(cookie.getName()));
-                processMethodCommonVariables(methodTestBlk, reqParamsJsonJVar, cookie);
+                MethodGeneratorHelper.processMethodCommonVariables(cmTest, methodTestBlk,
+                  reqParamsJsonJVar, cookie);
             }
         }
         if (this.serviceMethodGenerator.getRequestBodyClass() != null) {
@@ -185,8 +164,7 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
             JBlock jConditional2ThenBlock = jConditional2._then();
             JTryBlock jTry = jConditional2ThenBlock._try();
             jTry.body().assign(responseBodyVar, jInvocationTest);
-            JCatchBlock jCatchBlock =
-              jTry._catch(cmTest.ref("com.fastjrun.common.ClientException"));
+            JCatchBlock jCatchBlock = jTry._catch(exceptionClass);
             JVar jExceptionVar = jCatchBlock.param("e");
             JBlock jCatchBlockBody = jCatchBlock.body();
             jCatchBlockBody.add(cmTest.ref("org.testng.Assert").staticInvoke("assertEquals").arg(
@@ -210,12 +188,14 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
                     "item" + this.serviceMethodGenerator.getElementClass().name(),
                     responseBodyVar.invoke("get").arg(initIndexVar));
 
-                this.logResponseBody(1, this.serviceMethodGenerator.getCommonMethod().getResponse(),
-                  responseBodyIndexVar, forBlock1);
+                MethodGeneratorHelper.logResponseBody(cmTest, log, packageNamePrefix, 1,
+                  this.serviceMethodGenerator.getCommonMethod().getResponse(), responseBodyIndexVar,
+                  forBlock1);
 
             } else {
-                this.logResponseBody(1, this.serviceMethodGenerator.getCommonMethod().getResponse(),
-                  responseBodyVar, ifBlock1);
+                MethodGeneratorHelper.logResponseBody(cmTest, log, packageNamePrefix, 1,
+                  this.serviceMethodGenerator.getCommonMethod().getResponse(), responseBodyVar,
+                  ifBlock1);
             }
             ifBlock1.add(
               JExpr._this().invoke("processAssertion").arg(assertJsonJVar).arg(responseBodyVar).arg(
@@ -231,8 +211,7 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
             JBlock jConditional2ThenBlock = jConditional2._then();
             JTryBlock jTry = jConditional2ThenBlock._try();
             jTry.body().add(jInvocationTest);
-            JCatchBlock jCatchBlock =
-              jTry._catch(cmTest.ref("com.fastjrun.common.ClientException"));
+            JCatchBlock jCatchBlock = jTry._catch(exceptionClass);
             JVar jExceptionVar = jCatchBlock.param("e");
             JBlock jCatchBlockBody = jCatchBlock.body();
             jCatchBlockBody.add(cmTest.ref("org.testng.Assert").staticInvoke("assertEquals").arg(
@@ -240,154 +219,6 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
               JExpr.lit("返回消息码不是指定消息码：").plus(codeNodeJVar.invoke("asText"))));
             jConditional2._else().add(jInvocationTest);
             jConditional1._else().add(jInvocationTest);
-        }
-    }
-
-    private void processMethodCommonVariables(JBlock methodTestBlk, JVar reqParamsJsonJVar,
-      PacketField parameter) {
-        AbstractJClass jType = cmTest.ref(parameter.getDatatype());
-        String paramterName = parameter.getName();
-        if (parameter.getNameAlias() != null && !parameter.getNameAlias().equals("")) {
-            paramterName = parameter.getNameAlias();
-        }
-        JVar jVar = methodTestBlk.decl(jType, paramterName, JExpr._null());
-        JVar jJsonVar = methodTestBlk.decl(cm.ref(JSONOBJECTCLASS_NAME), paramterName + "jSon",
-          reqParamsJsonJVar.invoke("get").arg(JExpr.lit(paramterName)));
-        JBlock jNotNullBlock = methodTestBlk._if(jJsonVar.ne(JExpr._null()))._then();
-        String jsonInvokeMethodName = JacksonUtils.invokeMethodName(jType.name());
-        jNotNullBlock.assign(jVar, jJsonVar.invoke(jsonInvokeMethodName));
-    }
-
-    private void logResponseBodyField(int loopSeq, PacketObject responseBody, JVar responseBodyVar,
-      JBlock methodTestBlk) {
-        Map<String, PacketField> fields = responseBody.getFields();
-        if (fields != null) {
-            for (String fieldName : fields.keySet()) {
-                PacketField restField = fields.get(fieldName);
-                boolean canBeNull = restField.isCanBeNull();
-                String dataType = restField.getDatatype();
-                AbstractJClass jType;
-                AbstractJClass primitiveType = null;
-                if (dataType.endsWith(":List")) {
-                    primitiveType = cmTest.ref(dataType.split(":")[0]);
-                    jType = cmTest.ref("java.util.List").narrow(primitiveType);
-                } else {
-                    // Integer、Double、Long、Boolean、Character、Float、java.util.Date
-                    jType = cmTest.ref(dataType);
-                }
-                String lengthInString = restField.getLength();
-                int length = 0;
-                if (!"".equals(lengthInString)) {
-                    try {
-                        length = Integer.parseInt(lengthInString);
-                    } catch (Exception e) {
-                        log.error(fieldName + "'s length is assigned a wrong value", e);
-                    }
-                }
-                String tterMethodName = fieldName;
-                if (tterMethodName.length() > 1) {
-                    String char2 = String.valueOf(tterMethodName.charAt(1));
-                    if (!char2.equals(char2.toUpperCase())) {
-                        tterMethodName = StringHelper.toUpperCaseFirstOne(tterMethodName);
-                    }
-                }
-                String getter = restField.getGetter();
-                if (getter == null || getter.equals("")) {
-                    getter = "get" + tterMethodName;
-                }
-                JVar fieldNameVar = methodTestBlk.decl(jType, StringHelper.toLowerCaseFirstOne(
-                  responseBodyVar.type().name()) + loopSeq + tterMethodName,
-                  responseBodyVar.invoke(getter));
-                methodTestBlk.add(
-                  JExpr.ref("log").invoke("debug").arg(JExpr.lit(fieldNameVar.name() + "{}")).arg(
-                    fieldNameVar));
-                if (!canBeNull) {
-                    methodTestBlk.add(
-                      cmTest.ref("org.testng.Assert").staticInvoke("assertNotNull").arg(
-                        fieldNameVar));
-                }
-                if (primitiveType == null && jType.name().equals("String")) {
-                    JBlock ifBlock1 = methodTestBlk._if(fieldNameVar.ne(JExpr._null()))._then();
-                    ifBlock1.decl(cmTest.INT, "actualLength", fieldNameVar.invoke("length"));
-                    JBlock ifBlock2 =
-                      ifBlock1._if(JExpr.ref("actualLength").gt(JExpr.lit(length)))._then();
-                    StringBuilder sbFailReason = new StringBuilder();
-                    sbFailReason.append(fieldName);
-                    sbFailReason.append("'s length defined as ");
-                    sbFailReason.append(length);
-                    sbFailReason.append(",but returned value's length is ");
-
-                    ifBlock2.add(cmTest.ref("org.testng.Assert").staticInvoke("fail").arg(
-                      JExpr.lit(sbFailReason.toString()).plus(JExpr.ref("actualLength"))));
-                }
-
-            }
-        }
-
-    }
-
-    private void logResponseBody(int loopSeq, PacketObject responseBody, JVar responseBodyVar,
-      JBlock methodTestBlk) {
-        logResponseBodyField(loopSeq, responseBody, responseBodyVar, methodTestBlk);
-        int start = 1;
-        Map<String, PacketObject> robjects = responseBody.getObjects();
-        if (robjects != null && robjects.size() > 0) {
-            for (String reName : robjects.keySet()) {
-                PacketObject ro = robjects.get(reName);
-                String tterMethodName = reName;
-                if (reName.length() > 1) {
-                    String char2 = String.valueOf(reName.charAt(1));
-                    if (!char2.equals(char2.toUpperCase())) {
-                        tterMethodName = StringHelper.toUpperCaseFirstOne(reName);
-                    }
-                }
-                AbstractJClass roClass;
-                if (ro.is_new()) {
-                    roClass = cmTest.ref(this.packageNamePrefix + ro.get_class());
-                } else {
-                    roClass = cmTest.ref(ro.get_class());
-                }
-                JVar reNameVar =
-                  methodTestBlk.decl(roClass, responseBody.getName() + tterMethodName + loopSeq,
-                    responseBodyVar.invoke("get" + tterMethodName));
-                this.logResponseBody(loopSeq + start++, ro, reNameVar, methodTestBlk);
-            }
-        }
-        Map<String, PacketObject> roLists = responseBody.getLists();
-        if (roLists != null && roLists.size() > 0) {
-            int index = 0;
-            for (String roName : roLists.keySet()) {
-                PacketObject ro = roLists.get(roName);
-                String tterMethodName = roName;
-                if (roName.length() > 1) {
-                    String char2 = String.valueOf(roName.charAt(1));
-                    if (!char2.equals(char2.toUpperCase())) {
-                        tterMethodName = StringHelper.toUpperCaseFirstOne(roName);
-                    }
-                }
-                AbstractJClass roClass;
-                if (ro.is_new()) {
-                    roClass = cmTest.ref(this.packageNamePrefix + ro.get_class());
-                } else {
-                    roClass = cmTest.ref(ro.get_class());
-                }
-                JVar roListVar = methodTestBlk.decl(cmTest.ref("java.util.List").narrow(roClass),
-                  responseBody.getName() + tterMethodName + "List" + loopSeq + index,
-                  responseBodyVar.invoke("get" + tterMethodName));
-                JBlock ifBlock1 = methodTestBlk._if(roListVar.ne(JExpr._null()))._then();
-                JForLoop forLoop = ifBlock1._for();
-                JVar initIndexVar = forLoop.init(cmTest.INT,
-                  responseBody.getName() + tterMethodName + "ListIndex" + loopSeq + index,
-                  JExpr.lit(0));
-                forLoop.test(initIndexVar.lt(roListVar.invoke("size")));
-                forLoop.update(initIndexVar.incr());
-                JBlock forBlock1 = forLoop.body();
-                JVar responseBodyIndexVar = forBlock1.decl(roClass, roName + roClass.name(),
-                  roListVar.invoke("get").arg(initIndexVar));
-
-                this.logResponseBody(loopSeq + start++, ro, responseBodyIndexVar, forBlock1);
-                index++;
-            }
         }
     }
 
@@ -444,53 +275,6 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
         }
     }
 
-    private ObjectNode composeRequestBody(PacketObject requestBody) {
-        ObjectNode jsonRequestBody = this.composeRequestBodyField(requestBody);
-        Map<String, PacketObject> robjects = requestBody.getObjects();
-        if (robjects != null && robjects.size() > 0) {
-            for (String reName : robjects.keySet()) {
-                PacketObject ro = robjects.get(reName);
-                ObjectNode jsonRe = this.composeRequestBody(ro);
-                jsonRequestBody.set(reName, jsonRe);
-            }
-        }
-        Map<String, PacketObject> roList = requestBody.getLists();
-        if (roList != null && roList.size() > 0) {
-            for (String listName : roList.keySet()) {
-                PacketObject ro = roList.get(listName);
-                ObjectNode jsonRe = this.composeRequestBody(ro);
-                ArrayNode jsonAy = JacksonUtils.createArrayNode();
-                jsonAy.add(jsonRe);
-                jsonRequestBody.set(listName, jsonAy);
-            }
-        }
-        return jsonRequestBody;
-    }
-
-    private ObjectNode composeRequestBodyField(PacketObject requestBody) {
-        ObjectNode jsonRequestBody = JacksonUtils.createObjectNode();
-        Map<String, PacketField> fields = requestBody.getFields();
-        if (fields != null) {
-            for (String fieldName : fields.keySet()) {
-                PacketField restField = fields.get(fieldName);
-                String dataType = restField.getDatatype();
-                AbstractJClass jType;
-                AbstractJClass primitiveType;
-                if (dataType.endsWith(":List")) {
-                    primitiveType = cmTest.ref(dataType.split(":")[0]);
-                    jType = cmTest.ref("java.util.List").narrow(primitiveType);
-                } else {
-                    // Integer、Double、Long、Boolean、Character、Float
-                    jType = cmTest.ref(dataType);
-                }
-                jsonRequestBody.put(fieldName, jType.name());
-
-            }
-        }
-        return jsonRequestBody;
-
-    }
-
     public void processControllerMethod(CommonController commonController,
       JDefinedClass controllerClass) {
 
@@ -544,6 +328,8 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
             this.jcontrollerMethod.annotate(cm.ref("io.swagger.annotations.ApiOperation")).param(
               "value", methodRemark).param("notes", methodRemark);
         }
+
+        // headParams
         List<PacketField> headVariables =
           this.serviceMethodGenerator.getCommonMethod().getHeadVariables();
         if (headVariables != null && headVariables.size() > 0) {
@@ -646,12 +432,7 @@ public abstract class BaseControllerMethodGenerator extends BaseCMGenerator {
             requestParam.annotate(cm.ref("javax.validation.Valid"));
             jInvocation.arg(JExpr.ref("requestBody"));
         }
-
-        this.processExtraParameters(jInvocation);
-
         this.exchangeProcessor.processResponse(controllerMethodBlk, jInvocation, this.cm);
 
     }
-
-    abstract protected void processExtraParameters(JInvocation jInvocation);
 }
