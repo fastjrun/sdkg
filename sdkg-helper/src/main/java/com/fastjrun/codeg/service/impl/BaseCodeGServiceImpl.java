@@ -450,7 +450,7 @@ public abstract class BaseCodeGServiceImpl implements CodeGConstants {
     }
 
     protected boolean generateMybatisAnnotationCode(String sqlFile, String moduleName,
-      boolean supportController, boolean supportTest) {
+      boolean supportController, boolean supportTest,String  mybatisVersion) {
 
         JCodeModel cm = new JCodeModel();
         JCodeModel cmTest = new JCodeModel();
@@ -469,6 +469,7 @@ public abstract class BaseCodeGServiceImpl implements CodeGConstants {
             mybatisAFGenerator.setCmTest(cmTest);
             mybatisAFGenerator.setSupportController(supportController);
             mybatisAFGenerator.setSupportTest(supportTest);
+            mybatisAFGenerator.setMybatisVersion(mybatisVersion);
             mybatisAFGenerator.generate();
             if (supportTest) {
                 daoTestParamMap.put(key, mybatisAFGenerator.getDaoTestParam());

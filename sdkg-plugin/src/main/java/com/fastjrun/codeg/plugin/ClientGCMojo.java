@@ -13,6 +13,7 @@ public class ClientGCMojo extends CodeGMogo {
     @Parameter(property = "clientgc.skip", defaultValue = "true")
     private boolean skip;
 
+    @Override
     public void execute() {
 
         if (skip) {

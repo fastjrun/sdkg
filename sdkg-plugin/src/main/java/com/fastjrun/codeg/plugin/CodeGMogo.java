@@ -19,6 +19,9 @@ public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
     @Parameter(property = "codeg.supportDaoTest", defaultValue = "false")
     protected boolean supportDaoTest;
 
+    @Parameter(property = "codeg.mybatisVersion", defaultValue = "")
+    protected String mybatisVersion;
+
     @Parameter(property = "codeg.bundleFiles", defaultValue = "demo_bundle.xml,demo_bundle1.xml")
     protected String bundleFiles;
 
@@ -82,6 +85,7 @@ public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
                 getLog().info(sqlFile);
                 getLog().info("supportController" + supportController);
                 getLog().info("supportDaoTest" + supportDaoTest);
+                getLog().info("mybatisVersion" + mybatisVersion);
                 break;
             default:
                 break;
@@ -117,7 +121,8 @@ public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
                 codeGService.generateAPI(bundleFiles, module);
                 break;
             case BaseG:
-                codeGService.generateBase(sqlFile, module, supportDaoTest, supportController);
+                codeGService.generateBase(sqlFile, module, supportDaoTest, supportController,
+                  mybatisVersion);
                 break;
             default:
                 break;

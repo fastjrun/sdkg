@@ -104,11 +104,19 @@ public class DefaultCodeGService extends BaseCodeGServiceImpl implements CodeGSe
     public boolean generateBase(String sqlFile, String moduleName, boolean supportTest,
       boolean supportController) {
 
+        return this.generateBase(sqlFile,moduleName,supportTest,supportController,"");
+
+
+    }
+
+    @Override
+    public boolean generateBase(String sqlFile, String moduleName, boolean supportTest,
+      boolean supportController, String mybatisVersion) {
         Date begin = new Date();
         log.info("begin genreate at " + begin);
         this.beforeGenerate(moduleName);
 
-        this.generateMybatisAnnotationCode(sqlFile, moduleName, supportController, supportTest);
+        this.generateMybatisAnnotationCode(sqlFile, moduleName, supportController, supportTest,mybatisVersion);
 
         Date end = new Date();
 

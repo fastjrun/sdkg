@@ -18,4 +18,7 @@ public interface CodeGService extends CodeGConstants {
     boolean generateBase(String sqlFile, String moduleName, boolean supportTest,
       boolean supportController);
 
+    boolean generateBase(String sqlFile, String moduleName, boolean supportTest,
+      boolean supportController,String mybatisVersion);
+
 }

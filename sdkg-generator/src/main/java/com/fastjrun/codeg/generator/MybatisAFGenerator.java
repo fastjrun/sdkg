@@ -56,6 +56,8 @@ public class MybatisAFGenerator extends BaseCMGenerator
 
     protected boolean supportTest;
 
+    protected String mybatisVersion;
+
     protected Properties daoTestParam;
 
     public Properties getDaoTestParam() {
@@ -72,6 +74,14 @@ public class MybatisAFGenerator extends BaseCMGenerator
 
     public void setSupportController(boolean supportController) {
         this.supportController = supportController;
+    }
+
+    public String getMybatisVersion() {
+        return mybatisVersion;
+    }
+
+    public void setMybatisVersion(String mybatisVersion) {
+        this.mybatisVersion = mybatisVersion;
     }
 
     public boolean isSupportTest() {
@@ -221,8 +231,8 @@ public class MybatisAFGenerator extends BaseCMGenerator
               this.daoClass.method(JMod.NONE, this.entityClass, DAO_METHOD_NAME_SELECTBYPK);
             selectByPKMethod.annotate(cm.ref("org.apache.ibatis.annotations.Select")).param("value",
               sqlHelper.getSelectByPK());
-            selectByPKMethod.annotate(cm.ref("org.apache.ibatis.annotations.Options")).param(
-              "flushCache", true);
+            processFlushCache(selectByPKMethod);
+
             // deleteByPK方法
             JMethod deleteByPKMethod =
               this.daoClass.method(JMod.NONE, cm.INT, DAO_METHOD_NAME_DELETEBYPK);
@@ -260,8 +270,8 @@ public class MybatisAFGenerator extends BaseCMGenerator
             DAO_METHOD_NAME_QUERYFORLIST);
         queryForListMethod.annotate(cm.ref("org.apache.ibatis.annotations.Select")).param("value",
           sqlHelper.getQueryForList(0));
-        queryForListMethod.annotate(cm.ref("org.apache.ibatis.annotations.Options")).param(
-          "flushCache", true);
+
+        processFlushCache(queryForListMethod);
         // queryForLimitList分页查询
         JMethod queryForLimitListMethod =
           this.daoClass.method(JMod.NONE, cm.ref("java.util.List").narrow(this.entityClass),
@@ -269,8 +279,8 @@ public class MybatisAFGenerator extends BaseCMGenerator
         queryForLimitListMethod.param(cm.ref("org.apache.ibatis.session.RowBounds"), "rowBounds");
         queryForLimitListMethod.annotate(cm.ref("org.apache.ibatis.annotations.Select")).param(
           "value", sqlHelper.getQueryForList(0));
-        queryForLimitListMethod.annotate(cm.ref("org.apache.ibatis.annotations.Options")).param(
-          "flushCache", true);
+
+        processFlushCache(queryForLimitListMethod);
 
         // totalCountCondition总数
         JMethod totalCountConditionMethod =
@@ -321,13 +331,26 @@ public class MybatisAFGenerator extends BaseCMGenerator
           "type", this.sqlBuilderClass).param("method", "insertAll");
     }
 
+    private void processFlushCache(JMethod queryForLimitListMethod) {
+        if ("3.5".equals(this.mybatisVersion) || "3.4".equals(this.mybatisVersion)) {
+            JAnnotationUse optionsAnnotation =
+              queryForLimitListMethod.annotate(cm.ref("org.apache.ibatis.annotations.Options"));
+            optionsAnnotation.param("flushCache",
+              cm.ref("org.apache.ibatis.annotations.Options.FlushCachePolicy").staticRef("TRUE"));
+        } else {
+            queryForLimitListMethod.annotate(cm.ref("org.apache.ibatis.annotations.Options")).param(
+              "flushCache", true);
+        }
+    }
+
     protected void processService() {
         String lowerCaseFirstOneClassName =
           StringHelper.toLowerCaseFirstOne(fjTable.getClassName());
         // 生成接口名：Base+fjTable.getClassName()+Service
         try {
             this.serviceClass = cm._class(
-              this.packageNamePrefix + PACKAGE_SERVICE_WITH_BASE + fjTable.getClassName() + "Service",
+              this.packageNamePrefix + PACKAGE_SERVICE_WITH_BASE + fjTable.getClassName() +
+                "Service",
               EClassType.INTERFACE);
         } catch (JClassAlreadyExistsException e) {
             String msg = "fjTable service class：" + fjTable.getName() + " is already exists.";
@@ -379,7 +402,8 @@ public class MybatisAFGenerator extends BaseCMGenerator
         // 生成接口名：Base+fjTable.getClassName()+Service
         try {
             this.serviceImplClass = cm._class(
-              this.packageNamePrefix + PACKAGE_SERVICE_IMPL_WITH_BASE + fjTable.getClassName() + "ServiceImpl");
+              this.packageNamePrefix + PACKAGE_SERVICE_IMPL_WITH_BASE + fjTable.getClassName() +
+                "ServiceImpl");
         } catch (JClassAlreadyExistsException e) {
             String msg = "fjTable service impl class：" + fjTable.getName() + " is already exists.";
             log.error(msg, e);
@@ -472,7 +496,8 @@ public class MybatisAFGenerator extends BaseCMGenerator
 
         try {
             this.sqlBuilderClass = cm._class(
-              this.packageNamePrefix + PACKAGE_DAO_WITH_BASE + fjTable.getClassName() + "SqlBuilder");
+              this.packageNamePrefix + PACKAGE_DAO_WITH_BASE + fjTable.getClassName() +
+                "SqlBuilder");
 
         } catch (JClassAlreadyExistsException e) {
             String msg = "fjTable SqlBuilder class：" + fjTable.getName() + " is already exists.";
