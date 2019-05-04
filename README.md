@@ -18,9 +18,12 @@
 #### 新增web模块
 
 ## 版本说明：
+### v2.1.3 升级说明
+修复client-tests install不成功的问题
+修复codeg-test install没有skip的问题
+
 ### v2.1.2 升级说明
 新增mybaits3.4.0+ 支持
-
 
 ### v2.1.1 升级说明
 修改client相关代码
