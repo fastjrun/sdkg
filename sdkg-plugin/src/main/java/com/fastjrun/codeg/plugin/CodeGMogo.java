@@ -3,11 +3,10 @@
  */
 package com.fastjrun.codeg.plugin;
 
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugins.annotations.Parameter;
-
 import com.fastjrun.codeg.common.CodeGConstants;
 import com.fastjrun.codeg.service.impl.DefaultCodeGService;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugins.annotations.Parameter;
 
 public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
 
@@ -17,11 +16,17 @@ public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
     @Parameter(property = "codeg.supportController", defaultValue = "false")
     protected boolean supportController;
 
-    @Parameter(property = "codeg.supportTest", defaultValue = "false")
-    protected boolean supportTest;
+    @Parameter(property = "codeg.supportDaoTest", defaultValue = "false")
+    protected boolean supportDaoTest;
+
+    @Parameter(property = "codeg.mybatisVersion", defaultValue = "")
+    protected String mybatisVersion;
 
     @Parameter(property = "codeg.bundleFiles", defaultValue = "demo_bundle.xml,demo_bundle1.xml")
     protected String bundleFiles;
+
+    @Parameter(property = "codeg.supportServiceTest", defaultValue = "false")
+    protected boolean supportServiceTest;
 
     @Parameter(property = "codeg.packagePrefix", defaultValue = "com.fastjrun.demo.")
     protected String packagePrefix;
@@ -68,6 +73,7 @@ public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
                 break;
             case BundleG:
                 getLog().info(bundleFiles);
+                getLog().info("supportServiceTest" + supportServiceTest);
                 break;
             case ClientG:
                 getLog().info(bundleFiles);
@@ -78,7 +84,8 @@ public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
             case BaseG:
                 getLog().info(sqlFile);
                 getLog().info("supportController" + supportController);
-                getLog().info("supportTest" + supportTest);
+                getLog().info("supportDaoTest" + supportDaoTest);
+                getLog().info("mybatisVersion" + mybatisVersion);
                 break;
             default:
                 break;
@@ -102,10 +109,10 @@ public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
                     default:
                         break;
                 }
-                codeGService.generateBundle(bundleFiles, module, mockModelTemp);
+                codeGService.generateProviderMock(bundleFiles, module, mockModelTemp);
                 break;
             case BundleG:
-                codeGService.generateProvider(bundleFiles, module);
+                codeGService.generateProvider(bundleFiles, module, supportServiceTest);
                 break;
             case ClientG:
                 codeGService.generateClient(bundleFiles, module);
@@ -114,7 +121,8 @@ public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
                 codeGService.generateAPI(bundleFiles, module);
                 break;
             case BaseG:
-                codeGService.generateBase(sqlFile, supportController, supportTest, module);
+                codeGService.generateBase(sqlFile, module, supportDaoTest, supportController,
+                  mybatisVersion);
                 break;
             default:
                 break;

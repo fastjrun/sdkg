@@ -16,7 +16,9 @@ public class BundleGCMojo extends CodeGMogo {
     @Parameter(property = "bdgc.skip", defaultValue = "true")
     private boolean skip;
 
-    public void execute() throws MojoExecutionException {
+
+    @Override
+    public void execute() {
 
         if (skip) {
             return;

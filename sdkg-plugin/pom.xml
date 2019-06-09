@@ -8,7 +8,7 @@
     <parent>
         <groupId>com.fastjrun.codeg</groupId>
         <artifactId>sdkg-parent</artifactId>
-        <version>2.1</version>
+        <version>2.1.4</version>
     </parent>
     <artifactId>sdkg-plugin</artifactId>
     <packaging>maven-plugin</packaging>

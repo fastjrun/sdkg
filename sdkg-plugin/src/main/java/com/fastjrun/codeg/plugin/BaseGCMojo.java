@@ -13,6 +13,7 @@ public class BaseGCMojo extends CodeGMogo {
     @Parameter(property = "basegc.skip", defaultValue = "true")
     private boolean skip;
 
+    @Override
     public void execute() {
 
         if (skip) {

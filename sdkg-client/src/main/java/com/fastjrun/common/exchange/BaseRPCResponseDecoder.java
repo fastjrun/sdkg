@@ -8,11 +8,17 @@ import java.util.List;
 public abstract class BaseRPCResponseDecoder extends BaseResponseDecoder {
 
     public <T> T process(Object response, Class<T> valueType) {
+        if(valueType==null){
+            return null;
+        }
         Object object = this.parseDataFromResponse(response);
         return (T) object;
     }
 
     public <T> List<T> processList(Object response, Class<T> valueType) {
+        if(valueType==null){
+            return null;
+        }
         Object object = this.parseDataFromResponse(response);
         return (List<T>) object;
     }

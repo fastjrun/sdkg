@@ -3,18 +3,21 @@
  */
 package com.fastjrun.codeg.utils;
 
-import java.util.Map;
-
-import org.testng.annotations.Test;
-
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fastjrun.codeg.common.DataBaseObject;
 import com.fastjrun.codeg.common.FJTable;
+import com.fastjrun.test.AbstractAdVancedTestNGSpringContextTest;
+import org.testng.annotations.Test;
 
-public class SQLSchemaParseTest {
-    @Test
-    public void testParse() {
+import java.util.Map;
+
+public class SQLSchemaParseTest extends AbstractAdVancedTestNGSpringContextTest {
+    @Test(dataProvider = "loadParam")
+    public void testParse(String reqParamsJsonStrAndAssert) {
+        JsonNode[] jsonNodes = this.parseStr2JsonArray(reqParamsJsonStrAndAssert);
+        String sqlFile = jsonNodes[0].get("sqlFile").asText();
         DataBaseObject dataBaseObject =
-                SQLSchemaParse.process(SQLSchemaParse.TargetType.TargetType_Mysql, "fast-demo.sql");
+          SQLSchemaParse.process(SQLSchemaParse.TargetType.TargetType_Mysql, sqlFile);
         System.out.println(dataBaseObject.getTargetType());
         Map<String, FJTable> map = dataBaseObject.getTableMap();
         for (FJTable table : map.values()) {

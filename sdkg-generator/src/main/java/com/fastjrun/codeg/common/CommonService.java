@@ -7,10 +7,9 @@ import java.util.List;
 
 public class CommonService {
 
-    private String name;
-    private String _class;
+    private String             name;
+    private String             _class;
     private List<CommonMethod> methods;
-    private List<CommonController> commonControllers;
 
     public List<CommonMethod> getMethods() {
         return methods;
@@ -35,13 +34,4 @@ public class CommonService {
     public void set_class(String _class) {
         this._class = _class;
     }
-
-    public List<CommonController> getCommonControllers() {
-        return commonControllers;
-    }
-
-    public void setCommonControllers(List<CommonController> commonControllers) {
-        this.commonControllers = commonControllers;
-    }
-
 }

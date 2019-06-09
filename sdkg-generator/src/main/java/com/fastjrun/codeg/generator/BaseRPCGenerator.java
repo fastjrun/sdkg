@@ -3,8 +3,6 @@
  */
 package com.fastjrun.codeg.generator;
 
-import java.util.Properties;
-
 import com.fastjrun.codeg.common.CodeGException;
 import com.fastjrun.codeg.common.CodeGMsgContants;
 import com.fastjrun.codeg.generator.common.BaseControllerGenerator;
@@ -15,6 +13,8 @@ import com.helger.jcodemodel.JClassAlreadyExistsException;
 import com.helger.jcodemodel.JDefinedClass;
 import com.helger.jcodemodel.JFieldVar;
 import com.helger.jcodemodel.JMod;
+
+import java.util.Properties;
 
 public abstract class BaseRPCGenerator extends BaseControllerGenerator {
 
@@ -50,9 +50,10 @@ public abstract class BaseRPCGenerator extends BaseControllerGenerator {
         } else {
             try {
                 apiClassTemp =
-                        cm._class(this.packageNamePrefix + rpcApi + commonController.getClientName(),
-                                EClassType.INTERFACE);
-                if (controllerType.apiParentName != null && !controllerType.apiParentName.equals("")) {
+                  cm._class(this.packageNamePrefix + rpcApi + commonController.getClientName(),
+                    EClassType.INTERFACE);
+                if (controllerType.apiParentName != null && !controllerType.apiParentName.equals(
+                  "")) {
                     apiClassTemp._implements(cm.ref(controllerType.apiParentName));
                 }
 
@@ -69,8 +70,11 @@ public abstract class BaseRPCGenerator extends BaseControllerGenerator {
     protected void processAPIManager() {
         ControllerType controllerType = commonController.getControllerType();
         try {
-            this.apiManagerClass = cm._class(this.packageNamePrefix + rpcBiz + commonController.getName());
-            if (controllerType.providerParentName != null && !controllerType.providerParentName.equals("")) {
+            this.apiManagerClass =
+              cm._class(this.packageNamePrefix + rpcBiz + commonController.getName());
+            if (controllerType.providerParentName != null && !controllerType.providerParentName
+              .equals(
+              "")) {
                 this.apiManagerClass._extends(cm.ref(controllerType.providerParentName));
             }
         } catch (JClassAlreadyExistsException e) {
@@ -79,17 +83,17 @@ public abstract class BaseRPCGenerator extends BaseControllerGenerator {
             throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
         }
         this.apiManagerClass._implements(this.apiClass);
-        this.apiManagerClass.annotate(cm.ref("org.springframework.stereotype.Service"))
-                .param("value", StringHelper.toLowerCaseFirstOne(commonController.getClientName())
-                );
+        this.apiManagerClass.annotate(cm.ref("org.springframework.stereotype.Service")).param(
+          "value", StringHelper.toLowerCaseFirstOne(commonController.getClientName()));
         this.addClassDeclaration(this.apiManagerClass);
 
         String serviceName = commonController.getServiceName();
         JFieldVar fieldVar =
-                this.apiManagerClass.field(JMod.PRIVATE, this.serviceGenerator.getServiceClass(), serviceName);
+          this.apiManagerClass.field(JMod.PRIVATE, this.serviceGenerator.getServiceClass(),
+            serviceName);
         fieldVar.annotate(cm.ref("org.springframework.beans.factory.annotation.Autowired"));
-        fieldVar.annotate(cm.ref("org.springframework.beans.factory.annotation.Qualifier")).param("value",
-                commonController.getServiceRef());
+        fieldVar.annotate(cm.ref("org.springframework.beans.factory.annotation.Qualifier")).param(
+          "value", commonController.getServiceRef());
     }
 
     @Override
@@ -108,6 +112,7 @@ public abstract class BaseRPCGenerator extends BaseControllerGenerator {
                 }
             }
         }
+        this.generatorControllerMethod();
     }
 
 }

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration status="WARN">
+    <Properties>
+        <Property name="logLevel">debug</Property>
+    </Properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout
+                    pattern="[%d{MM-dd HH:mm:ss S}] %p[%5t][%c{1.}.%M][%L] %m%n"/>
+        </Console>
+    </Appenders>
+
+    <Loggers>
+        <logger name="org" level="warn" additivity="false">
+            <appender-ref ref="Console"/>
+        </logger>
+        <logger name="com" level="warn" additivity="false">
+            <appender-ref ref="Console"/>
+        </logger>
+        <logger name="com.fastjrun" level="${sys:logLevel}" additivity="false">
+            <appender-ref ref="Console"/>
+        </logger>
+        <Root level="debug">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+</Configuration>

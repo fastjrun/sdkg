@@ -14,7 +14,8 @@ public class DefaultResponseWithHeadProcessor extends BaseResponseProcessor {
 
     static String DEFAULT_LISTRESPONSE_CLASS_NAME = "com.fastjrun.example.dto.DefaultListResponse";
 
-    static String DEFAULT_RESPONSE_HELPER_CLASS_NAME = "com.fastjrun.example.helper.BaseResponseHelper";
+    static String DEFAULT_RESPONSE_HELPER_CLASS_NAME =
+      "com.fastjrun.example.helper.BaseResponseHelper";
 
     @Override
     public void parseResponseClass(JCodeModel cm) {
@@ -22,7 +23,8 @@ public class DefaultResponseWithHeadProcessor extends BaseResponseProcessor {
             if (!this.isResponseIsArray()) {
                 this.responseClass = cm.ref(DEFAULT_RESPONSE_CLASS_NAME).narrow(this.elementClass);
             } else {
-                this.responseClass = cm.ref(DEFAULT_LISTRESPONSE_CLASS_NAME).narrow(this.elementClass);
+                this.responseClass =
+                  cm.ref(DEFAULT_LISTRESPONSE_CLASS_NAME).narrow(this.elementClass);
             }
         } else {
             if (!this.isResponseIsArray()) {
@@ -34,8 +36,7 @@ public class DefaultResponseWithHeadProcessor extends BaseResponseProcessor {
     }
 
     @Override
-    public void processResponse(JBlock methodBlk,
-                                JInvocation jInvocation, JCodeModel cm) {
+    public void processResponse(JBlock methodBlk, JInvocation jInvocation, JCodeModel cm) {
 
         String responseHelperMethodName = "getResult";
         if (this.isResponseIsArray()) {
@@ -43,19 +44,21 @@ public class DefaultResponseWithHeadProcessor extends BaseResponseProcessor {
         }
 
         methodBlk.decl(this.responseClass, "response",
-                cm.ref(DEFAULT_RESPONSE_HELPER_CLASS_NAME).staticInvoke(responseHelperMethodName));
+          cm.ref(DEFAULT_RESPONSE_HELPER_CLASS_NAME).staticInvoke(responseHelperMethodName));
         if (this.elementClass == null) {
             methodBlk.add(jInvocation);
         } else {
             if (this.isResponseIsArray()) {
-                methodBlk.decl(cm.ref("java.util.List").narrow(this.elementClass), "responseBody", jInvocation);
+                methodBlk.decl(cm.ref("java.util.List").narrow(this.elementClass), "responseBody",
+                  jInvocation);
             } else {
                 methodBlk.decl(this.elementClass, "responseBody", jInvocation);
             }
 
             methodBlk.add(JExpr.ref("response").invoke("setBody").arg(JExpr.ref("responseBody")));
         }
-        methodBlk.add(JExpr.ref("log").invoke("debug").arg(JExpr.ref("response").invoke("toString")));
+        methodBlk.add(JExpr.ref("log").invoke("debug").arg(JExpr.lit("response={}")).arg(
+          JExpr.ref("response").invoke("toString")));
         methodBlk._return(JExpr.ref("response"));
     }
 }

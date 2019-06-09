@@ -11,22 +11,34 @@
 
 ### 实现原理
 - 基于maven插件实现
-- 快嘉代码生成Maven插件使用dom4j解析接口文档，用jcodemodel输出代码
+- 使用dom4j解析接口文档，用jcodemodel输出代码
+- 使用jsqlparser解析sql脚本，用jcodemodel输出代码
 
 ### to be continued
-rpc相关代码生成需要重新调试
-client端代码需要测试下
-
+#### 新增web模块
 
 ## 版本说明：
+### v2.1.3 升级说明
+修复client-tests install不成功的问题
+修复codeg-test install没有skip的问题
+
+### v2.1.2 升级说明
+新增mybaits3.4.0+ 支持
+
+### v2.1.1 升级说明
+修改client相关代码
+重构client测试用例和base*Dao测试用例
+新增service测试用例
+代码生成用foreach代替线程池
+
+
 ### v2.1 升级说明
 #### 项目结构进一步解耦，将代码生成功能和插件分开,从codeg-helper中拆分出codeg-plugin模块
 #### 抽离出codeg-test的单测模块
 #### 优化代码生成逻辑
 #### 调整web和provider模块的代码生成位置区分package
-#### 新增web模块进一步优化
 #### 新增接口协议，支持web方式
-#### base模板新增BaseService、BaseController
+#### base模板新增BaseService、BaseDao的单元测试用例代码
 #### codemodel切换成大神的jcodemodel ：https://github.com/phax/jcodemodel
 #### 项目结构进一步解耦，抽离出项目自带协议和自定义协议代码生成器放在sdkg-example模块下
 #### 日志组件切换成slf4j+log4j2
