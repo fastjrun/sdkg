@@ -1,6 +1,7 @@
 *.log
 *.log.*
 pom.xml.versionsBackup
+target/*
 .project
 /.settings
 */*.log
