@@ -19,7 +19,7 @@
 
 ## 版本说明：
 ### v2.1.5 升级说明
-修复base*Dao的insertAll方法
+修复base*Dao的insertAll方法(注意个数限制，应该是<=1000,未完整测试)
 完善base*DaoTest的生成方法
 修复JacksonUtil的readList方法bug
 
