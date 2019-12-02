@@ -60,6 +60,8 @@ public class MybatisAFGenerator extends BaseCMGenerator
 
     protected Properties daoTestParam;
 
+    private String lowerCaseFirstOneClassName;
+
     public Properties getDaoTestParam() {
         return daoTestParam;
     }
@@ -111,7 +113,7 @@ public class MybatisAFGenerator extends BaseCMGenerator
 
         this.entityClass._extends(cm.ref(ENTITY_PARENT_CLASS_NAME));
         this.entityClass._implements(cm.ref("java.io.Serializable"));
-        long hashCode = 0l;
+        long hashCode = 0L;
         hashCode += this.entityClass.getClass().getName().hashCode();
         this.addClassDeclaration(this.entityClass);
         Map<String, FJColumn> columns = fjTable.getColumns();
@@ -197,8 +199,6 @@ public class MybatisAFGenerator extends BaseCMGenerator
     }
 
     protected void processDao() {
-        String lowerCaseFirstOneClassName =
-          StringHelper.toLowerCaseFirstOne(fjTable.getClassName());
         // 生成接口名：Base+fjTable.getClassName()+Dao
         try {
             this.daoClass = cm._class(
@@ -325,8 +325,10 @@ public class MybatisAFGenerator extends BaseCMGenerator
         // insertAll方法批量插入
         JMethod insertAllMethod =
           this.daoClass.method(JMod.NONE, cm.INT, DAO_METHOD_NAME_INSERTALL);
-        insertAllMethod.param(cm.ref("java.util.List").narrow(this.entityClass),
+        JVar insertAllVar = insertAllMethod.param(cm.ref("java.util.List").narrow(this.entityClass),
           lowerCaseFirstOneClassName + "s"); // 复数形式
+        insertAllVar.annotate(cm.ref("org.apache.ibatis.annotations.Param")).param("value",
+          lowerCaseFirstOneClassName + "s");
         insertAllMethod.annotate(cm.ref("org.apache.ibatis.annotations.InsertProvider")).param(
           "type", this.sqlBuilderClass).param("method", "insertAll");
     }
@@ -344,8 +346,7 @@ public class MybatisAFGenerator extends BaseCMGenerator
     }
 
     protected void processService() {
-        String lowerCaseFirstOneClassName =
-          StringHelper.toLowerCaseFirstOne(fjTable.getClassName());
+
         // 生成接口名：Base+fjTable.getClassName()+Service
         try {
             this.serviceClass = cm._class(
@@ -397,8 +398,6 @@ public class MybatisAFGenerator extends BaseCMGenerator
     }
 
     protected void processServiceImpl() {
-        String lowerCaseFirstOneClassName =
-          StringHelper.toLowerCaseFirstOne(fjTable.getClassName());
         // 生成接口名：Base+fjTable.getClassName()+Service
         try {
             this.serviceImplClass = cm._class(
@@ -490,9 +489,6 @@ public class MybatisAFGenerator extends BaseCMGenerator
      */
     private void processSQLBuilder() {
         // 生成：Base+fjTable.getClassName()+SQLBuilder
-
-        String lowerCaseFirstOneClassName =
-          StringHelper.toLowerCaseFirstOne(fjTable.getClassName());
 
         try {
             this.sqlBuilderClass = cm._class(
@@ -596,10 +592,10 @@ public class MybatisAFGenerator extends BaseCMGenerator
 
     }
 
-    private String[] getAllFieldsForBatch(FJTable FJTable) {
+    private String[] getAllFieldsForBatch(FJTable fjTable) {
         StringBuilder sqlParam = new StringBuilder("(");
         StringBuilder sqlValue = new StringBuilder("(");
-        Map<String, FJColumn> columns = FJTable.getColumns();
+        Map<String, FJColumn> columns = fjTable.getColumns();
         int i = 0;
         for (FJColumn fjColumn : columns.values()) {
             String name = fjColumn.getName();
@@ -611,7 +607,8 @@ public class MybatisAFGenerator extends BaseCMGenerator
                 sqlValue.append(",");
             }
             sqlParam.append("`").append(name).append("`");
-            sqlValue.append("#'{'list[{0}].").append(fjColumn.getFieldName()).append("}");
+            sqlValue.append("#'{'" + this.lowerCaseFirstOneClassName + "s[{0}].").append(
+              fjColumn.getFieldName()).append("}");
             i++;
         }
         sqlParam.append(")");
@@ -621,6 +618,7 @@ public class MybatisAFGenerator extends BaseCMGenerator
 
     @Override
     public void generate() {
+        this.lowerCaseFirstOneClassName = StringHelper.toLowerCaseFirstOne(fjTable.getClassName());
         this.processEntity();
         this.processSQLBuilder();
         this.processDao();

@@ -81,13 +81,13 @@ public class FJTable {
                 + "]";
     }
 
-    public String parseDescToJson() {
+    public ObjectNode parseDescToJson() {
         ObjectNode entityObjectNode = JacksonUtils.createObjectNode();
         for (String key : this.columns.keySet()) {
             FJColumn fjColumn = this.columns.get(key);
             String fjTypeName = fjColumn.getDatatype();
             entityObjectNode.put(key, fjTypeName);
         }
-        return entityObjectNode.toString();
+        return entityObjectNode;
     }
 }

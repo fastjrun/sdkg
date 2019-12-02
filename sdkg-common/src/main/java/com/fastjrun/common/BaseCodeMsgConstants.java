@@ -5,7 +5,7 @@ package com.fastjrun.common;
 
 public interface BaseCodeMsgConstants {
 
-    public static final String CODE_OK = "0000";
+   String CODE_OK = "0000";
 
     public enum BaseCodeMsg implements CodeMsgI {
         OK(CODE_OK, "OK");
@@ -19,10 +19,11 @@ public interface BaseCodeMsgConstants {
             this.msg = msg;
         }
 
+        @Override
         public String getCode() {
             return code;
         }
-
+        @Override
         public String getMsg() {
             return msg;
         }
