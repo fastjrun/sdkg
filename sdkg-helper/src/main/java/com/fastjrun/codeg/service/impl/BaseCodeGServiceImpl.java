@@ -233,7 +233,7 @@ public abstract class BaseCodeGServiceImpl implements CodeGConstants {
                 try {
                     FileWriter resFw = new FileWriter(outFile);
                     for (String pKey : testParams.stringPropertyNames()) {
-                        resFw.write(pKey.concat("=").concat(StringEscapeUtils.unescapeJavaScript(
+                        resFw.write(pKey.concat("=").concat(StringEscapeUtils.unescapeJava(
                           testParams.getProperty(pKey))).concat(System.lineSeparator()));
                     }
                     resFw.close();

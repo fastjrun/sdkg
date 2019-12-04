@@ -3,15 +3,15 @@
  */
 package com.fastjrun.utils;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fastjrun.common.util.FastJsonObjectMapper;
+
+import java.io.IOException;
+import java.util.List;
 
 public class JacksonUtils {
 
@@ -23,7 +23,6 @@ public class JacksonUtils {
      * @param <T>       This is the type parameter
      * @param jsonStr   jsonStr
      * @param valueType valueType
-     *
      * @return object
      */
     public static <T> T readValue(String jsonStr, Class<T> valueType) {
@@ -43,28 +42,23 @@ public class JacksonUtils {
      * @param <T>       This is the type parameter
      * @param jsonNode  jsonNode
      * @param valueType valueType
-     *
      * @return Object Array
      */
     public static <T> List<T> readList(JsonNode jsonNode, Class<T> valueType) {
         JavaType javaType =
-                objectMapper.getTypeFactory().constructParametricType(List.class, valueType);
-        List<T> list = new ArrayList<>();
-
-        while (jsonNode.elements().hasNext()) {
-            JsonNode element = jsonNode.elements().next();
-            T t = readValue(element.toString(), valueType);
-            list.add(t);
+          objectMapper.getTypeFactory().constructParametricType(List.class, valueType);
+        try {
+            return objectMapper.readValue(jsonNode.toString(), javaType);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-        return list;
+        return null;
     }
 
     /**
      * 把JavaBean转换为json字符串
      *
      * @param object object
-     *
      * @return String
      */
     public static String toJSon(Object object) {
@@ -82,7 +76,6 @@ public class JacksonUtils {
      * 把string转换为jsonNode
      *
      * @param data data
-     *
      * @return JsonNode
      */
     public static JsonNode toJsonNode(String data) {

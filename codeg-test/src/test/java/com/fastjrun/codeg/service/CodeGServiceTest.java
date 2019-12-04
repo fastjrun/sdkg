@@ -86,7 +86,7 @@ public class CodeGServiceTest extends AbstractTestNGTest implements CodeGConstan
         DefaultCodeGService codeGService = new DefaultCodeGService();
         codeGService.setPackageNamePrefix(packagePrefix);
         try {
-            codeGService.generateBase(sqlFile, moduleName, supportController, supportTest);
+            codeGService.generateBase(sqlFile, moduleName, supportTest, supportController);
         } catch (Exception e) {
             this.processExceptionInResponse(jsonNodes[1], e);
         }

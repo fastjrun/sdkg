@@ -3,6 +3,7 @@
  */
 package com.fastjrun.codeg.generator;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fastjrun.codeg.common.FJColumn;
 import com.fastjrun.codeg.common.FJTable;
@@ -85,11 +86,11 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator
         JBlock jNotNullBlock = methodBlk._if(entityStrVar.ne(JExpr._null()))._then();
         jNotNullBlock.assign(entityVar,
           cmTest.ref(JacksonUtilsClassName).staticInvoke("readValue").arg(
-            paramsJsonJVar.invoke("toString")).arg(this.entityClass.dotclass()));
+            entityStrVar.invoke("toString")).arg(this.entityClass.dotclass()));
         JInvocation jInvocationTest = JExpr.invoke(fieldVar, DAO_METHOD_NAME_INSERT).arg(entityVar);
 
         ObjectNode methodParamInJsonObject = JacksonUtils.createObjectNode();
-        methodParamInJsonObject.put(lowerCaseFirstOneClassName, this.fjTable.parseDescToJson());
+        methodParamInJsonObject.set(lowerCaseFirstOneClassName, this.fjTable.parseDescToJson());
 
         this.putIntoTestParam(methodParamInJsonObject, DAO_METHOD_NAME_INSERT);
 
@@ -174,7 +175,7 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator
         JBlock jNotNullBlock = methodBlk._if(entityStrVar.ne(JExpr._null()))._then();
         jNotNullBlock.assign(entityVar,
           cmTest.ref(JacksonUtilsClassName).staticInvoke("readValue").arg(
-            paramsJsonJVar.invoke("toString")).arg(this.entityClass.dotclass()));
+            entityStrVar.invoke("toString")).arg(this.entityClass.dotclass()));
         JInvocation jInvocationTest =
           JExpr.invoke(fieldVar, DAO_METHOD_NAME_UPDATEBYPK).arg(entityVar);
         ObjectNode methodParamInJsonObject = JacksonUtils.createObjectNode();
@@ -267,7 +268,7 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator
         ObjectNode rowBoundsInJsonObject = JacksonUtils.createObjectNode();
         rowBoundsInJsonObject.put("offset", "int");
         rowBoundsInJsonObject.put("limit", "int");
-        methodParamInJsonObject.put("rowBounds", rowBoundsInJsonObject.toString());
+        methodParamInJsonObject.set("rowBounds", rowBoundsInJsonObject);
 
         this.putIntoTestParam(methodParamInJsonObject, DAO_METHOD_NAME_QUERYFORLIMITLIST);
 
@@ -418,7 +419,7 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator
         ObjectNode rowBoundsInJsonObject = JacksonUtils.createObjectNode();
         rowBoundsInJsonObject.put("offset", "int");
         rowBoundsInJsonObject.put("limit", "int");
-        methodParamInJsonObject.put("rowBounds", rowBoundsInJsonObject.toString());
+        methodParamInJsonObject.set("rowBounds", rowBoundsInJsonObject);
         methodParamInJsonObject.put("condition", "String");
 
         this.putIntoTestParam(methodParamInJsonObject, DAO_METHOD_NAME_QUERYFORLIMITLISTCONDITION);
@@ -461,6 +462,13 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator
         JInvocation jInvocationTest =
           JExpr.invoke(fieldVar, DAO_METHOD_NAME_INSERTALL).arg(listVar);
 
+        ObjectNode methodParamInJsonObject = JacksonUtils.createObjectNode();
+        ArrayNode jTableList = JacksonUtils.createArrayNode();
+        jTableList.add(this.fjTable.parseDescToJson());
+        methodParamInJsonObject.set(lowerCaseFirstOneClassName + "s", jTableList);
+
+        this.putIntoTestParam(methodParamInJsonObject, DAO_METHOD_NAME_INSERTALL);
+
         JVar resJVar = methodBlk.decl(cmTest.INT, "res", jInvocationTest);
         methodBlk.add(JExpr.ref("log").invoke("debug").arg(JExpr.lit("res={}")).arg(resJVar));
     }
@@ -468,7 +476,6 @@ public class MybatisDaoTestMethodGenerator extends BaseCMGenerator
     @Override
     public void generate() {
         this.lowerCaseFirstOneClassName = StringHelper.toLowerCaseFirstOne(fjTable.getClassName());
-
         this.daoTestParam = new Properties();
         this.processInsert();
 
