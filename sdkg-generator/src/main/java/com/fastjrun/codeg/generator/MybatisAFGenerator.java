@@ -334,14 +334,14 @@ public class MybatisAFGenerator extends BaseCMGenerator
     }
 
     private void processFlushCache(JMethod queryForLimitListMethod) {
-        if ("3.5".equals(this.mybatisVersion) || "3.4".equals(this.mybatisVersion)) {
+        if ( "3.3".equals(this.mybatisVersion)) {
+            queryForLimitListMethod.annotate(cm.ref("org.apache.ibatis.annotations.Options")).param(
+              "flushCache", true);
+        } else {
             JAnnotationUse optionsAnnotation =
               queryForLimitListMethod.annotate(cm.ref("org.apache.ibatis.annotations.Options"));
             optionsAnnotation.param("flushCache",
               cm.ref("org.apache.ibatis.annotations.Options.FlushCachePolicy").staticRef("TRUE"));
-        } else {
-            queryForLimitListMethod.annotate(cm.ref("org.apache.ibatis.annotations.Options")).param(
-              "flushCache", true);
         }
     }
 
