@@ -241,6 +241,18 @@
         </profile>
         <profile>
             <id>repo</id>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>mycompany-snapshots</id>
+                    <name>snapshots</name>
+                    <url>${mycompany-nexus}${mycompany-snapshots-url-suffix}</url>
+                </snapshotRepository>
+                <repository>
+                    <id>mycompany-releases</id>
+                    <name>releases</name>
+                    <url>${mycompany-nexus}${mycompany-snapshots-url-suffix}</url>
+                </repository>
+            </distributionManagement>
             <build>
                 <plugins>
                     <plugin>
