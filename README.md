@@ -23,7 +23,6 @@
 完善base*DaoTest的生成方法
 修复JacksonUtil的readList方法bug
 
-## 版本说明：
 ### v2.1.3 升级说明
 修复client-tests install不成功的问题
 修复codeg-test install没有skip的问题

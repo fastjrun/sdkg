@@ -85,8 +85,9 @@ public class FJTable {
         ObjectNode entityObjectNode = JacksonUtils.createObjectNode();
         for (String key : this.columns.keySet()) {
             FJColumn fjColumn = this.columns.get(key);
+            String fieldName = fjColumn.getFieldName();
             String fjTypeName = fjColumn.getDatatype();
-            entityObjectNode.put(key, fjTypeName);
+            entityObjectNode.put(fieldName, fjTypeName);
         }
         return entityObjectNode;
     }
