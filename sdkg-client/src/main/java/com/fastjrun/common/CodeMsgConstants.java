@@ -5,26 +5,26 @@ package com.fastjrun.common;
 
 public interface CodeMsgConstants {
 
-    public static final String CODE_OK = "0000";
+    String CODE_OK = "0000";
 
-    public static final String CODE_ClIENT_NETWORK_NOT_AVAILABLE = "6999";
-    public static final String CODE_ClIENT_RESPONSE_EMPTY = "6998";
-    public static final String CODE_ClIENT_RESPONSE_NOT_VALID = "6997";
+    String CODE_ClIENT_NETWORK_NOT_AVAILABLE = "6999";
+    String CODE_ClIENT_RESPONSE_EMPTY = "6998";
+    String CODE_ClIENT_RESPONSE_NOT_VALID = "6997";
 
-    public static final String CODE_ClIENT_REQUEST_COMPOSE_FAIL = "6996";
+    String CODE_ClIENT_REQUEST_COMPOSE_FAIL = "6996";
 
     // defaultResponse
-    public static final String CODE_CLIENT_RESPONSE_HEAD_NULL = "6995";
-    public static final String CODE_CLIENT_RESPONSE_HEAD_CODE_NULL = "6994";
-    public static final String CODE_CLIENT_RESPONSE_HEAD_CODE_EMPTY = "6993";
-    public static final String CODE_ClIENT_RESPONSE_BODY_NOT_VALID = "6992";
-    public static final String CODE_ClIENT_RESPONSE_HEAD_MSG_NULL = "6991";
-    public static final String CODE_ClIENT_RESPONSE_HEAD_MSG_EMPTY = "6990";
-    public static final String CODE_ClIENT_SERVER_EXCEPTION = "6989";
-    public static final String CODE_ClIENT_REQUEST_QUERYSTRING_ENCODE_FAIL = "6988";
-    public static final String CODE_ClIENT_RESPONSE_NOT_OK = "6987";
+    String CODE_CLIENT_RESPONSE_HEAD_NULL = "6995";
+    String CODE_CLIENT_RESPONSE_HEAD_CODE_NULL = "6994";
+    String CODE_CLIENT_RESPONSE_HEAD_CODE_EMPTY = "6993";
+    String CODE_ClIENT_RESPONSE_BODY_NOT_VALID = "6992";
+    String CODE_ClIENT_RESPONSE_HEAD_MSG_NULL = "6991";
+    String CODE_ClIENT_RESPONSE_HEAD_MSG_EMPTY = "6990";
+    String CODE_ClIENT_SERVER_EXCEPTION = "6989";
+    String CODE_ClIENT_REQUEST_QUERYSTRING_ENCODE_FAIL = "6988";
+    String CODE_ClIENT_RESPONSE_NOT_OK = "6987";
 
-    public enum CodeMsg implements CodeMsgI {
+    enum CodeMsg implements CodeMsgI {
         OK(CODE_OK, "OK"),
         // client
         //  simplehttpClient
@@ -54,10 +54,12 @@ public interface CodeMsgConstants {
             this.msg = msg;
         }
 
+        @Override
         public String getCode() {
             return code;
         }
 
+        @Override
         public String getMsg() {
             return msg;
         }

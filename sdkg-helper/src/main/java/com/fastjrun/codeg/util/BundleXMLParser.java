@@ -18,11 +18,7 @@ import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 import org.springframework.http.MediaType;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BundleXMLParser implements CodeGConstants {
 
@@ -108,10 +104,30 @@ public class BundleXMLParser implements CodeGConstants {
           CodeGConstants.ControllerType_GENERIC);
         this.controllerTypeMap.put(CodeGConstants.ControllerType_DUBBO.name,
           CodeGConstants.ControllerType_DUBBO);
-        this.processExtControllerType();
+        try{
+            this.processExtControllerType();
+        }catch (Exception e){
+
+        }
+
     }
 
     public void processExtControllerType() {
+        ResourceBundle rb = ResourceBundle.getBundle("ext-generator");
+        if(rb!=null){
+            rb.keySet().stream().forEach(key->{
+                String[] values=rb.getString(key).split(",");
+                ControllerProtocol controllerProtocol=ControllerProtocol.ControllerProtocol_HTTP;
+
+                if(values[0].equals("dubbo")){
+                    controllerProtocol=ControllerProtocol.ControllerProtocol_DUBBO;
+                }
+                ControllerType controllerType =
+                        new ControllerType(key, controllerProtocol, values[1],values[2], values[3], values[4],
+                                values[5], values[6]);
+                this.controllerTypeMap.put(key,controllerType);
+            });
+        }
     }
 
     private void initBundleRoot() {

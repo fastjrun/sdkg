@@ -15,8 +15,6 @@ import com.fastjrun.codeg.generator.common.BaseControllerGenerator;
 
 public abstract class CodeGeneratorFactory implements CodeGConstants {
 
-    private static final String GENERATO_RPACKAGE = "com.fastjrun.codeg.generator.";
-
     private static PacketGenerator packetGenerator;
     private static ServiceGenerator serviceGenerator;
 
@@ -78,7 +76,7 @@ public abstract class CodeGeneratorFactory implements CodeGConstants {
         try {
             baseControllerGenerator =
                     (BaseControllerGenerator) Class
-                            .forName(GENERATO_RPACKAGE + commonController.getControllerType().generatorName)
+                            .forName(commonController.getControllerType().generatorName)
                             .newInstance();
 
         } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {

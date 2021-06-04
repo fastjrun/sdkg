@@ -11,19 +11,19 @@ public interface CodeGConstants {
             new ControllerType("Generic", ControllerProtocol.ControllerProtocol_HTTP, "",
                     "com.fastjrun.client.DefaultHTTPGenericClient", "",
                     "",
-                    "com.fastjrun.web.controller.BaseController", "DefaultHTTPGeneriGenerator");
+                    "com.fastjrun.web.controller.BaseController", "com.fastjrun.codeg.generator.DefaultHTTPGeneriGenerator");
     ControllerType ControllerType_APP =
             new ControllerType("App", ControllerProtocol.ControllerProtocol_HTTP, "",
                     "com.fastjrun.client.DefaultHTTPAppClient", "", "",
-                    "com.fastjrun.example.web.controller.BaseAppController", "DefaultHTTPAPPGenerator");
+                    "com.fastjrun.example.web.controller.BaseAppController", "com.fastjrun.codeg.generator.DefaultHTTPAPPGenerator");
     ControllerType ControllerType_API =
             new ControllerType("Api", ControllerProtocol.ControllerProtocol_HTTP, "",
                     "com.fastjrun.client.DefaultHTTPApiClient", "", "",
-                    "com.fastjrun.example.web.controller.BaseApiController", "DefaultHTTPAPIGenerator");
+                    "com.fastjrun.example.web.controller.BaseApiController", "com.fastjrun.codeg.generator.DefaultHTTPAPIGenerator");
     ControllerType ControllerType_DUBBO =
             new ControllerType("Dubbo", ControllerProtocol.ControllerProtocol_DUBBO, "DubboClient",
                     "com.fastjrun.client.DefaultDubboClient", "DubboController", "",
-                    "com.fastjrun.example.biz.BaseDefaultApiManager", "DefaultDubboGenerator");
+                    "com.fastjrun.example.biz.BaseDefaultApiManager", "com.fastjrun.codeg.generator.DefaultDubboGenerator");
 
     enum CodeGCommand {
         BaseG, ApiG, ClientG, BundleG, BundleMockG;
