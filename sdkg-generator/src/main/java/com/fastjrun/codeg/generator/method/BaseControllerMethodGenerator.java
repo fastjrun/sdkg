@@ -309,6 +309,8 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
         String methodPath = this.serviceMethodGenerator.getCommonMethod().getPath();
         if (methodPath == null || methodPath.equals("")) {
             methodPath = "/" + this.serviceMethodGenerator.getCommonMethod().getName();
+        }else if(methodPath.equals("null")){
+            methodPath = "";
         }
         String methodVersion = this.serviceMethodGenerator.getCommonMethod().getVersion();
         if (methodVersion != null && !methodVersion.equals("")) {
@@ -358,7 +360,7 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
                 pathVariableJVar.annotate(
                   cm.ref("org.springframework.web.bind.annotation.PathVariable")).param("name",
                   pathVariable.getName()).param("required", true);
-                methodPath = methodPath + "/{" + pathVariable.getName() + "}";
+
 
                 jInvocation.arg(pathVariableJVar);
                 if (this.getMockModel() == MockModel.MockModel_Swagger) {
@@ -366,6 +368,7 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
                       "name", pathVariable.getName()).param("value",
                       pathVariable.getRemark()).param("required", true);
                 }
+                methodPath=methodPath.replaceFirst("\\{\\}", "{" + pathVariable.getName() + "}");
             }
         }
         List<PacketField> parameters =

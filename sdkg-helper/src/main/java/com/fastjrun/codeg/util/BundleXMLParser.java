@@ -449,7 +449,7 @@ public class BundleXMLParser implements CodeGConstants {
         }
         Element elePathVariablesRoot = eleMethod.element("pathVariables");
         if (elePathVariablesRoot != null) {
-            List<PacketField> pathVariables = parsePacketFields(eleParametersRoot, "pathVariable");
+            List<PacketField> pathVariables = parsePacketFields(elePathVariablesRoot, "pathVariable");
             method.setPathVariables(pathVariables);
         }
         Element eleHeadVariablesRoot = eleMethod.element("headVariables");
