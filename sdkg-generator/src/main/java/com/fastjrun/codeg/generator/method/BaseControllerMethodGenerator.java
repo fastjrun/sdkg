@@ -358,8 +358,7 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
                 AbstractJType jType = cm.ref(pathVariable.getDatatype());
                 JVar pathVariableJVar = this.jcontrollerMethod.param(jType, pathVariable.getName());
                 pathVariableJVar.annotate(
-                  cm.ref("org.springframework.web.bind.annotation.PathVariable")).param("name",
-                  pathVariable.getName()).param("required", true);
+                  cm.ref("org.springframework.web.bind.annotation.PathVariable")).param("name");
 
 
                 jInvocation.arg(pathVariableJVar);
