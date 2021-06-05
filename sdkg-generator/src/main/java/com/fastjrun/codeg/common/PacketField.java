@@ -4,105 +4,125 @@
 package com.fastjrun.codeg.common;
 
 public class PacketField {
+  /** 支持字段名称中含"-"或“_”字符 */
+  private String name;
 
-    private String name;
+  private String fieldName;
 
-    private String nameAlias;
+  private String nameAlias;
 
-    private String length;
+  private String length;
 
-    private String remark;
+  private String remark;
 
-    private boolean canBeNull;
+  private boolean canBeNull;
 
-    /**
-     * 字段数据类型 String:List
-     */
-    private String datatype;
+  /** 字段数据类型 String:List */
+  private String datatype;
 
-    /* pathVariable需要用到顺序 */
-    private int index;
+  /* pathVariable需要用到顺序 */
+  private int index;
 
-    private String getter;
+  private String getter;
 
-    private String setter;
+  private String setter;
 
-    public String getGetter() {
-        return getter;
-    }
+  public String getFieldName() {
+    return fieldName;
+  }
 
-    public void setGetter(String getter) {
-        this.getter = getter;
-    }
+  public void setFieldName(String fieldName) {
+    this.fieldName = fieldName;
+  }
 
-    public String getSetter() {
-        return setter;
-    }
+  public String getGetter() {
+    return getter;
+  }
 
-    public void setSetter(String setter) {
-        this.setter = setter;
-    }
+  public void setGetter(String getter) {
+    this.getter = getter;
+  }
 
-    public int getIndex() {
-        return index;
-    }
+  public String getSetter() {
+    return setter;
+  }
 
-    public void setIndex(int index) {
-        this.index = index;
-    }
+  public void setSetter(String setter) {
+    this.setter = setter;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public int getIndex() {
+    return index;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public void setIndex(int index) {
+    this.index = index;
+  }
 
-    public String getLength() {
-        return length;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public void setLength(String length) {
-        this.length = length;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public String getRemark() {
-        return remark;
-    }
+  public String getLength() {
+    return length;
+  }
 
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
+  public void setLength(String length) {
+    this.length = length;
+  }
 
-    public boolean isCanBeNull() {
-        return canBeNull;
-    }
+  public String getRemark() {
+    return remark;
+  }
 
-    public void setCanBeNull(boolean canBeNull) {
-        this.canBeNull = canBeNull;
-    }
+  public void setRemark(String remark) {
+    this.remark = remark;
+  }
 
-    public String getDatatype() {
-        return datatype;
-    }
+  public boolean isCanBeNull() {
+    return canBeNull;
+  }
 
-    public void setDatatype(String datatype) {
-        this.datatype = datatype;
-    }
+  public void setCanBeNull(boolean canBeNull) {
+    this.canBeNull = canBeNull;
+  }
 
-    public String getNameAlias() {
-        return nameAlias;
-    }
+  public String getDatatype() {
+    return datatype;
+  }
 
-    public void setNameAlias(String nameAlias) {
-        this.nameAlias = nameAlias;
-    }
+  public void setDatatype(String datatype) {
+    this.datatype = datatype;
+  }
 
-    @Override
-    public String toString() {
-        return "RestField [name=" + name + ", nameAlias=" + nameAlias + ", length=" + length + ", remark=" + remark
-                + ", canBeNull=" + canBeNull
-                + ", datatype=" + datatype + "]";
-    }
+  public String getNameAlias() {
+    return nameAlias;
+  }
+
+  public void setNameAlias(String nameAlias) {
+    this.nameAlias = nameAlias;
+  }
+
+  @Override
+  public String toString() {
+    return "RestField [name="
+        + name
+        + ", fieldName="
+        + fieldName
+        + ", nameAlias="
+        + nameAlias
+        + ", length="
+        + length
+        + ", remark="
+        + remark
+        + ", canBeNull="
+        + canBeNull
+        + ", datatype="
+        + datatype
+        + "]";
+  }
 }
