@@ -55,8 +55,9 @@ public class MethodGeneratorHelper {
       JBlock methodTestBlk) {
     Map<String, PacketField> fields = responseBody.getFields();
     if (fields != null) {
-      for (String fieldName : fields.keySet()) {
-        PacketField restField = fields.get(fieldName);
+      for (String name : fields.keySet()) {
+        PacketField restField = fields.get(name);
+        String fieldName=restField.getFieldName();
         boolean canBeNull = restField.isCanBeNull();
         String dataType = restField.getDatatype();
         AbstractJClass jType;
