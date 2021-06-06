@@ -396,7 +396,7 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
         JVar pathVariableJVar = this.jcontrollerMethod.param(jType, pathVariable.getFieldName());
         pathVariableJVar
             .annotate(cm.ref("org.springframework.web.bind.annotation.PathVariable"))
-            .param("name");
+            .param(pathVariable.getFieldName());
 
         jInvocation.arg(pathVariableJVar);
         if (this.getMockModel() == MockModel.MockModel_Swagger) {
