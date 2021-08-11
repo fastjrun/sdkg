@@ -20,12 +20,32 @@ public class PacketField {
   /** 字段数据类型 String:List */
   private String datatype;
 
-  /* pathVariable需要用到顺序 */
+  /* pathVariable需要用到顺序,webparameter 也需要用到顺序 */
   private int index;
 
   private String getter;
 
   private String setter;
+
+  private String defaultValue;
+
+  private boolean _new = false;
+
+  public boolean is_new() {
+    return _new;
+  }
+
+  public void set_new(boolean _new) {
+    this._new = _new;
+  }
+
+  public String getDefaultValue() {
+    return defaultValue;
+  }
+
+  public void setDefaultValue(String defaultValue) {
+    this.defaultValue = defaultValue;
+  }
 
   public String getFieldName() {
     return fieldName;

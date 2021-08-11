@@ -44,7 +44,7 @@ public class DefaultExchangeProcessor<T extends BaseRequestProcessor, V extends 
     }
 
     @Override
-    public AbstractJClass getResponseClass() {
+    public AbstractJType getResponseClass() {
         return this.responseProcessor.getResponseClass();
     }
 
@@ -53,7 +53,9 @@ public class DefaultExchangeProcessor<T extends BaseRequestProcessor, V extends 
         this.requestProcessor.setRequestBodyClass(serviceMethodGenerator.getRequestBodyClass());
         this.requestProcessor.parseRequestClass(serviceMethodGenerator.getCm());
         this.responseProcessor.setElementClass(serviceMethodGenerator.getElementClass());
-        this.responseProcessor.setResponseIsArray(serviceMethodGenerator.getCommonMethod().isResponseIsArray());
+        this.responseProcessor.setResponseIsList(serviceMethodGenerator.getCommonMethod().isResponseIsArray());
+        this.responseProcessor.setResponseIsPage(serviceMethodGenerator.getCommonMethod().isResponseIsPage());
+
         this.responseProcessor.parseResponseClass(serviceMethodGenerator.getCm());
     }
 }

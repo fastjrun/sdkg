@@ -33,37 +33,33 @@ public class BundleXMLParser implements CodeGConstants {
     return controllerTypeMap;
   }
 
-  private List<PacketField> parsePacketFields(
-      Element elePacketFieldsRoot, String elePacketFieldName) {
-    List<PacketField> packetFields = new ArrayList<>();
-    List<Element> eleCookieVariables = elePacketFieldsRoot.elements(elePacketFieldName);
-    for (int index = 0; index < eleCookieVariables.size(); index++) {
-      Element element = eleCookieVariables.get(index);
-      String name = element.attributeValue("name");
-      String fieldName = parseFieldName(name);
-      String fieldNameAlias = element.attributeValue("nameAlias");
-      String datatype = element.attributeValue("dataType");
-      String length = element.attributeValue("length");
-      String canBeNull = element.attributeValue("canBeNull");
-      String parameterRemark = element.attributeValue("remark");
-      PacketField field = new PacketField();
-      field.setName(fieldName);
-      if (fieldNameAlias != null && !fieldNameAlias.equals("")) {
-        field.setNameAlias(fieldNameAlias);
-      } else {
-        field.setNameAlias(fieldName);
-      }
-      field.setFieldName(fieldName);
-      field.setDatatype(datatype);
-      field.setLength(length);
-      if (canBeNull != null && !canBeNull.equals("")) {
-        field.setCanBeNull(Boolean.parseBoolean(canBeNull));
-      }
-      field.setRemark(parameterRemark);
-      field.setIndex(index);
-      packetFields.add(field);
+  private static PacketField parsePacketField(Element elePacketField) {
+    String name = elePacketField.attributeValue("name");
+    String fieldName = parseFieldName(name);
+    String fieldNameAlias = elePacketField.attributeValue("nameAlias");
+    String datatype = elePacketField.attributeValue("dataType");
+    String length = elePacketField.attributeValue("length");
+    String canBeNull = elePacketField.attributeValue("canBeNull");
+    String parameterRemark = elePacketField.attributeValue("remark");
+    String defaultValue = elePacketField.attributeValue("defaultValue");
+    String _new = elePacketField.attributeValue("new");
+    PacketField field = new PacketField();
+    field.setName(fieldName);
+    field.setNameAlias(fieldNameAlias);
+    field.setFieldName(fieldName);
+    field.setDatatype(datatype);
+    field.setLength(length);
+    if (canBeNull != null && !canBeNull.equals("")) {
+      field.setCanBeNull(Boolean.parseBoolean(canBeNull));
     }
-    return packetFields;
+    if (defaultValue != null && !defaultValue.equals("")) {
+      field.setDefaultValue(defaultValue);
+    }
+    if (_new != null && !_new.equals("")) {
+      field.set_new(Boolean.parseBoolean(_new));
+    }
+    field.setRemark(parameterRemark);
+    return field;
   }
 
   public Map<String, PacketObject> getPacketMap() {
@@ -89,12 +85,11 @@ public class BundleXMLParser implements CodeGConstants {
   public void init() {
     this.contentType.put("json", MediaType.APPLICATION_JSON_UTF8_VALUE);
     this.contentType.put("xml", MediaType.APPLICATION_XML_VALUE);
+    this.contentType.put("text", "");
     this.contentType.put(
         "json,xml", MediaType.APPLICATION_XML_VALUE + "," + MediaType.APPLICATION_XML_VALUE);
     this.controllerTypeMap.put(
-        CodeGConstants.ControllerType_APP.name, CodeGConstants.ControllerType_APP);
-    this.controllerTypeMap.put(
-        CodeGConstants.ControllerType_API.name, CodeGConstants.ControllerType_API);
+        CodeGConstants.ControllerType_WEB.name, CodeGConstants.ControllerType_WEB);
     this.controllerTypeMap.put(
         CodeGConstants.ControllerType_GENERIC.name, CodeGConstants.ControllerType_GENERIC);
     this.controllerTypeMap.put(
@@ -334,24 +329,8 @@ public class BundleXMLParser implements CodeGConstants {
         PacketObject object = processPO(element);
         objects.put(eleName, object);
       } else {
-        String name = element.attributeValue("name");
-        String fieldName = parseFieldName(name);
-        String dataType = element.attributeValue("dataType");
-        String length = element.attributeValue("length");
-        String canBeNull = element.attributeValue("canBeNull");
-        String remark = element.attributeValue("remark");
-        String getter = element.attributeValue("getter");
-        String setter = element.attributeValue("setter");
-        PacketField field = new PacketField();
-        field.setName(name);
-        field.setFieldName(fieldName);
-        field.setDatatype(dataType);
-        field.setLength(length);
-        field.setCanBeNull(Boolean.parseBoolean(canBeNull));
-        field.setRemark(remark);
-        field.setSetter(setter);
-        field.setGetter(getter);
-        fields.put(name, field);
+        PacketField field = parsePacketField(element);
+        fields.put(field.getName(), field);
       }
     }
     restObject.setFields(fields);
@@ -442,7 +421,10 @@ public class BundleXMLParser implements CodeGConstants {
     Element eleResponse = eleMethod.element("response");
     if (eleResponse != null) {
       String responseBodyClass = eleResponse.attributeValue("class");
-      if (responseBodyClass.endsWith(":List")) {
+      if (responseBodyClass.endsWith(":Page")) {
+        responseBodyClass = responseBodyClass.split(":")[0];
+        method.setResponseIsPage(true);
+      } else if (responseBodyClass.endsWith(":List")) {
         responseBodyClass = responseBodyClass.split(":")[0];
         method.setResponseIsArray(true);
       } else {
@@ -470,28 +452,44 @@ public class BundleXMLParser implements CodeGConstants {
     }
     Element eleParametersRoot = eleMethod.element("parameters");
     if (eleParametersRoot != null) {
-      List<PacketField> parameters = parsePacketFields(eleParametersRoot, "parameter");
-      method.setParameters(parameters);
+      List<PacketField> packetFields = parsePacketFields(eleParametersRoot, "parameter");
+      method.setParameters(packetFields);
     }
     Element elePathVariablesRoot = eleMethod.element("pathVariables");
     if (elePathVariablesRoot != null) {
-      List<PacketField> pathVariables = parsePacketFields(elePathVariablesRoot, "pathVariable");
-      method.setPathVariables(pathVariables);
+      List<PacketField> packetFields = parsePacketFields(elePathVariablesRoot, "pathVariable");
+      method.setPathVariables(packetFields);
     }
     Element eleHeadVariablesRoot = eleMethod.element("headVariables");
     if (eleHeadVariablesRoot != null) {
-      List<PacketField> headVariables = parsePacketFields(eleHeadVariablesRoot, "headVariable");
-      method.setHeadVariables(headVariables);
+      List<PacketField> packetFields = parsePacketFields(eleHeadVariablesRoot, "headVariable");
+      method.setHeadVariables(packetFields);
     }
 
     Element eleCookieVariablesRoot = eleMethod.element("cookieVariables");
     if (eleCookieVariablesRoot != null) {
-      List<PacketField> cookieVariables =
-          parsePacketFields(eleCookieVariablesRoot, "cookieVariable");
-      method.setCookieVariables(cookieVariables);
+      List<PacketField> packetFields = parsePacketFields(eleCookieVariablesRoot, "cookieVariable");
+      method.setCookieVariables(packetFields);
+    }
+
+    Element eleWebParametersRoot = eleMethod.element("webParameters");
+    if (eleWebParametersRoot != null) {
+      List<PacketField> packetFields = parsePacketFields(eleWebParametersRoot, "webParameter");
+      method.setWebParameters(packetFields);
     }
 
     return method;
+  }
+
+  private static List<PacketField> parsePacketFields(Element eleParametersRoot, String parameter) {
+    List<PacketField> packetFields = new ArrayList<>();
+    List<Element> eleVariables = eleParametersRoot.elements(parameter);
+    for (int index = 0; index < eleVariables.size(); index++) {
+      PacketField packetField = parsePacketField(eleVariables.get(index));
+      packetField.setIndex(index);
+      packetFields.add(packetField);
+    }
+    return packetFields;
   }
 
   public void doParse() {

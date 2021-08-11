@@ -129,6 +129,8 @@ public class ServiceMethodGenerator extends AbstractMethodGenerator {
       }
       if (this.commonMethod.isResponseIsArray()) {
         this.responseBodyClass = cm.ref("java.util.List").narrow(elementClass);
+      } else if (this.commonMethod.isResponseIsPage()) {
+        this.responseBodyClass = cm.ref("com.fastjrun.dto.PageResult").narrow(elementClass);
       } else {
         this.responseBodyClass = elementClass;
       }
@@ -144,14 +146,18 @@ public class ServiceMethodGenerator extends AbstractMethodGenerator {
     this.jServiceMethod.javadoc().append(methodRemark);
 
     MethodGeneratorHelper.processServiceMethodVariables(
-        this.jServiceMethod, this.commonMethod.getHeadVariables(), this.cm);
+        this.jServiceMethod, this.commonMethod.getHeadVariables(), this.cm, this.packageNamePrefix);
     MethodGeneratorHelper.processServiceMethodVariables(
-        this.jServiceMethod, this.commonMethod.getPathVariables(), this.cm);
+        this.jServiceMethod, this.commonMethod.getPathVariables(), this.cm, this.packageNamePrefix);
     MethodGeneratorHelper.processServiceMethodVariables(
-        this.jServiceMethod, this.commonMethod.getParameters(), this.cm);
+        this.jServiceMethod, this.commonMethod.getParameters(), this.cm, this.packageNamePrefix);
     MethodGeneratorHelper.processServiceMethodVariables(
-        this.jServiceMethod, this.commonMethod.getCookieVariables(), this.cm);
-
+        this.jServiceMethod,
+        this.commonMethod.getCookieVariables(),
+        this.cm,
+        this.packageNamePrefix);
+    MethodGeneratorHelper.processServiceMethodVariables(
+        this.jServiceMethod, this.commonMethod.getWebParameters(), this.cm, this.packageNamePrefix);
     if (this.requestBodyClass != null) {
       this.jServiceMethod.param(this.requestBodyClass, "requestBody");
     }
@@ -192,7 +198,7 @@ public class ServiceMethodGenerator extends AbstractMethodGenerator {
         PacketField headVariable = headVariables.get(index);
         jInvocationTest.arg(JExpr.ref(headVariable.getNameAlias()));
         MethodGeneratorHelper.processMethodCommonVariables(
-            cmTest, methodTestBlk, reqParamsJsonJVar, headVariable);
+            cmTest, methodTestBlk, reqParamsJsonJVar, headVariable, this.packageNamePrefix);
       }
     }
 
@@ -202,7 +208,7 @@ public class ServiceMethodGenerator extends AbstractMethodGenerator {
         PacketField pathVariable = pathVariables.get(index);
         jInvocationTest.arg(JExpr.ref(pathVariable.getFieldName()));
         MethodGeneratorHelper.processMethodCommonVariables(
-            cmTest, methodTestBlk, reqParamsJsonJVar, pathVariable);
+            cmTest, methodTestBlk, reqParamsJsonJVar, pathVariable, this.packageNamePrefix);
       }
     }
 
@@ -212,7 +218,7 @@ public class ServiceMethodGenerator extends AbstractMethodGenerator {
         PacketField parameter = parameters.get(index);
         jInvocationTest.arg(JExpr.ref(parameter.getFieldName()));
         MethodGeneratorHelper.processMethodCommonVariables(
-            cmTest, methodTestBlk, reqParamsJsonJVar, parameter);
+            cmTest, methodTestBlk, reqParamsJsonJVar, parameter, this.packageNamePrefix);
       }
     }
 
@@ -222,7 +228,16 @@ public class ServiceMethodGenerator extends AbstractMethodGenerator {
         PacketField cookie = cookies.get(index);
         jInvocationTest.arg(JExpr.ref(cookie.getFieldName()));
         MethodGeneratorHelper.processMethodCommonVariables(
-            cmTest, methodTestBlk, reqParamsJsonJVar, cookie);
+            cmTest, methodTestBlk, reqParamsJsonJVar, cookie, this.packageNamePrefix);
+      }
+    }
+    List<PacketField> webParameters = this.getCommonMethod().getWebParameters();
+    if (webParameters != null && webParameters.size() > 0) {
+      for (int index = 0; index < webParameters.size(); index++) {
+        PacketField webParameter = webParameters.get(index);
+        jInvocationTest.arg(JExpr.ref(webParameter.getName()));
+        MethodGeneratorHelper.processMethodCommonVariables(cmTest, methodTestBlk,
+                reqParamsJsonJVar, webParameter, this.packageNamePrefix);
       }
     }
     if (this.getRequestBodyClass() != null) {
@@ -298,6 +313,27 @@ public class ServiceMethodGenerator extends AbstractMethodGenerator {
             responseBodyIndexVar,
             forBlock1);
 
+      } else if (this.getCommonMethod().isResponseIsPage()) {
+        JForLoop forLoop = ifBlock1._for();
+        JVar initIndexVar = forLoop.init(cmTest.INT, "index", JExpr.lit(0));
+        forLoop.test(initIndexVar.lt(responseBodyVar.invoke("getRows").invoke("size")));
+        forLoop.update(initIndexVar.incr());
+        JBlock forBlock1 = forLoop.body();
+        JVar responseBodyIndexVar =
+            forBlock1.decl(
+                this.getElementClass(),
+                "item" + this.getElementClass().name(),
+                responseBodyVar.invoke("getRows").invoke("get").arg(initIndexVar));
+
+        MethodGeneratorHelper.logResponseBody(
+            cmTest,
+            log,
+            packageNamePrefix,
+            1,
+            this.getCommonMethod().getResponse(),
+            responseBodyIndexVar,
+            forBlock1);
+
       } else {
         MethodGeneratorHelper.logResponseBody(
             cmTest,
@@ -344,14 +380,31 @@ public class ServiceMethodGenerator extends AbstractMethodGenerator {
     this.jServiceMockMethod.javadoc().append(methodRemark);
 
     MethodGeneratorHelper.processServiceMethodVariables(
-        this.jServiceMockMethod, this.commonMethod.getHeadVariables(), this.cm);
+        this.jServiceMockMethod,
+        this.commonMethod.getHeadVariables(),
+        this.cm,
+        this.packageNamePrefix);
     MethodGeneratorHelper.processServiceMethodVariables(
-        this.jServiceMockMethod, this.commonMethod.getPathVariables(), this.cm);
+        this.jServiceMockMethod,
+        this.commonMethod.getPathVariables(),
+        this.cm,
+        this.packageNamePrefix);
     MethodGeneratorHelper.processServiceMethodVariables(
-        this.jServiceMockMethod, this.commonMethod.getParameters(), this.cm);
+        this.jServiceMockMethod,
+        this.commonMethod.getParameters(),
+        this.cm,
+        this.packageNamePrefix);
     MethodGeneratorHelper.processServiceMethodVariables(
-        this.jServiceMockMethod, this.commonMethod.getCookieVariables(), this.cm);
-    ;
+        this.jServiceMockMethod,
+        this.commonMethod.getCookieVariables(),
+        this.cm,
+        this.packageNamePrefix);
+
+    MethodGeneratorHelper.processServiceMethodVariables(
+        this.jServiceMockMethod,
+        this.commonMethod.getWebParameters(),
+        this.cm,
+        this.packageNamePrefix);
 
     if (this.requestBodyClass != null) {
       this.jServiceMockMethod.param(this.requestBodyClass, "requestBody");
@@ -359,30 +412,7 @@ public class ServiceMethodGenerator extends AbstractMethodGenerator {
     this.jServiceMockMethod.annotate(cm.ref("java.lang.Override"));
     JBlock serviceMockMethodBlock = this.jServiceMockMethod.body();
     if (this.responseBodyClass != cm.VOID) {
-      if (!commonMethod.isResponseIsArray()) {
-        if (responseBodyClass.name().endsWith("Boolean")) {
-          serviceMockMethodBlock._return(cm.ref(mockHelperClassName).staticInvoke("geBoolean"));
-        } else if (responseBodyClass.name().endsWith("Integer")) {
-          serviceMockMethodBlock._return(cm.ref(mockHelperClassName).staticInvoke("geInteger"));
-        } else if (responseBodyClass.name().endsWith("Long")) {
-          serviceMockMethodBlock._return(cm.ref(mockHelperClassName).staticInvoke("geLong"));
-        } else if (responseBodyClass.name().endsWith("Double")) {
-          serviceMockMethodBlock._return(cm.ref(mockHelperClassName).staticInvoke("geDouble"));
-        } else if (responseBodyClass.name().endsWith("String")) {
-          serviceMockMethodBlock._return(
-              cm.ref(mockHelperClassName)
-                  .staticInvoke("geStringWithAlphabetic")
-                  .arg(JExpr.lit(10)));
-        } else if (responseBodyClass.name().endsWith("Date")) {
-          serviceMockMethodBlock._return(
-              cm.ref(mockHelperClassName).staticInvoke("geDate").arg(JExpr.lit(10)));
-        } else {
-          JVar responseBodyVar =
-              this.composeResponseBody(
-                  0, serviceMockMethodBlock, commonMethod.getResponse(), this.elementClass);
-          serviceMockMethodBlock._return(responseBodyVar);
-        }
-      } else {
+      if (commonMethod.isResponseIsArray()) {
         if (elementClass.name().endsWith("Boolean")) {
           serviceMockMethodBlock._return(
               cm.ref(mockHelperClassName).staticInvoke("geBooleanList").arg(JExpr.lit(10)));
@@ -404,14 +434,91 @@ public class ServiceMethodGenerator extends AbstractMethodGenerator {
         } else {
           JVar responseVar =
               serviceMockMethodBlock.decl(
-                  this.responseBodyClass,
-                  "response",
-                  JExpr._new(cm.ref("java.util.ArrayList").narrow(this.elementClass)));
+                  this.responseBodyClass, "response", JExpr._new(cm.ref("java.util.ArrayList")));
           JVar responseBodyVar =
               this.composeResponseBody(
                   0, serviceMockMethodBlock, commonMethod.getResponse(), this.elementClass);
           serviceMockMethodBlock.add(responseVar.invoke("add").arg(responseBodyVar));
           serviceMockMethodBlock._return(responseVar);
+        }
+      } else if (commonMethod.isResponseIsPage()) {
+        if (elementClass.name().endsWith("Boolean")) {
+          serviceMockMethodBlock._return(
+              cm.ref(mockHelperClassName).staticInvoke("geBooleanPage").arg(JExpr.lit(10)));
+        } else if (elementClass.name().endsWith("Integer")) {
+          serviceMockMethodBlock._return(
+              cm.ref(mockHelperClassName).staticInvoke("geIntegerPage").arg(JExpr.lit(10)));
+        } else if (elementClass.name().endsWith("Long")) {
+          serviceMockMethodBlock._return(
+              cm.ref(mockHelperClassName).staticInvoke("geLongPage").arg(JExpr.lit(10)));
+        } else if (elementClass.name().endsWith("Double")) {
+          serviceMockMethodBlock._return(
+              cm.ref(mockHelperClassName).staticInvoke("geDoublePage").arg(JExpr.lit(10)));
+        } else if (elementClass.name().endsWith("String")) {
+          serviceMockMethodBlock._return(
+              cm.ref(mockHelperClassName).staticInvoke("geStringPageWithAscii").arg(JExpr.lit(10)));
+        } else if (elementClass.name().endsWith("Date")) {
+          serviceMockMethodBlock._return(
+              cm.ref(mockHelperClassName).staticInvoke("geDatePage").arg(JExpr.lit(10)));
+        } else {
+          JVar responseVar =
+              serviceMockMethodBlock.decl(
+                  this.responseBodyClass,
+                  "response",
+                  JExpr._new(cm.ref("com.fastjrun.dto.PageResult")));
+
+          JVar listVar =
+              serviceMockMethodBlock.decl(
+                  cm.ref("java.util.ArrayList").narrow(this.elementClass),
+                  "list",
+                  JExpr._new(cm.ref("java.util.ArrayList")));
+          JVar responseBodyVar =
+              this.composeResponseBody(
+                  0, serviceMockMethodBlock, commonMethod.getResponse(), this.elementClass);
+          serviceMockMethodBlock.add(listVar.invoke("add").arg(responseBodyVar));
+          serviceMockMethodBlock.add(responseVar.invoke("setRows").arg(listVar));
+          serviceMockMethodBlock.add(
+              responseVar
+                  .invoke("setCurrPage")
+                  .arg(cm.ref(mockHelperClassName).staticInvoke("geInteger").arg(JExpr.lit(10))));
+          serviceMockMethodBlock.add(
+              responseVar
+                  .invoke("setPageSize")
+                  .arg(cm.ref(mockHelperClassName).staticInvoke("geInteger").arg(JExpr.lit(10))));
+          serviceMockMethodBlock.add(
+              responseVar
+                  .invoke("setTotalPage")
+                  .arg(cm.ref(mockHelperClassName).staticInvoke("geInteger").arg(JExpr.lit(10))));
+          serviceMockMethodBlock.add(
+              responseVar
+                  .invoke("setTotal")
+                  .arg(cm.ref(mockHelperClassName).staticInvoke("geInteger").arg(JExpr.lit(10))));
+          serviceMockMethodBlock._return(responseVar);
+        }
+      } else {
+        if (responseBodyClass.name().endsWith("Boolean")) {
+          serviceMockMethodBlock._return(cm.ref(mockHelperClassName).staticInvoke("geBoolean"));
+        } else if (responseBodyClass.name().endsWith("Integer")) {
+          serviceMockMethodBlock._return(
+              cm.ref(mockHelperClassName).staticInvoke("geInteger").arg(JExpr.lit(10)));
+        } else if (responseBodyClass.name().endsWith("Long")) {
+          serviceMockMethodBlock._return(
+              cm.ref(mockHelperClassName).staticInvoke("geLong").arg(JExpr.lit(10)));
+        } else if (responseBodyClass.name().endsWith("Double")) {
+          serviceMockMethodBlock._return(
+              cm.ref(mockHelperClassName).staticInvoke("geDouble").arg(JExpr.lit(10)));
+        } else if (responseBodyClass.name().endsWith("String")) {
+          serviceMockMethodBlock._return(
+              cm.ref(mockHelperClassName)
+                  .staticInvoke("geStringWithAlphabetic")
+                  .arg(JExpr.lit(10)));
+        } else if (responseBodyClass.name().endsWith("Date")) {
+          serviceMockMethodBlock._return(cm.ref(mockHelperClassName).staticInvoke("geDate"));
+        } else {
+          JVar responseBodyVar =
+              this.composeResponseBody(
+                  0, serviceMockMethodBlock, commonMethod.getResponse(), this.elementClass);
+          serviceMockMethodBlock._return(responseBodyVar);
         }
       }
     }

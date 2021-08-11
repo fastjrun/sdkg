@@ -24,7 +24,7 @@ import java.util.Properties;
 
 public abstract class BaseControllerGenerator extends BaseCMGenerator {
 
-    protected String webPackageName;
+    static final String WEB_PACKAGE_NAME = "web.controller.";
 
     protected CommonController commonController;
 
@@ -41,14 +41,6 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
     protected String controllerPath;
 
     protected ServiceGenerator serviceGenerator;
-
-    public String getWebPackageName() {
-        return webPackageName;
-    }
-
-    public void setWebPackageName(String webPackageName) {
-        this.webPackageName = webPackageName;
-    }
 
     public String getClientName() {
         return clientName;
@@ -112,10 +104,10 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
     protected void processController() {
         ControllerType controllerType = commonController.getControllerType();
 
-        String controllerPackageName = this.packageNamePrefix + this.webPackageName;
+        String controllerPackageName = this.packageNamePrefix + WEB_PACKAGE_NAME;
 
         if (this.getMockModel() != CodeGConstants.MockModel.MockModel_Common) {
-            controllerPackageName = MOCK_PACKAGE_NAME + "web.controller.";
+            controllerPackageName = MOCK_PACKAGE_NAME + WEB_PACKAGE_NAME;
         }
 
         String controllerName = commonController.getName() + controllerType.providerSuffix;
@@ -133,7 +125,7 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
             throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
         }
         this.controlllerClass.annotate(
-          cm.ref("org.springframework.web.bind.annotation.RestController"));
+          cm.ref(controllerType.baseControllerName));
         this.controlllerClass.annotate(
           cm.ref("org.springframework.web.bind.annotation.RequestMapping")).param("value",
           this.controllerPath);

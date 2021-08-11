@@ -22,7 +22,7 @@ public interface ExchangeProcessor extends CodeGConstants {
 
     AbstractJType getRequestClass();
 
-    AbstractJClass getResponseClass();
+    AbstractJType getResponseClass();
 
     void doParse(ServiceMethodGenerator serviceMethodGenerator, String packagePrefix);
 }

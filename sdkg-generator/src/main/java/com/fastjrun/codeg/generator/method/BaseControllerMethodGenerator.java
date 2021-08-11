@@ -104,7 +104,7 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
         PacketField headVariable = headVariables.get(index);
         jInvocationTest.arg(JExpr.ref(headVariable.getNameAlias()));
         MethodGeneratorHelper.processMethodCommonVariables(
-            cmTest, methodTestBlk, reqParamsJsonJVar, headVariable);
+            cmTest, methodTestBlk, reqParamsJsonJVar, headVariable, this.packageNamePrefix);
       }
     }
 
@@ -115,7 +115,7 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
         PacketField pathVariable = pathVariables.get(index);
         jInvocationTest.arg(JExpr.ref(pathVariable.getFieldName()));
         MethodGeneratorHelper.processMethodCommonVariables(
-            cmTest, methodTestBlk, reqParamsJsonJVar, pathVariable);
+            cmTest, methodTestBlk, reqParamsJsonJVar, pathVariable, this.packageNamePrefix);
       }
     }
 
@@ -125,7 +125,7 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
         PacketField parameter = parameters.get(index);
         jInvocationTest.arg(JExpr.ref(parameter.getFieldName()));
         MethodGeneratorHelper.processMethodCommonVariables(
-            cmTest, methodTestBlk, reqParamsJsonJVar, parameter);
+            cmTest, methodTestBlk, reqParamsJsonJVar, parameter, this.packageNamePrefix);
       }
     }
 
@@ -135,9 +135,21 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
         PacketField cookie = cookies.get(index);
         jInvocationTest.arg(JExpr.ref(cookie.getFieldName()));
         MethodGeneratorHelper.processMethodCommonVariables(
-            cmTest, methodTestBlk, reqParamsJsonJVar, cookie);
+            cmTest, methodTestBlk, reqParamsJsonJVar, cookie, this.packageNamePrefix);
       }
     }
+
+    List<PacketField> webParameters =
+        this.serviceMethodGenerator.getCommonMethod().getWebParameters();
+    if (webParameters != null && webParameters.size() > 0) {
+      for (int index = 0; index < webParameters.size(); index++) {
+        PacketField webParameter = webParameters.get(index);
+        jInvocationTest.arg(JExpr.ref(webParameter.getName()));
+        MethodGeneratorHelper.processMethodCommonVariables(
+            cmTest, methodTestBlk, reqParamsJsonJVar, webParameter, this.packageNamePrefix);
+      }
+    }
+
     if (this.serviceMethodGenerator.getRequestBodyClass() != null) {
       JVar requestBodyVar =
           methodTestBlk.decl(
@@ -438,7 +450,9 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
 
     String[] resTypes = this.serviceMethodGenerator.getCommonMethod().getResType().split(",");
     if (resTypes.length == 1) {
-      jAnnotationUse.param("produces", resTypes[0]);
+      if (!resTypes[0].equals("")) {
+        jAnnotationUse.param("produces", resTypes[0]);
+      }
     } else {
       JAnnotationArrayMember jAnnotationArrayMember = jAnnotationUse.paramArray("produces");
       for (int i = 0; i < resTypes.length; i++) {
@@ -470,6 +484,32 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
                 .invoke("debug")
                 .arg(JExpr.lit(cookieJVar.name() + "{}"))
                 .arg(cookieJVar));
+      }
+    }
+
+    List<PacketField> webParameters =
+        this.serviceMethodGenerator.getCommonMethod().getWebParameters();
+    if (webParameters != null && webParameters.size() > 0) {
+      for (int index = 0; index < webParameters.size(); index++) {
+        PacketField parameter = webParameters.get(index);
+        String dataType = parameter.getDatatype();
+        if (parameter.is_new()) {
+          dataType = this.packageNamePrefix + dataType;
+        }
+
+        AbstractJType jType;
+        if (dataType.endsWith(":List")) {
+          String primitiveType = dataType.split(":")[0];
+          jType = cm.ref("java.util.List").narrow(cm.ref(primitiveType));
+        } else if (dataType.endsWith(":Array")) {
+          String primitiveType = dataType.split(":")[0];
+          jType = cm.ref(primitiveType).array();
+        } else {
+          jType = cm.ref(dataType);
+        }
+        JVar parameterJVar = this.jcontrollerMethod.param(jType, parameter.getName());
+
+        jInvocation.arg(parameterJVar);
       }
     }
 

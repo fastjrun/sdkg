@@ -4,16 +4,27 @@
 package com.fastjrun.codeg.processer;
 
 import com.helger.jcodemodel.AbstractJClass;
+import com.helger.jcodemodel.AbstractJType;
 
 public abstract class BaseResponseProcessor implements ResponseProcessor {
 
     protected String baseResponseClassName;
 
-    protected AbstractJClass responseClass;
+    protected AbstractJType responseClass;
 
-    protected AbstractJClass elementClass;
+    protected AbstractJType elementClass;
 
-    private boolean responseIsArray;
+    private boolean responseIsList;
+
+    private boolean responseIsPage;
+
+    public boolean isResponseIsPage() {
+        return responseIsPage;
+    }
+
+    public void setResponseIsPage(boolean responseIsPage) {
+        this.responseIsPage = responseIsPage;
+    }
 
     public String getBaseResponseClassName() {
         return baseResponseClassName;
@@ -23,15 +34,15 @@ public abstract class BaseResponseProcessor implements ResponseProcessor {
         this.baseResponseClassName = baseResponseClassName;
     }
 
-    public AbstractJClass getResponseClass() {
+    public AbstractJType getResponseClass() {
         return responseClass;
     }
 
-    public void setResponseClass(AbstractJClass responseClass) {
+    public void setResponseClass(AbstractJType responseClass) {
         this.responseClass = responseClass;
     }
 
-    public AbstractJClass getElementClass() {
+    public AbstractJType getElementClass() {
         return elementClass;
     }
 
@@ -39,11 +50,11 @@ public abstract class BaseResponseProcessor implements ResponseProcessor {
         this.elementClass = elementClass;
     }
 
-    public boolean isResponseIsArray() {
-        return responseIsArray;
+    public boolean isResponseIsList() {
+        return responseIsList;
     }
 
-    public void setResponseIsArray(boolean responseIsArray) {
-        this.responseIsArray = responseIsArray;
+    public void setResponseIsList(boolean responseIsList) {
+        this.responseIsList = responseIsList;
     }
 }

@@ -4,7 +4,6 @@
 package com.fastjrun.codeg.generator.method;
 
 import com.fastjrun.codeg.common.CommonController;
-import com.fastjrun.codeg.common.PacketField;
 import com.fastjrun.codeg.generator.BaseRPCGenerator;
 import com.fastjrun.codeg.helper.StringHelper;
 import com.helger.jcodemodel.*;
@@ -28,17 +27,6 @@ public abstract class BaseRPCMethodGenerator extends BaseControllerMethodGenerat
     String methodRemark = this.serviceMethodGenerator.getCommonMethod().getRemark();
     this.japiMethod.javadoc().append(methodRemark);
 
-    MethodGeneratorHelper.processServiceMethodVariables(
-        this.japiMethod, this.serviceMethodGenerator.getCommonMethod().getHeadVariables(), this.cm);
-    MethodGeneratorHelper.processServiceMethodVariables(
-        this.japiMethod, this.serviceMethodGenerator.getCommonMethod().getPathVariables(), this.cm);
-    MethodGeneratorHelper.processServiceMethodVariables(
-        this.japiMethod, this.serviceMethodGenerator.getCommonMethod().getParameters(), this.cm);
-    MethodGeneratorHelper.processServiceMethodVariables(
-        this.japiMethod,
-        this.serviceMethodGenerator.getCommonMethod().getCookieVariables(),
-        this.cm);
-
     if (this.exchangeProcessor.getRequestClass() != null) {
       this.japiMethod.param(this.exchangeProcessor.getRequestClass(), "request");
     }
@@ -58,49 +46,6 @@ public abstract class BaseRPCMethodGenerator extends BaseControllerMethodGenerat
         JExpr.invoke(JExpr.refthis(serviceName), this.serviceMethodGenerator.getMethodName());
 
     this.japiManagerMethod.annotate(cm.ref("java.lang.Override"));
-
-    List<PacketField> headVariables =
-        this.serviceMethodGenerator.getCommonMethod().getHeadVariables();
-    if (headVariables != null && headVariables.size() > 0) {
-      for (int index = 0; index < headVariables.size(); index++) {
-        PacketField headVariable = headVariables.get(index);
-        AbstractJType jType = cm.ref(headVariable.getDatatype());
-        JVar headVariableJVar = this.japiManagerMethod.param(jType, headVariable.getFieldName());
-        jInvocation.arg(headVariableJVar);
-      }
-    }
-
-    List<PacketField> pathVariables =
-        this.serviceMethodGenerator.getCommonMethod().getPathVariables();
-    if (pathVariables != null && pathVariables.size() > 0) {
-      for (int index = 0; index < pathVariables.size(); index++) {
-        PacketField pathVariable = pathVariables.get(index);
-        AbstractJType jType = cm.ref(pathVariable.getDatatype());
-        JVar pathVariableJVar = this.japiManagerMethod.param(jType, pathVariable.getFieldName());
-        jInvocation.arg(pathVariableJVar);
-      }
-    }
-
-    List<PacketField> parameters = this.serviceMethodGenerator.getCommonMethod().getParameters();
-    if (parameters != null && parameters.size() > 0) {
-      for (int index = 0; index < parameters.size(); index++) {
-        PacketField parameter = parameters.get(index);
-        AbstractJClass jClass = cm.ref(parameter.getDatatype());
-        JVar parameterJVar = this.japiManagerMethod.param(jClass, parameter.getFieldName());
-        jInvocation.arg(parameterJVar);
-      }
-    }
-
-    List<PacketField> cookieVariables =
-        this.serviceMethodGenerator.getCommonMethod().getCookieVariables();
-    if (cookieVariables != null && cookieVariables.size() > 0) {
-      for (int index = 0; index < cookieVariables.size(); index++) {
-        PacketField cookieVariable = cookieVariables.get(index);
-        AbstractJType jType = cm.ref(cookieVariable.getDatatype());
-        JVar cookieJVar = this.japiManagerMethod.param(jType, cookieVariable.getFieldName());
-        jInvocation.arg(cookieJVar);
-      }
-    }
 
     this.exchangeProcessor.processRPCRequest(this.japiManagerMethod, jInvocation, this.cm);
     this.exchangeProcessor.processResponse(this.japiManagerMethod.body(), jInvocation, this.cm);
@@ -132,79 +77,7 @@ public abstract class BaseRPCMethodGenerator extends BaseControllerMethodGenerat
 
     List<JVar> paramterJVars = new ArrayList<>();
 
-    // headParams
-    List<PacketField> headVariables =
-        this.serviceMethodGenerator.getCommonMethod().getHeadVariables();
-    if (headVariables != null && headVariables.size() > 0) {
-      for (int index = 0; index < headVariables.size(); index++) {
-        PacketField headVariable = headVariables.get(index);
-        AbstractJClass jClass = cm.ref(headVariable.getDatatype());
-        JVar headJVar = this.jClientMethod.param(jClass, headVariable.getNameAlias());
-        paramterTypes.add(jClass);
-        paramterJVars.add(headJVar);
 
-        methodBlk.add(
-            JExpr.ref("log")
-                .invoke("debug")
-                .arg(JExpr.lit("header[{}] = {}"))
-                .arg(JExpr.lit(headVariable.getNameAlias()))
-                .arg(JExpr.ref(headVariable.getNameAlias())));
-      }
-    }
-
-    List<PacketField> pathVariables =
-        this.serviceMethodGenerator.getCommonMethod().getPathVariables();
-    if (pathVariables != null && pathVariables.size() > 0) {
-      for (int index = 0; index < pathVariables.size(); index++) {
-        PacketField pathVariable = pathVariables.get(index);
-        AbstractJClass jClass = cm.ref(pathVariable.getDatatype());
-        JVar pathVariableVar = this.jClientMethod.param(jClass, pathVariable.getFieldName());
-        paramterTypes.add(jClass);
-        paramterJVars.add(pathVariableVar);
-
-        methodBlk.add(
-            JExpr.ref("log")
-                .invoke("debug")
-                .arg(JExpr.lit("pathVariable[{}] = {}"))
-                .arg(JExpr.lit(pathVariable.getFieldName()))
-                .arg(JExpr.ref(pathVariable.getFieldName())));
-      }
-    }
-
-    List<PacketField> parameters = this.serviceMethodGenerator.getCommonMethod().getParameters();
-    if (parameters != null && parameters.size() > 0) {
-      for (int index = 0; index < parameters.size(); index++) {
-        PacketField parameter = parameters.get(index);
-        AbstractJClass jClass = cm.ref(parameter.getDatatype());
-        JVar parameterVar = this.jClientMethod.param(jClass, parameter.getFieldName());
-        paramterTypes.add(jClass);
-        paramterJVars.add(parameterVar);
-
-        methodBlk.add(
-            JExpr.ref("log")
-                .invoke("debug")
-                .arg(JExpr.lit("paramter[{}] = {}"))
-                .arg(JExpr.lit(parameter.getFieldName()))
-                .arg(JExpr.ref(parameter.getFieldName())));
-      }
-    }
-
-    List<PacketField> cookies = this.serviceMethodGenerator.getCommonMethod().getCookieVariables();
-    if (cookies != null && cookies.size() > 0) {
-      for (int index = 0; index < cookies.size(); index++) {
-        PacketField cookie = cookies.get(index);
-        AbstractJClass jClass = cm.ref(cookie.getDatatype());
-        JVar cookieVar = this.jClientMethod.param(jClass, cookie.getFieldName());
-        paramterTypes.add(jClass);
-        paramterJVars.add(cookieVar);
-        methodBlk.add(
-            JExpr.ref("log")
-                .invoke("debug")
-                .arg(JExpr.lit("paramter[{}] = {}"))
-                .arg(JExpr.lit(cookie.getFieldName()))
-                .arg(JExpr.ref(cookie.getFieldName())));
-      }
-    }
 
     if (this.serviceMethodGenerator.getRequestBodyClass() != null) {
       JVar jRequestBodyVar =

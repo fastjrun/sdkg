@@ -15,9 +15,13 @@
 - 使用jsqlparser解析sql脚本，用jcodemodel输出代码
 
 ### to be continued
-#### 新增web模块
 
 ## 版本说明：
+### v3.1 升级说明
+支持响应对象是Page
+重构example接口，删除App、Api，新增Web
+
+
 ### v3.0 升级说明
 默认支持mybatis3.4
 修复一些bug

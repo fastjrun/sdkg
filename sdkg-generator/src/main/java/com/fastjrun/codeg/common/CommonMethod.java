@@ -18,6 +18,8 @@ public class CommonMethod {
 
     private List<PacketField> cookieVariables;
 
+    private List<PacketField> webParameters;
+
     private String version;
 
     private String path;
@@ -33,6 +35,16 @@ public class CommonMethod {
     private PacketObject response;
 
     private boolean responseIsArray;
+
+    private boolean responseIsPage;
+
+    public boolean isResponseIsPage() {
+        return responseIsPage;
+    }
+
+    public void setResponseIsPage(boolean responseIsPage) {
+        this.responseIsPage = responseIsPage;
+    }
 
     public boolean isResponseIsArray() {
         return responseIsArray;
@@ -144,5 +156,13 @@ public class CommonMethod {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public List<PacketField> getWebParameters() {
+        return webParameters;
+    }
+
+    public void setWebParameters(List<PacketField> webParameters) {
+        this.webParameters = webParameters;
     }
 }

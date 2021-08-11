@@ -14,36 +14,71 @@ import java.util.List;
 import java.util.Map;
 
 import static com.fastjrun.codeg.generator.common.BaseCMGenerator.JSONOBJECTCLASS_NAME;
+import static com.fastjrun.codeg.generator.common.BaseCMGenerator.JacksonUtilsClassName;
 
 public class MethodGeneratorHelper {
 
   public static void processServiceMethodVariables(
-      JMethod jmethod, List<PacketField> variables, JCodeModel cm) {
+      JMethod jmethod, List<PacketField> variables, JCodeModel cm, String packageNamePrefix)  {
     if (variables != null && variables.size() > 0) {
       for (int index = 0; index < variables.size(); index++) {
         PacketField variable = variables.get(index);
-        AbstractJType jType = cm.ref(variable.getDatatype());
-        jmethod.param(jType, variable.getFieldName());
+        String dataType = variable.getDatatype();
+        if (variable.is_new()) {
+          dataType = packageNamePrefix + dataType;
+        }
+
+        AbstractJType jType;
+        if (dataType.endsWith(":List")) {
+          String primitiveType = dataType.split(":")[0];
+          jType = cm.ref("java.util.List").narrow(cm.ref(primitiveType));
+        } else if (dataType.endsWith(":Array")) {
+          String primitiveType = dataType.split(":")[0];
+          jType = cm.ref(primitiveType).array();
+        } else{
+          jType = cm.ref(dataType);
+        }
+        jmethod.param(jType, variable.getName());
       }
     }
   }
 
   public static void processMethodCommonVariables(
-      JCodeModel cmTest, JBlock methodTestBlk, JVar reqParamsJsonJVar, PacketField parameter) {
-    AbstractJClass jType = cmTest.ref(parameter.getDatatype());
-    String paramterName = parameter.getFieldName();
+      JCodeModel cmTest, JBlock methodTestBlk, JVar reqParamsJsonJVar, PacketField parameter, String packageNamePrefix) {
+    String dataType = parameter.getDatatype();
+    if (parameter.is_new()) {
+      dataType = packageNamePrefix + dataType;
+    }
+    AbstractJType jType;
+    String methodName = "readValue";
+    String primitiveType = dataType;
+    if (dataType.endsWith(":List")) {
+      primitiveType = dataType.split(":")[0];
+      jType = cmTest.ref("java.util.List").narrow(cmTest.ref(primitiveType));
+    } else if (dataType.endsWith(":Array")) {
+      primitiveType = dataType.split(":")[0];
+      jType = cmTest.ref(primitiveType).array();
+      methodName = "readList";
+    } else{
+      jType = cmTest.ref(dataType);
+    }
+    String paramterName = parameter.getName();
     if (parameter.getNameAlias() != null && !parameter.getNameAlias().equals("")) {
       paramterName = parameter.getNameAlias();
     }
     JVar jVar = methodTestBlk.decl(jType, paramterName, JExpr._null());
-    JVar jJsonVar =
-        methodTestBlk.decl(
-            cmTest.ref(JSONOBJECTCLASS_NAME),
-            paramterName + "jSon",
+    JVar jJsonVar = methodTestBlk.decl(cmTest.ref(JSONOBJECTCLASS_NAME), paramterName + "jSon",
             reqParamsJsonJVar.invoke("get").arg(JExpr.lit(paramterName)));
     JBlock jNotNullBlock = methodTestBlk._if(jJsonVar.ne(JExpr._null()))._then();
-    String jsonInvokeMethodName = JacksonUtils.invokeMethodName(jType.name());
-    jNotNullBlock.assign(jVar, jJsonVar.invoke(jsonInvokeMethodName));
+    if (dataType.endsWith(":Array")) {
+      jNotNullBlock.add(cmTest.ref(JacksonUtilsClassName).staticInvoke(methodName).arg(
+              jJsonVar).arg(cmTest.ref(primitiveType).dotclass()).invoke(
+              "toArray").arg(jVar));
+    } else{
+      jNotNullBlock.assign(jVar, cmTest.ref(JacksonUtilsClassName).staticInvoke(methodName).arg(
+              jJsonVar.invoke("asText")).arg(cmTest.ref(primitiveType).dotclass()));
+
+    }
   }
 
   private static void logResponseBodyField(
