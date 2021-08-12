@@ -15,7 +15,7 @@ public interface CodeGConstants {
           "com.fastjrun.client.DefaultHTTPWebClient",
           "",
           "",
-          "com.fastjrun.example.web.controller.BaseWebController",
+          "com.fastjrun.web.controller.BaseWebController",
           "com.fastjrun.codeg.generator.DefaultHTTPWebGenerator",
           "org.springframework.stereotype.Controller");
 
@@ -37,7 +37,7 @@ public interface CodeGConstants {
           "com.fastjrun.client.DefaultDubboClient",
           "DubboController",
           "",
-          "com.fastjrun.example.biz.BaseDefaultApiManager",
+          "com.fastjrun.apibase.biz.BaseDefaultApiManager",
           "com.fastjrun.codeg.generator.DefaultDubboGenerator");
 
   enum CodeGCommand {
