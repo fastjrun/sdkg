@@ -9,8 +9,8 @@ import java.lang.reflect.Method;
 import com.fastjrun.common.ClientException;
 import com.fastjrun.common.CodeMsgConstants;
 import com.fastjrun.common.exchange.BaseRPCResponseDecoder;
-import com.fastjrun.example.dto.BasePacket;
-import com.fastjrun.example.dto.DefaultResponseHead;
+import com.fastjrun.apibase.dto.BasePacket;
+import com.fastjrun.apibase.dto.DefaultResponseHead;
 
 public class DefaultRPCResponseDecoder extends BaseRPCResponseDecoder {
 

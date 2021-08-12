@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2019 fastjrun, Inc. All Rights Reserved.
  */
-package com.fastjrun.example.web.controller;
+package com.fastjrun.apibase.web.controller;
 
 import com.fastjrun.web.controller.BaseController;
 

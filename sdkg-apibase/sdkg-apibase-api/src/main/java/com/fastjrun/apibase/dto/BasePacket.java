@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2019 fastjrun, Inc. All Rights Reserved.
  */
-package com.fastjrun.example.dto;
+package com.fastjrun.apibase.dto;
 
 public abstract class BasePacket<T, V> {
 

@@ -1,14 +1,14 @@
 /*
  * Copyright (C) 2019 fastjrun, Inc. All Rights Reserved.
  */
-package com.fastjrun.example.biz;
+package com.fastjrun.apibase.biz;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fastjrun.example.api.BaseDefaultApi;
-import com.fastjrun.example.dto.DefaultResponse;
-import com.fastjrun.example.helper.BaseResponseHelper;
+import com.fastjrun.apibase.api.BaseDefaultApi;
+import com.fastjrun.apibase.dto.DefaultResponse;
+import com.fastjrun.apibase.helper.BaseResponseHelper;
 
 public abstract class BaseDefaultApiManager implements BaseDefaultApi {
     protected final Logger log = LoggerFactory.getLogger(this.getClass());

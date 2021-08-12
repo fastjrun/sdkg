@@ -1,13 +1,13 @@
 /*
  * Copyright (C) 2019 fastjrun, Inc. All Rights Reserved.
  */
-package com.fastjrun.example.helper;
+package com.fastjrun.apibase.helper;
 
 import com.fastjrun.common.BaseCodeMsgConstants;
 import com.fastjrun.common.BaseException;
-import com.fastjrun.example.dto.DefaultListResponse;
-import com.fastjrun.example.dto.DefaultResponse;
-import com.fastjrun.example.dto.DefaultResponseHead;
+import com.fastjrun.apibase.dto.DefaultListResponse;
+import com.fastjrun.apibase.dto.DefaultResponse;
+import com.fastjrun.apibase.dto.DefaultResponseHead;
 
 public class BaseResponseHelper {
 

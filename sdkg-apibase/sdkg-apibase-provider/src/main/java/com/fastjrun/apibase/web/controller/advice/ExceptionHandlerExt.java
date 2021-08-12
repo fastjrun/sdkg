@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2019 fastjrun, Inc. All Rights Reserved.
  */
-package com.fastjrun.example.web.controller.advice;
+package com.fastjrun.apibase.web.controller.advice;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
@@ -21,8 +21,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.fastjrun.common.MediaTypes;
 import com.fastjrun.common.ServiceException;
-import com.fastjrun.example.dto.DefaultResponse;
-import com.fastjrun.example.helper.BaseResponseHelper;
+import com.fastjrun.apibase.dto.DefaultResponse;
+import com.fastjrun.apibase.helper.BaseResponseHelper;
 
 @ControllerAdvice
 public class ExceptionHandlerExt extends ResponseEntityExceptionHandler {
@@ -67,7 +67,7 @@ public class ExceptionHandlerExt extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<?> handleSysException(Exception ex,
-                                                      WebRequest request) throws Exception {
+                                                      WebRequest request) {
 
         log.error("异常", ex);
         String reqContentType = this.parseReqContentType(request);
