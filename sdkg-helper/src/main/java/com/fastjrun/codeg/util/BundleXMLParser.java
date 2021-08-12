@@ -44,7 +44,7 @@ public class BundleXMLParser implements CodeGConstants {
     String defaultValue = elePacketField.attributeValue("defaultValue");
     String _new = elePacketField.attributeValue("new");
     PacketField field = new PacketField();
-    field.setName(fieldName);
+    field.setName(name);
     field.setNameAlias(fieldNameAlias);
     field.setFieldName(fieldName);
     field.setDatatype(datatype);
