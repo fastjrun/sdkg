@@ -10,7 +10,6 @@ public abstract class BaseSimpleExecutor extends BaseExecutor {
     /**
      * 任务执行
      *
-     * @return
      */
     protected abstract void execute();
 
