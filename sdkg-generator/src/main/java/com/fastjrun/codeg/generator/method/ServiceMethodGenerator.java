@@ -728,7 +728,7 @@ public class ServiceMethodGenerator extends AbstractMethodGenerator {
           methodBlk.add(
               reponseBodyVar
                   .invoke(tterMethodName)
-                  .arg((cm.ref(mockHelperClassName).staticInvoke("geDate").arg(JExpr.lit(100)))));
+                  .arg((cm.ref(mockHelperClassName).staticInvoke("geDate"))));
         } else {
           throw new CodeGException(
               "CG504",

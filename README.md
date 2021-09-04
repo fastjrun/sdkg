@@ -16,6 +16,7 @@
 
 ### to be continued
 支持新生成的po也能作为其他po的parent
+MockHelper.geDate去掉参数
 
 
 ## 版本说明：
