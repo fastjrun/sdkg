@@ -15,6 +15,8 @@
 - 使用jsqlparser解析sql脚本，用jcodemodel输出代码
 
 ### to be continued
+支持新生成的po也能作为其他po的parent
+
 
 ## 版本说明：
 ### v3.1 升级说明

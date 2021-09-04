@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.fastjrun.codeg</groupId>
         <artifactId>sdkg-parent</artifactId>
-        <version>3.1</version>
+        <version>3.2-SNAPSHOT</version>
     </parent>
     <artifactId>sdkg-helper</artifactId>
     <dependencies>

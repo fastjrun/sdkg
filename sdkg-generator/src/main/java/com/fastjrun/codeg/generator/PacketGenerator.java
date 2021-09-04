@@ -49,7 +49,16 @@ public class PacketGenerator extends BaseCMGenerator {
       log.debug(packetObject.get_class());
       dc._implements(cm.ref("java.io.Serializable"));
       if (this.packetObject.getParent() != null && !this.packetObject.getParent().equals("")) {
-        dc._extends(cm.ref(this.packetObject.getParent()));
+        if (this.packetObject.getParent().endsWith(":New")) {
+          dc._extends(
+              cm.ref(
+                  this.packageNamePrefix
+                      + this.packetObject
+                          .getParent()
+                          .substring(0, this.packetObject.getParent().length() - 4)));
+        } else {
+          dc._extends(cm.ref(this.packetObject.getParent()));
+        }
       }
       this.packetObjectJClass = dc;
       Long hashCode = 0L;
