@@ -60,6 +60,11 @@ public class PacketGenerator extends BaseCMGenerator {
           dc._extends(cm.ref(this.packetObject.getParent()));
         }
       }
+      if (this.getMockModel() == CodeGConstants.MockModel.MockModel_Swagger && this.packetObject.getRemark()!=null && !this.packetObject.getRemark().equals("")) {
+        dc
+                .annotate(cm.ref("io.swagger.annotations.ApiModel"))
+                .param("value", this.packetObject.getRemark());
+      }
       this.packetObjectJClass = dc;
       Long hashCode = 0L;
       hashCode += dc.getClass().getName().hashCode();

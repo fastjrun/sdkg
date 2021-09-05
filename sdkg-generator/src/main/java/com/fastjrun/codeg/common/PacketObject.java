@@ -10,6 +10,7 @@ public class PacketObject extends BaseCodeGenerableObject implements CodeGConsta
     private boolean _new = true;
     private String parent;
     private boolean ref = false;
+    private String remark ;
 
     private String _class;
     private Map<String, PacketObject> objects;
@@ -23,6 +24,14 @@ public class PacketObject extends BaseCodeGenerableObject implements CodeGConsta
     }
 
     public PacketObject() {
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 
     public boolean is_new() {

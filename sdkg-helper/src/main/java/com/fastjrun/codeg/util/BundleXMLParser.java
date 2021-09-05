@@ -309,6 +309,10 @@ public class BundleXMLParser implements CodeGConstants {
     if (ref != null && !ref.equals("")) {
       restObject.setRef(Boolean.parseBoolean(ref));
     }
+    String remark = elePacket.attributeValue("remark");
+    if (remark != null && !remark.equals("")) {
+      restObject.setRemark(remark);
+    }
     List<Element> elements = elePacket.elements();
     for (Element element : elements) {
       if (element == null) {
