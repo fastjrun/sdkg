@@ -15,10 +15,7 @@
 - 使用jsqlparser解析sql脚本，用jcodemodel输出代码
 
 ### to be continued
-支持新生成的po也能作为其他po的parent
-MockHelper.geDate去掉参数
-支持请求和相应参数也有描述
-
+- 不支持返回对象为interface或者abstract class
 
 ## 版本说明：
 ### v3.1 升级说明
