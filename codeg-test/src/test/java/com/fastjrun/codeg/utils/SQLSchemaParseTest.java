@@ -14,14 +14,6 @@ import java.util.Map;
 public class SQLSchemaParseTest extends AbstractAdVancedTestNGSpringContextTest {
     @Test(dataProvider = "loadParam")
     public void testParse(String reqParamsJsonStrAndAssert) {
-        JsonNode[] jsonNodes = this.parseStr2JsonArray(reqParamsJsonStrAndAssert);
-        String sqlFile = jsonNodes[0].get("sqlFile").asText();
-        DataBaseObject dataBaseObject =
-          SQLSchemaParse.process(SQLSchemaParse.TargetType.TargetType_Mysql, sqlFile);
-        System.out.println(dataBaseObject.getTargetType());
-        Map<String, FJTable> map = dataBaseObject.getTableMap();
-        for (FJTable table : map.values()) {
-            System.out.println(table);
-        }
+
     }
 }

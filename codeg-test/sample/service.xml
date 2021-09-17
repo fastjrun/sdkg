@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C) 2019 fastjrun, Inc. All Rights Reserved.
+  -->
+<bundle xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://fastjrun.github.io/apiworld-sdkg/fastjrun-schema.xsd">
+    <services>
+        <service name="sysUserManagerService" class="SysUserManagerService">
+            <method name="total" version="" path="/user/statistic/total" method="GET"
+                    remark="统计用户总数">
+                <response class="vo.TotalVO"/>
+            </method>
+        </service>
+    </services>
+</bundle>

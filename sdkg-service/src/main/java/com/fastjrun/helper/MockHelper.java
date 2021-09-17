@@ -69,7 +69,7 @@ public class MockHelper {
   }
 
   public static Date geDate() {
-    long nextLong = RandomUtils.nextLong();
+    long nextLong = RandomUtils.nextInt(10);
     return Date.from(
         LocalDate.now().plusDays(nextLong).atStartOfDay(ZoneId.systemDefault()).toInstant());
   }
