@@ -4,6 +4,8 @@
   -->
 <bundle xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="https://fastjrun.github.io/apiworld-sdkg/fastjrun-schema.xsd">
+    <packets>
+    </packets>
     <services>
         <service name="sysUserManagerService" class="SysUserManagerService">
             <method name="total" version="" path="/user/statistic/total" method="GET"

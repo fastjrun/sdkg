@@ -19,9 +19,9 @@ public class BundleXMLParser implements CodeGConstants {
 
   private Map<String, String> contentType = new HashMap<>();
 
-  private String bundleFile;
+  private String[] bundleFiles;
 
-  private Element bundleRoot;
+  private Element[] bundleRoots;
 
   private Map<String, PacketObject> packetMap = new HashMap<>();
 
@@ -78,8 +78,8 @@ public class BundleXMLParser implements CodeGConstants {
     this.controllerMap = controllerMap;
   }
 
-  public void setBundleFile(String bundleFile) {
-    this.bundleFile = bundleFile;
+  public void setBundleFiles(String[] bundleFiles) {
+    this.bundleFiles = bundleFiles;
   }
 
   public void init() {
@@ -128,20 +128,23 @@ public class BundleXMLParser implements CodeGConstants {
     }
   }
 
-  private void initBundleRoot() {
-    SAXReader reader = new SAXReader();
-    Document document;
-    try {
-      document = reader.read(this.bundleFile);
-    } catch (DocumentException e) {
-      throw new CodeGException(CodeGMsgContants.CODEG_BUNDLEFILE_INVALID, "bundleFile is wrong");
+  private void initBundleRoots() {
+    this.bundleRoots = new Element[bundleFiles.length];
+    for (int i = 0; i < this.bundleFiles.length; i++) {
+      SAXReader reader = new SAXReader();
+      Document document;
+      try {
+        document = reader.read(this.bundleFiles[i]);
+      } catch (DocumentException e) {
+        throw new CodeGException(CodeGMsgContants.CODEG_BUNDLEFILE_INVALID, "bundleFile is wrong");
+      }
+      this.bundleRoots[i] = document.getRootElement();
     }
-    this.bundleRoot = document.getRootElement();
   }
 
-  public Map<String, Element> checkClassNameRepeat() {
+  public Map<String, Element> checkClassNameRepeat(Element bundleRoot) {
     Map<String, Element> classMap = new HashMap<>();
-    List<Node> nodePackets = this.bundleRoot.selectNodes("packets/packet");
+    List<Node> nodePackets = bundleRoot.selectNodes("packets/packet");
     for (Node nodePacket : nodePackets) {
       Map<String, Element> childClassMap = checkClassNameRepeatInPO((Element) nodePacket);
       Iterator<String> itera = childClassMap.keySet().iterator();
@@ -154,7 +157,7 @@ public class BundleXMLParser implements CodeGConstants {
         classMap.put(childClassName, childClassMap.get(childClassName));
       }
     }
-    List<Node> nodeServices = this.bundleRoot.selectNodes("services/service");
+    List<Node> nodeServices = bundleRoot.selectNodes("services/service");
     for (Node nodeService : nodeServices) {
       String classP = ((Element) nodeService).attributeValue("class");
       if (classMap.keySet().contains(classP)) {
@@ -163,7 +166,7 @@ public class BundleXMLParser implements CodeGConstants {
       }
       classMap.put(classP, (Element) nodeService);
     }
-    List<Node> nodeControllers = this.bundleRoot.selectNodes("*/controller");
+    List<Node> nodeControllers = bundleRoot.selectNodes("*/controller");
     for (Node nodeController : nodeControllers) {
       String classP = ((Element) nodeController).attributeValue("name");
       if (classMap.keySet().contains(classP)) {
@@ -211,8 +214,8 @@ public class BundleXMLParser implements CodeGConstants {
     return classMap;
   }
 
-  private void processControllers() {
-    List<Node> nodeControllers = this.bundleRoot.selectNodes("controllers/controller");
+  private void processControllers(Element bundleRoot) {
+    List<Node> nodeControllers = bundleRoot.selectNodes("controllers/controller");
     for (Node controllerNode : nodeControllers) {
       Element eleController = (Element) controllerNode;
       CommonController commonController = new CommonController();
@@ -247,15 +250,18 @@ public class BundleXMLParser implements CodeGConstants {
   }
 
   private void processPacket() {
-    List<Node> nodePackets = this.bundleRoot.selectNodes("packets/packet");
-    for (Node nodePacket : nodePackets) {
-      Element elePacket = (Element) nodePacket;
-      processPO(elePacket);
+    for (int i = 0; i < this.bundleRoots.length; i++) {
+      List<Node> nodePackets = this.bundleRoots[i].selectNodes("packets/packet");
+      for (Node nodePacket : nodePackets) {
+        Element elePacket = (Element) nodePacket;
+        processPO(elePacket);
+      }
     }
     for (String key : packetMap.keySet()) {
       PacketObject po = packetMap.get(key);
       refineRef(po);
     }
+
     PacketObject integerPO = new PacketObject("java.lang.Integer", false, "java.lang.Integer");
     PacketObject stringPO = new PacketObject("java.lang.String", false, "java.lang.String");
     PacketObject booleanPO = new PacketObject("java.lang.Boolean", false, "java.lang.Boolean");
@@ -270,8 +276,8 @@ public class BundleXMLParser implements CodeGConstants {
     this.packetMap.put(datePO.getName(), datePO);
   }
 
-  private void processService() {
-    List<Node> nodeServices = this.bundleRoot.selectNodes("services/service");
+  private void processService(Element bundleRoot) {
+    List<Node> nodeServices = bundleRoot.selectNodes("services/service");
     for (Node nodeService : nodeServices) {
       Element eleService = (Element) nodeService;
       String name = eleService.attributeValue("name");
@@ -313,30 +319,33 @@ public class BundleXMLParser implements CodeGConstants {
     if (remark != null && !remark.equals("")) {
       restObject.setRemark(remark);
     }
-    List<Element> elements = elePacket.elements();
-    for (Element element : elements) {
-      if (element == null) {
-        continue;
-      }
-      String tagName = element.getName();
-      if (tagName == null || tagName.equals("")) {
-        continue;
-      }
-      String eleName = element.attributeValue("name");
-      if (eleName == null || eleName.equals("")) {
-        continue;
-      }
-      if (tagName.equals("list")) {
-        PacketObject list = processPO(element);
-        lists.put(eleName, list);
-      } else if (tagName.equals("object")) {
-        PacketObject object = processPO(element);
-        objects.put(eleName, object);
-      } else {
-        PacketField field = parsePacketField(element);
-        fields.put(field.getName(), field);
+    if (!restObject.isRef()) {
+      List<Element> elements = elePacket.elements();
+      for (Element element : elements) {
+        if (element == null) {
+          continue;
+        }
+        String tagName = element.getName();
+        if (tagName == null || tagName.equals("")) {
+          continue;
+        }
+        String eleName = element.attributeValue("name");
+        if (eleName == null || eleName.equals("")) {
+          continue;
+        }
+        if (tagName.equals("list")) {
+          PacketObject list = processPO(element);
+          lists.put(eleName, list);
+        } else if (tagName.equals("object")) {
+          PacketObject object = processPO(element);
+          objects.put(eleName, object);
+        } else {
+          PacketField field = parsePacketField(element);
+          fields.put(field.getName(), field);
+        }
       }
     }
+
     restObject.setFields(fields);
     restObject.setLists(lists);
     restObject.setObjects(objects);
@@ -497,9 +506,13 @@ public class BundleXMLParser implements CodeGConstants {
   }
 
   public void doParse() {
-    this.initBundleRoot();
+    this.initBundleRoots();
     this.processPacket();
-    this.processService();
-    this.processControllers();
+    for (int i = 0; i < this.bundleRoots.length; i++) {
+      this.processService(this.bundleRoots[i]);
+    }
+    for (int i = 0; i < this.bundleRoots.length; i++) {
+      this.processControllers(this.bundleRoots[i]);
+    }
   }
 }

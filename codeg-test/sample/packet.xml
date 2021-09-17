@@ -7,6 +7,7 @@
     <packets>
         <packet class="vo.TotalVO">
             <field name="total" dataType="Long" length="12" canBeNull="false" remark="总数"/>
+            <list name="child" class="vo.TotalVO" ref="true"/>
         </packet>
     </packets>
 </bundle>
