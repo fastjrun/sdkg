@@ -348,10 +348,8 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
     String methodRemark = this.serviceMethodGenerator.getCommonMethod().getRemark();
     this.jcontrollerMethod.javadoc().append(methodRemark);
     String methodPath = this.serviceMethodGenerator.getCommonMethod().getPath();
-    if (methodPath == null || methodPath.equals("")) {
+    if (methodPath != null && methodPath.equals("null")) {
       methodPath = "/" + this.serviceMethodGenerator.getCommonMethod().getName();
-    } else if (methodPath.equals("null")) {
-      methodPath = "";
     }
     String methodVersion = this.serviceMethodGenerator.getCommonMethod().getVersion();
     if (methodVersion != null && !methodVersion.equals("")) {

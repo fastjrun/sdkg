@@ -116,6 +116,12 @@ public class ServiceMethodGenerator extends AbstractMethodGenerator {
       } else {
         this.requestBodyClass = cm.ref(request.get_class());
       }
+      if (this.commonMethod.isRequestIsArray()) {
+        this.requestBodyClass = requestBodyClass.array();
+      }
+      if (this.commonMethod.isRequestIsList()) {
+        this.requestBodyClass = cm.ref("java.util.List").narrow(requestBodyClass);
+      }
     }
     PacketObject response = this.commonMethod.getResponse();
     if (response == null) {

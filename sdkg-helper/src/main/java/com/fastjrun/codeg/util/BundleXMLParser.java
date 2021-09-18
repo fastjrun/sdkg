@@ -428,6 +428,18 @@ public class BundleXMLParser implements CodeGConstants {
     Element eleRequest = eleMethod.element("request");
     if (eleRequest != null) {
       String requestBodyClass = eleRequest.attributeValue("class");
+      if (requestBodyClass.endsWith(":List")) {
+        requestBodyClass = requestBodyClass.split(":")[0];
+        method.setRequestIsList(true);
+      } else{
+        method.setRequestIsList(false);
+      }
+      if (requestBodyClass.endsWith(":Array")) {
+        requestBodyClass = requestBodyClass.split(":")[0];
+        method.setRequestIsArray(true);
+      } else{
+        method.setRequestIsArray(false);
+      }
       PacketObject po = this.packetMap.get(requestBodyClass);
       method.setRequest(po);
     }
@@ -437,7 +449,10 @@ public class BundleXMLParser implements CodeGConstants {
       if (responseBodyClass.endsWith(":Page")) {
         responseBodyClass = responseBodyClass.split(":")[0];
         method.setResponseIsPage(true);
-      } else if (responseBodyClass.endsWith(":List")) {
+      } else {
+        method.setResponseIsPage(false);
+      }
+      if (responseBodyClass.endsWith(":List")) {
         responseBodyClass = responseBodyClass.split(":")[0];
         method.setResponseIsArray(true);
       } else {

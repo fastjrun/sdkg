@@ -32,11 +32,31 @@ public class CommonMethod {
 
     private PacketObject request;
 
+    private boolean requestIsArray;
+
+    private boolean requestIsList;
+
     private PacketObject response;
 
     private boolean responseIsArray;
 
     private boolean responseIsPage;
+
+    public boolean isRequestIsArray() {
+        return requestIsArray;
+    }
+
+    public void setRequestIsArray(boolean requestIsArray) {
+        this.requestIsArray = requestIsArray;
+    }
+
+    public boolean isRequestIsList() {
+        return requestIsList;
+    }
+
+    public void setRequestIsList(boolean requestIsList) {
+        this.requestIsList = requestIsList;
+    }
 
     public boolean isResponseIsPage() {
         return responseIsPage;

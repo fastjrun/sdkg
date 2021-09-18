@@ -8,8 +8,9 @@
     </packets>
     <services>
         <service name="sysUserManagerService" class="SysUserManagerService">
-            <method name="total" version="" path="/user/statistic/total" method="GET"
+            <method name="total" version="" path="" method="GET"
                     remark="统计用户总数">
+                <request class="java.lang.Long:Array"/>
                 <response class="vo.TotalVO"/>
             </method>
         </service>
