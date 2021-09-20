@@ -8,7 +8,7 @@
     <parent>
         <groupId>com.fastjrun.codeg</groupId>
         <artifactId>sdkg-parent</artifactId>
-        <version>3.2.2</version>
+        <version>3.2.3</version>
     </parent>
     <artifactId>sdkg-service</artifactId>
     <dependencies>

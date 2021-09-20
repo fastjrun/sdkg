@@ -539,6 +539,9 @@ public class ServiceMethodGenerator extends AbstractMethodGenerator {
     if (packetObjectMap != null && packetObjectMap.size() > 0) {
       for (String reName : packetObjectMap.keySet()) {
         PacketObject ro = packetObjectMap.get(reName);
+        if(ro.getName().equals(responseBody.getName())){
+          continue;
+        }
         AbstractJClass roClass = cm.ref(this.packageNamePrefix + ro.get_class());
         if (!ro.is_new()) {
           roClass = cm.ref(ro.get_class());
@@ -557,8 +560,10 @@ public class ServiceMethodGenerator extends AbstractMethodGenerator {
     Map<String, PacketObject> roList = responseBody.getLists();
     if (roList != null && roList.size() > 0) {
       for (String listName : roList.keySet()) {
-        int index = 0;
         PacketObject ro = roList.get(listName);
+        if(ro.getName().equals(responseBody.getName())){
+          continue;
+        }
         AbstractJType roListEntityClass = cm.ref(this.packageNamePrefix + ro.get_class());
         if (!ro.is_new()) {
           roListEntityClass = cm.ref(ro.get_class());
@@ -571,6 +576,8 @@ public class ServiceMethodGenerator extends AbstractMethodGenerator {
                 cm.ref("java.util.List").narrow(roListEntityClass),
                 varNamePrefixList + "list",
                 JExpr._new(cm.ref("java.util.ArrayList").narrow(roListEntityClass)));
+
+        int index = 0;
         JVar iSizeVar =
             methodBlk.decl(
                 cm.INT,
