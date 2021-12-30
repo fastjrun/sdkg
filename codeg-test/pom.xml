@@ -70,7 +70,7 @@
             <testResource>
                 <directory>src/test/resources</directory>
                 <includes>
-                    <include>testdata/${envName}.yaml</include>
+                    <include>testdata/*.yaml</include>
                     <include>log4j2.xml</include>
                 </includes>
             </testResource>

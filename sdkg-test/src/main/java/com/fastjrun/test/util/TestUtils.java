@@ -33,7 +33,7 @@ public class TestUtils {
     Set<String> keys = propParams.keySet();
     List<Object> parameters = Lists.newArrayList();
     for (String key : keys) {
-      if (key.startsWith(className.concat(".").concat(method.getName()))) {
+      if (key.equals(className.concat(".").concat(method.getName()))) {
         parameters = (List<Object>) propParams.get(key);
       }
     }
