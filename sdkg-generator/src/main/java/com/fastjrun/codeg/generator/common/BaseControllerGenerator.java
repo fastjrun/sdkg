@@ -131,7 +131,7 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
           this.controllerPath);
         if (this.getMockModel() == CodeGConstants.MockModel.MockModel_Swagger) {
             this.controlllerClass.annotate(cm.ref("io.swagger.annotations.Api")).param("value",
-              commonController.getRemark()).param("tags", commonController.getTags());
+              commonController.getRemark()).paramArray("tags", commonController.getTags());
         }
         this.addClassDeclaration(this.controlllerClass);
 

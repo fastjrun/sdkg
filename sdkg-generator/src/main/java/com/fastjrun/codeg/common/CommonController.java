@@ -10,7 +10,7 @@ public class CommonController extends BaseCodeGenerableObject implements CodeGCo
     protected String version;
     protected String clientName;
     protected String remark;
-    protected String tags;
+    protected String[] tags;
 
     protected String serviceName;
 
@@ -101,11 +101,11 @@ public class CommonController extends BaseCodeGenerableObject implements CodeGCo
         this.remark = remark;
     }
 
-    public String getTags() {
+    public String[] getTags() {
         return tags;
     }
 
-    public void setTags(String tags) {
+    public void setTags(String[] tags) {
         this.tags = tags;
     }
 

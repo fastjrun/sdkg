@@ -1,3 +1,5 @@
+### 3.2.4
+- 修改mock代码种swagger标签API的tags值，可以为数组（逗号间隔）
 ### 3.2.3
 - 如果po自包含，生成的mock中对于自包含节点设置为空
 
@@ -21,7 +23,7 @@
 ### tip's
 #### 修改版本号
 ```
-mvn versions:set -DnewVersion=0.0.2-SNAPSHOT
+mvn versions:set -DnewVersion=3.2.4-SNAPSHOT
 mvn versions:update-child-modules
 ```
 

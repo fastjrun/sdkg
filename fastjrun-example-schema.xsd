@@ -3,7 +3,6 @@
   ~ Copyright (C) 2019 fastjrun, Inc. All Rights Reserved.
   -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
-    <xs:include schemaLocation="../../fastjrun-schema.xsd"/>
     <xs:complexType name="controller">
         <xs:all>
             <xs:element name="service">

@@ -136,7 +136,7 @@ public class BundleXMLParser implements CodeGConstants {
       try {
         document = reader.read(this.bundleFiles[i]);
       } catch (DocumentException e) {
-        throw new CodeGException(CodeGMsgContants.CODEG_BUNDLEFILE_INVALID, "bundleFile is wrong");
+        throw new CodeGException(CodeGMsgContants.CODEG_BUNDLEFILE_INVALID, "bundleFile is wrong"+e.getMessage());
       }
       this.bundleRoots[i] = document.getRootElement();
     }
@@ -234,7 +234,7 @@ public class BundleXMLParser implements CodeGConstants {
       commonController.setVersion(version);
       commonController.setRemark(remark);
       commonController.setClientName(clientName);
-      commonController.setTags(tags);
+      commonController.setTags(tags.split(","));
       if (_new != null && !_new.equals("")) {
         commonController.set_new(Boolean.parseBoolean(_new));
       }
