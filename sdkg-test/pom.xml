@@ -10,7 +10,7 @@
     <parent>
         <groupId>com.fastjrun.codeg</groupId>
         <artifactId>sdkg-parent</artifactId>
-        <version>3.2.4-SNAPSHOT</version>
+        <version>3.2.4</version>
     </parent>
     <artifactId>sdkg-test</artifactId>
     <dependencies>
