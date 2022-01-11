@@ -5,7 +5,7 @@ package com.fastjrun.codeg.generator;
 
 import com.fastjrun.codeg.common.*;
 import com.fastjrun.codeg.generator.common.BaseCMGenerator;
-import com.fastjrun.helper.StringHelper;
+import com.fastjrun.codeg.helper.StringHelper;
 import com.helger.jcodemodel.*;
 
 import java.util.Map;

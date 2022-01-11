@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<!--
+  ~ Copyright (C) 2019 fastjrun, Inc. All Rights Reserved.
+  -->
+<project
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+        xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.fastjrun.codeg</groupId>
+        <artifactId>sdkg-parent</artifactId>
+        <version>4.0-SNAPSHOT</version>
+    </parent>
+    <groupId>com.fastjrun.codeg</groupId>
+    <artifactId>base-sdkg</artifactId>
+    <packaging>pom</packaging>
+    <properties>
+        <skipTests>true</skipTests>
+        <snakeyaml.version>1.29</snakeyaml.version>
+        <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
+        <jacoco-maven-plugin.version>0.8.1</jacoco-maven-plugin.version>
+    </properties>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>${springframework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>${snakeyaml.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>${jacoco-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven-surefire-plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+    <modules>
+        <module>example-sdkg</module>
+        <module>eladmin-sdkg</module>
+    </modules>
+</project>

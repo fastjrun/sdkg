@@ -30,6 +30,8 @@ public class CommonMethod {
 
     private String resType;
 
+    private boolean needApi=true;
+
     private PacketObject request;
 
     private boolean requestIsArray;
@@ -184,5 +186,14 @@ public class CommonMethod {
 
     public void setWebParameters(List<PacketField> webParameters) {
         this.webParameters = webParameters;
+    }
+
+
+    public boolean isNeedApi() {
+        return needApi;
+    }
+
+    public void setNeedApi(boolean needApi) {
+        this.needApi = needApi;
     }
 }

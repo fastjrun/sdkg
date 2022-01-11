@@ -1,9 +1,16 @@
 #!/bin/bash
 
 echo "build ..."
-if [ "local_helper" = $1 ] ; then
-    mvn clean install
-elif [ "publish_helper" = $1 ] ; then
-    mvn -U clean deploy -Prelease
+if [ "local_plugin" = $1 ] ; then
+  mvn clean install -pl sdkg-plugin -am
+  mvn clean install -pl base-sdkg/example-sdkg/example-sdkg-client,base-sdkg/example-sdkg/example-sdkg-provider,base-sdkg/example-sdkg/example-sdkg-generator -am
+elif [ "publish_plugin" = $1 ] ; then
+  mvn clean deploy -Prelease sdkg-plugin
+elif [ "package_example" = $1 ] ; then
+  mvn compile -pl base-sdkg/example-sdkg/example-codeg/example-api -am -Dapigc.skip=false
+  mvn compile -pl base-sdkg/example-sdkg/example-codeg/example-bundle -am -Dbdgc.skip=false
+  mvn compile -pl base-sdkg/example-sdkg/example-codeg/example-bundle-mock -am -Dbdmgc.skip=false
+  mvn compile -pl base-sdkg/example-sdkg/example-codeg/example-client -am -Dclientgc.skip=false
+  mvn package -pl base-sdkg/example-sdkg/example-codeg/example-api,base-sdkg/example-sdkg/example-codeg/example-bundle,base-sdkg/example-sdkg/example-codeg/example-bundle-mock,base-sdkg/example-sdkg/example-codeg/example-client -am
 fi
 echo "build done."

@@ -10,7 +10,7 @@ import com.fastjrun.codeg.common.CommonMethod;
 import com.fastjrun.codeg.common.CommonService;
 import com.fastjrun.codeg.generator.common.BaseCMGenerator;
 import com.fastjrun.codeg.generator.method.ServiceMethodGenerator;
-import com.fastjrun.helper.StringHelper;
+import com.fastjrun.codeg.helper.StringHelper;
 import com.helger.jcodemodel.EClassType;
 import com.helger.jcodemodel.JClassAlreadyExistsException;
 import com.helger.jcodemodel.JDefinedClass;
@@ -22,12 +22,9 @@ import java.util.Map;
 
 public class ServiceGenerator extends BaseCMGenerator {
 
-    static    String        SERVICETEST_SUFFIX = "Test";
     protected CommonService commonService;
     protected JDefinedClass serviceClass;
-    protected JDefinedClass serviceTestClass;
     protected JDefinedClass serviceMockClass;
-    private   boolean       supportTest        = false;
 
     private Map<CommonMethod, ServiceMethodGenerator> serviceMethodGeneratorMap;
 
@@ -59,26 +56,10 @@ public class ServiceGenerator extends BaseCMGenerator {
         this.serviceClass = serviceClass;
     }
 
-    public boolean isSupportTest() {
-        return supportTest;
-    }
-
-    public void setSupportTest(boolean supportTest) {
-        this.supportTest = supportTest;
-    }
-
-    public JDefinedClass getServiceTestClass() {
-        return serviceTestClass;
-    }
-
-    public void setServiceTestClass(JDefinedClass serviceTestClass) {
-        this.serviceTestClass = serviceTestClass;
-    }
-
     protected void processService() {
         try {
             this.serviceClass =
-              cm._class(this.packageNamePrefix + SERVICE_PACKAGE_NAME + commonService.get_class(),
+              cm._class(this.packageNamePrefix + BaseCMGenerator.SERVICE_PACKAGE_NAME + commonService.get_class(),
                 EClassType.INTERFACE);
         } catch (JClassAlreadyExistsException e) {
             String msg = commonService.get_class() + " is already exists.";
@@ -88,31 +69,10 @@ public class ServiceGenerator extends BaseCMGenerator {
         this.addClassDeclaration(this.serviceClass);
     }
 
-    protected JFieldVar processServiceTest() {
-        try {
-            this.serviceTestClass = cmTest._class(
-              this.packageNamePrefix + SERVICE_PACKAGE_NAME + commonService.get_class() + SERVICETEST_SUFFIX);
-        } catch (JClassAlreadyExistsException e) {
-            String msg = commonService.get_class() + SERVICETEST_SUFFIX + " is already exists.";
-            log.error(msg, e);
-            throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
-        }
-
-        this.serviceTestClass._extends(
-          cmTest.ref("com.fastjrun.test" + ".AbstractAdVancedTestNGSpringContextTest"));
-        this.addClassDeclaration(this.serviceTestClass);
-        String lowerCaseFirstOneClassName =
-          StringHelper.toLowerCaseFirstOne(this.serviceClass.name());
-        JFieldVar fieldVar =
-          serviceTestClass.field(JMod.PRIVATE, this.serviceClass, lowerCaseFirstOneClassName);
-        fieldVar.annotate(cmTest.ref("org.springframework.beans.factory.annotation.Autowired"));
-        return fieldVar;
-    }
-
     protected void processServiceMock() {
         try {
             this.serviceMockClass =
-              cm._class(MOCK_PACKAGE_NAME + commonService.get_class() + "Mock");
+              cm._class(BaseCMGenerator.MOCK_PACKAGE_NAME + commonService.get_class() + "Mock");
             serviceMockClass._implements(this.serviceClass);
             serviceMockClass.annotate(cm.ref("org.springframework.stereotype.Service")).param(
               "value", commonService.getName());
@@ -129,9 +89,6 @@ public class ServiceGenerator extends BaseCMGenerator {
         JFieldVar fieldVar = null;
         if (!this.isApi()) {
             this.processService();
-            if (this.supportTest) {
-                fieldVar = this.processServiceTest();
-            }
             if (!this.isClient()) {
                 if (this.mockModel != CodeGConstants.MockModel.MockModel_Common) {
                     this.processServiceMock();
@@ -146,6 +103,7 @@ public class ServiceGenerator extends BaseCMGenerator {
             serviceMethodGenerator.setMockModel(mockModel);
             serviceMethodGenerator.setAuthor(author);
             serviceMethodGenerator.setCompany(company);
+            serviceMethodGenerator.setMockHelperClassName(mockHelperClassName);
             serviceMethodGenerator.setApi(this.isApi());
             serviceMethodGenerator.setClient(this.isClient());
             serviceMethodGenerator.setServiceGenerator(this);

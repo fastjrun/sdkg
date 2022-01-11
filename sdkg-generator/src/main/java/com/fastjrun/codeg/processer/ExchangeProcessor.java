@@ -5,7 +5,6 @@ package com.fastjrun.codeg.processer;
 
 import com.fastjrun.codeg.common.CodeGConstants;
 import com.fastjrun.codeg.generator.method.ServiceMethodGenerator;
-import com.helger.jcodemodel.AbstractJClass;
 import com.helger.jcodemodel.AbstractJType;
 import com.helger.jcodemodel.JBlock;
 import com.helger.jcodemodel.JCodeModel;

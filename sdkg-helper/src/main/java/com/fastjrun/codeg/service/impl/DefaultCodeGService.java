@@ -5,6 +5,7 @@ package com.fastjrun.codeg.service.impl;
 
 import com.fastjrun.codeg.common.CommonController;
 import com.fastjrun.codeg.service.CodeGService;
+import com.fastjrun.codeg.common.CodeGConstants;
 import org.dom4j.Document;
 
 import java.io.File;
@@ -25,7 +26,7 @@ public class DefaultCodeGService extends BaseCodeGServiceImpl implements CodeGSe
         Date end = new Date();
 
         log.info("end genreate at " + end + ",cost " + String.valueOf(
-          end.getTime() - begin.getTime()) + " ms");
+                end.getTime() - begin.getTime()) + " ms");
 
         return true;
     }
@@ -36,107 +37,41 @@ public class DefaultCodeGService extends BaseCodeGServiceImpl implements CodeGSe
         Date begin = new Date();
         log.info("begin genreate at " + begin);
         this.beforeGenerate(moduleName);
-
-        Map<String, CommonController> controllerMap =
-          this.generateClientCode(bundleFiles, moduleName);
-        List<CommonController> rpcDubboList = new ArrayList<>();
-        for (CommonController commonController : controllerMap.values()) {
-            if (commonController.getControllerType().name.equals("Dubbo")) {
-                rpcDubboList.add(commonController);
-            }
-        }
-
-        Document document = this.generateTestngXml(controllerMap, 5, 5, 5);
-        if (document != null) {
-            String fileName = "testng.xml";
-            File file =
-              new File(moduleName + this.getTestResourcesName() + File.separator + fileName);
-            this.saveDocument(file, document);
-        }
-
-        if (rpcDubboList != null && rpcDubboList.size() > 0) {
-            Document dubboXml = this.generateDubboClientXml(rpcDubboList);
-            String dubboFileName = "applicationContext-dubbo-consumer.xml";
-            File dubboFile =
-              new File(moduleName + this.getResourcesName() + File.separator + dubboFileName);
-            this.saveDocument(dubboFile, dubboXml);
-        }
+        this.generateClientCode(bundleFiles, moduleName);
 
         Date end = new Date();
 
         log.info("end genreate at " + end + ",cost " + String.valueOf(
-          end.getTime() - begin.getTime()) + " ms");
+                end.getTime() - begin.getTime()) + " ms");
 
         return true;
     }
 
-    private boolean generateBundle(String bundleFiles, String moduleName, MockModel mockModel,
-      boolean supportServiceTest) {
+    private boolean generateBundle(String bundleFiles, String moduleName, CodeGConstants.MockModel mockModel) {
         Date begin = new Date();
         log.info("begin genreate at " + begin);
         this.beforeGenerate(moduleName);
 
-        Map<String, CommonController> controllerMap =
-          this.generateBundleCode(bundleFiles, moduleName, mockModel, supportServiceTest);
-        List<CommonController> rpcDubboList = new ArrayList<>();
-        for (CommonController commonController : controllerMap.values()) {
-            if (commonController.getControllerType().name.equals("Dubbo")) {
-                rpcDubboList.add(commonController);
-            }
-        }
 
-        if (rpcDubboList != null && rpcDubboList.size() > 0) {
-            Document dubboXml = this.generateDubboServerXml(rpcDubboList);
-            File dubboFile = new File(
-              moduleName + this.getResourcesName() + File.separator + DUBBO_PRPVIDER_FILENAME);
-            this.saveDocument(dubboFile, dubboXml);
-        }
+        this.generateBundleCode(bundleFiles, moduleName, mockModel);
+
 
         Date end = new Date();
 
         log.info("end genreate at " + end + ",cost " + String.valueOf(
-          end.getTime() - begin.getTime()) + " ms");
+                end.getTime() - begin.getTime()) + " ms");
 
         return true;
     }
 
     @Override
-    public boolean generateBase(String sqlFile, String moduleName, boolean supportTest,
-      boolean supportController) {
-
-        return this.generateBase(sqlFile, moduleName, supportTest, supportController, "");
-
-
-    }
-
-    @Override
-    public boolean generateBase(String sqlFile, String moduleName, boolean supportTest,
-      boolean supportController, String mybatisVersion) {
-        Date begin = new Date();
-        log.info("begin genreate at " + begin);
-        this.beforeGenerate(moduleName);
-
-        this.generateMybatisAnnotationCode(sqlFile, moduleName, supportController, supportTest,
-          mybatisVersion);
-
-        Date end = new Date();
-
-        log.info("end genreate at " + end + ",cost " + String.valueOf(
-          end.getTime() - begin.getTime()) + " ms");
-
-        return true;
-    }
-
-    @Override
-    public boolean generateProvider(String bundleFiles, String moduleName,
-      boolean supportServiceTest) {
-        return this.generateBundle(bundleFiles, moduleName, MockModel.MockModel_Common,
-          supportServiceTest);
+    public boolean generateProvider(String bundleFiles, String moduleName) {
+        return this.generateBundle(bundleFiles, moduleName, CodeGConstants.MockModel.MockModel_Common);
     }
 
     @Override
     public boolean generateProviderMock(String bundleFiles, String moduleName,
-      MockModel mockModel) {
-        return this.generateBundle(bundleFiles, moduleName, mockModel, false);
+                                        CodeGConstants.MockModel mockModel) {
+        return this.generateBundle(bundleFiles, moduleName, mockModel);
     }
 }

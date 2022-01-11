@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fastjrun.codeg.common.PacketField;
 import com.fastjrun.codeg.common.PacketObject;
 import com.fastjrun.codeg.generator.common.BaseCMGenerator;
-import com.fastjrun.utils.JacksonUtils;
+import com.fastjrun.codeg.utils.JacksonUtils;
 import com.helger.jcodemodel.AbstractJClass;
 
 import java.util.Map;

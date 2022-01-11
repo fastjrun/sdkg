@@ -3,11 +3,10 @@
  */
 package com.fastjrun.codeg.plugin;
 
+import com.fastjrun.codeg.common.CodeGConstants;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-
-import com.fastjrun.codeg.common.CodeGConstants;
 
 @Mojo(name = "apiGc", defaultPhase = LifecyclePhase.INITIALIZE)
 public class ApiGCMojo extends CodeGMogo {

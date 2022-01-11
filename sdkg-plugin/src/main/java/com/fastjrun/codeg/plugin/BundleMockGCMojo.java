@@ -3,6 +3,7 @@
  */
 package com.fastjrun.codeg.plugin;
 
+import com.fastjrun.codeg.common.CodeGConstants;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -20,7 +21,7 @@ public class BundleMockGCMojo extends CodeGMogo {
             return;
         }
 
-        this.executeInternal(CodeGCommand.BundleMockG);
+        this.executeInternal(CodeGConstants.CodeGCommand.BundleMockG);
 
     }
 }

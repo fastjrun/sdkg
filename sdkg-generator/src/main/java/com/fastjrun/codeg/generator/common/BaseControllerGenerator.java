@@ -20,8 +20,6 @@ import com.helger.jcodemodel.JFieldVar;
 import com.helger.jcodemodel.JMethod;
 import com.helger.jcodemodel.JMod;
 
-import java.util.Properties;
-
 public abstract class BaseControllerGenerator extends BaseCMGenerator {
 
     static final String WEB_PACKAGE_NAME = "web.controller.";
@@ -31,10 +29,6 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
     protected String clientName;
 
     protected JDefinedClass clientClass;
-
-    protected JDefinedClass clientTestClass;
-
-    protected Properties clientTestParam;
 
     protected JDefinedClass controlllerClass;
 
@@ -68,18 +62,6 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
 
     public JDefinedClass getClientClass() {
         return clientClass;
-    }
-
-    public JDefinedClass getClientTestClass() {
-        return clientTestClass;
-    }
-
-    public void setClientTestClass(JDefinedClass clientTestClass) {
-        this.clientTestClass = clientTestClass;
-    }
-
-    public Properties getClientTestParam() {
-        return clientTestParam;
     }
 
     public CommonController getCommonController() {
@@ -142,28 +124,6 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
         fieldVar.annotate(cm.ref("org.springframework.beans.factory.annotation.Autowired"));
         fieldVar.annotate(cm.ref("org.springframework.beans.factory.annotation.Qualifier")).param(
           "value", commonController.getServiceRef());
-    }
-
-    protected void processClientTest() {
-        try {
-            this.clientTestClass =
-              cmTest._class(this.getPackageNamePrefix() + "client." + this.clientName + "Test");
-        } catch (JClassAlreadyExistsException e) {
-            String msg = commonController.getName() + "Test is already exists.";
-            log.error(msg, e);
-            throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
-        }
-        this.clientTestClass._extends(
-          cmTest.ref("com.fastjrun.client.BaseApplicationClientTest").narrow(this.clientClass));
-        this.addClassDeclaration(this.clientTestClass);
-        JMethod clientTestPrepareApplicationClientMethod =
-          this.clientTestClass.method(JMod.PUBLIC, cmTest.VOID, "prepareApplicationClient");
-        clientTestPrepareApplicationClientMethod.annotate(cmTest.ref("Override"));
-        clientTestPrepareApplicationClientMethod.annotate(
-          cmTest.ref("org.testng.annotations.BeforeClass"));
-        JBlock jBlock = clientTestPrepareApplicationClientMethod.body();
-        jBlock.assign(JExpr.ref("baseApplicationClient"), JExpr._new(this.clientClass));
-        jBlock.add(JExpr.ref("baseApplicationClient").invoke("initSDKConfig"));
     }
 
     protected void processClient() {

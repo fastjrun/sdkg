@@ -6,8 +6,6 @@ package com.fastjrun.client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fastjrun.common.client.BaseClient;
-
 public abstract class BaseApplicationClient<T extends BaseClient> {
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
 

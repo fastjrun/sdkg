@@ -3,12 +3,10 @@
  */
 package com.fastjrun.codeg.plugin;
 
-import org.apache.maven.plugin.MojoExecutionException;
+import com.fastjrun.codeg.common.CodeGConstants;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-
-import com.fastjrun.codeg.common.CodeGConstants;
 
 @Mojo(name = "bundleGc", defaultPhase = LifecyclePhase.INITIALIZE)
 public class BundleGCMojo extends CodeGMogo {

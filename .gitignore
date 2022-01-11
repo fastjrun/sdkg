@@ -22,5 +22,8 @@ target/*
 *.yml
 *.iml
 */*.iml
-demo
-codeg-test/sample/
+base-sdkg/*-sdkg/*-codeg/*-api/src
+base-sdkg/*-sdkg/*-codeg/*-bundle/src
+base-sdkg/*-sdkg/*-codeg/*-bundle-mock/src
+base-sdkg/*-sdkg/*-codeg/*-client/src
+base-sdkg/eladmin-sdkg

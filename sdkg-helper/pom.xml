@@ -5,10 +5,19 @@
     <parent>
         <groupId>com.fastjrun.codeg</groupId>
         <artifactId>sdkg-parent</artifactId>
-        <version>3.2.4</version>
+        <version>4.0-SNAPSHOT</version>
     </parent>
     <artifactId>sdkg-helper</artifactId>
     <dependencies>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jaxen</groupId>
+            <artifactId>jaxen</artifactId>
+            <version>1.2.0</version>
+        </dependency>
         <dependency>
             <groupId>com.fastjrun.codeg</groupId>
             <artifactId>sdkg-generator</artifactId>

@@ -10,23 +10,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
 
-    @Parameter(property = "codeg.sqlFile", defaultValue = "fast-demo.sql")
-    protected String sqlFile;
-
-    @Parameter(property = "codeg.supportController", defaultValue = "false")
-    protected boolean supportController;
-
-    @Parameter(property = "codeg.supportDaoTest", defaultValue = "false")
-    protected boolean supportDaoTest;
-
-    @Parameter(property = "codeg.mybatisVersion", defaultValue = "")
-    protected String mybatisVersion;
-
     @Parameter(property = "codeg.bundleFiles", defaultValue = "demo_bundle.xml,demo_bundle1.xml")
     protected String bundleFiles;
-
-    @Parameter(property = "codeg.supportServiceTest", defaultValue = "false")
-    protected boolean supportServiceTest;
 
     @Parameter(property = "codeg.packagePrefix", defaultValue = "com.fastjrun.demo.")
     protected String packagePrefix;
@@ -49,6 +34,9 @@ public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
     @Parameter(property = "codeg.company", defaultValue = "fastjrun")
     protected String company;
 
+    @Parameter(property = "codeg.mock", defaultValue = "com.fastjrun.example.service.helper.MockHelper")
+    protected String mockHelperClassName;
+
     @Parameter(property = "codeg.yearCodegTime")
     protected String yearCodegTime;
 
@@ -67,25 +55,20 @@ public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
 
         getLog().info(company);
 
+        getLog().info(mockHelperClassName);
+
         switch (codeGCommand) {
             case BundleMockG:
                 getLog().info(bundleFiles);
                 break;
             case BundleG:
                 getLog().info(bundleFiles);
-                getLog().info("supportServiceTest" + supportServiceTest);
                 break;
             case ClientG:
                 getLog().info(bundleFiles);
                 break;
             case ApiG:
                 getLog().info(bundleFiles);
-                break;
-            case BaseG:
-                getLog().info(sqlFile);
-                getLog().info("supportController" + supportController);
-                getLog().info("supportDaoTest" + supportDaoTest);
-                getLog().info("mybatisVersion" + mybatisVersion);
                 break;
             default:
                 break;
@@ -103,6 +86,7 @@ public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
             case BundleMockG:
                 getLog().info(mockModel);
                 MockModel mockModelTemp = MockModel.MockModel_Swagger;
+                codeGService.setMockHelperClassName(mockHelperClassName);
                 switch (mockModel) {
                     case "swagger2":
                         break;
@@ -112,17 +96,13 @@ public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
                 codeGService.generateProviderMock(bundleFiles, module, mockModelTemp);
                 break;
             case BundleG:
-                codeGService.generateProvider(bundleFiles, module, supportServiceTest);
+                codeGService.generateProvider(bundleFiles, module);
                 break;
             case ClientG:
                 codeGService.generateClient(bundleFiles, module);
                 break;
             case ApiG:
                 codeGService.generateAPI(bundleFiles, module);
-                break;
-            case BaseG:
-                codeGService.generateBase(sqlFile, module, supportDaoTest, supportController,
-                  mybatisVersion);
                 break;
             default:
                 break;

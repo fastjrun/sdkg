@@ -5,21 +5,20 @@ package com.fastjrun.codeg.generator.method;
 
 import com.fastjrun.codeg.common.PacketField;
 import com.fastjrun.codeg.common.PacketObject;
-import com.fastjrun.helper.StringHelper;
-import com.fastjrun.utils.JacksonUtils;
+import com.fastjrun.codeg.helper.StringHelper;
 import com.helger.jcodemodel.*;
 import org.slf4j.Logger;
 
 import java.util.List;
 import java.util.Map;
 
+import static com.fastjrun.codeg.common.CodeGConstants.JacksonUtilsClassName;
 import static com.fastjrun.codeg.generator.common.BaseCMGenerator.JSONOBJECTCLASS_NAME;
-import static com.fastjrun.codeg.generator.common.BaseCMGenerator.JacksonUtilsClassName;
 
 public class MethodGeneratorHelper {
 
   public static void processServiceMethodVariables(
-      JMethod jmethod, List<PacketField> variables, JCodeModel cm, String packageNamePrefix)  {
+          JMethod jmethod, List<PacketField> variables, JCodeModel cm, String packageNamePrefix)  {
     if (variables != null && variables.size() > 0) {
       for (int index = 0; index < variables.size(); index++) {
         PacketField variable = variables.get(index);
@@ -168,6 +167,7 @@ public class MethodGeneratorHelper {
       PacketObject responseBody,
       JVar responseBodyVar,
       JBlock methodTestBlk) {
+
     logResponseBodyField(cmTest, log, loopSeq, responseBody, responseBodyVar, methodTestBlk);
     int start = 1;
     Map<String, PacketObject> robjects = responseBody.getObjects();

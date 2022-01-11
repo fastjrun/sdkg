@@ -15,8 +15,6 @@ public abstract class BaseHTTPGenerator extends BaseControllerGenerator {
         if (!this.isApi()) {
             if (this.isClient()) {
                 this.processClient();
-                this.processClientTest();
-                this.clientTestParam = new Properties();
             } else {
                 this.processController();
             }

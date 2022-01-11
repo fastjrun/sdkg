@@ -4,7 +4,7 @@
 package com.fastjrun.codeg.processer;
 
 import com.fastjrun.codeg.generator.method.ServiceMethodGenerator;
-import com.helger.jcodemodel.AbstractJClass;
+import com.fastjrun.codeg.common.CodeGConstants;
 import com.helger.jcodemodel.AbstractJType;
 import com.helger.jcodemodel.JBlock;
 import com.helger.jcodemodel.JCodeModel;
@@ -29,7 +29,7 @@ public class DefaultExchangeProcessor<T extends BaseRequestProcessor, V extends 
     }
 
     @Override
-    public String processHTTPRequest(JMethod jMethod, JInvocation jInvocation, MockModel mockModel, JCodeModel cm) {
+    public String processHTTPRequest(JMethod jMethod, JInvocation jInvocation, CodeGConstants.MockModel mockModel, JCodeModel cm) {
         return this.requestProcessor.processHTTPRequest(jMethod, jInvocation, mockModel, cm);
     }
 
