@@ -6,7 +6,7 @@
     <groupId>com.fastjrun.codeg</groupId>
     <artifactId>sdkg-parent</artifactId>
     <packaging>pom</packaging>
-    <version>4.0-SNAPSHOT</version>
+    <version>4.0</version>
     <name>sdkg</name>
     <description>快嘉代码生成Maven插件</description>
     <url>http://fastjrun.com/</url>
