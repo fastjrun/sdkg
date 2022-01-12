@@ -9,7 +9,7 @@
     <parent>
         <groupId>com.fastjrun.codeg.eladmin</groupId>
         <artifactId>eladmin-sdkg</artifactId>
-        <version>4.0</version>
+        <version>4.0.2-SNAPSHOT</version>
     </parent>
     <artifactId>eladmin-sdkg-test</artifactId>
     <dependencies>
