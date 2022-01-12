@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bundle xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="fastjrun-eladmin-schema.xsd">
+    <packets>
+        <packet class="po.ServerPO">
+            <field name="id" dataType="Long" length="20" canBeNull="false" remark="id"/>
+            <field name="server_no" dataType="String" length="50" canBeNull="false" remark="服务器编号"/>
+            <field name="server_name" dataType="String" length="100" canBeNull="false" remark="服务器名称"/>
+            <field name="server_type" dataType="Integer" length="2" canBeNull="false" remark="服务器类型（1:主机；2:k8s集群节点）"/>
+            <field name="status" dataType="Integer" length="2" canBeNull="false" remark="是否分配（1:未分配；2：已分配）"/>
+            <field name="public_ip" dataType="String" length="50" canBeNull="false" remark="公网IP"/>
+            <field name="private_ip" dataType="String" length="50" canBeNull="false" remark="内网IP"/>
+            <field name="os" dataType="String" length="50" canBeNull="false" remark="操作系统"/>
+            <field name="cpu" dataType="String" length="50" canBeNull="false" remark="cpu"/>
+            <field name="memory" dataType="Double" length="20" canBeNull="false" remark="内存：单位G"/>
+            <field name="disk" dataType="Double" length="20" canBeNull="false" remark="磁盘：单位G"/>
+            <field name="security_info" dataType="String" length="100" canBeNull="false" remark="机密信息，只有负责人可操作"/>
+            <field name="remark" dataType="String" length="100" canBeNull="false" remark="备注"/>
+        </packet>
+        <packet class="dto.ServerQueryDTO" parent="po.ServerPO:New">
+            <field name="owner_user" dataType="String" length="50" canBeNull="false" remark="负责用户"/>
+            <field name="create_user" dataType="String" length="50" canBeNull="false" remark="创建用户"/>
+        </packet>
+        <packet class="dto.ServerDTO" parent="po.ServerPO:New">
+            <field name="owner_user_id" dataType="Integer" length="20" canBeNull="false" remark="负责用户ID"/>
+        </packet>
+        <packet class="vo.ServerVO" parent="po.ServerPO:New">
+            <field name="owner_user" dataType="String" length="50" canBeNull="false" remark="负责用户"/>
+            <field name="create_user" dataType="String" length="50" canBeNull="false" remark="创建用户"/>
+            <field name="create_date" dataType="java.util.Date" length="50" canBeNull="false" remark="创建时间"/>
+            <field name="update_date" dataType="java.util.Date" length="50" canBeNull="false" remark="更新时间"/>
+        </packet>
+    </packets>
+    <services>
+        <service name="rmsServerControllerService" class="RmsServerControllerService">
+            <method name="exportServer" version="" remark="" path="/download" method="GET" needApi="false" needResponse="false">
+                <webParameters>
+                    <webParameter name="response" dataType="javax.servlet.http.HttpServletResponse" length="20"
+                                  remark=""/>
+                </webParameters>
+                <request class="dto.ServerQueryDTO"/>
+            </method>
+            <method name="queryServer" version="" remark="" path="" method="GET" httpStatus="OK">
+                <parameters>
+                    <parameter name="page" dataType="Integer" length="10" remark="当前页" canBeNull="true"/>
+                    <parameter name="size" dataType="Integer" length="10" remark="分页条数" canBeNull="true"/>
+                    <parameter name="sort" dataType="String" length="10" remark="排序规则序列" canBeNull="true"/>
+                </parameters>
+                <response class="vo.ServerVO:List"/>
+            </method>
+            <method name="createServer" version="" remark="" path="" httpStatus="CREATED">
+                <request class="dto.ServerDTO"/>
+            </method>
+            <method name="updateServer" version="" remark="" path="" method="PUT"  httpStatus="NO_CONTENT">
+                <request class="dto.ServerDTO"/>
+            </method>
+            <method name="deleteServer" version="" remark="" path="" method="DELETE" httpStatus="OK">
+                <parameters>
+                    <parameter name="ids" dataType="String" length="10" remark="需要删除的服务器ID数组"
+                               canBeNull="true"/>
+                </parameters>
+            </method>
+        </service>
+    </services>
+    <controllers>
+        <controller type="Eladmin" name="RmsServerController" path="/api/itrms/server" clientName="RmsServerClient" remark="服务器管理" tags="服务器管理,IT资源管理">
+            <service name="rmsServerControllerService" ref="rmsServerControllerService"/>
+        </controller>
+    </controllers>
+</bundle>
