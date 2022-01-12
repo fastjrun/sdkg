@@ -19,21 +19,12 @@ public abstract class BaseGenerator {
     protected String author = "cuiyingfeng";
     protected String company = "快嘉";
 
-    protected String mockHelperClassName="com.fastjrun.example.service.helper.MockHelper";
     protected String notice = "注意：本内容仅限于公司内部传阅，禁止外泄以及用于其他的商业目的";
     protected boolean skipAuthor = false;
     protected boolean skipNotice = false;
     protected String yearCodegTime = "";
     protected boolean skipCopyright = false;
     private boolean client = true;
-
-    public String getMockHelperClassName() {
-        return mockHelperClassName;
-    }
-
-    public void setMockHelperClassName(String mockHelperClassName) {
-        this.mockHelperClassName = mockHelperClassName;
-    }
 
     public boolean isClient() {
         return client;

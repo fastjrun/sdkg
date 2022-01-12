@@ -1,17 +1,18 @@
 /*
  * Copyright (C) 2019 fastjrun, Inc. All Rights Reserved.
  */
-package com.fastjrun.codeg.processer;
+package com.fastjrun.example.codeg.processor;
 
+import com.fastjrun.codeg.processor.BaseResponseProcessor;
 import com.helger.jcodemodel.JBlock;
 import com.helger.jcodemodel.JCodeModel;
 import com.helger.jcodemodel.JExpr;
 import com.helger.jcodemodel.JInvocation;
 
-public class DefaultResponseWithoutHeadProcessor extends BaseResponseProcessor {
+public class ExampleResponseProcessor extends BaseResponseProcessor {
     @Override
     public void processResponse(JBlock methodBlk, JInvocation jInvocation, JCodeModel cm) {
-        if (this.elementClass == null) {
+        if (!this.isNeedResponse() || this.elementClass == null) {
             methodBlk.add(jInvocation);
         } else {
             if (this.isResponseIsPage()) {
@@ -37,7 +38,7 @@ public class DefaultResponseWithoutHeadProcessor extends BaseResponseProcessor {
                         cm.ref("com.fastjrun.example.dto.PageResult").narrow(this.elementClass);
             } else if (this.isResponseIsList()) {
                 this.responseClass = cm.ref("java.util.List").narrow(this.elementClass);
-            }else {
+            } else {
                 this.responseClass = this.elementClass;
             }
         } else {

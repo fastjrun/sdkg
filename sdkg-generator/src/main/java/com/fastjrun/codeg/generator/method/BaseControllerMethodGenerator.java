@@ -3,13 +3,11 @@
  */
 package com.fastjrun.codeg.generator.method;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fastjrun.codeg.common.CommonController;
 import com.fastjrun.codeg.common.PacketField;
 import com.fastjrun.codeg.generator.common.BaseControllerGenerator;
-import com.fastjrun.codeg.processer.ExchangeProcessor;
+import com.fastjrun.codeg.processor.ExchangeProcessor;
 import com.fastjrun.codeg.helper.StringHelper;
-import com.fastjrun.codeg.utils.JacksonUtils;
 import com.helger.jcodemodel.*;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -23,11 +21,11 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
 
     protected ExchangeProcessor exchangeProcessor;
 
-    protected ServiceMethodGenerator serviceMethodGenerator;
+    protected BaseServiceMethodGenerator serviceMethodGenerator;
 
     protected BaseControllerGenerator baseControllerGenerator;
 
-    public void setServiceMethodGenerator(ServiceMethodGenerator serviceMethodGenerator) {
+    public void setServiceMethodGenerator(BaseServiceMethodGenerator serviceMethodGenerator) {
         this.serviceMethodGenerator = serviceMethodGenerator;
     }
 

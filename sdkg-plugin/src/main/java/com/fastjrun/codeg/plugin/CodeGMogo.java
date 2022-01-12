@@ -34,9 +34,6 @@ public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
     @Parameter(property = "codeg.company", defaultValue = "fastjrun")
     protected String company;
 
-    @Parameter(property = "codeg.mock", defaultValue = "com.fastjrun.example.service.helper.MockHelper")
-    protected String mockHelperClassName;
-
     @Parameter(property = "codeg.yearCodegTime")
     protected String yearCodegTime;
 
@@ -54,8 +51,6 @@ public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
         getLog().info(author);
 
         getLog().info(company);
-
-        getLog().info(mockHelperClassName);
 
         switch (codeGCommand) {
             case BundleMockG:
@@ -86,7 +81,6 @@ public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
             case BundleMockG:
                 getLog().info(mockModel);
                 MockModel mockModelTemp = MockModel.MockModel_Swagger;
-                codeGService.setMockHelperClassName(mockHelperClassName);
                 switch (mockModel) {
                     case "swagger2":
                         break;

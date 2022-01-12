@@ -11,6 +11,7 @@
 - 删除task
 - 重构
 - 新增示例接口生成器：eladmin-sdkg和接口生成实例
+- jcodemodel升级至3.3.0
 
 ### 3.2.4
 - 修改mock代码种swagger标签API的tags值，可以为数组（逗号间隔）

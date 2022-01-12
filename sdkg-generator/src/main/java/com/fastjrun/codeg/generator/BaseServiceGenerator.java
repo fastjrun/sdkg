@@ -3,41 +3,39 @@
  */
 package com.fastjrun.codeg.generator;
 
-import com.fastjrun.codeg.common.CodeGConstants;
 import com.fastjrun.codeg.common.CodeGException;
 import com.fastjrun.codeg.common.CodeGMsgContants;
 import com.fastjrun.codeg.common.CommonMethod;
 import com.fastjrun.codeg.common.CommonService;
 import com.fastjrun.codeg.generator.common.BaseCMGenerator;
-import com.fastjrun.codeg.generator.method.ServiceMethodGenerator;
-import com.fastjrun.codeg.helper.StringHelper;
-import com.helger.jcodemodel.EClassType;
-import com.helger.jcodemodel.JClassAlreadyExistsException;
-import com.helger.jcodemodel.JDefinedClass;
-import com.helger.jcodemodel.JFieldVar;
-import com.helger.jcodemodel.JMod;
+import com.fastjrun.codeg.generator.method.BaseServiceMethodGenerator;
+import com.helger.jcodemodel.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class ServiceGenerator extends BaseCMGenerator {
+public abstract class BaseServiceGenerator extends BaseCMGenerator {
 
     protected CommonService commonService;
     protected JDefinedClass serviceClass;
     protected JDefinedClass serviceMockClass;
+    protected String  mockHelperName;
+    protected String  serviceGeneratorName;
 
-    private Map<CommonMethod, ServiceMethodGenerator> serviceMethodGeneratorMap;
+    public String getMockHelperName() {
+        return mockHelperName;
+    }
 
-    public Map<CommonMethod, ServiceMethodGenerator> getServiceMethodGeneratorMap() {
+    public void setMockHelperName(String mockHelperName) {
+        this.mockHelperName = mockHelperName;
+    }
+
+    protected abstract void init();
+
+    protected Map<CommonMethod, BaseServiceMethodGenerator> serviceMethodGeneratorMap;
+
+    public Map<CommonMethod, BaseServiceMethodGenerator> getServiceMethodGeneratorMap() {
         return serviceMethodGeneratorMap;
-    }
-
-    public JDefinedClass getServiceMockClass() {
-        return serviceMockClass;
-    }
-
-    public void setServiceMockClass(JDefinedClass serviceMockClass) {
-        this.serviceMockClass = serviceMockClass;
     }
 
     public CommonService getCommonService() {
@@ -56,6 +54,15 @@ public class ServiceGenerator extends BaseCMGenerator {
         this.serviceClass = serviceClass;
     }
 
+    public JDefinedClass getServiceMockClass() {
+        return serviceMockClass;
+    }
+
+    public void setServiceMockClass(JDefinedClass serviceMockClass) {
+        this.serviceMockClass = serviceMockClass;
+    }
+
+
     protected void processService() {
         try {
             this.serviceClass =
@@ -72,12 +79,12 @@ public class ServiceGenerator extends BaseCMGenerator {
     protected void processServiceMock() {
         try {
             this.serviceMockClass =
-              cm._class(BaseCMGenerator.MOCK_PACKAGE_NAME + commonService.get_class() + "Mock");
+                    cm._class(BaseCMGenerator.MOCK_PACKAGE_NAME + commonService.get_class() + "Mock");
             serviceMockClass._implements(this.serviceClass);
             serviceMockClass.annotate(cm.ref("org.springframework.stereotype.Service")).param(
-              "value", commonService.getName());
+                    "value", this.commonService.getName());
         } catch (JClassAlreadyExistsException e) {
-            String msg = commonService.get_class() + " is already exists.";
+            String msg = this.commonService.get_class() + " is already exists.";
             log.error(msg, e);
             throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
         }
@@ -86,11 +93,11 @@ public class ServiceGenerator extends BaseCMGenerator {
 
     @Override
     public void generate() {
-        JFieldVar fieldVar = null;
+        this.init();
         if (!this.isApi()) {
             this.processService();
             if (!this.isClient()) {
-                if (this.mockModel != CodeGConstants.MockModel.MockModel_Common) {
+                if (mockModel != MockModel.MockModel_Common) {
                     this.processServiceMock();
                 }
             }
@@ -98,21 +105,29 @@ public class ServiceGenerator extends BaseCMGenerator {
 
         this.serviceMethodGeneratorMap = new HashMap<>();
         for (CommonMethod commonMethod : this.commonService.getMethods()) {
-            ServiceMethodGenerator serviceMethodGenerator = new ServiceMethodGenerator();
+            BaseServiceMethodGenerator serviceMethodGenerator = null;
+            try {
+                serviceMethodGenerator = (BaseServiceMethodGenerator)Class.forName(this.serviceGeneratorName).newInstance();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
             serviceMethodGenerator.setPackageNamePrefix(packageNamePrefix);
             serviceMethodGenerator.setMockModel(mockModel);
             serviceMethodGenerator.setAuthor(author);
             serviceMethodGenerator.setCompany(company);
-            serviceMethodGenerator.setMockHelperClassName(mockHelperClassName);
             serviceMethodGenerator.setApi(this.isApi());
             serviceMethodGenerator.setClient(this.isClient());
             serviceMethodGenerator.setServiceGenerator(this);
             serviceMethodGenerator.setCommonMethod(commonMethod);
             serviceMethodGenerator.setCm(cm);
-            serviceMethodGenerator.setCmTest(cmTest);
-            serviceMethodGenerator.setFieldVar(fieldVar);
             serviceMethodGenerator.generate();
             this.serviceMethodGeneratorMap.put(commonMethod, serviceMethodGenerator);
         }
     }
+
+
 }

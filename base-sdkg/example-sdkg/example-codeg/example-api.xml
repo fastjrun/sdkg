@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bundle xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="fastjrun-schema.xsd">
+        xsi:noNamespaceSchemaLocation="fastjrun-example-schema.xsd">
     <packets>
         <packet class="po.ServerPO">
             <field name="id" dataType="Long" length="20" canBeNull="false" remark="id"/>

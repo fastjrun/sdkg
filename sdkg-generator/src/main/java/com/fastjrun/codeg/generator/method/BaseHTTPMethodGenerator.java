@@ -205,7 +205,7 @@ public abstract class BaseHTTPMethodGenerator extends BaseControllerMethodGenera
         }
 
         if (this.serviceMethodGenerator.getResponseBodyClass() != null
-                && this.serviceMethodGenerator.getResponseBodyClass() != cm.VOID) {
+                && this.serviceMethodGenerator.getResponseBodyClass() != cm.VOID && !this.serviceMethodGenerator.commonMethod.isResponseIsArray()) {
             jInvocation.arg(JExpr.dotClass(this.serviceMethodGenerator.getResponseBodyClass()));
 
             methodBlk._return(jInvocation);

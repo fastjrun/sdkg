@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2019 fastjrun, Inc. All Rights Reserved.
  */
-package com.fastjrun.codeg.processer;
+package com.fastjrun.codeg.processor;
 
 import com.fastjrun.codeg.common.CodeGConstants;
-import com.fastjrun.codeg.generator.method.ServiceMethodGenerator;
+import com.fastjrun.codeg.generator.method.BaseServiceMethodGenerator;
 import com.helger.jcodemodel.AbstractJType;
 import com.helger.jcodemodel.JBlock;
 import com.helger.jcodemodel.JCodeModel;
@@ -12,8 +12,6 @@ import com.helger.jcodemodel.JInvocation;
 import com.helger.jcodemodel.JMethod;
 
 public interface ExchangeProcessor extends CodeGConstants {
-
-    void processRPCRequest(JMethod jMethod, JInvocation jInvocation, JCodeModel cm);
 
     String processHTTPRequest(JMethod jMethod, JInvocation jInvocation, MockModel mockModel, JCodeModel cm);
 
@@ -23,5 +21,5 @@ public interface ExchangeProcessor extends CodeGConstants {
 
     AbstractJType getResponseClass();
 
-    void doParse(ServiceMethodGenerator serviceMethodGenerator, String packagePrefix);
+    void doParse(BaseServiceMethodGenerator serviceMethodGenerator, String packagePrefix);
 }

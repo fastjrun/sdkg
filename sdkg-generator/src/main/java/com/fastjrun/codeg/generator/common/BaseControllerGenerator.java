@@ -3,22 +3,11 @@
  */
 package com.fastjrun.codeg.generator.common;
 
-import com.fastjrun.codeg.common.CodeGConstants;
-import com.fastjrun.codeg.common.CodeGException;
-import com.fastjrun.codeg.common.CodeGMsgContants;
-import com.fastjrun.codeg.common.CommonController;
-import com.fastjrun.codeg.common.CommonMethod;
-import com.fastjrun.codeg.generator.ServiceGenerator;
+import com.fastjrun.codeg.common.*;
+import com.fastjrun.codeg.generator.BaseServiceGenerator;
 import com.fastjrun.codeg.generator.method.BaseControllerMethodGenerator;
-import com.fastjrun.codeg.generator.method.ServiceMethodGenerator;
-import com.helger.jcodemodel.AbstractJClass;
-import com.helger.jcodemodel.JBlock;
-import com.helger.jcodemodel.JClassAlreadyExistsException;
-import com.helger.jcodemodel.JDefinedClass;
-import com.helger.jcodemodel.JExpr;
-import com.helger.jcodemodel.JFieldVar;
-import com.helger.jcodemodel.JMethod;
-import com.helger.jcodemodel.JMod;
+import com.fastjrun.codeg.generator.method.BaseServiceMethodGenerator;
+import com.helger.jcodemodel.*;
 
 public abstract class BaseControllerGenerator extends BaseCMGenerator {
 
@@ -34,7 +23,7 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
 
     protected String controllerPath;
 
-    protected ServiceGenerator serviceGenerator;
+    protected BaseServiceGenerator serviceGenerator;
 
     public String getClientName() {
         return clientName;
@@ -52,11 +41,11 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
         this.controllerPath = controllerPath;
     }
 
-    public ServiceGenerator getServiceGenerator() {
+    public BaseServiceGenerator getServiceGenerator() {
         return serviceGenerator;
     }
 
-    public void setServiceGenerator(ServiceGenerator serviceGenerator) {
+    public void setServiceGenerator(BaseServiceGenerator serviceGenerator) {
         this.serviceGenerator = serviceGenerator;
     }
 
@@ -81,7 +70,7 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
     }
 
     public abstract BaseControllerMethodGenerator prepareBaseControllerMethodGenerator(
-      ServiceMethodGenerator serviceMethodGenerator);
+      BaseServiceMethodGenerator baseServiceMethodGenerator);
 
     protected void processController() {
         ControllerType controllerType = commonController.getControllerType();
@@ -92,7 +81,7 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
             controllerPackageName = MOCK_PACKAGE_NAME + WEB_PACKAGE_NAME;
         }
 
-        String controllerName = commonController.getName() + controllerType.providerSuffix;
+        String controllerName = commonController.getName();
 
         try {
             this.controlllerClass = cm._class(controllerPackageName + controllerName);
@@ -134,7 +123,6 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
             this.clientName = clientName.substring(lastDotIndex + 1, clientName.length());
         }
 
-        this.clientName = this.clientName + controllerType.clientSuffix;
         try {
             this.clientClass = cm._class(this.getPackageNamePrefix() + "client." + this.clientName);
         } catch (JClassAlreadyExistsException e) {
@@ -170,14 +158,13 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
 
     protected void generatorControllerMethod() {
         for (CommonMethod commonMethod : this.commonController.getService().getMethods()) {
-            ServiceMethodGenerator serviceMethodGenerator =
+            BaseServiceMethodGenerator serviceMethodGenerator =
               this.serviceGenerator.getServiceMethodGeneratorMap().get(commonMethod);
             BaseControllerMethodGenerator baseControllerMethodGenerator =
               this.prepareBaseControllerMethodGenerator(serviceMethodGenerator);
             baseControllerMethodGenerator.setApi(this.isApi());
             baseControllerMethodGenerator.setClient(this.isClient());
             baseControllerMethodGenerator.setCm(cm);
-            baseControllerMethodGenerator.setCmTest(cmTest);
             baseControllerMethodGenerator.generate();
         }
     }

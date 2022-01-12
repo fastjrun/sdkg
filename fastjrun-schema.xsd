@@ -1,23 +1,5 @@
 <?xml version="1.0"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
-    <xs:include schemaLocation="fastjrun-example-schema.xsd"/>
-    <xs:element name="bundle">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element ref="packets" minOccurs="0"/>
-                <xs:element ref="services" minOccurs="0"/>
-                <xs:element ref="controllers" minOccurs="0"/>
-            </xs:sequence>
-            <xs:attribute name="name" type="xs:string" default="快嘉接口定义规范"/>
-        </xs:complexType>
-    </xs:element>
-    <xs:element name="controllers">
-        <xs:complexType>
-            <xs:choice>
-                <xs:element name="controller" type="controller" maxOccurs="unbounded"/>
-            </xs:choice>
-        </xs:complexType>
-    </xs:element>
     <xs:element name="packets">
         <xs:complexType>
             <xs:choice>
@@ -138,11 +120,25 @@
         <xs:attribute name="version" type="xs:string" use="required"/>
         <xs:attribute name="path" type="xs:string"/>
         <xs:attribute name="remark" type="xs:string" use="required"/>
-        <xs:attribute name="method" type="methodType" default="GET"/>
-        <xs:attribute name="reqType" type="contentType" default="xml"/>
-        <xs:attribute name="resType" type="contentType" default="xml"/>
+        <xs:attribute name="method" type="methodType" default="POST"/>
+        <xs:attribute name="reqType" type="contentType" default="json"/>
+        <xs:attribute name="resType" type="contentType" default="json"/>
+        <!-- 不需要对外提供api -->
         <xs:attribute name="needApi" type="xs:boolean" default="true"/>
+        <xs:attribute name="needResponse" type="xs:boolean" default="true"/>
+        <!-- eladmin接口需要 -->
+        <xs:attribute name="httpStatus" type="httpStatus"/>
     </xs:complexType>
+    <xs:simpleType name="httpStatus">
+        <xs:restriction base="xs:string">
+            <!-- 有返回数据；删除操作 -->
+            <xs:enumeration value="OK"/>
+            <!-- 创建 -->
+            <xs:enumeration value="CREATED"/>
+            <!-- 更新 -->
+            <xs:enumeration value="NO_CONTENT"/>
+        </xs:restriction>
+    </xs:simpleType>
     <xs:simpleType name="methodType">
         <xs:restriction base="xs:string">
             <xs:enumeration value="GET"/>

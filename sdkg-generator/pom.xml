@@ -17,6 +17,10 @@
             <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.dom4j</groupId>
             <artifactId>dom4j</artifactId>
             <version>${dom4j.version}</version>
@@ -48,7 +52,7 @@
         </dependency>
     </dependencies>
     <properties>
-        <jcodemodel.version>3.2.1</jcodemodel.version>
+        <jcodemodel.version>3.3.0</jcodemodel.version>
         <dom4j.version>[2.1.1,)</dom4j.version>
     </properties>
 </project>

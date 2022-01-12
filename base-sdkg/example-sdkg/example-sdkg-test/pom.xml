@@ -20,7 +20,7 @@
         </dependency>
         <dependency>
             <groupId>com.fastjrun.codeg.example</groupId>
-            <artifactId>example-generator</artifactId>
+            <artifactId>example-sdkg-generator</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

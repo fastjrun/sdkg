@@ -6,27 +6,29 @@ package com.fastjrun.example.codeg.generator;
 import com.fastjrun.codeg.generator.BaseHTTPGenerator;
 import com.fastjrun.codeg.generator.method.BaseControllerMethodGenerator;
 import com.fastjrun.codeg.generator.method.BaseHTTPMethodGenerator;
+import com.fastjrun.codeg.generator.method.BaseServiceMethodGenerator;
 import com.fastjrun.example.codeg.generator.method.ExampleHTTPMethodGenerator;
-import com.fastjrun.codeg.generator.method.ServiceMethodGenerator;
-import com.fastjrun.codeg.processer.*;
+import com.fastjrun.codeg.processor.*;
+import com.fastjrun.example.codeg.processor.ExampleRequestProcessor;
+import com.fastjrun.example.codeg.processor.ExampleResponseProcessor;
 
-public class ExampleHTTPGeneriGenerator extends BaseHTTPGenerator {
+public class ExampleHTTPGenerator extends BaseHTTPGenerator {
 
   @Override
   public BaseControllerMethodGenerator prepareBaseControllerMethodGenerator(
-      ServiceMethodGenerator serviceMethodGenerator) {
+          BaseServiceMethodGenerator baseServiceMethodGenerator) {
     BaseHTTPMethodGenerator baseHTTPMethodGenerator = new ExampleHTTPMethodGenerator();
     baseHTTPMethodGenerator.setClient(this.isClient());
     baseHTTPMethodGenerator.setPackageNamePrefix(this.packageNamePrefix);
     baseHTTPMethodGenerator.setMockModel(this.mockModel);
-    baseHTTPMethodGenerator.setServiceMethodGenerator(serviceMethodGenerator);
+    baseHTTPMethodGenerator.setServiceMethodGenerator(baseServiceMethodGenerator);
     baseHTTPMethodGenerator.setBaseControllerGenerator(this);
-    BaseRequestProcessor baseRequestProcessor = new GenericRequestProcessor();
-    BaseResponseProcessor baseResponseProcessor = new DefaultResponseWithoutHeadProcessor();
-    DefaultExchangeProcessor<GenericRequestProcessor, DefaultResponseWithoutHeadProcessor>
+    BaseRequestProcessor baseRequestProcessor = new ExampleRequestProcessor();
+    BaseResponseProcessor baseResponseProcessor = new ExampleResponseProcessor();
+    DefaultExchangeProcessor<ExampleRequestProcessor, ExampleResponseProcessor>
         exchangeProcessor =
             new DefaultExchangeProcessor(baseRequestProcessor, baseResponseProcessor);
-    exchangeProcessor.doParse(serviceMethodGenerator, this.packageNamePrefix);
+    exchangeProcessor.doParse(baseServiceMethodGenerator, this.packageNamePrefix);
     baseHTTPMethodGenerator.setExchangeProcessor(exchangeProcessor);
     return baseHTTPMethodGenerator;
   }

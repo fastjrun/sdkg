@@ -8,14 +8,14 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import com.fastjrun.client.BaseHTTPClient;
-import com.fastjrun.example.exchange.DefaultHTTPExchange;
+import com.fastjrun.example.exchange.ExampleExchange;
 import com.fastjrun.client.util.DefaultHTTPUtilClient;
 
-public class DefaultHTTPGenericClient extends BaseHTTPClient<DefaultHTTPUtilClient, DefaultHTTPExchange> {
+public class ExampleClient extends BaseHTTPClient<DefaultHTTPUtilClient, ExampleExchange> {
 
-    public DefaultHTTPGenericClient() {
+    public ExampleClient() {
         this.baseClient = new DefaultHTTPUtilClient();
-        this.baseExchange = new DefaultHTTPExchange();
+        this.baseExchange = new ExampleExchange();
     }
 
     @Override

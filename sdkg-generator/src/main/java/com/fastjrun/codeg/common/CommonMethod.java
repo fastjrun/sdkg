@@ -32,6 +32,10 @@ public class CommonMethod {
 
     private boolean needApi=true;
 
+    private boolean needResponse=true;
+
+    private String httpStatus;
+
     private PacketObject request;
 
     private boolean requestIsArray;
@@ -195,5 +199,21 @@ public class CommonMethod {
 
     public void setNeedApi(boolean needApi) {
         this.needApi = needApi;
+    }
+
+    public boolean isNeedResponse() {
+        return needResponse;
+    }
+
+    public void setNeedResponse(boolean needResponse) {
+        this.needResponse = needResponse;
+    }
+
+    public String getHttpStatus() {
+        return httpStatus;
+    }
+
+    public void setHttpStatus(String httpStatus) {
+        this.httpStatus = httpStatus;
     }
 }

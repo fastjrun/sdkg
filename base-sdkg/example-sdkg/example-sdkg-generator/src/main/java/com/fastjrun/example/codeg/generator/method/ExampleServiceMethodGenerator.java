@@ -1,11 +1,12 @@
 /*
  * Copyright (C) 2019 fastjrun, Inc. All Rights Reserved.
  */
-package com.fastjrun.codeg.generator.method;
+package com.fastjrun.example.codeg.generator.method;
 
 import com.fastjrun.codeg.common.PacketObject;
+import com.fastjrun.codeg.generator.method.BaseServiceMethodGenerator;
 
-public class ServiceMethodGenerator extends BaseServiceMethodGenerator {
+public class ExampleServiceMethodGenerator extends BaseServiceMethodGenerator {
 
     public void doParse() {
         PacketObject request = this.commonMethod.getRequest();

@@ -8,7 +8,7 @@ import com.fastjrun.client.common.ClientException;
 import com.fastjrun.client.common.CodeMsgConstants;
 import com.fastjrun.client.exchange.BaseHTTPRequestEncoder;
 
-public class DefaultHTTPRequestEncoder extends BaseHTTPRequestEncoder {
+public class ExampleRequestEncoder extends BaseHTTPRequestEncoder {
 
     @Override
     public String generateRequestBody(Object body) {

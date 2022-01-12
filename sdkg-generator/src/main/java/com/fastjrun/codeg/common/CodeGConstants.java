@@ -9,13 +9,12 @@ public interface CodeGConstants {
 
   ControllerType ControllerType_GENERIC =
       new ControllerType(
-          "Generic",
-          "",
-          "com.fastjrun.example.client.DefaultHTTPGenericClient",
-          "",
+          "Example",
+          "com.fastjrun.example.client.ExampleClient",
           "",
           "com.fastjrun.example.web.controller.BaseController",
-          "com.fastjrun.example.codeg.generator.ExampleHTTPGeneriGenerator");
+          "com.fastjrun.example.codeg.generator.ExampleServiceGenerator",
+          "com.fastjrun.example.codeg.generator.ExampleHTTPGenerator");
 
   enum CodeGCommand {
     ApiG,
@@ -39,15 +38,13 @@ public interface CodeGConstants {
 
     public String name;
 
-    public String clientSuffix;
-
     public String baseClient;
-
-    public String providerSuffix;
 
     public String apiParentName;
 
     public String providerParentName;
+
+    public String serviceGeneratorName;
 
     public String generatorName;
 
@@ -55,38 +52,34 @@ public interface CodeGConstants {
 
     public ControllerType(
         String name,
-        String clientSuffix,
         String baseClient,
-        String providerSuffix,
         String apiParentName,
         String providerParentName,
+        String serviceGeneratorName,
         String generatorName) {
       this(
           name,
-          clientSuffix,
           baseClient,
-          providerSuffix,
           apiParentName,
           providerParentName,
+              serviceGeneratorName,
           generatorName,
           "org.springframework.web.bind.annotation.RestController");
     }
 
     public ControllerType(
         String name,
-        String clientSuffix,
         String baseClient,
-        String providerSuffix,
         String apiParentName,
         String providerParentName,
+        String serviceGeneratorName,
         String generatorName,
         String baseControllerName) {
       this.name = name;
-      this.clientSuffix = clientSuffix;
       this.baseClient = baseClient;
-      this.providerSuffix = providerSuffix;
       this.apiParentName = apiParentName;
       this.providerParentName = providerParentName;
+      this.serviceGeneratorName = serviceGeneratorName;
       this.generatorName = generatorName;
       this.baseControllerName = baseControllerName;
     }

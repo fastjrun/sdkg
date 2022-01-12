@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2019 fastjrun, Inc. All Rights Reserved.
  */
-package com.fastjrun.codeg.processer;
+package com.fastjrun.codeg.processor;
 
-import com.fastjrun.codeg.generator.method.ServiceMethodGenerator;
+import com.fastjrun.codeg.generator.method.BaseServiceMethodGenerator;
 import com.fastjrun.codeg.common.CodeGConstants;
 import com.helger.jcodemodel.AbstractJType;
 import com.helger.jcodemodel.JBlock;
@@ -21,11 +21,6 @@ public class DefaultExchangeProcessor<T extends BaseRequestProcessor, V extends 
     public DefaultExchangeProcessor(T requestProcessor, V responseProcessor) {
         this.requestProcessor = requestProcessor;
         this.responseProcessor = responseProcessor;
-    }
-
-    @Override
-    public void processRPCRequest(JMethod jMethod, JInvocation jInvocation, JCodeModel cm) {
-        this.requestProcessor.processRPCRequest(jMethod, jInvocation, cm);
     }
 
     @Override
@@ -49,13 +44,14 @@ public class DefaultExchangeProcessor<T extends BaseRequestProcessor, V extends 
     }
 
     @Override
-    public void doParse(ServiceMethodGenerator serviceMethodGenerator, String packagePrefix) {
+    public void doParse(BaseServiceMethodGenerator serviceMethodGenerator, String packagePrefix) {
         this.requestProcessor.setRequestBodyClass(serviceMethodGenerator.getRequestBodyClass());
         this.requestProcessor.parseRequestClass(serviceMethodGenerator.getCm());
         this.responseProcessor.setElementClass(serviceMethodGenerator.getElementClass());
         this.responseProcessor.setResponseIsList(serviceMethodGenerator.getCommonMethod().isResponseIsArray());
         this.responseProcessor.setResponseIsPage(serviceMethodGenerator.getCommonMethod().isResponseIsPage());
-
+        this.responseProcessor.setNeedResponse(serviceMethodGenerator.getCommonMethod().isNeedResponse());
+        this.responseProcessor.setHttpStatus(serviceMethodGenerator.getCommonMethod().getHttpStatus());
         this.responseProcessor.parseResponseClass(serviceMethodGenerator.getCm());
     }
 }

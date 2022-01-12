@@ -7,14 +7,13 @@ import com.fastjrun.codeg.common.CodeGConstants;
 import com.fastjrun.codeg.common.CodeGException;
 import com.fastjrun.codeg.common.CodeGMsgContants;
 import com.fastjrun.codeg.common.CommonController;
+import com.fastjrun.codeg.generator.BaseServiceGenerator;
 import com.fastjrun.codeg.generator.PacketGenerator;
-import com.fastjrun.codeg.generator.ServiceGenerator;
 import com.fastjrun.codeg.generator.common.BaseControllerGenerator;
 
 public abstract class CodeGeneratorFactory implements CodeGConstants {
 
     private static PacketGenerator packetGenerator;
-    private static ServiceGenerator serviceGenerator;
 
     private static PacketGenerator getPacketGeneratorInstance(String packageNamePrefix, MockModel mockModel, String
             author, String company) {
@@ -28,15 +27,24 @@ public abstract class CodeGeneratorFactory implements CodeGConstants {
         return packetGenerator;
     }
 
-    private static ServiceGenerator getServiceGeneratorInstance(String packageNamePrefix, MockModel mockModel, String
-            author, String company) {
-        if (serviceGenerator == null) {
-            serviceGenerator = new ServiceGenerator();
-            serviceGenerator.setPackageNamePrefix(packageNamePrefix);
-            serviceGenerator.setMockModel(mockModel);
-            serviceGenerator.setAuthor(author);
-            serviceGenerator.setCompany(company);
+    private static BaseServiceGenerator getServiceGeneratorInstance(String packageNamePrefix, MockModel mockModel, String
+            author, String company,
+                                                                    CommonController commonController) {
+        BaseServiceGenerator serviceGenerator;
+        try {
+            serviceGenerator =
+                    (BaseServiceGenerator) Class
+                            .forName(commonController.getControllerType().serviceGeneratorName)
+                            .newInstance();
+
+        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+            throw new CodeGException(CodeGMsgContants.CODEG_NOT_SUPPORT,
+                    "不支持这个生成器" + commonController.getControllerType().generatorName, e);
         }
+        serviceGenerator.setPackageNamePrefix(packageNamePrefix);
+        serviceGenerator.setMockModel(mockModel);
+        serviceGenerator.setAuthor(author);
+        serviceGenerator.setCompany(company);
         return serviceGenerator;
     }
 
@@ -53,12 +61,13 @@ public abstract class CodeGeneratorFactory implements CodeGConstants {
 
     }
 
-    public static ServiceGenerator createServiceGenerator(String packageNamePrefix,
-                                                          MockModel mockModel, String
-                                                                  author, String company) {
-        ServiceGenerator serviceGenerator = getServiceGeneratorInstance(packageNamePrefix, mockModel, author, company);
+    public static BaseServiceGenerator createServiceGenerator(String packageNamePrefix,
+                                                              MockModel mockModel, String
+                                                                      author, String company,
+                                                              CommonController commonController) {
+        BaseServiceGenerator serviceGenerator = getServiceGeneratorInstance(packageNamePrefix, mockModel, author, company, commonController);
         try {
-            ServiceGenerator serviceGeneratorTmp = (ServiceGenerator) serviceGenerator.clone();
+            BaseServiceGenerator serviceGeneratorTmp = (BaseServiceGenerator) serviceGenerator.clone();
             return serviceGeneratorTmp;
         } catch (CloneNotSupportedException e) {
             throw new CodeGException(CodeGMsgContants.CODEG_NOT_SUPPORT, "不支持ServiceGenerator这个生成器", e);

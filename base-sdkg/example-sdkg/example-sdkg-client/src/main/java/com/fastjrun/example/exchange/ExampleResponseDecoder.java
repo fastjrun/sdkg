@@ -10,7 +10,7 @@ import com.fastjrun.client.common.ClientException;
 import com.fastjrun.client.common.CodeMsgConstants;
 import com.fastjrun.client.exchange.BaseHTTPResponseDecoder;
 
-public class DefaultHTTPNoHeadResponseDecoder extends BaseHTTPResponseDecoder {
+public class ExampleResponseDecoder extends BaseHTTPResponseDecoder {
 
     @Override
     protected JsonNode parseBodyFromResponse(String responseResult) {

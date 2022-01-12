@@ -54,11 +54,11 @@ public abstract class AbstractMethodGenerator extends BaseCMGenerator {
                 AbstractJClass jType;
                 AbstractJClass primitiveType;
                 if (dataType.endsWith(":List")) {
-                    primitiveType = cmTest.ref(dataType.split(":")[0]);
-                    jType = cmTest.ref("java.util.List").narrow(primitiveType);
+                    primitiveType = cm.ref(dataType.split(":")[0]);
+                    jType = cm.ref("java.util.List").narrow(primitiveType);
                 } else {
                     // Integer、Double、Long、Boolean、Character、Float
-                    jType = cmTest.ref(dataType);
+                    jType = cm.ref(dataType);
                 }
                 jsonRequestBody.put(fieldName, jType.name());
 

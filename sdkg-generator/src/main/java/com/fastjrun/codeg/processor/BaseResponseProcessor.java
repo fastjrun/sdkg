@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2019 fastjrun, Inc. All Rights Reserved.
  */
-package com.fastjrun.codeg.processer;
+package com.fastjrun.codeg.processor;
 
 import com.helger.jcodemodel.AbstractJClass;
 import com.helger.jcodemodel.AbstractJType;
@@ -17,6 +17,10 @@ public abstract class BaseResponseProcessor implements ResponseProcessor {
     private boolean responseIsList;
 
     private boolean responseIsPage;
+
+    private boolean needResponse;
+
+    private String httpStatus;
 
     public boolean isResponseIsPage() {
         return responseIsPage;
@@ -56,5 +60,22 @@ public abstract class BaseResponseProcessor implements ResponseProcessor {
 
     public void setResponseIsList(boolean responseIsList) {
         this.responseIsList = responseIsList;
+    }
+
+    public boolean isNeedResponse() {
+        return needResponse;
+    }
+
+    public void setNeedResponse(boolean needResponse) {
+        this.needResponse = needResponse;
+    }
+
+
+    public String getHttpStatus() {
+        return httpStatus;
+    }
+
+    public void setHttpStatus(String httpStatus) {
+        this.httpStatus = httpStatus;
     }
 }

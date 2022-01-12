@@ -4,12 +4,18 @@
 package com.fastjrun.codeg.util;
 
 import com.fastjrun.codeg.common.*;
+import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.io.UrlResource;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 
+import java.io.IOException;
 import java.util.*;
 
 public class BundleXMLParser implements CodeGConstants {
@@ -97,23 +103,26 @@ public class BundleXMLParser implements CodeGConstants {
     }
 
     public void processExtControllerType() {
-        ResourceBundle rb = ResourceBundle.getBundle("ext-generator");
+        UrlResource resource = new UrlResource(ResourceLoader.class.getResource("/ext-generator.properties"));
+        Properties rb = null;
+        try {
+            rb = PropertiesLoaderUtils.loadProperties(resource);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         if (rb != null) {
-            rb.keySet().stream()
-                    .forEach(
-                            key -> {
-                                String[] values = rb.getString(key).split(",");
-                                ControllerType controllerType =
-                                        new ControllerType(
-                                                key,
-                                                values[1],
-                                                values[2],
-                                                values[3],
-                                                values[4],
-                                                values[5],
-                                                values[6]);
-                                this.controllerTypeMap.put(key, controllerType);
-                            });
+            for (String key : rb.stringPropertyNames()) {
+                String[] values = rb.getProperty(key).split(",");
+                ControllerType controllerType =
+                        new ControllerType(
+                                key,
+                                values[0],
+                                values[1],
+                                values[2],
+                                values[3],
+                                values[4]);
+                this.controllerTypeMap.put(key, controllerType);
+            }
         }
     }
 
@@ -406,6 +415,9 @@ public class BundleXMLParser implements CodeGConstants {
         String reqType = eleMethod.attributeValue("reqType");
         String resType = eleMethod.attributeValue("resType");
         String needApi = eleMethod.attributeValue("needApi");
+        String needResponse = eleMethod.attributeValue("needResponse");
+        String httpStatus = eleMethod.attributeValue("httpStatus");
+
         method.setName(methodName);
         method.setVersion(version);
         method.setPath(path);
@@ -470,6 +482,12 @@ public class BundleXMLParser implements CodeGConstants {
         }
         if (needApi != null && !needApi.equals("")) {
             method.setNeedApi(Boolean.parseBoolean(needApi));
+        }
+        if (needResponse != null && !needResponse.equals("")) {
+            method.setNeedResponse(Boolean.parseBoolean(needResponse));
+        }
+        if (StringUtils.isNotBlank(httpStatus)) {
+            method.setHttpStatus(httpStatus);
         }
         Element eleParametersRoot = eleMethod.element("parameters");
         if (eleParametersRoot != null) {

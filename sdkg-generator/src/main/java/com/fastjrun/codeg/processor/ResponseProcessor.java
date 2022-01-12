@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2019 fastjrun, Inc. All Rights Reserved.
  */
-package com.fastjrun.codeg.processer;
+package com.fastjrun.codeg.processor;
 
 import com.fastjrun.codeg.common.CodeGConstants;
 import com.helger.jcodemodel.JBlock;

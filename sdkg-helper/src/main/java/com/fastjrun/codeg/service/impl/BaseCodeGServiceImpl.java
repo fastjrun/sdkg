@@ -4,8 +4,8 @@
 package com.fastjrun.codeg.service.impl;
 
 import com.fastjrun.codeg.common.*;
+import com.fastjrun.codeg.generator.BaseServiceGenerator;
 import com.fastjrun.codeg.generator.PacketGenerator;
-import com.fastjrun.codeg.generator.ServiceGenerator;
 import com.fastjrun.codeg.generator.common.BaseControllerGenerator;
 import com.fastjrun.codeg.helper.CodeGeneratorFactory;
 import com.fastjrun.codeg.helper.IOHelper;
@@ -14,20 +14,16 @@ import com.helger.jcodemodel.JCodeModel;
 import com.helger.jcodemodel.writer.AbstractCodeWriter;
 import com.helger.jcodemodel.writer.FileCodeWriter;
 import com.helger.jcodemodel.writer.JCMWriter;
-import org.apache.commons.lang.StringEscapeUtils;
-import org.dom4j.Document;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
-import org.dom4j.io.OutputFormat;
-import org.dom4j.io.XMLWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.Properties;
+import java.util.Set;
 
 public abstract class BaseCodeGServiceImpl implements CodeGConstants {
 
@@ -36,23 +32,10 @@ public abstract class BaseCodeGServiceImpl implements CodeGConstants {
     protected String packageNamePrefix;
     protected String author;
     protected String company;
-    protected String mockHelperClassName="com.fastjrun.example.service.helper.MockHelper";
 
     protected File srcDir;
-    protected File testSrcDir;
     private String srcName = "/src/main/java";
     private String resourcesName = "/src/main/resources";
-    private String testSrcName = "/src/test/java";
-    private String testResourcesName = "/src/test/resources";
-    private String testDataName = "/src/test/data";
-
-    public String getMockHelperClassName() {
-        return mockHelperClassName;
-    }
-
-    public void setMockHelperClassName(String mockHelperClassName) {
-        this.mockHelperClassName = mockHelperClassName;
-    }
 
     public String getAuthor() {
         return author;
@@ -68,14 +51,6 @@ public abstract class BaseCodeGServiceImpl implements CodeGConstants {
 
     public void setCompany(String company) {
         this.company = company;
-    }
-
-    public String getTestResourcesName() {
-        return testResourcesName;
-    }
-
-    public void setTestResourcesName(String testResourcesName) {
-        this.testResourcesName = testResourcesName;
     }
 
     public String getResourcesName() {
@@ -94,36 +69,12 @@ public abstract class BaseCodeGServiceImpl implements CodeGConstants {
         this.srcName = srcName;
     }
 
-    public String getTestSrcName() {
-        return testSrcName;
-    }
-
-    public void setTestSrcName(String testSrcName) {
-        this.testSrcName = testSrcName;
-    }
-
-    public String getTestDataName() {
-        return testDataName;
-    }
-
-    public void setTestDataName(String testDataName) {
-        this.testDataName = testDataName;
-    }
-
     public File getSrcDir() {
         return srcDir;
     }
 
     public void setSrcDir(File srcDir) {
         this.srcDir = srcDir;
-    }
-
-    public File getTestSrcDir() {
-        return testSrcDir;
-    }
-
-    public void setTestSrcDir(File testSrcDir) {
-        this.testSrcDir = testSrcDir;
     }
 
     public String getPackageNamePrefix() {
@@ -139,122 +90,6 @@ public abstract class BaseCodeGServiceImpl implements CodeGConstants {
         IOHelper.deleteDir(srcDir.getPath());
         srcDir.mkdirs();
         this.setSrcDir(srcDir);
-    }
-
-    protected void saveDocument(File file, Document document) {
-        OutputFormat outputFormat = OutputFormat.createPrettyPrint();
-        outputFormat.setEncoding("UTF-8");
-        outputFormat.setIndent("    ");
-        OutputStream outputStream = null;
-
-        if (!file.getParentFile().exists()) {
-            file.getParentFile().mkdirs();
-        }
-        try {
-            outputStream = new FileOutputStream(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        XMLWriter xmlWriter = null;
-        try {
-            xmlWriter = new XMLWriter(outputStream, outputFormat);
-            xmlWriter.write(document);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (xmlWriter != null) {
-            try {
-                xmlWriter.close();
-            } catch (IOException e) {
-                log.error("XMLUtil.close error: " + e);
-            }
-        }
-
-        if (outputStream != null) {
-            try {
-                outputStream.close();
-            } catch (IOException e) {
-                log.error("XMLUtil.close error: " + e);
-            }
-        }
-    }
-
-    void saveTestParams(String moduleName, Map<String, Properties> testParamMap) {
-        if (testParamMap != null && testParamMap.size() > 0) {
-            testParamMap.keySet().stream()
-                    .parallel()
-                    .forEach(
-                            key -> {
-                                Properties testParams = testParamMap.get(key);
-                                File outFile =
-                                        new File(
-                                                moduleName + this.getTestDataName() + File.separator + key + ".properties");
-                                outFile.getParentFile().mkdirs();
-                                if (outFile.exists()) {
-                                    outFile.delete();
-                                }
-                                try {
-                                    FileWriter resFw = new FileWriter(outFile);
-                                    for (String pKey : testParams.stringPropertyNames()) {
-                                        resFw.write(
-                                                pKey.concat("=")
-                                                        .concat(StringEscapeUtils.unescapeJava(testParams.getProperty(pKey)))
-                                                        .concat(System.lineSeparator()));
-                                    }
-                                    resFw.close();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            });
-        }
-    }
-
-    protected Document generateTestngXml(
-            Map<String, CommonController> controllerMap,
-            int classThreadCount,
-            int dataProviderThreadCount,
-            int methodThreadCount) {
-        Document document = DocumentHelper.createDocument();
-        document.addDocType("suite", "SYSTEM", "http://testng.org/testng-1.0.dtd");
-        Element rootNode = DocumentHelper.createElement("suite");
-        rootNode.addAttribute("name", "clientTest");
-        rootNode.addAttribute("parallel", "classes");
-        rootNode.addAttribute("thread-count", String.valueOf(classThreadCount));
-        rootNode.addAttribute("data-provider-thread-count", String.valueOf(dataProviderThreadCount));
-        document.add(rootNode);
-        Element testNode = DocumentHelper.createElement("test");
-        testNode.addAttribute("name", "${envName}");
-        testNode.addAttribute("parallel", "methods");
-        testNode.addAttribute("thread-count", String.valueOf(methodThreadCount));
-        rootNode.add(testNode);
-        Element paramNode = DocumentHelper.createElement("parameter");
-        paramNode.addAttribute("name", "envName");
-        paramNode.addAttribute("value", "${envName}");
-        testNode.add(paramNode);
-        Element classesNode = DocumentHelper.createElement("classes");
-        for (String key : controllerMap.keySet()) {
-            CommonController commonController = controllerMap.get(key);
-            Element classNode = DocumentHelper.createElement("class");
-
-            String clientName = commonController.getClientName();
-            int lastDotIndex = clientName.lastIndexOf(".");
-            if (lastDotIndex > 0) {
-                clientName = clientName.substring(lastDotIndex + 1, clientName.length());
-            }
-            classNode.addAttribute(
-                    "name",
-                    this.packageNamePrefix
-                            + "client."
-                            + clientName
-                            + commonController.getControllerType().clientSuffix
-                            + "Test");
-
-            classesNode.add(classNode);
-        }
-        testNode.add(classesNode);
-        return document;
     }
 
     protected Map<String, CommonController> generateApiCode(String bundleFiles, String moduleName) {
@@ -281,13 +116,10 @@ public abstract class BaseCodeGServiceImpl implements CodeGConstants {
             boolean isClient) {
 
         JCodeModel cm = new JCodeModel();
-        JCodeModel cmTest = new JCodeModel();
 
         Map<String, PacketObject> packetAllMap = new HashMap<>();
         Map<String, CommonService> serviceAllMap = new HashMap<>();
         Map<String, CommonController> controllerAllMap = new HashMap<>();
-
-        Map<String, Properties> clientTestParamMap = new HashMap<>();
 
         BundleXMLParser bundleXMLParser = new BundleXMLParser();
         bundleXMLParser.init();
@@ -302,24 +134,11 @@ public abstract class BaseCodeGServiceImpl implements CodeGConstants {
                     CodeGeneratorFactory.createPacketGenerator(
                             this.packageNamePrefix, mockModel, this.author, this.company);
             packetGenerator.setCm(cm);
-            packetGenerator.setCmTest(cmTest);
             packetGenerator.setPacketObject(packetObject);
             packetGenerator.generate();
         }
 
-        Map<CommonService, ServiceGenerator> serviceGeneratorMap = new HashMap<>();
-        for (CommonService commonService : serviceAllMap.values()) {
-            ServiceGenerator serviceGenerator =
-                    CodeGeneratorFactory.createServiceGenerator(
-                            this.packageNamePrefix, mockModel, this.author, this.company);
-            serviceGenerator.setCommonService(commonService);
-            serviceGenerator.setApi(isApi);
-            serviceGenerator.setClient(isClient);
-            serviceGenerator.setCm(cm);
-            serviceGenerator.setCmTest(cmTest);
-            serviceGenerator.generate();
-            serviceGeneratorMap.put(commonService, serviceGenerator);
-        }
+        Map<CommonService, BaseServiceGenerator> serviceGeneratorMap = new HashMap<>();
 
         for (CommonController commonController : controllerAllMap.values()) {
             BaseControllerGenerator baseControllerGenerator =
@@ -328,11 +147,21 @@ public abstract class BaseCodeGServiceImpl implements CodeGConstants {
             baseControllerGenerator.setApi(isApi);
             baseControllerGenerator.setClient(isClient);
             CommonService commonService = commonController.getService();
+            BaseServiceGenerator serviceGenerator =
+                    CodeGeneratorFactory.createServiceGenerator(
+                            this.packageNamePrefix, mockModel, this.author, this.company, commonController);
+            serviceGenerator.setCommonService(commonService);
+            serviceGenerator.setApi(isApi);
+            serviceGenerator.setClient(isClient);
+            serviceGenerator.setCm(cm);
+            serviceGenerator.generate();
+            serviceGeneratorMap.put(commonService, serviceGenerator);
             baseControllerGenerator.setServiceGenerator(serviceGeneratorMap.get(commonService));
             baseControllerGenerator.setCm(cm);
-            baseControllerGenerator.setCmTest(cmTest);
             baseControllerGenerator.generate();
         }
+
+
 
         try {
             // 生成代码为UTF-8编码
@@ -345,7 +174,6 @@ public abstract class BaseCodeGServiceImpl implements CodeGConstants {
             throw new CodeGException(CodeGMsgContants.CODEG_CODEG_FAIL, "code generating failed", e);
         }
 
-        this.saveTestParams(moduleName, clientTestParamMap);
 
         return controllerAllMap;
     }
