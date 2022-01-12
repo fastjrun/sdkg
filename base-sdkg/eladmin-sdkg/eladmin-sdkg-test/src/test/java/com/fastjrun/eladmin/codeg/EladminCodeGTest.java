@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2019 fastjrun, Inc. All Rights Reserved.
  */
-package com.fastjrun.example.codeg;
+package com.fastjrun.eladmin.codeg;
 
 import com.fastjrun.codeg.common.CodeGConstants;
 import com.fastjrun.codeg.service.impl.DefaultCodeGService;

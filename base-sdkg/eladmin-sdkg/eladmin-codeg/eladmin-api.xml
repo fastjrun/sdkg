@@ -46,7 +46,7 @@
                     <parameter name="size" dataType="Integer" length="10" remark="分页条数" canBeNull="true"/>
                     <parameter name="sort" dataType="String" length="10" remark="排序规则序列" canBeNull="true"/>
                 </parameters>
-                <response class="vo.ServerVO:List"/>
+                <response class="vo.ServerVO:Page"/>
             </method>
             <method name="createServer" version="" remark="" path="" httpStatus="CREATED">
                 <request class="dto.ServerDTO"/>

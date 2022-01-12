@@ -20,6 +20,7 @@ public abstract class BaseServiceGenerator extends BaseCMGenerator {
     protected JDefinedClass serviceClass;
     protected JDefinedClass serviceMockClass;
     protected String  mockHelperName;
+    protected String  pageResultName;
     protected String  serviceGeneratorName;
 
     public String getMockHelperName() {
@@ -28,6 +29,14 @@ public abstract class BaseServiceGenerator extends BaseCMGenerator {
 
     public void setMockHelperName(String mockHelperName) {
         this.mockHelperName = mockHelperName;
+    }
+
+    public String getPageResultName() {
+        return pageResultName;
+    }
+
+    public void setPageResultName(String pageResultName) {
+        this.pageResultName = pageResultName;
     }
 
     protected abstract void init();

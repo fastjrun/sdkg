@@ -36,7 +36,7 @@ public class ExampleServiceMethodGenerator extends BaseServiceMethodGenerator {
             if (this.commonMethod.isResponseIsArray()) {
                 this.responseBodyClass = cm.ref("java.util.List").narrow(elementClass);
             } else if (this.commonMethod.isResponseIsPage()) {
-                this.responseBodyClass = cm.ref("com.fastjrun.example.dto.PageResult").narrow(elementClass);
+                this.responseBodyClass = cm.ref(this.serviceGenerator.getPageResultName()).narrow(elementClass);
             } else {
                 this.responseBodyClass = elementClass;
             }

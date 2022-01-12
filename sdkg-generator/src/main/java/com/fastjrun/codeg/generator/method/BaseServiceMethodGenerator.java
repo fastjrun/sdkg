@@ -217,7 +217,7 @@ public abstract class BaseServiceMethodGenerator extends AbstractMethodGenerator
                             serviceMockMethodBlock.decl(
                                     this.responseBodyClass,
                                     "response",
-                                    JExpr._new(cm.ref("com.fastjrun.example.dto.PageResult")));
+                                    JExpr._new(cm.ref(this.serviceGenerator.getPageResultName())));
 
                     JVar listVar =
                             serviceMockMethodBlock.decl(
@@ -228,23 +228,7 @@ public abstract class BaseServiceMethodGenerator extends AbstractMethodGenerator
                             this.composeResponseBody(
                                     0, serviceMockMethodBlock, this.commonMethod.getResponse(), this.elementClass);
                     serviceMockMethodBlock.add(listVar.invoke("add").arg(responseBodyVar));
-                    serviceMockMethodBlock.add(responseVar.invoke("setRows").arg(listVar));
-                    serviceMockMethodBlock.add(
-                            responseVar
-                                    .invoke("setCurrPage")
-                                    .arg(cm.ref(this.serviceGenerator.getMockHelperName()).staticInvoke("geInteger").arg(JExpr.lit(10))));
-                    serviceMockMethodBlock.add(
-                            responseVar
-                                    .invoke("setPageSize")
-                                    .arg(cm.ref(this.serviceGenerator.getMockHelperName()).staticInvoke("geInteger").arg(JExpr.lit(10))));
-                    serviceMockMethodBlock.add(
-                            responseVar
-                                    .invoke("setTotalPage")
-                                    .arg(cm.ref(this.serviceGenerator.getMockHelperName()).staticInvoke("geInteger").arg(JExpr.lit(10))));
-                    serviceMockMethodBlock.add(
-                            responseVar
-                                    .invoke("setTotal")
-                                    .arg(cm.ref(this.serviceGenerator.getMockHelperName()).staticInvoke("geInteger").arg(JExpr.lit(10))));
+                    serviceMockMethodBlock.assign(responseVar, cm.ref(this.serviceGenerator.getMockHelperName()).staticInvoke("geObject").arg(listVar));
                     serviceMockMethodBlock._return(responseVar);
                 }
             } else {

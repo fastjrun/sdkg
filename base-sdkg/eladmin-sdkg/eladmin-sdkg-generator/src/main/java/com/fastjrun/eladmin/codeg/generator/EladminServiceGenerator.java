@@ -11,5 +11,6 @@ public class EladminServiceGenerator extends BaseServiceGenerator {
     protected void init() {
         this.mockHelperName="com.fastjrun.eladmin.service.helper.MockHelper";
         this.serviceGeneratorName="com.fastjrun.eladmin.codeg.generator.method.EladminServiceMethodGenerator";
+        this.pageResultName="com.fastjrun.eladmin.vo.PageResult";
     }
 }

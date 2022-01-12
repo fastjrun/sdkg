@@ -267,4 +267,14 @@ public class MockHelper {
     pageResult.setTotalElements(RandomUtils.nextInt());
     return pageResult;
   }
+
+  public static PageResult geObject(List list) {
+    PageResult pageResult = new PageResult();
+    pageResult.setContent(list);
+    pageResult.setCurrPage(RandomUtils.nextInt());
+    pageResult.setPageSize(RandomUtils.nextInt());
+    pageResult.setTotalPage(RandomUtils.nextInt());
+    pageResult.setTotalElements(RandomUtils.nextInt());
+    return pageResult;
+  }
 }

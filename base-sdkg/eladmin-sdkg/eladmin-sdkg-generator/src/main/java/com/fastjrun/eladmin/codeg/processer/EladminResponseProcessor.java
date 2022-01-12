@@ -25,8 +25,7 @@ public class EladminResponseProcessor extends BaseResponseProcessor {
                 JVar response;
                 if (this.isResponseIsPage()) {
                     response = methodBlk.decl(cm.ref("com.fastjrun.eladmin.vo.PageResult").narrow(this.elementClass), "response", jInvocation);
-                } else
-                if (this.isResponseIsList()) {
+                } else if (this.isResponseIsList()) {
                     response = methodBlk.decl(cm.ref("java.util.List").narrow(this.elementClass), "response", jInvocation);
                 } else {
                     response = methodBlk.decl(this.elementClass, "response", jInvocation);
@@ -46,7 +45,10 @@ public class EladminResponseProcessor extends BaseResponseProcessor {
         if (!this.isNeedResponse()) {
             this.responseClass = cm.VOID;
         } else if (this.elementClass != null) {
-            if (this.isResponseIsList()) {
+            if (this.isResponseIsPage()) {
+                this.responseClass = entityClass.narrow(
+                        cm.ref("com.fastjrun.eladmin.vo.PageResult").narrow(this.elementClass));
+            } else if (this.isResponseIsList()) {
                 this.responseClass = entityClass.narrow(cm.ref("java.util.List").narrow(this.elementClass));
             } else {
                 this.responseClass = entityClass.narrow(this.elementClass);

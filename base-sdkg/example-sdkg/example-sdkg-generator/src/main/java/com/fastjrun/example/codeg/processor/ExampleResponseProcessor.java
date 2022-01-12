@@ -32,7 +32,9 @@ public class ExampleResponseProcessor extends BaseResponseProcessor {
 
     @Override
     public void parseResponseClass(JCodeModel cm) {
-        if (this.elementClass != null) {
+        if (!this.isNeedResponse()) {
+            this.responseClass = cm.VOID;
+        } else if (this.elementClass != null) {
             if (this.isResponseIsPage()) {
                 this.responseClass =
                         cm.ref("com.fastjrun.example.dto.PageResult").narrow(this.elementClass);
