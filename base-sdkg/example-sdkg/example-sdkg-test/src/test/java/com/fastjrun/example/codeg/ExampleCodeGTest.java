@@ -1,16 +1,16 @@
 /*
  * Copyright (C) 2019 fastjrun, Inc. All Rights Reserved.
  */
-package com.fastjrun.codeg.service;
+package com.fastjrun.example.codeg;
 
 import com.fastjrun.codeg.common.CodeGConstants;
 import com.fastjrun.codeg.service.impl.DefaultCodeGService;
-import com.fastjrun.codeg.test.AbstractTestNGTest;
+import com.fastjrun.test.base.AbstractTestNGTest;
 import org.testng.annotations.Test;
 
 import java.util.Map;
 
-public class CodeGServiceTest extends AbstractTestNGTest implements CodeGConstants {
+public class ExampleCodeGTest extends AbstractTestNGTest implements CodeGConstants {
 
   @Test(dataProvider = "loadParam")
   public void testGenerateAPI(Map<String, Object> testPOMap) {

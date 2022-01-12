@@ -10,7 +10,6 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.UrlResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
@@ -94,7 +93,7 @@ public class BundleXMLParser implements CodeGConstants {
         this.contentType.put(
                 "json,xml", MediaTypes.JSON_UTF_8 + "," + MediaTypes.APPLICATION_XML_UTF_8);
         this.controllerTypeMap.put(
-                CodeGConstants.ControllerType_GENERIC.name, CodeGConstants.ControllerType_GENERIC);
+                CodeGConstants.ControllerType_EXAMPLE.name, CodeGConstants.ControllerType_EXAMPLE);
         try {
             this.processExtControllerType();
         } catch (Exception e) {

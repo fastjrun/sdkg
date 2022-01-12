@@ -7,7 +7,7 @@ public interface CodeGConstants {
 
   String JacksonUtilsClassName = "com.fastjrun.common.utils.JacksonUtils";
 
-  ControllerType ControllerType_GENERIC =
+  ControllerType ControllerType_EXAMPLE =
       new ControllerType(
           "Example",
           "com.fastjrun.example.client.ExampleClient",

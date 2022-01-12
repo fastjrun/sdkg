@@ -17,7 +17,7 @@ public class ExampleServiceGenerator extends BaseServiceGenerator {
 
     @Override
     protected void init() {
-        this.mockHelperName="com.fastjrun.example.helper.MockHelper";
+        this.mockHelperName="com.fastjrun.example.service.helper.MockHelper";
         this.serviceGeneratorName="com.fastjrun.example.codeg.generator.method.ExampleServiceMethodGenerator";
 
     }

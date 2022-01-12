@@ -1,19 +1,19 @@
-CodeGServiceTest.testGenerateBundle:
+ExampleCodeGTest.testGenerateBundle:
   - bundleFiles: base-sdkg/example-sdkg/example-codeg/example-api.xml
     moduleName: base-sdkg/example-sdkg/example-codeg/example-bundle
     packagePrefix: com.fastjrun.example.
 
-CodeGServiceTest.testGenerateAPI:
+ExampleCodeGTest.testGenerateAPI:
   - bundleFiles: base-sdkg/example-sdkg/example-codeg/example-api.xml
     moduleName: base-sdkg/example-sdkg/example-codeg/example-api
     packagePrefix: com.fastjrun.example.
 
-CodeGServiceTest.testGenerateClient:
+ExampleCodeGTest.testGenerateClient:
   - bundleFiles: base-sdkg/example-sdkg/example-codeg/example-api.xml
     moduleName: base-sdkg/example-sdkg/example-codeg/example-client
     packagePrefix: com.fastjrun.example.
 
-CodeGServiceTest.testGenerateBundleMock:
+ExampleCodeGTest.testGenerateBundleMock:
   - bundleFiles: base-sdkg/example-sdkg/example-codeg/example-api.xml
     moduleName: base-sdkg/example-sdkg/example-codeg/example-bundle-mock
     packagePrefix: com.fastjrun.example.

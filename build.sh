@@ -2,11 +2,13 @@
 
 echo "build ..."
 if [ "local_plugin" = $1 ] ; then
-  mvn clean install -pl sdkg-plugin -am
+  mvn clean install -pl sdkg-plugin,base-sdkg/base-sdkg-test -am
   mvn clean install -pl base-sdkg/example-sdkg/example-sdkg-client,base-sdkg/example-sdkg/example-sdkg-provider,base-sdkg/example-sdkg/example-sdkg-generator -am
   mvn clean install -pl base-sdkg/eladmin-sdkg/eladmin-sdkg-client,base-sdkg/eladmin-sdkg/eladmin-sdkg-provider,base-sdkg/eladmin-sdkg/eladmin-sdkg-generator -am
 elif [ "publish_plugin" = $1 ] ; then
-  mvn clean deploy -Prelease sdkg-plugin
+  mvn clean deploy -Prelease sdkg-plugin,base-sdkg/base-sdkg-test -am
+  mvn clean deploy -pl base-sdkg/example-sdkg/example-sdkg-client,base-sdkg/example-sdkg/example-sdkg-provider,base-sdkg/example-sdkg/example-sdkg-generator -am
+  mvn clean deploy -pl base-sdkg/eladmin-sdkg/eladmin-sdkg-client,base-sdkg/eladmin-sdkg/eladmin-sdkg-provider,base-sdkg/eladmin-sdkg/eladmin-sdkg-generator -am
 elif [ "package_example" = $1 ] ; then
   mvn compile -pl base-sdkg/example-sdkg/example-codeg/example-api -am -Dapigc.skip=false
   mvn compile -pl base-sdkg/example-sdkg/example-codeg/example-bundle -am -Dbdgc.skip=false

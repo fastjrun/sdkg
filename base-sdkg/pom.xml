@@ -52,6 +52,7 @@
         </pluginManagement>
     </build>
     <modules>
+        <module>base-sdkg-test</module>
         <module>example-sdkg</module>
         <module>eladmin-sdkg</module>
     </modules>

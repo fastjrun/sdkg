@@ -1,29 +1,26 @@
 /*
  * Copyright (C) 2019 fastjrun, Inc. All Rights Reserved.
  */
-package com.fastjrun.codeg.test;
+package com.fastjrun.test.base;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fastjrun.codeg.common.CodeGException;
-import com.fastjrun.util.TestUtils;
+import com.fastjrun.test.util.TestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
-import org.testng.collections.Maps;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
 
 public abstract class AbstractTestNGTest {
 
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    protected Map<String, Object> propParams = Maps.newHashMap();
+    protected Map<String, Object> propParams = new HashMap<>();
 
     @BeforeClass
     @Parameters({"envName"})
@@ -40,22 +37,6 @@ public abstract class AbstractTestNGTest {
     public Object[][] loadParam(Method method) {
         log.debug("loadParam");
         return TestUtils.loadParam(this.propParams, this.getClass().getSimpleName(), method);
-    }
-
-    protected <T> void processExceptionInResponse(JsonNode assertJson, Exception e) {
-        if (e instanceof CodeGException && assertJson != null) {
-            JsonNode codeJson = assertJson.get("code");
-            if (codeJson != null) {
-                String code = codeJson.asText();
-                if (code != null) {
-                    Assert.assertEquals(((CodeGException) e).getCode(), code, "消息码不同");
-                }
-            } else {
-                log.error("", e);
-            }
-        } else {
-            log.error("", e);
-        }
     }
 
 }

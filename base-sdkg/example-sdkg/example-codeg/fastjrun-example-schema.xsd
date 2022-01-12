@@ -33,7 +33,7 @@
         <xs:attribute name="type" use="required">
             <xs:simpleType>
                 <xs:restriction base="xs:string">
-                    <xs:enumeration value="Generic"/>
+                    <xs:enumeration value="Example"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
