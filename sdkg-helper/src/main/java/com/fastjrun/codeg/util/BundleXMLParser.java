@@ -4,6 +4,7 @@
 package com.fastjrun.codeg.util;
 
 import com.fastjrun.codeg.common.*;
+import com.fastjrun.codeg.helper.StringHelper;
 import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -301,10 +302,15 @@ public class BundleXMLParser implements CodeGConstants {
         Map<String, PacketField> fields = new HashMap<>();
         Map<String, PacketObject> lists = new HashMap<>();
         Map<String, PacketObject> objects = new HashMap<>();
-        restObject.setName(elePacket.getName());
+        String name = elePacket.attributeValue("name");
         restObject.set_class(elePacket.attributeValue("class"));
         restObject.setParent(elePacket.attributeValue("parent"));
         String _new = elePacket.attributeValue("new");
+        if(!StringUtils.isBlank(name)){
+            restObject.setName(name);
+        }else{
+            restObject.setName(StringHelper.toLowerCaseFirstOne(restObject.get_class().substring(restObject.get_class().lastIndexOf(".")+1)));
+        }
         if (_new != null && !_new.equals("")) {
             restObject.set_new(Boolean.parseBoolean(_new));
         }
@@ -443,6 +449,10 @@ public class BundleXMLParser implements CodeGConstants {
             }
             PacketObject po = this.packetMap.get(requestBodyClass);
             method.setRequest(po);
+
+            String requestName = eleRequest.attributeValue("name");
+            method.setRequestName(requestName);
+
         }
         Element eleResponse = eleMethod.element("response");
         if (eleResponse != null) {

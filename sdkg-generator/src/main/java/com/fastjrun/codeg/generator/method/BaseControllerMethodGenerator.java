@@ -9,6 +9,7 @@ import com.fastjrun.codeg.generator.common.BaseControllerGenerator;
 import com.fastjrun.codeg.processor.ExchangeProcessor;
 import com.fastjrun.codeg.helper.StringHelper;
 import com.helger.jcodemodel.*;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
@@ -251,9 +252,17 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
         }
 
         if (this.serviceMethodGenerator.getRequestBodyClass() != null) {
+            String varName=this.serviceMethodGenerator.getCommonMethod().getRequestName();
+            if(StringUtils.isBlank(varName)){
+                if(this.serviceMethodGenerator.getRequestBodyClass().isArray()){
+                    varName = StringHelper.toLowerCaseFirstOne(this.serviceMethodGenerator.getRequestBodyClass().elementType().name())+"s";
+                }else{
+                    varName = StringHelper.toLowerCaseFirstOne(this.serviceMethodGenerator.getRequestBodyClass().name());
+                }
+            }
             JVar requestParam =
                     this.jcontrollerMethod.param(
-                            this.serviceMethodGenerator.getRequestBodyClass(), StringHelper.toLowerCaseFirstOne(this.serviceMethodGenerator.getRequestBodyClass().name()));
+                            this.serviceMethodGenerator.getRequestBodyClass(), varName);
             requestParam.annotate(cm.ref("org.springframework.web.bind.annotation.RequestBody"));
             requestParam.annotate(cm.ref("javax.validation.Valid"));
             jInvocation.arg(requestParam);

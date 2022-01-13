@@ -3,15 +3,7 @@
  */
 package com.fastjrun.example.codeg.generator;
 
-import com.fastjrun.codeg.common.CodeGConstants;
-import com.fastjrun.codeg.common.CommonMethod;
 import com.fastjrun.codeg.generator.BaseServiceGenerator;
-import com.fastjrun.codeg.generator.method.BaseServiceMethodGenerator;
-import com.fastjrun.codeg.generator.method.ServiceMethodGenerator;
-import com.fastjrun.example.codeg.generator.method.ExampleServiceMethodGenerator;
-import com.helger.jcodemodel.JFieldVar;
-
-import java.util.HashMap;
 
 public class ExampleServiceGenerator extends BaseServiceGenerator {
 

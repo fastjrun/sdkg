@@ -55,10 +55,10 @@
                 <request class="dto.ServerDTO"/>
             </method>
             <method name="deleteServer" version="" remark="" path="" method="DELETE" httpStatus="OK">
-                <parameters>
-                    <parameter name="ids" dataType="String" length="10" remark="需要删除的服务器ID数组"
-                               canBeNull="true"/>
-                </parameters>
+                <request class="java.lang.Long:List" name="ids"/>
+            </method>
+            <method name="deleteServer2" version="" remark="" path="/deleteServer2" method="DELETE" httpStatus="OK">
+                <request class="java.lang.Long:Array" name="ids"/>
             </method>
         </service>
     </services>

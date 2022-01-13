@@ -68,6 +68,7 @@
     </xs:element>
     <xs:complexType name="bodyObject">
         <xs:attribute name="class" type="xs:string" use="required"/>
+        <xs:attribute name="name" type="xs:string"/>
     </xs:complexType>
     <xs:complexType name="commonService">
         <xs:sequence>

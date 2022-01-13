@@ -38,6 +38,8 @@ public class CommonMethod {
 
     private PacketObject request;
 
+    private String requestName;
+
     private boolean requestIsArray;
 
     private boolean requestIsList;
@@ -215,5 +217,13 @@ public class CommonMethod {
 
     public void setHttpStatus(String httpStatus) {
         this.httpStatus = httpStatus;
+    }
+
+    public String getRequestName() {
+        return requestName;
+    }
+
+    public void setRequestName(String requestName) {
+        this.requestName = requestName;
     }
 }

@@ -7,6 +7,7 @@ import com.fastjrun.codeg.common.*;
 import com.fastjrun.codeg.generator.BaseServiceGenerator;
 import com.fastjrun.codeg.helper.StringHelper;
 import com.helger.jcodemodel.*;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.Map;
 
@@ -121,7 +122,17 @@ public abstract class BaseServiceMethodGenerator extends AbstractMethodGenerator
         MethodGeneratorHelper.processServiceMethodVariables(
                 this.jServiceMethod, this.commonMethod.getWebParameters(), this.cm, this.packageNamePrefix);
         if (this.requestBodyClass != null) {
-            this.jServiceMethod.param(this.requestBodyClass, StringHelper.toLowerCaseFirstOne(this.requestBodyClass.name()));
+
+            String varName=this.commonMethod.getRequestName();
+            if(StringUtils.isBlank(varName)){
+                if(this.requestBodyClass.isArray()){
+                    varName = StringHelper.toLowerCaseFirstOne(this.requestBodyClass.elementType().name())+"s";
+                }else{
+                    varName = StringHelper.toLowerCaseFirstOne(this.requestBodyClass.name());
+                }
+            }
+
+            this.jServiceMethod.param(this.requestBodyClass, varName);
         }
     }
 
@@ -160,7 +171,15 @@ public abstract class BaseServiceMethodGenerator extends AbstractMethodGenerator
                 this.packageNamePrefix);
 
         if (this.requestBodyClass != null) {
-            this.jServiceMockMethod.param(this.requestBodyClass, StringHelper.toLowerCaseFirstOne(this.requestBodyClass.name()));
+            String varName=this.commonMethod.getRequestName();
+            if(StringUtils.isBlank(varName)){
+                if(this.requestBodyClass.isArray()){
+                    varName = StringHelper.toLowerCaseFirstOne(this.requestBodyClass.elementType().name())+"s";
+                }else{
+                    varName = StringHelper.toLowerCaseFirstOne(this.requestBodyClass.name());
+                }
+            }
+            this.jServiceMockMethod.param(this.requestBodyClass, varName);
         }
         this.jServiceMockMethod.annotate(cm.ref("java.lang.Override"));
         JBlock serviceMockMethodBlock = this.jServiceMockMethod.body();
