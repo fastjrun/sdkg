@@ -10,7 +10,7 @@
     <parent>
         <groupId>com.fastjrun.codeg</groupId>
         <artifactId>sdkg-parent</artifactId>
-        <version>4.0.2-SNAPSHOT</version>
+        <version>4.0.3-SNAPSHOT</version>
     </parent>
     <groupId>com.fastjrun.codeg</groupId>
     <artifactId>base-sdkg</artifactId>
@@ -53,6 +53,7 @@
     </build>
     <modules>
         <module>base-sdkg-test</module>
+        <module>base-sdkg-sb2-test</module>
         <module>example-sdkg</module>
         <module>eladmin-sdkg</module>
     </modules>
