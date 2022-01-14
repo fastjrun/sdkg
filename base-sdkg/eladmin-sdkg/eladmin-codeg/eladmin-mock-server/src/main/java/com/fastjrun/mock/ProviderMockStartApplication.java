@@ -1,4 +1,4 @@
-package com.fastjrun.eladmin.info;
+package com.fastjrun.mock;
 
 import org.springframework.boot.Banner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
