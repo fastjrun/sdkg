@@ -4,6 +4,7 @@
 package com.fastjrun.example.codeg.processor;
 
 import com.fastjrun.codeg.processor.BaseResponseProcessor;
+import com.fastjrun.example.codeg.Constants;
 import com.helger.jcodemodel.JBlock;
 import com.helger.jcodemodel.JCodeModel;
 import com.helger.jcodemodel.JExpr;
@@ -16,7 +17,7 @@ public class ExampleResponseProcessor extends BaseResponseProcessor {
             methodBlk.add(jInvocation);
         } else {
             if (this.isResponseIsPage()) {
-                methodBlk.decl(cm.ref("com.fastjrun.example.dto.PageResult").narrow(this.elementClass),
+                methodBlk.decl(cm.ref(Constants.PAGE_RESULT_CLASS_NAME).narrow(this.elementClass),
                         "responseBody", jInvocation);
             } else if (this.isResponseIsList()) {
                 methodBlk.decl(cm.ref("java.util.List").narrow(this.elementClass),
@@ -37,7 +38,7 @@ public class ExampleResponseProcessor extends BaseResponseProcessor {
         } else if (this.elementClass != null) {
             if (this.isResponseIsPage()) {
                 this.responseClass =
-                        cm.ref("com.fastjrun.example.dto.PageResult").narrow(this.elementClass);
+                        cm.ref(Constants.PAGE_RESULT_CLASS_NAME).narrow(this.elementClass);
             } else if (this.isResponseIsList()) {
                 this.responseClass = cm.ref("java.util.List").narrow(this.elementClass);
             } else {

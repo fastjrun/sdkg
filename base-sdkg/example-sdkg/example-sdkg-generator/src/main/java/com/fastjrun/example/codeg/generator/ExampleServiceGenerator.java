@@ -4,14 +4,14 @@
 package com.fastjrun.example.codeg.generator;
 
 import com.fastjrun.codeg.generator.BaseServiceGenerator;
+import com.fastjrun.example.codeg.Constants;
 
 public class ExampleServiceGenerator extends BaseServiceGenerator {
 
     @Override
     protected void init() {
-        this.mockHelperName="com.fastjrun.example.service.helper.MockHelper";
-        this.serviceGeneratorName="com.fastjrun.example.codeg.generator.method.ExampleServiceMethodGenerator";
-        this.pageResultName="com.fastjrun.example.dto.PageResult";
+        this.mockHelperName = Constants.MOCK_HELPER_CLASS_NAME;
+        this.pageResultName = Constants.PAGE_RESULT_CLASS_NAME;
 
     }
 }

@@ -1,6 +1,7 @@
 package com.fastjrun.eladmin.codeg.processer;
 
 import com.fastjrun.codeg.processor.BaseResponseProcessor;
+import com.fastjrun.eladmin.codeg.Constants;
 import com.helger.jcodemodel.*;
 import org.apache.commons.lang.StringUtils;
 
@@ -24,7 +25,7 @@ public class EladminResponseProcessor extends BaseResponseProcessor {
             } else {
                 JVar response;
                 if (this.isResponseIsPage()) {
-                    response = methodBlk.decl(cm.ref("com.fastjrun.eladmin.vo.PageResult").narrow(this.elementClass), "response", jInvocation);
+                    response = methodBlk.decl(cm.ref(Constants.PAGE_RESULT_CLASS_NAME).narrow(this.elementClass), "response", jInvocation);
                 } else if (this.isResponseIsList()) {
                     response = methodBlk.decl(cm.ref("java.util.List").narrow(this.elementClass), "response", jInvocation);
                 } else {

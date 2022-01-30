@@ -195,9 +195,14 @@ public abstract class BaseHTTPMethodGenerator extends BaseControllerMethodGenera
 
         // requestBody
         if (this.serviceMethodGenerator.getRequestBodyClass() != null) {
+
+            String variableName="request";
+            if(!this.serviceMethodGenerator.getCommonMethod().isRequestIsArray()&&!this.serviceMethodGenerator.getCommonMethod().isRequestIsList()){
+                variableName=StringHelper.toLowerCaseFirstOne(this.serviceMethodGenerator.getRequestBodyClass().name());
+            }
             JVar jRequestBodyVar =
                     this.jClientMethod.param(
-                            this.serviceMethodGenerator.getRequestBodyClass(), StringHelper.toLowerCaseFirstOne(this.serviceMethodGenerator.getRequestBodyClass().name()));
+                            this.serviceMethodGenerator.getRequestBodyClass(), variableName);
             jInvocation.arg(jRequestBodyVar);
 
         } else {

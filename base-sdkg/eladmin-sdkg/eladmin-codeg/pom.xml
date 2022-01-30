@@ -2,17 +2,20 @@
 <!--
   ~ Copyright (C) 2019 Fastjrun, Inc. All Rights Reserved.
   -->
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+        xmlns="http://maven.apache.org/POM/4.0.0">
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.2.4.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.fastjrun.codeg.eladmin</groupId>
-    <version>4.0-SNAPSHOT</version>
+    <version>4.1-SNAPSHOT</version>
     <artifactId>eladmin-codeg</artifactId>
     <packaging>pom</packaging>
     <dependencyManagement>
@@ -95,8 +98,8 @@
         <packagePrefix>com.fastjrun.eladmin</packagePrefix>
         <company>快嘉</company>
         <mockHelperClassName>com.fastjrun.eladmin.service.helper.MockHelper</mockHelperClassName>
-        <sdkg.version>4.0-SNAPSHOT</sdkg.version>
-        <eladmin-sdkg.version>4.0-SNAPSHOT</eladmin-sdkg.version>
+        <sdkg.version>4.1-SNAPSHOT</sdkg.version>
+        <eladmin-sdkg.version>4.1-SNAPSHOT</eladmin-sdkg.version>
         <javax.servlet-api.version>3.1.0</javax.servlet-api.version>
         <swagger2.version>3.0.0</swagger2.version>
         <knife4j.version>2.0.9</knife4j.version>

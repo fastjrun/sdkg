@@ -5,8 +5,6 @@ package com.fastjrun.codeg.generator;
 
 import com.fastjrun.codeg.generator.common.BaseControllerGenerator;
 
-import java.util.Properties;
-
 public abstract class BaseHTTPGenerator extends BaseControllerGenerator {
 
     @Override

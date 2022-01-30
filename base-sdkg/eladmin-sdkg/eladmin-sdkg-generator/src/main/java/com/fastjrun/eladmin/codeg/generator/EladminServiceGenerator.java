@@ -4,13 +4,13 @@
 package com.fastjrun.eladmin.codeg.generator;
 
 import com.fastjrun.codeg.generator.BaseServiceGenerator;
+import com.fastjrun.eladmin.codeg.Constants;
 
 public class EladminServiceGenerator extends BaseServiceGenerator {
 
     @Override
     protected void init() {
-        this.mockHelperName="com.fastjrun.eladmin.service.helper.MockHelper";
-        this.serviceGeneratorName="com.fastjrun.eladmin.codeg.generator.method.EladminServiceMethodGenerator";
-        this.pageResultName="com.fastjrun.eladmin.vo.PageResult";
+        this.mockHelperName = Constants.MOCK_HELPER_CLASS_NAME;
+        this.pageResultName = Constants.PAGE_RESULT_CLASS_NAME;
     }
 }

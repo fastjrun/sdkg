@@ -1,12 +1,20 @@
 /*
  * Copyright (C) 2019 fastjrun, Inc. All Rights Reserved.
  */
-package com.fastjrun.eladmin.codeg.generator.method;
+package com.fastjrun.codeg.generator.method;
 
+import com.fastjrun.codeg.common.CodeGException;
+import com.fastjrun.codeg.common.CommonMethod;
+import com.fastjrun.codeg.common.PacketField;
 import com.fastjrun.codeg.common.PacketObject;
-import com.fastjrun.codeg.generator.method.BaseServiceMethodGenerator;
+import com.fastjrun.codeg.generator.BaseServiceGenerator;
+import com.fastjrun.codeg.helper.StringHelper;
+import com.helger.jcodemodel.*;
+import org.apache.commons.lang.StringUtils;
 
-public class EladminServiceMethodGenerator extends BaseServiceMethodGenerator {
+import java.util.Map;
+
+public class DefaultServiceMethodGenerator extends BaseServiceMethodGenerator {
 
     public void doParse() {
         PacketObject request = this.commonMethod.getRequest();

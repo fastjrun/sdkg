@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.fastjrun.codeg.example</groupId>
         <artifactId>example-sdkg</artifactId>
-        <version>4.0.3-SNAPSHOT</version>
+        <version>4.1-SNAPSHOT</version>
     </parent>
     <artifactId>example-sdkg-client</artifactId>
     <dependencies>
@@ -18,7 +18,7 @@
         </dependency>
         <dependency>
             <groupId>com.fastjrun.codeg</groupId>
-            <artifactId>sdkg-client</artifactId>
+            <artifactId>base-sdkg-client</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

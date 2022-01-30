@@ -7,8 +7,10 @@ import com.fastjrun.codeg.generator.BaseHTTPGenerator;
 import com.fastjrun.codeg.generator.method.BaseControllerMethodGenerator;
 import com.fastjrun.codeg.generator.method.BaseHTTPMethodGenerator;
 import com.fastjrun.codeg.generator.method.BaseServiceMethodGenerator;
-import com.fastjrun.example.codeg.generator.method.ExampleHTTPMethodGenerator;
-import com.fastjrun.codeg.processor.*;
+import com.fastjrun.codeg.generator.method.DefaultHTTPMethodGenerator;
+import com.fastjrun.codeg.processor.BaseRequestProcessor;
+import com.fastjrun.codeg.processor.BaseResponseProcessor;
+import com.fastjrun.codeg.processor.DefaultExchangeProcessor;
 import com.fastjrun.example.codeg.processor.ExampleRequestProcessor;
 import com.fastjrun.example.codeg.processor.ExampleResponseProcessor;
 
@@ -17,7 +19,7 @@ public class ExampleHTTPGenerator extends BaseHTTPGenerator {
   @Override
   public BaseControllerMethodGenerator prepareBaseControllerMethodGenerator(
           BaseServiceMethodGenerator baseServiceMethodGenerator) {
-    BaseHTTPMethodGenerator baseHTTPMethodGenerator = new ExampleHTTPMethodGenerator();
+    BaseHTTPMethodGenerator baseHTTPMethodGenerator = new DefaultHTTPMethodGenerator();
     baseHTTPMethodGenerator.setClient(this.isClient());
     baseHTTPMethodGenerator.setPackageNamePrefix(this.packageNamePrefix);
     baseHTTPMethodGenerator.setMockModel(this.mockModel);

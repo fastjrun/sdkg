@@ -11,9 +11,9 @@ import com.helger.jcodemodel.JCodeModel;
 import com.helger.jcodemodel.JInvocation;
 import com.helger.jcodemodel.JMethod;
 
-public interface ExchangeProcessor extends CodeGConstants {
+public interface ExchangeProcessor {
 
-    String processHTTPRequest(JMethod jMethod, JInvocation jInvocation, MockModel mockModel, JCodeModel cm);
+    String processHTTPRequest(JMethod jMethod, JInvocation jInvocation, CodeGConstants.MockModel mockModel, JCodeModel cm);
 
     void processResponse(JBlock methodBlk, JInvocation jInvocation, JCodeModel cm);
 

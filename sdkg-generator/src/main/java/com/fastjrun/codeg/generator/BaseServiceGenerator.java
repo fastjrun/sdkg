@@ -9,6 +9,7 @@ import com.fastjrun.codeg.common.CommonMethod;
 import com.fastjrun.codeg.common.CommonService;
 import com.fastjrun.codeg.generator.common.BaseCMGenerator;
 import com.fastjrun.codeg.generator.method.BaseServiceMethodGenerator;
+import com.fastjrun.codeg.generator.method.DefaultServiceMethodGenerator;
 import com.helger.jcodemodel.*;
 
 import java.util.HashMap;
@@ -21,7 +22,6 @@ public abstract class BaseServiceGenerator extends BaseCMGenerator {
     protected JDefinedClass serviceMockClass;
     protected String  mockHelperName;
     protected String  pageResultName;
-    protected String  serviceGeneratorName;
 
     public String getMockHelperName() {
         return mockHelperName;
@@ -111,19 +111,9 @@ public abstract class BaseServiceGenerator extends BaseCMGenerator {
                 }
             }
         }
-
         this.serviceMethodGeneratorMap = new HashMap<>();
         for (CommonMethod commonMethod : this.commonService.getMethods()) {
-            BaseServiceMethodGenerator serviceMethodGenerator = null;
-            try {
-                serviceMethodGenerator = (BaseServiceMethodGenerator)Class.forName(this.serviceGeneratorName).newInstance();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+            BaseServiceMethodGenerator serviceMethodGenerator = new DefaultServiceMethodGenerator();
             serviceMethodGenerator.setPackageNamePrefix(packageNamePrefix);
             serviceMethodGenerator.setMockModel(mockModel);
             serviceMethodGenerator.setAuthor(author);
@@ -136,6 +126,7 @@ public abstract class BaseServiceGenerator extends BaseCMGenerator {
             serviceMethodGenerator.generate();
             this.serviceMethodGeneratorMap.put(commonMethod, serviceMethodGenerator);
         }
+
     }
 
 
