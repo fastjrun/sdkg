@@ -14,7 +14,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.fastjrun.codeg.example</groupId>
-    <version>4.1-SNAPSHOT</version>
+    <version>4.1</version>
     <artifactId>example-codeg</artifactId>
     <packaging>pom</packaging>
     <dependencyManagement>
@@ -96,9 +96,8 @@
         <bundleFiles>base-sdkg/example-sdkg/example-codeg/example-api.xml</bundleFiles>
         <packagePrefix>com.fastjrun.example</packagePrefix>
         <company>快嘉</company>
-        <mockHelperClassName>com.fastjrun.example.service.helper.MockHelper</mockHelperClassName>
-        <sdkg.version>4.1-SNAPSHOT</sdkg.version>
-        <example-sdkg.version>4.1-SNAPSHOT</example-sdkg.version>
+        <sdkg.version>4.1</sdkg.version>
+        <example-sdkg.version>4.1</example-sdkg.version>
         <javax.servlet-api.version>3.1.0</javax.servlet-api.version>
         <swagger2.version>3.0.0</swagger2.version>
         <knife4j.version>2.0.9</knife4j.version>

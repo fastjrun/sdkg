@@ -15,7 +15,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.fastjrun.codeg.eladmin</groupId>
-    <version>4.1-SNAPSHOT</version>
+    <version>4.1</version>
     <artifactId>eladmin-codeg</artifactId>
     <packaging>pom</packaging>
     <dependencyManagement>
@@ -97,9 +97,8 @@
         <bundleFiles>base-sdkg/eladmin-sdkg/eladmin-codeg/eladmin-api.xml</bundleFiles>
         <packagePrefix>com.fastjrun.eladmin</packagePrefix>
         <company>快嘉</company>
-        <mockHelperClassName>com.fastjrun.eladmin.service.helper.MockHelper</mockHelperClassName>
-        <sdkg.version>4.1-SNAPSHOT</sdkg.version>
-        <eladmin-sdkg.version>4.1-SNAPSHOT</eladmin-sdkg.version>
+        <sdkg.version>4.1</sdkg.version>
+        <eladmin-sdkg.version>4.1</eladmin-sdkg.version>
         <javax.servlet-api.version>3.1.0</javax.servlet-api.version>
         <swagger2.version>3.0.0</swagger2.version>
         <knife4j.version>2.0.9</knife4j.version>

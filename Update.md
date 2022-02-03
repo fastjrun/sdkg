@@ -1,7 +1,8 @@
 ### 4.1 
 - 代码生成器重构
-- 新增接口生成器脚手架
-
+- 新增接口生成器脚手架:
+  - [https://github.com/fastjrun/fastjrun-archetype](https://github.com/fastjrun/fastjrun-archetype "https://github.com/fastjrun/fastjrun-archetype")
+  - [https://gitee.com/fastjrun/fastjrun-archetype](https://gitee.com/fastjrun/fastjrun-archetype "https://gitee.com/fastjrun/fastjrun-archetype")
 
 ### 4.0.3
 - 修复*-mock-server的pom文件
