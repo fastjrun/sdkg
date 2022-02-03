@@ -17,4 +17,5 @@ elif [ "package_eladmin" = $1 ] ; then
   mvn compile -pl base-sdkg/eladmin-sdkg/eladmin-codeg/eladmin-bundle-mock -am -Dbdmgc.skip=false
   mvn compile -pl base-sdkg/eladmin-sdkg/eladmin-codeg/eladmin-client -am -Dclientgc.skip=false
   mvn package -pl base-sdkg/eladmin-sdkg/eladmin-codeg/eladmin-api,base-sdkg/eladmin-sdkg/eladmin-codeg/eladmin-bundle,base-sdkg/eladmin-sdkg/eladmin-codeg/eladmin-bundle-mock,base-sdkg/eladmin-sdkg/eladmin-codeg/eladmin-client -am
+fi
 echo "build done."
