@@ -105,7 +105,7 @@ public abstract class BaseHTTPMethodGenerator extends BaseControllerMethodGenera
                 JExpr.ref("log")
                         .invoke("debug")
                         .arg(JExpr.lit("path = {}"))
-                        .arg(pathVar.invoke("toString")));
+                        .arg(pathVar));
         // method
         jInvocation.arg(
                 JExpr.lit(this.serviceMethodGenerator.getCommonMethod().getHttpMethod().toUpperCase()));
@@ -123,10 +123,24 @@ public abstract class BaseHTTPMethodGenerator extends BaseControllerMethodGenera
                     methodBlk.decl(
                             cm.ref("java.util.Map").narrow(stringClass).narrow(stringClass),
                             "queryParams",
-                            JExpr._new(cm.ref("java.util.HashMap").narrow(stringClass).narrow(stringClass)));
+                            JExpr._new(cm.ref("java.util.HashMap")));
             for (int index = 0; index < parameters.size(); index++) {
                 PacketField parameter = parameters.get(index);
-                AbstractJClass jClass = cm.ref(parameter.getDatatype());
+                String dataType = parameter.getDatatype();
+                if (parameter.is_new()) {
+                    dataType = packageNamePrefix + dataType;
+                }
+
+                AbstractJType jClass;
+                if (dataType.endsWith(":List")) {
+                    String primitiveType = dataType.split(":")[0];
+                    jClass = cm.ref("java.util.List").narrow(cm.ref(primitiveType));
+                } else if (dataType.endsWith(":Array")) {
+                    String primitiveType = dataType.split(":")[0];
+                    jClass = cm.ref(primitiveType).array();
+                } else{
+                    jClass = cm.ref(dataType);
+                }
                 this.jClientMethod.param(jClass, parameter.getFieldName());
 
                 IJExpression jInvocationParameter = JExpr.direct(parameter.getFieldName());

@@ -56,7 +56,7 @@
             </method>
             <method name="deleteServer" version="" remark="" path="" method="DELETE">
                 <parameters>
-                    <parameter name="ids" dataType="String" length="10" remark="需要删除的服务器ID数组"
+                    <parameter name="ids" dataType="String:Array" length="10" remark="需要删除的服务器ID数组"
                                canBeNull="true"/>
                 </parameters>
             </method>

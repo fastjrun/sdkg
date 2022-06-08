@@ -163,7 +163,21 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
         if (parameters != null && parameters.size() > 0) {
             for (int index = 0; index < parameters.size(); index++) {
                 PacketField parameter = parameters.get(index);
-                AbstractJClass jClass = cm.ref(parameter.getDatatype());
+                String dataType = parameter.getDatatype();
+                if (parameter.is_new()) {
+                    dataType = packageNamePrefix + dataType;
+                }
+
+                AbstractJType jClass;
+                if (dataType.endsWith(":List")) {
+                    String primitiveType = dataType.split(":")[0];
+                    jClass = cm.ref("java.util.List").narrow(cm.ref(primitiveType));
+                } else if (dataType.endsWith(":Array")) {
+                    String primitiveType = dataType.split(":")[0];
+                    jClass = cm.ref(primitiveType).array();
+                } else{
+                    jClass = cm.ref(dataType);
+                }
                 JVar parameterJVar = this.jcontrollerMethod.param(jClass, parameter.getFieldName());
 
                 parameterJVar
