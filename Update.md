@@ -1,3 +1,8 @@
+### 4.2
+- fix bug
+  - 引入jsr250-api
+  - 生成的bundle中植入swagger标记
+
 ### 4.1.1
 - fix bug
   - controller支持parameter参数为数组

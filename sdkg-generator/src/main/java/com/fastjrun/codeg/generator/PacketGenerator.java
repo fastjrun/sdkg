@@ -60,7 +60,7 @@ public class PacketGenerator extends BaseCMGenerator {
           dc._extends(cm.ref(this.packetObject.getParent()));
         }
       }
-      if (this.getMockModel() == CodeGConstants.MockModel.MockModel_Swagger && this.packetObject.getRemark()!=null && !this.packetObject.getRemark().equals("")) {
+      if (this.packetObject.getRemark()!=null && !this.packetObject.getRemark().equals("")) {
         dc
                 .annotate(cm.ref("io.swagger.annotations.ApiModel"))
                 .param("value", this.packetObject.getRemark());
@@ -244,12 +244,10 @@ public class PacketGenerator extends BaseCMGenerator {
           .annotate(cm.ref("com.fasterxml.jackson.annotation.JsonProperty"))
           .param(field.getName());
     }
-    if (this.getMockModel() == CodeGConstants.MockModel.MockModel_Swagger) {
-      fieldVar
-          .annotate(cm.ref("io.swagger.annotations.ApiModelProperty"))
-          .param("value", field.getRemark())
-          .param("required", JExpr.lit(!field.isCanBeNull()));
-    }
+    fieldVar
+            .annotate(cm.ref("io.swagger.annotations.ApiModelProperty"))
+            .param("value", field.getRemark())
+            .param("required", JExpr.lit(!field.isCanBeNull()));
     JDocComment jdoc = fieldVar.javadoc();
     // 成员变量注释
     jdoc.add(field.getRemark());

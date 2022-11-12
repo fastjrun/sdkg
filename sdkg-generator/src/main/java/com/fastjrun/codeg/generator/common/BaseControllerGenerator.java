@@ -100,10 +100,8 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
         this.controlllerClass.annotate(
           cm.ref("org.springframework.web.bind.annotation.RequestMapping")).param("value",
           this.controllerPath);
-        if (this.getMockModel() == CodeGConstants.MockModel.MockModel_Swagger) {
-            this.controlllerClass.annotate(cm.ref("io.swagger.annotations.Api")).param("value",
-              commonController.getRemark()).paramArray("tags", commonController.getTags());
-        }
+        this.controlllerClass.annotate(cm.ref("io.swagger.annotations.Api")).param("value",
+                commonController.getRemark()).paramArray("tags", commonController.getTags());
         this.addClassDeclaration(this.controlllerClass);
 
         String serviceName = commonController.getServiceName();

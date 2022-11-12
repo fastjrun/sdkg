@@ -107,13 +107,10 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
                 methodPath
                         + this.exchangeProcessor.processHTTPRequest(
                         jcontrollerMethod, jInvocation, mockModel, this.cm);
-
-        if (this.getMockModel() == MockModel.MockModel_Swagger) {
-            this.jcontrollerMethod
-                    .annotate(cm.ref("io.swagger.annotations.ApiOperation"))
-                    .param("value", methodRemark)
-                    .param("notes", methodRemark);
-        }
+        this.jcontrollerMethod
+                .annotate(cm.ref("io.swagger.annotations.ApiOperation"))
+                .param("value", methodRemark)
+                .param("notes", methodRemark);
 
         // headParams
         List<PacketField> headVariables =
@@ -149,13 +146,11 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
                         .param(pathVariable.getFieldName());
 
                 jInvocation.arg(pathVariableJVar);
-                if (this.getMockModel() == MockModel.MockModel_Swagger) {
-                    pathVariableJVar
-                            .annotate(cm.ref("io.swagger.annotations.ApiParam"))
-                            .param("name", pathVariable.getFieldName())
-                            .param("value", pathVariable.getRemark())
-                            .param("required", true);
-                }
+                pathVariableJVar
+                        .annotate(cm.ref("io.swagger.annotations.ApiParam"))
+                        .param("name", pathVariable.getFieldName())
+                        .param("value", pathVariable.getRemark())
+                        .param("required", true);
                 methodPath = methodPath.replaceFirst("\\{\\}", "{" + pathVariable.getFieldName() + "}");
             }
         }
@@ -224,13 +219,11 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
                         .param("name", cookieVariable.getFieldName())
                         .param("required", true);
                 jInvocation.arg(cookieJVar);
-                if (this.getMockModel() == MockModel.MockModel_Swagger) {
-                    cookieJVar
-                            .annotate(cm.ref("io.swagger.annotations.ApiParam"))
-                            .param("name", cookieVariable.getFieldName())
-                            .param("value", "cookie:" + cookieVariable.getRemark())
-                            .param("required", true);
-                }
+                cookieJVar
+                        .annotate(cm.ref("io.swagger.annotations.ApiParam"))
+                        .param("name", cookieVariable.getFieldName())
+                        .param("value", "cookie:" + cookieVariable.getRemark())
+                        .param("required", true);
                 controllerMethodBlk.add(
                         JExpr.ref("log")
                                 .invoke("debug")
