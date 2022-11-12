@@ -71,6 +71,5 @@
         <module>base-sdkg-service</module>
         <module>base-sdkg-provider</module>
         <module>example-sdkg</module>
-        <module>eladmin-sdkg</module>
     </modules>
 </project>
