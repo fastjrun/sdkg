@@ -1,3 +1,7 @@
+### 4.2.1
+- fix bug
+  - 升级snakeyaml
+  
 ### 4.2
 - fix bug
   - 引入jsr250-api
