@@ -48,13 +48,13 @@
                 </parameters>
                 <response class="vo.ServerVO:Page"/>
             </method>
-            <method name="createServer" version="" remark="" path="">
+            <method name="createServer" version="" remark="新建服务器" path="">
                 <request class="dto.ServerDTO"/>
             </method>
-            <method name="updateServer" version="" remark="" path="" method="PUT">
+            <method name="updateServer" version="" remark="修改服务器" path="" method="PUT">
                 <request class="dto.ServerDTO"/>
             </method>
-            <method name="deleteServer" version="" remark="" path="" method="DELETE">
+            <method name="deleteServer" version="" remark="删除服务器" path="" method="DELETE">
                 <parameters>
                     <parameter name="ids" dataType="String:Array" length="10" remark="需要删除的服务器ID数组"
                                canBeNull="true"/>
