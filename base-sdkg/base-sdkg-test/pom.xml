@@ -31,6 +31,6 @@
     </dependencies>
     <properties>
         <skipTests>true</skipTests>
-        <snakeyaml.version>1.29</snakeyaml.version>
+        <snakeyaml.version>1.32</snakeyaml.version>
     </properties>
 </project>
