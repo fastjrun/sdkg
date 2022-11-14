@@ -1,5 +1,9 @@
 ### 4.2.1
 - fix bug
+  - 生成的bundle中植入swagger标记不完整
+  
+### 4.2.1
+- fix bug
   - 升级snakeyaml
   
 ### 4.2

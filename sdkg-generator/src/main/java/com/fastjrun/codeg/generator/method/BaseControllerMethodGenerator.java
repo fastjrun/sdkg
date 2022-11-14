@@ -125,13 +125,11 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
                         .param("name", headVariable.getFieldName())
                         .param("required", true);
                 jInvocation.arg(headVariableJVar);
-                if (this.getMockModel() == MockModel.MockModel_Swagger) {
-                    headVariableJVar
-                            .annotate(cm.ref("io.swagger.annotations.ApiParam"))
-                            .param("name", headVariable.getFieldName())
-                            .param("value", headVariable.getRemark())
-                            .param("required", true);
-                }
+                headVariableJVar
+                        .annotate(cm.ref("io.swagger.annotations.ApiParam"))
+                        .param("name", headVariable.getFieldName())
+                        .param("value", headVariable.getRemark())
+                        .param("required", true);
             }
         }
         List<PacketField> pathVariables =
@@ -181,13 +179,11 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
                         .param("required", true);
 
                 jInvocation.arg(parameterJVar);
-                if (this.getMockModel() == MockModel.MockModel_Swagger) {
-                    parameterJVar
-                            .annotate(cm.ref("io.swagger.annotations.ApiParam"))
-                            .param("name", parameter.getFieldName())
-                            .param("value", parameter.getRemark())
-                            .param("required", true);
-                }
+                parameterJVar
+                        .annotate(cm.ref("io.swagger.annotations.ApiParam"))
+                        .param("name", parameter.getFieldName())
+                        .param("value", parameter.getRemark())
+                        .param("required", true);
             }
         }
         JAnnotationUse jAnnotationUse =
