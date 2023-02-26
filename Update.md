@@ -1,4 +1,7 @@
-### 4.2.1
+### 4.2.4
+- RequestParam的required应该跟随配置
+### 4.2.3
+### 4.2.2
 - fix bug
   - 生成的bundle中植入swagger标记不完整
   
@@ -71,7 +74,7 @@
 ### tip's
 #### 修改版本号
 ```
-mvn versions:set -DnewVersion=3.2.4-SNAPSHOT
+mvn versions:set -DnewVersion=4.2.4
 mvn versions:update-child-modules
 ```
 

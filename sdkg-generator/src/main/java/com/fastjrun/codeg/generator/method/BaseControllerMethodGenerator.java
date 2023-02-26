@@ -176,14 +176,14 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
                 parameterJVar
                         .annotate(cm.ref("org.springframework.web.bind.annotation.RequestParam"))
                         .param("name", parameter.getFieldName())
-                        .param("required", true);
+                        .param("required", parameter.isCanBeNull());
 
                 jInvocation.arg(parameterJVar);
                 parameterJVar
                         .annotate(cm.ref("io.swagger.annotations.ApiParam"))
                         .param("name", parameter.getFieldName())
                         .param("value", parameter.getRemark())
-                        .param("required", true);
+                        .param("required", parameter.isCanBeNull());
             }
         }
         JAnnotationUse jAnnotationUse =
