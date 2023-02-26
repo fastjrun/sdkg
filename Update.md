@@ -1,3 +1,5 @@
+### 4.2.5
+- RequestParam的required应该跟随配置
 ### 4.2.4
 - RequestParam的required应该跟随配置
 ### 4.2.3
