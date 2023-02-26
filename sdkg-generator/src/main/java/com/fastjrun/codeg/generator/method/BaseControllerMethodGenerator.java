@@ -123,13 +123,13 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
                 headVariableJVar
                         .annotate(cm.ref("org.springframework.web.bind.annotation.RequestHeader"))
                         .param("name", headVariable.getFieldName())
-                        .param("required", true);
+                        .param("required", !headVariable.isCanBeNull());
                 jInvocation.arg(headVariableJVar);
                 headVariableJVar
                         .annotate(cm.ref("io.swagger.annotations.ApiParam"))
                         .param("name", headVariable.getFieldName())
                         .param("value", headVariable.getRemark())
-                        .param("required", true);
+                        .param("required", !headVariable.isCanBeNull());
             }
         }
         List<PacketField> pathVariables =
@@ -148,7 +148,7 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
                         .annotate(cm.ref("io.swagger.annotations.ApiParam"))
                         .param("name", pathVariable.getFieldName())
                         .param("value", pathVariable.getRemark())
-                        .param("required", true);
+                        .param("required", !pathVariable.isCanBeNull());
                 methodPath = methodPath.replaceFirst("\\{\\}", "{" + pathVariable.getFieldName() + "}");
             }
         }
@@ -176,14 +176,14 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
                 parameterJVar
                         .annotate(cm.ref("org.springframework.web.bind.annotation.RequestParam"))
                         .param("name", parameter.getFieldName())
-                        .param("required", parameter.isCanBeNull());
+                        .param("required", !parameter.isCanBeNull());
 
                 jInvocation.arg(parameterJVar);
                 parameterJVar
                         .annotate(cm.ref("io.swagger.annotations.ApiParam"))
                         .param("name", parameter.getFieldName())
                         .param("value", parameter.getRemark())
-                        .param("required", parameter.isCanBeNull());
+                        .param("required", !parameter.isCanBeNull());
             }
         }
         JAnnotationUse jAnnotationUse =
@@ -213,13 +213,13 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
                 cookieJVar
                         .annotate(cm.ref("org.springframework.web.bind.annotation.CookieValue"))
                         .param("name", cookieVariable.getFieldName())
-                        .param("required", true);
+                        .param("required", !cookieVariable.isCanBeNull());
                 jInvocation.arg(cookieJVar);
                 cookieJVar
                         .annotate(cm.ref("io.swagger.annotations.ApiParam"))
                         .param("name", cookieVariable.getFieldName())
                         .param("value", "cookie:" + cookieVariable.getRemark())
-                        .param("required", true);
+                        .param("required", !cookieVariable.isCanBeNull());
                 controllerMethodBlk.add(
                         JExpr.ref("log")
                                 .invoke("debug")

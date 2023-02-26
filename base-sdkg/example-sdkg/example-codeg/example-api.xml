@@ -42,7 +42,7 @@
             </method>
             <method name="queryServer" version="" remark="" path="" method="GET">
                 <parameters>
-                    <parameter name="page" dataType="Integer" length="10" remark="当前页" canBeNull="true"/>
+                    <parameter name="page" dataType="Integer" length="10" remark="当前页" canBeNull="false"/>
                     <parameter name="size" dataType="Integer" length="10" remark="分页条数" canBeNull="true"/>
                     <parameter name="sort" dataType="String" length="10" remark="排序规则序列" canBeNull="true"/>
                 </parameters>
