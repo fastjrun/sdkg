@@ -1,3 +1,6 @@
+### 4.3.0-alpha
+- log4j2 升级到2.23.1
+- dom4j 升级到2.1.4
 ### 4.2.5
 - RequestParam的required应该跟随配置
 ### 4.2.4
