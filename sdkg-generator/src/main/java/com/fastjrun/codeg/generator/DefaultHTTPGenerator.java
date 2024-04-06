@@ -13,11 +13,7 @@ public class DefaultHTTPGenerator extends BaseHTTPGenerator {
     public void generate() {
         this.genreateControllerPath();
         if (!this.isApi()) {
-            if (this.isClient()) {
-                this.processClient();
-            } else {
-                this.processController();
-            }
+            this.processController();
         }
         this.generatorControllerMethod();
     }

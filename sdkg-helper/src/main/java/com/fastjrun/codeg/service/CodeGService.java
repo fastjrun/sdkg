@@ -12,8 +12,6 @@ public interface CodeGService extends CodeGConstants {
 
     boolean generateAPI(String bundleFiles, String moduleName);
 
-    boolean generateClient(String bundleFiles, String moduleName);
-
     boolean generateProvider(String bundleFiles, String moduleName);
 
     boolean generateProviderMock(String bundleFiles, String moduleName, MockModel mockModel);

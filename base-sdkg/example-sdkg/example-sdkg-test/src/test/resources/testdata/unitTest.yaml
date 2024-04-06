@@ -8,11 +8,6 @@ ExampleCodeGTest.testGenerateAPI:
     moduleName: base-sdkg/example-sdkg/example-codeg/example-api
     packagePrefix: com.fastjrun.example.
 
-ExampleCodeGTest.testGenerateClient:
-  - bundleFiles: base-sdkg/example-sdkg/example-codeg/example-api.xml
-    moduleName: base-sdkg/example-sdkg/example-codeg/example-client
-    packagePrefix: com.fastjrun.example.
-
 ExampleCodeGTest.testGenerateBundleMock:
   - bundleFiles: base-sdkg/example-sdkg/example-codeg/example-api.xml
     moduleName: base-sdkg/example-sdkg/example-codeg/example-bundle-mock

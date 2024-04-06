@@ -7,10 +7,14 @@ import com.fastjrun.codeg.common.*;
 import com.fastjrun.codeg.generator.BaseServiceGenerator;
 import com.fastjrun.codeg.helper.StringHelper;
 import com.helger.jcodemodel.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.Map;
 
+@Setter
+@Getter
 public abstract class BaseServiceMethodGenerator extends AbstractMethodGenerator {
 
     protected CommonMethod commonMethod;
@@ -31,74 +35,10 @@ public abstract class BaseServiceMethodGenerator extends AbstractMethodGenerator
 
     protected JMethod jServiceMockMethod;
 
-    public JFieldVar getFieldVar() {
-        return fieldVar;
-    }
-
-    public void setFieldVar(JFieldVar fieldVar) {
-        this.fieldVar = fieldVar;
-    }
-
-    public BaseServiceGenerator getServiceGenerator() {
-        return serviceGenerator;
-    }
-
-    public void setServiceGenerator(BaseServiceGenerator serviceGenerator) {
-        this.serviceGenerator = serviceGenerator;
-    }
-
-    public AbstractJType getResponseBodyClass() {
-        return responseBodyClass;
-    }
-
-    public void setResponseBodyClass(AbstractJType responseBodyClass) {
-        this.responseBodyClass = responseBodyClass;
-    }
-
-    public AbstractJClass getElementClass() {
-        return elementClass;
-    }
-
-    public void setElementClass(AbstractJClass elementClass) {
-        this.elementClass = elementClass;
-    }
-
-    public AbstractJType getRequestBodyClass() {
-        return requestBodyClass;
-    }
-
-    public void setRequestBodyClass(AbstractJType requestBodyClass) {
-        this.requestBodyClass = requestBodyClass;
-    }
-
-    public String getMethodName() {
-        return methodName;
-    }
-
-    public void setMethodName(String methodName) {
-        this.methodName = methodName;
-    }
-
-    public JMethod getjServiceMethod() {
-        return jServiceMethod;
-    }
-
-    public void setjServiceMethod(JMethod jServiceMethod) {
-        this.jServiceMethod = jServiceMethod;
-    }
-
-    public CommonMethod getCommonMethod() {
-        return commonMethod;
-    }
-
-    public void setCommonMethod(CommonMethod commonMethod) {
-        this.commonMethod = commonMethod;
-    }
-
     public abstract void doParse();
 
     public void processServiceMethod() {
-        if (!this.commonMethod.isNeedApi() && this.isClient()) {
+        if (!this.commonMethod.isNeedApi()) {
             return;
         }
         this.jServiceMethod =
@@ -512,10 +452,8 @@ public abstract class BaseServiceMethodGenerator extends AbstractMethodGenerator
         this.doParse();
         if (!this.isApi()) {
             this.processServiceMethod();
-            if (!this.isClient()) {
-                if (mockModel != CodeGConstants.MockModel.MockModel_Common) {
-                    this.processServiceMockMethod();
-                }
+            if (mockModel != CodeGConstants.MockModel.MockModel_Common) {
+                this.processServiceMockMethod();
             }
         }
     }

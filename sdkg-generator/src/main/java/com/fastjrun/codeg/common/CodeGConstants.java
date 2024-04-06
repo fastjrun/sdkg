@@ -22,7 +22,6 @@ public interface CodeGConstants {
   enum CodeGCommand {
     MpG,
     ApiG,
-    ClientG,
     BundleG,
     BundleMockG;
   }

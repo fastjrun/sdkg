@@ -5,12 +5,16 @@ package com.fastjrun.codeg.generator.common;
 
 import java.util.Calendar;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * 生成
  */
+@Getter
+@Setter
 public abstract class BaseGenerator {
 
     protected static String YEAR_CODEG_TIME = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
@@ -24,79 +28,6 @@ public abstract class BaseGenerator {
     protected boolean skipNotice = false;
     protected String yearCodegTime = "";
     protected boolean skipCopyright = false;
-    private boolean client = true;
-
-    public boolean isClient() {
-        return client;
-    }
-
-    public void setClient(boolean client) {
-        this.client = client;
-    }
-
-    public String getPackageNamePrefix() {
-        return packageNamePrefix;
-    }
-
-    public void setPackageNamePrefix(String packageNamePrefix) {
-        this.packageNamePrefix = packageNamePrefix;
-    }
-
-    public String getYearCodegTime() {
-        return yearCodegTime;
-    }
-
-    public void setYearCodegTime(String yearCodegTime) {
-        this.yearCodegTime = yearCodegTime;
-    }
-
-    public boolean isSkipCopyright() {
-        return skipCopyright;
-    }
-
-    public void setSkipCopyright(boolean skipCopyright) {
-        this.skipCopyright = skipCopyright;
-    }
-
-    public String getCompany() {
-        return company;
-    }
-
-    public void setCompany(String company) {
-        this.company = company;
-    }
-
-    public String getNotice() {
-        return notice;
-    }
-
-    public void setNotice(String notice) {
-        this.notice = notice;
-    }
-
-    public boolean isSkipAuthor() {
-        return skipAuthor;
-    }
-
-    public void setSkipAuthor(boolean skipAuthor) {
-        this.skipAuthor = skipAuthor;
-    }
-
-    public boolean isSkipNotice() {
-        return skipNotice;
-    }
-
-    public void setSkipNotice(boolean skipNotice) {
-        this.skipNotice = skipNotice;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
 
     public abstract void generate();
 }

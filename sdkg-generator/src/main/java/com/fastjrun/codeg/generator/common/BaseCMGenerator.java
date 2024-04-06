@@ -7,10 +7,14 @@ import com.fastjrun.codeg.common.CodeGConstants;
 import com.helger.jcodemodel.JCodeModel;
 import com.helger.jcodemodel.JDefinedClass;
 import com.helger.jcodemodel.JDocComment;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 生成
  */
+@Setter
+@Getter
 public abstract class BaseCMGenerator extends BaseGenerator implements Cloneable, CodeGConstants {
 
     public static String SERVICE_PACKAGE_NAME = "service.";
@@ -19,22 +23,6 @@ public abstract class BaseCMGenerator extends BaseGenerator implements Cloneable
     protected JCodeModel cm;
     protected MockModel mockModel = MockModel.MockModel_Common;
     private boolean api = false;
-
-    public MockModel getMockModel() {
-        return mockModel;
-    }
-
-    public void setMockModel(MockModel mockModel) {
-        this.mockModel = mockModel;
-    }
-
-    public boolean isApi() {
-        return api;
-    }
-
-    public void setApi(boolean api) {
-        this.api = api;
-    }
 
     protected void addClassDeclaration(JDefinedClass jClass) {
         if (this.skipNotice && this.skipCopyright) {
@@ -54,14 +42,6 @@ public abstract class BaseCMGenerator extends BaseGenerator implements Cloneable
         if (!this.skipAuthor) {
             jDoc.addXdoclet("author " + this.author);
         }
-    }
-
-    public JCodeModel getCm() {
-        return cm;
-    }
-
-    public void setCm(JCodeModel cm) {
-        this.cm = cm;
     }
 
     @Override

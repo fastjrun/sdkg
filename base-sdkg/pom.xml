@@ -67,7 +67,6 @@
         <module>base-sdkg-test</module>
         <module>base-sdkg-sb2-test</module>
         <module>base-sdkg-common</module>
-        <module>base-sdkg-client</module>
         <module>base-sdkg-service</module>
         <module>base-sdkg-provider</module>
         <module>example-sdkg</module>

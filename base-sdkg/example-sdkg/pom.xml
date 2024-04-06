@@ -17,7 +17,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>example-sdkg-api</module>
-        <module>example-sdkg-client</module>
         <module>example-sdkg-service</module>
         <module>example-sdkg-provider</module>
         <module>example-sdkg-generator</module>

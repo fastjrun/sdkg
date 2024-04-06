@@ -11,10 +11,14 @@ import com.fastjrun.codeg.generator.common.BaseCMGenerator;
 import com.fastjrun.codeg.generator.method.BaseServiceMethodGenerator;
 import com.fastjrun.codeg.generator.method.DefaultServiceMethodGenerator;
 import com.helger.jcodemodel.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Getter
+@Setter
 public abstract class BaseServiceGenerator extends BaseCMGenerator {
 
     protected CommonService commonService;
@@ -22,22 +26,6 @@ public abstract class BaseServiceGenerator extends BaseCMGenerator {
     protected JDefinedClass serviceMockClass;
     protected String  mockHelperName;
     protected String  pageResultName;
-
-    public String getMockHelperName() {
-        return mockHelperName;
-    }
-
-    public void setMockHelperName(String mockHelperName) {
-        this.mockHelperName = mockHelperName;
-    }
-
-    public String getPageResultName() {
-        return pageResultName;
-    }
-
-    public void setPageResultName(String pageResultName) {
-        this.pageResultName = pageResultName;
-    }
 
     protected abstract void init();
 
@@ -105,10 +93,8 @@ public abstract class BaseServiceGenerator extends BaseCMGenerator {
         this.init();
         if (!this.isApi()) {
             this.processService();
-            if (!this.isClient()) {
-                if (mockModel != MockModel.MockModel_Common) {
-                    this.processServiceMock();
-                }
+            if (mockModel != MockModel.MockModel_Common) {
+                this.processServiceMock();
             }
         }
         this.serviceMethodGeneratorMap = new HashMap<>();
@@ -119,7 +105,6 @@ public abstract class BaseServiceGenerator extends BaseCMGenerator {
             serviceMethodGenerator.setAuthor(author);
             serviceMethodGenerator.setCompany(company);
             serviceMethodGenerator.setApi(this.isApi());
-            serviceMethodGenerator.setClient(this.isClient());
             serviceMethodGenerator.setServiceGenerator(this);
             serviceMethodGenerator.setCommonMethod(commonMethod);
             serviceMethodGenerator.setCm(cm);

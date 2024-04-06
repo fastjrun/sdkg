@@ -98,14 +98,12 @@ public abstract class BaseCodeGServiceImpl implements CodeGConstants {
                     CodeGeneratorFactory.createBaseControllerGenerator(
                             this.packageNamePrefix, mockModel, this.author, this.company, commonController);
             baseControllerGenerator.setApi(isApi);
-            baseControllerGenerator.setClient(isClient);
             CommonService commonService = commonController.getService();
             BaseServiceGenerator serviceGenerator =
                     CodeGeneratorFactory.createServiceGenerator(
                             this.packageNamePrefix, mockModel, this.author, this.company, commonController);
             serviceGenerator.setCommonService(commonService);
             serviceGenerator.setApi(isApi);
-            serviceGenerator.setClient(isClient);
             serviceGenerator.setCm(cm);
             serviceGenerator.generate();
             serviceGeneratorMap.put(commonService, serviceGenerator);

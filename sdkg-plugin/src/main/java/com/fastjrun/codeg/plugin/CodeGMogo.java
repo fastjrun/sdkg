@@ -62,9 +62,6 @@ public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
             case BundleG:
                 getLog().info(bundleFiles);
                 break;
-            case ClientG:
-                getLog().info(bundleFiles);
-                break;
             case ApiG:
                 getLog().info(bundleFiles);
                 break;
@@ -96,9 +93,6 @@ public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
                 break;
             case BundleG:
                 codeGService.generateProvider(bundleFiles, module);
-                break;
-            case ClientG:
-                codeGService.generateClient(bundleFiles, module);
                 break;
             case ApiG:
                 codeGService.generateAPI(bundleFiles, module);

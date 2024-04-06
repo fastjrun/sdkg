@@ -35,22 +35,6 @@ public class DefaultCodeGService extends BaseCodeGServiceImpl implements CodeGSe
         return true;
     }
 
-    @Override
-    public boolean generateClient(String bundleFiles, String moduleName) {
-
-        Date begin = new Date();
-        log.info("begin genreate at " + begin);
-        this.beforeGenerate(moduleName);
-        this.generateClientCode(bundleFiles);
-
-        Date end = new Date();
-
-        log.info("end genreate at " + end + ",cost " + String.valueOf(
-                end.getTime() - begin.getTime()) + " ms");
-
-        return true;
-    }
-
     private boolean generateBundle(String bundleFiles, String moduleName, CodeGConstants.MockModel mockModel) {
         Date begin = new Date();
         log.info("begin genreate at " + begin);

@@ -94,7 +94,6 @@
     <modules>
         <module>example-mp-base</module>
         <module>example-api</module>
-        <module>example-client</module>
         <module>example-bundle</module>
         <module>example-bundle-mock</module>
         <module>example-mock-server</module>

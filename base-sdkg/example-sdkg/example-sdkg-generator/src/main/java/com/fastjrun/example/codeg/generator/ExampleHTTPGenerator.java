@@ -20,7 +20,6 @@ public class ExampleHTTPGenerator extends BaseHTTPGenerator {
   public BaseControllerMethodGenerator prepareBaseControllerMethodGenerator(
           BaseServiceMethodGenerator baseServiceMethodGenerator) {
     BaseHTTPMethodGenerator baseHTTPMethodGenerator = new DefaultHTTPMethodGenerator();
-    baseHTTPMethodGenerator.setClient(this.isClient());
     baseHTTPMethodGenerator.setPackageNamePrefix(this.packageNamePrefix);
     baseHTTPMethodGenerator.setMockModel(this.mockModel);
     baseHTTPMethodGenerator.setServiceMethodGenerator(baseServiceMethodGenerator);
