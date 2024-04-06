@@ -6,7 +6,7 @@
     <groupId>com.fastjrun.codeg</groupId>
     <artifactId>sdkg-parent</artifactId>
     <packaging>pom</packaging>
-    <version>4.3.0-alpha</version>
+    <version>4.4.0-SNAPSHOT</version>
     <name>sdkg</name>
     <description>快嘉代码生成Maven插件</description>
     <url>http://fastjrun.com/</url>
@@ -22,6 +22,29 @@
     </distributionManagement>
     <dependencyManagement>
         <dependencies>
+            <!-- lombok -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.versin}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.jsqlparser</groupId>
+                <artifactId>jsqlparser</artifactId>
+                <version>${jsqlparser.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.helger</groupId>
+                <artifactId>jcodemodel</artifactId>
+                <version>${jcodemodel.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.dom4j</groupId>
+                <artifactId>dom4j</artifactId>
+                <version>${dom4j.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
@@ -271,6 +294,10 @@
         <mycompany-nexus>http://www.mycompany.com</mycompany-nexus>
         <mycompany-snapshots-url-suffix>/repository/maven-snapshots/</mycompany-snapshots-url-suffix>
         <mycompany-releases-url-suffix>/repository/maven-releases/</mycompany-releases-url-suffix>
+        <lombok.versin>1.18.22</lombok.versin>
+        <jcodemodel.version>3.4.1</jcodemodel.version>
+        <dom4j.version>2.1.4</dom4j.version>
+        <jsqlparser.version>4.9</jsqlparser.version>
         <okhttp.version>3.10.0</okhttp.version>
         <commons-codec.version>1.10</commons-codec.version>
         <commons-lang.version>2.3</commons-lang.version>

@@ -19,6 +19,12 @@
     <packaging>pom</packaging>
     <dependencyManagement>
         <dependencies>
+            <!-- lombok -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.versin}</version>
+            </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>javax.servlet-api</artifactId>
@@ -86,6 +92,7 @@
         </pluginManagement>
     </build>
     <modules>
+        <module>example-mp-base</module>
         <module>example-api</module>
         <module>example-client</module>
         <module>example-bundle</module>
@@ -93,11 +100,13 @@
         <module>example-mock-server</module>
     </modules>
     <properties>
+        <sqlFile>base-sdkg/example-sdkg/example-codeg/fast-demo.sql</sqlFile>
         <bundleFiles>base-sdkg/example-sdkg/example-codeg/example-api.xml</bundleFiles>
         <packagePrefix>com.fastjrun.example</packagePrefix>
         <company>快嘉</company>
         <sdkg.version>4.2.1</sdkg.version>
         <example-sdkg.version>4.2.1</example-sdkg.version>
+        <lombok.versin>1.18.22</lombok.versin>
         <javax.servlet-api.version>3.1.0</javax.servlet-api.version>
         <swagger2.version>3.0.0</swagger2.version>
         <knife4j.version>2.0.9</knife4j.version>

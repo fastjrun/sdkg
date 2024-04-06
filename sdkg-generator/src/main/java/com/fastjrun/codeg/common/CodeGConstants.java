@@ -3,6 +3,9 @@
  */
 package com.fastjrun.codeg.common;
 
+/**
+ * @author fastjrun
+ */
 public interface CodeGConstants {
 
   String JacksonUtilsClassName = "com.fastjrun.common.utils.JacksonUtils";
@@ -17,6 +20,7 @@ public interface CodeGConstants {
           "com.fastjrun.example.codeg.generator.ExampleHTTPGenerator");
 
   enum CodeGCommand {
+    MpG,
     ApiG,
     ClientG,
     BundleG,

@@ -10,6 +10,9 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
 
+    @Parameter(property = "codeg.sqlFile", defaultValue = "fast-demo.sql")
+    protected String sqlFile;
+
     @Parameter(property = "codeg.bundleFiles", defaultValue = "demo_bundle.xml,demo_bundle1.xml")
     protected String bundleFiles;
 
@@ -65,6 +68,8 @@ public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
             case ApiG:
                 getLog().info(bundleFiles);
                 break;
+            case MpG:
+                getLog().info(sqlFile);
             default:
                 break;
         }
@@ -97,6 +102,9 @@ public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
                 break;
             case ApiG:
                 codeGService.generateAPI(bundleFiles, module);
+                break;
+            case MpG:
+                codeGService.generateMybatisPlus(sqlFile, module);
                 break;
             default:
                 break;

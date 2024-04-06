@@ -67,4 +67,18 @@ public class ExampleCodeGTest extends AbstractTestNGTest implements CodeGConstan
       e.printStackTrace();
     }
   }
+
+  @Test(dataProvider = "loadParam")
+  public void testGenerateMybatisPlus(Map<String, Object> testPOMap) {
+    String sqlFile = testPOMap.get("sqlFile").toString();
+    String moduleName = testPOMap.get("moduleName").toString();
+    String packagePrefix = testPOMap.get("packagePrefix").toString();
+    DefaultCodeGService codeGService = new DefaultCodeGService();
+    codeGService.setPackageNamePrefix(packagePrefix);
+    try {
+      codeGService.generateMybatisPlus(sqlFile, moduleName);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
 }

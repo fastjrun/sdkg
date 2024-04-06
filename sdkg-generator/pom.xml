@@ -8,10 +8,14 @@
     <parent>
         <groupId>com.fastjrun.codeg</groupId>
         <artifactId>sdkg-parent</artifactId>
-        <version>4.3.0-alpha</version>
+        <version>4.4.0-SNAPSHOT</version>
     </parent>
     <artifactId>sdkg-generator</artifactId>
-    <dependencies>
+    <dependencies><!-- lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -21,14 +25,16 @@
             <artifactId>commons-lang</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.github.jsqlparser</groupId>
+            <artifactId>jsqlparser</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.dom4j</groupId>
             <artifactId>dom4j</artifactId>
-            <version>${dom4j.version}</version>
         </dependency>
         <dependency>
             <groupId>com.helger</groupId>
             <artifactId>jcodemodel</artifactId>
-            <version>${jcodemodel.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -50,10 +56,11 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
-    <properties>
-        <jcodemodel.version>3.3.0</jcodemodel.version>
-        <dom4j.version>2.1.4</dom4j.version>
-    </properties>
 </project>
 

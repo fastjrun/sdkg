@@ -17,3 +17,8 @@ ExampleCodeGTest.testGenerateBundleMock:
   - bundleFiles: base-sdkg/example-sdkg/example-codeg/example-api.xml
     moduleName: base-sdkg/example-sdkg/example-codeg/example-bundle-mock
     packagePrefix: com.fastjrun.example.
+
+ExampleCodeGTest.testGenerateMybatisPlus:
+  - sqlFile: base-sdkg/example-sdkg/example-codeg/fast-demo.sql
+    moduleName: base-sdkg/example-sdkg/example-codeg/example-mp-base
+    packagePrefix: com.fastjrun.example.

@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.fastjrun.codeg</groupId>
         <artifactId>sdkg-parent</artifactId>
-        <version>4.3.0-alpha</version>
+        <version>4.4.0-SNAPSHOT</version>
     </parent>
     <artifactId>sdkg-helper</artifactId>
     <dependencies>
@@ -18,6 +18,11 @@
             <groupId>com.fastjrun.codeg</groupId>
             <artifactId>sdkg-generator</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

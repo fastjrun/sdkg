@@ -5,6 +5,9 @@ package com.fastjrun.codeg.service;
 
 import com.fastjrun.codeg.common.CodeGConstants;
 
+/**
+ * @author fastjrun
+ */
 public interface CodeGService extends CodeGConstants {
 
     boolean generateAPI(String bundleFiles, String moduleName);
@@ -15,4 +18,5 @@ public interface CodeGService extends CodeGConstants {
 
     boolean generateProviderMock(String bundleFiles, String moduleName, MockModel mockModel);
 
+    boolean generateMybatisPlus(String sqlFile, String moduleName);
 }

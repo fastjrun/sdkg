@@ -40,7 +40,7 @@ public class PacketGenerator extends BaseCMGenerator {
       JDefinedClass dc;
       try {
         dc = cm._class(this.packageNamePrefix + packetObject.get_class());
-      } catch (JClassAlreadyExistsException e) {
+      } catch (JCodeModelException e) {
         String msg = packetObject.get_class() + " is already exists.";
         log.error(msg, e);
         throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);

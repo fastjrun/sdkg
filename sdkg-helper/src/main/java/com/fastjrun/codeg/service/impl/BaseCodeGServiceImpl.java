@@ -14,6 +14,8 @@ import com.helger.jcodemodel.JCodeModel;
 import com.helger.jcodemodel.writer.AbstractCodeWriter;
 import com.helger.jcodemodel.writer.FileCodeWriter;
 import com.helger.jcodemodel.writer.JCMWriter;
+import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,10 +23,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
+@Setter
+@Getter
 public abstract class BaseCodeGServiceImpl implements CodeGConstants {
 
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -37,54 +39,6 @@ public abstract class BaseCodeGServiceImpl implements CodeGConstants {
     private String srcName = "/src/main/java";
     private String resourcesName = "/src/main/resources";
 
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public String getCompany() {
-        return company;
-    }
-
-    public void setCompany(String company) {
-        this.company = company;
-    }
-
-    public String getResourcesName() {
-        return resourcesName;
-    }
-
-    public void setResourcesName(String resourcesName) {
-        this.resourcesName = resourcesName;
-    }
-
-    public String getSrcName() {
-        return srcName;
-    }
-
-    public void setSrcName(String srcName) {
-        this.srcName = srcName;
-    }
-
-    public File getSrcDir() {
-        return srcDir;
-    }
-
-    public void setSrcDir(File srcDir) {
-        this.srcDir = srcDir;
-    }
-
-    public String getPackageNamePrefix() {
-        return packageNamePrefix;
-    }
-
-    public void setPackageNamePrefix(String packageNamePrefix) {
-        this.packageNamePrefix = packageNamePrefix;
-    }
-
     protected void beforeGenerate(String moduleName) {
         File srcDir = new File(moduleName + this.srcName);
         IOHelper.deleteDir(srcDir.getPath());
@@ -92,25 +46,24 @@ public abstract class BaseCodeGServiceImpl implements CodeGConstants {
         this.setSrcDir(srcDir);
     }
 
-    protected Map<String, CommonController> generateApiCode(String bundleFiles, String moduleName) {
+    protected Map<String, CommonController> generateApiCode(String bundleFiles) {
         return this.generateCode(
-                bundleFiles, moduleName, MockModel.MockModel_Common, true, false);
+                bundleFiles, MockModel.MockModel_Common, true, false);
     }
 
     protected Map<String, CommonController> generateClientCode(
-            String bundleFiles, String moduleName) {
+            String bundleFiles) {
         return this.generateCode(
-                bundleFiles, moduleName, MockModel.MockModel_Common, false, true);
+                bundleFiles, MockModel.MockModel_Common, false, true);
     }
 
     protected Map<String, CommonController> generateBundleCode(
-            String bundleFiles, String moduleName, MockModel mockModel) {
-        return this.generateCode(bundleFiles, moduleName, mockModel, false, false);
+            String bundleFiles, MockModel mockModel) {
+        return this.generateCode(bundleFiles, mockModel, false, false);
     }
 
     private Map<String, CommonController> generateCode(
             String bundleFiles,
-            String moduleName,
             MockModel mockModel,
             boolean isApi,
             boolean isClient) {

@@ -90,7 +90,7 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
                 this.controlllerClass._extends(cm.ref(controllerType.providerParentName));
             }
 
-        } catch (JClassAlreadyExistsException e) {
+        } catch (JCodeModelException e) {
             String msg = commonController.getName() + " is already exists.";
             log.error(msg, e);
             throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
@@ -123,7 +123,7 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
 
         try {
             this.clientClass = cm._class(this.getPackageNamePrefix() + "client." + this.clientName);
-        } catch (JClassAlreadyExistsException e) {
+        } catch (JCodeModelException e) {
             String msg = commonController.getName() + " is already exists.";
             log.error(msg, e);
             throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);

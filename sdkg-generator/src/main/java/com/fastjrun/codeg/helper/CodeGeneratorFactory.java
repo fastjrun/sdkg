@@ -3,11 +3,9 @@
  */
 package com.fastjrun.codeg.helper;
 
-import com.fastjrun.codeg.common.CodeGConstants;
-import com.fastjrun.codeg.common.CodeGException;
-import com.fastjrun.codeg.common.CodeGMsgContants;
-import com.fastjrun.codeg.common.CommonController;
+import com.fastjrun.codeg.common.*;
 import com.fastjrun.codeg.generator.BaseServiceGenerator;
+import com.fastjrun.codeg.generator.MybatisPlusGenerator;
 import com.fastjrun.codeg.generator.PacketGenerator;
 import com.fastjrun.codeg.generator.common.BaseControllerGenerator;
 
@@ -96,5 +94,16 @@ public abstract class CodeGeneratorFactory implements CodeGConstants {
         baseControllerGenerator.setAuthor(author);
         baseControllerGenerator.setCompany(company);
         return baseControllerGenerator;
+    }
+
+    public static MybatisPlusGenerator createMybatisPlusGenerator(String packageNamePrefix, String
+            author, String company,
+                                                                  FJTable fjTable) {
+        MybatisPlusGenerator mybatisPlusGenerator = new MybatisPlusGenerator();
+        mybatisPlusGenerator.setPackageNamePrefix(packageNamePrefix);
+        mybatisPlusGenerator.setFjTable(fjTable);
+        mybatisPlusGenerator.setAuthor(author);
+        mybatisPlusGenerator.setCompany(company);
+        return mybatisPlusGenerator;
     }
 }

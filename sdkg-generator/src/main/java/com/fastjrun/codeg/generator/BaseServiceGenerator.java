@@ -77,7 +77,7 @@ public abstract class BaseServiceGenerator extends BaseCMGenerator {
             this.serviceClass =
               cm._class(this.packageNamePrefix + BaseCMGenerator.SERVICE_PACKAGE_NAME + commonService.get_class(),
                 EClassType.INTERFACE);
-        } catch (JClassAlreadyExistsException e) {
+        } catch (JCodeModelException e) {
             String msg = commonService.get_class() + " is already exists.";
             log.error(msg, e);
             throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
@@ -92,7 +92,7 @@ public abstract class BaseServiceGenerator extends BaseCMGenerator {
             serviceMockClass._implements(this.serviceClass);
             serviceMockClass.annotate(cm.ref("org.springframework.stereotype.Service")).param(
                     "value", this.commonService.getName());
-        } catch (JClassAlreadyExistsException e) {
+        } catch (JCodeModelException e) {
             String msg = this.commonService.get_class() + " is already exists.";
             log.error(msg, e);
             throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
