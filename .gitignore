@@ -23,6 +23,7 @@ target/*
 *.iml
 */*.iml
 **/*.iml
+base-sdkg/*-sdkg/*-codeg/*-mp-base/src
 base-sdkg/*-sdkg/*-codeg/*-api/src
 base-sdkg/*-sdkg/*-codeg/*-bundle/src
 base-sdkg/*-sdkg/*-codeg/*-bundle-mock/src
