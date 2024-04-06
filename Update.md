@@ -1,6 +1,9 @@
 ### 4.4.0--SNAPSHOT
 - 新增mabatis-plus-generator
 - 引入lombok，简化代码
+- jcodemodel升级至3.4.1
+- *-sdkg和sdkg统一版本号
+
 ### 4.3.0-alpha
 - log4j2 升级到2.23.1
 - dom4j 升级到2.1.4

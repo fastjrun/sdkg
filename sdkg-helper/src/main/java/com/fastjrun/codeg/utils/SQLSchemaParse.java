@@ -153,57 +153,57 @@ public class SQLSchemaParse {
 
         // java.lang.Boolean if the configuration property tinyInt1isBit is set to true (the default) and the storage
         // size is 1, or java.lang.Integer if not.
-        if (dataType.toUpperCase().indexOf("BOOL") != -1) {
+        if (dataType.toUpperCase().contains("BOOL")) {
             fjColumn.setDatatype("String");
-        } else if (dataType.toUpperCase().indexOf("VARCHAR2") != -1) {
+        } else if (dataType.toUpperCase().contains("VARCHAR2")) {
             fjColumn.setDatatype("String");
-        } else if (dataType.toUpperCase().indexOf("CHAR") != -1) {
+        } else if (dataType.toUpperCase().contains("CHAR")) {
             fjColumn.setDatatype("String");
-        } else if (dataType.toUpperCase().equals("TIMESTAMP")) {
+        } else if (dataType.equalsIgnoreCase("TIMESTAMP")) {
             // Time
-            fjColumn.setDatatype("java.sql.Timestamp");
-        } else if (dataType.toUpperCase().equals("DATETIME")) {
+            fjColumn.setDatatype("java.util.Date");
+        } else if (dataType.equalsIgnoreCase("DATETIME")) {
             // DATETIME
-            fjColumn.setDatatype("java.sql.Timestamp");
+            fjColumn.setDatatype("java.util.Date");
         } else if (dataType.toUpperCase().indexOf("BLOB") > 0) {
             // byte[]
             fjColumn.setDatatype("byte[]");
         } else if (dataType.toUpperCase().indexOf("CLOB") > 0) {
             // Date
             fjColumn.setDatatype("java.sql.Clob");
-        } else if (dataType.toUpperCase().equals("DATE")) {
+        } else if (dataType.equalsIgnoreCase("DATE")) {
             // Date
-            fjColumn.setDatatype("java.sql.Date");
+            fjColumn.setDatatype("java.util.Date");
         } else if (dataType.toUpperCase().startsWith("TIME")) {
             // Date
-            fjColumn.setDatatype("java.sql.Time");
-        } else if (dataType.toUpperCase().indexOf("DECIMAL") != -1) {
+            fjColumn.setDatatype("java.util.Date");
+        } else if (dataType.toUpperCase().contains("DECIMAL")) {
             fjColumn.setDatatype("java.math.BigDecimal");
-        } else if (dataType.toUpperCase().indexOf("BIGINT") != -1) {
+        } else if (dataType.toUpperCase().contains("BIGINT")) {
 
             if (unsignedExisted) {
                 fjColumn.setDatatype("java.math.BigInteger");
             } else {
                 fjColumn.setDatatype("Long");
             }
-        } else if ((dataType.toUpperCase().indexOf("TINYINT") != -1)
-                || (dataType.toUpperCase().indexOf("SMALLINT") != -1)
-                || (dataType.toUpperCase().indexOf("MEDIUMINT") != -1)) {
+        } else if ((dataType.toUpperCase().contains("TINYINT"))
+                || (dataType.toUpperCase().contains("SMALLINT"))
+                || (dataType.toUpperCase().contains("MEDIUMINT"))) {
             fjColumn.setDatatype("Integer");
-        } else if (dataType.toUpperCase().indexOf("INT") != -1) {
+        } else if (dataType.toUpperCase().contains("INT")) {
             if (unsignedExisted) {
                 fjColumn.setDatatype("Long");
             } else {
                 fjColumn.setDatatype("Integer");
             }
-        } else if (dataType.toUpperCase().indexOf("TEXT") != -1) {
+        } else if (dataType.toUpperCase().contains("TEXT")) {
             // TEXT,MEDIUMTEXT,LONGTEXT,TINYTEXT
             fjColumn.setDatatype("String");
-        } else if (dataType.toUpperCase().indexOf("FLOAT") != -1) {
+        } else if (dataType.toUpperCase().contains("FLOAT")) {
             fjColumn.setDatatype("Float");
-        } else if (dataType.toUpperCase().indexOf("DOUBLE") != -1) {
+        } else if (dataType.toUpperCase().contains("DOUBLE")) {
             fjColumn.setDatatype("Double");
-        } else if (dataType.toUpperCase().indexOf("LONG") != -1) {
+        } else if (dataType.toUpperCase().contains("LONG")) {
             fjColumn.setDatatype("Long");
         } else {
             fjColumn.setDatatype("String");

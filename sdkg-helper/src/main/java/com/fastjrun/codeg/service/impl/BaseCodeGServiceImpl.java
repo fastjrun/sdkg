@@ -48,25 +48,18 @@ public abstract class BaseCodeGServiceImpl implements CodeGConstants {
 
     protected Map<String, CommonController> generateApiCode(String bundleFiles) {
         return this.generateCode(
-                bundleFiles, MockModel.MockModel_Common, true, false);
-    }
-
-    protected Map<String, CommonController> generateClientCode(
-            String bundleFiles) {
-        return this.generateCode(
-                bundleFiles, MockModel.MockModel_Common, false, true);
+                bundleFiles, MockModel.MockModel_Common, true);
     }
 
     protected Map<String, CommonController> generateBundleCode(
             String bundleFiles, MockModel mockModel) {
-        return this.generateCode(bundleFiles, mockModel, false, false);
+        return this.generateCode(bundleFiles, mockModel, false);
     }
 
     private Map<String, CommonController> generateCode(
             String bundleFiles,
             MockModel mockModel,
-            boolean isApi,
-            boolean isClient) {
+            boolean isApi) {
 
         JCodeModel cm = new JCodeModel();
 

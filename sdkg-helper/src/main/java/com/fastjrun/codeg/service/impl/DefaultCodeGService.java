@@ -4,18 +4,24 @@
 package com.fastjrun.codeg.service.impl;
 
 import com.fastjrun.codeg.common.*;
-import com.fastjrun.codeg.generator.MybatisPlusGenerator;
+import com.fastjrun.codeg.generator.MybatisPlusCodeGenerator;
+import com.fastjrun.codeg.generator.MybatisPlusMapperXmlGenerator;
 import com.fastjrun.codeg.helper.CodeGeneratorFactory;
 import com.fastjrun.codeg.service.CodeGService;
 import com.fastjrun.codeg.utils.SQLSchemaParse;
 import com.helger.jcodemodel.JCodeModel;
+import com.helger.jcodemodel.JDefinedClass;
 import com.helger.jcodemodel.writer.AbstractCodeWriter;
 import com.helger.jcodemodel.writer.FileCodeWriter;
 import com.helger.jcodemodel.writer.JCMWriter;
+import org.springframework.util.FileSystemUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 public class DefaultCodeGService extends BaseCodeGServiceImpl implements CodeGService {
@@ -62,13 +68,16 @@ public class DefaultCodeGService extends BaseCodeGServiceImpl implements CodeGSe
 
         Map<String, FJTable> fjTableMap = dataBaseObject.getTableMap();
 
+        List<JDefinedClass> mapperClassList = new ArrayList<>();
+
         for (String key : fjTableMap.keySet()) {
             FJTable fjTable = fjTableMap.get(key);
-            MybatisPlusGenerator mybatisPlusGenerator =
+            MybatisPlusCodeGenerator mybatisPlusGenerator =
                     CodeGeneratorFactory.createMybatisPlusGenerator(this.packageNamePrefix, this.author,
                             this.company, fjTable);
             mybatisPlusGenerator.setCm(cm);
             mybatisPlusGenerator.generate();
+            mapperClassList.add(mybatisPlusGenerator.getMapperClass());
         }
 
         try {
@@ -82,6 +91,15 @@ public class DefaultCodeGService extends BaseCodeGServiceImpl implements CodeGSe
             throw new CodeGException(CodeGMsgContants.CODEG_CODEG_FAIL, "code generating failed",
                     e);
         }
+
+
+
+        MybatisPlusMapperXmlGenerator mybatisPlusMapperXmlGenerator =new MybatisPlusMapperXmlGenerator();
+
+        mybatisPlusMapperXmlGenerator.setModuleName(moduleName);
+        mybatisPlusMapperXmlGenerator.setPackageNamePrefix(this.packageNamePrefix);
+        mybatisPlusMapperXmlGenerator.setMapperClassList(mapperClassList);
+        mybatisPlusMapperXmlGenerator.generate();
 
         return true;
     }

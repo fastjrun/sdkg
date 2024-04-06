@@ -3,6 +3,7 @@
  */
 package com.fastjrun.codeg.generator;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.fastjrun.codeg.common.CodeGException;
 import com.fastjrun.codeg.common.CodeGMsgContants;
 import com.fastjrun.codeg.common.FJColumn;
@@ -14,7 +15,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Mybatis Plus FrameWork
@@ -22,19 +22,27 @@ import java.util.stream.Collectors;
  */
 @Setter
 @Getter
-public class MybatisPlusGenerator extends BaseCMGenerator {
+public class MybatisPlusCodeGenerator extends BaseCMGenerator {
 
     static String PACKAGE_ENTITY_NAME = "entity.";
 
     static String PACKAGE_MAPPER_NAME = "mapper.";
-
-    static String PACKAGE_MAPPER_MAPPING_NAME = PACKAGE_MAPPER_NAME+"mapping.";
 
     protected FJTable fjTable;
 
     protected JDefinedClass entityClass;
 
     protected JDefinedClass mapperClass;
+
+
+    static Set<String> needAutoInsertColumnNames = new HashSet<>(Arrays.asList(
+            new String[]{"createDate".toLowerCase(),"createTime".toLowerCase(), "createUser".toLowerCase()}));
+
+    static Set<String> needAutoUpdateColumnNames = new HashSet<>(Arrays.asList(
+            new String[]{"updateDate".toLowerCase(), "updateUser".toLowerCase(),"updateTime".toLowerCase()}));
+
+    static Set<String> needlogicDeleteColumnNames = new HashSet<>(Arrays.asList(
+            new String[]{"deleteFlag".toLowerCase()}));
 
     private String lowerCaseFirstOneClassName;
 
@@ -81,6 +89,19 @@ public class MybatisPlusGenerator extends BaseCMGenerator {
             if(fjTable.getPrimaryKeyColumnNames().contains(fjColumn.getName())){
                 fieldVar.annotate(cm.ref("com.baomidou.mybatisplus.annotation.TableId"));
             }
+            FieldFill fieldFill = null;
+            if(needAutoInsertColumnNames.contains(fjColumn.getFieldName().toLowerCase())) {
+                fieldFill = FieldFill.INSERT;
+            }else if(needAutoUpdateColumnNames.contains(fjColumn.getFieldName().toLowerCase())) {
+                fieldFill = FieldFill.UPDATE;
+            }else if(needlogicDeleteColumnNames.contains(fjColumn.getFieldName().toLowerCase())) {
+                fieldFill = FieldFill.INSERT;
+            }
+
+            if(fieldFill!=null){
+                fieldVar.annotate(cm.ref("com.baomidou.mybatisplus.annotation.TableField"))
+                        .param("fill", fieldFill);
+            }
             fieldVar.annotate(cm.ref("io.swagger.annotations.ApiModelProperty")).
                     param("value",JExpr.lit(comment)).
                     param("position",index++);
@@ -110,11 +131,6 @@ public class MybatisPlusGenerator extends BaseCMGenerator {
         }
         this.addClassDeclaration(this.mapperClass);
          this.mapperClass._implements(cm.ref("com.baomidou.mybatisplus.core.mapper.BaseMapper").narrow(this.entityClass));
-    }
-
-    protected void processMappering() {
-
-        String xmlName = this.packageNamePrefix + PACKAGE_MAPPER_MAPPING_NAME + fjTable.getClassName()+"Mapper.xml";
     }
 
 

@@ -29,6 +29,14 @@
                 <version>${lombok.versin}</version>
             </dependency>
 
+
+            <!-- mybatis-plus -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>com.github.jsqlparser</groupId>
                 <artifactId>jsqlparser</artifactId>
@@ -295,6 +303,7 @@
         <mycompany-snapshots-url-suffix>/repository/maven-snapshots/</mycompany-snapshots-url-suffix>
         <mycompany-releases-url-suffix>/repository/maven-releases/</mycompany-releases-url-suffix>
         <lombok.versin>1.18.22</lombok.versin>
+        <mybatis-plus.version>3.5.3.1</mybatis-plus.version>
         <jcodemodel.version>3.4.1</jcodemodel.version>
         <dom4j.version>2.1.4</dom4j.version>
         <jsqlparser.version>4.9</jsqlparser.version>
