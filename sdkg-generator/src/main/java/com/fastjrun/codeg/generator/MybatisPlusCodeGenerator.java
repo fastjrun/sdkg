@@ -28,11 +28,19 @@ public class MybatisPlusCodeGenerator extends BaseCMGenerator {
 
     static String PACKAGE_MAPPER_NAME = "mapper.";
 
+    static String PACKAGE_DAO_NAME = "dao.";
+
+    static String PACKAGE_DAO_IMPL_NAME = "dao.impl.";
+
     protected FJTable fjTable;
 
     protected JDefinedClass entityClass;
 
     protected JDefinedClass mapperClass;
+
+    protected JDefinedClass daoClass;
+
+    protected JDefinedClass daoImplClass;
 
 
     static Set<String> needAutoInsertColumnNames = new HashSet<>(Arrays.asList(
@@ -125,12 +133,48 @@ public class MybatisPlusCodeGenerator extends BaseCMGenerator {
             this.mapperClass = cm._class(className,EClassType.INTERFACE);
 
         } catch (JCodeModelException e) {
-            String msg = "fjTable class：" + fjTable.getName() + " is already exists.";
+            String msg = "fjTable class：" + fjTable.getName() + "Mapper is already exists.";
             log.error(msg, e);
             throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
         }
         this.addClassDeclaration(this.mapperClass);
          this.mapperClass._implements(cm.ref("com.baomidou.mybatisplus.core.mapper.BaseMapper").narrow(this.entityClass));
+    }
+
+    protected void processDao() {
+
+        String className = this.packageNamePrefix + PACKAGE_DAO_NAME + fjTable.getClassName()+"Dao";
+
+        try {
+            this.daoClass = cm._class(className,EClassType.INTERFACE);
+
+        } catch (JCodeModelException e) {
+            String msg = "fjTable class：" + fjTable.getName() + "Dao is already exists.";
+            log.error(msg, e);
+            throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
+        }
+        this.addClassDeclaration(this.daoClass);
+        this.daoClass._implements(cm.ref("com.baomidou.mybatisplus.extension.service.IService").narrow(this.entityClass));
+    }
+
+    protected void processDaoImpl() {
+
+        String className = this.packageNamePrefix + PACKAGE_DAO_IMPL_NAME + fjTable.getClassName()+"DaoImpl";
+
+        try {
+            this.daoImplClass = cm._class(className);
+
+        } catch (JCodeModelException e) {
+            String msg = "fjTable class：" + fjTable.getName() + "DaoImpl is already exists.";
+            log.error(msg, e);
+            throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
+        }
+        this.addClassDeclaration(this.daoImplClass);
+        this.daoImplClass.annotate(cm.ref("org.springframework.stereotype.Repository"));
+        this.daoImplClass._extends(
+                cm.ref("com.baomidou.mybatisplus.extension.service.impl.ServiceImpl").
+                        narrow(this.mapperClass).narrow(this.entityClass));
+        this.daoImplClass._implements(this.daoClass);
     }
 
 
@@ -139,6 +183,8 @@ public class MybatisPlusCodeGenerator extends BaseCMGenerator {
         this.lowerCaseFirstOneClassName = StringHelper.toLowerCaseFirstOne(fjTable.getClassName());
         this.processEntity();
         this.processMapper();
+        this.processDao();
+        this.processDaoImpl();
 
     }
 }
