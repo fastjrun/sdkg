@@ -32,6 +32,11 @@
                 <version>${mybatis-plus.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.github.yulichang</groupId>
+                <artifactId>mybatis-plus-join</artifactId>
+                <version>${mybatis-plus-join.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>javax.servlet-api</artifactId>
                 <version>${javax.servlet-api.version}</version>
@@ -109,6 +114,7 @@
         <bundleFiles>base-sdkg/example-sdkg/example-codeg/example-api.xml</bundleFiles>
         <packagePrefix>com.fastjrun.example</packagePrefix>
         <mybatis-plus.version>3.5.3.1</mybatis-plus.version>
+        <mybatis-plus-join.version>1.4.9</mybatis-plus-join.version>
         <company>快嘉</company>
         <sdkg.version>4.4.0-SNAPSHOT</sdkg.version>
         <example-sdkg.version>4.4.0-SNAPSHOT</example-sdkg.version>

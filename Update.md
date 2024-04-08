@@ -1,5 +1,5 @@
 ### 4.4.0--SNAPSHOT
-- 新增mabatis-plus-generator
+- 新增mabatis-plus-generator,引入mybatis-plus-join
 - 引入lombok，简化代码
 - jcodemodel升级至3.4.1
 - *-sdkg和sdkg统一版本号

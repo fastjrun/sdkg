@@ -138,7 +138,7 @@ public class MybatisPlusCodeGenerator extends BaseCMGenerator {
             throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
         }
         this.addClassDeclaration(this.mapperClass);
-         this.mapperClass._implements(cm.ref("com.baomidou.mybatisplus.core.mapper.BaseMapper").narrow(this.entityClass));
+         this.mapperClass._implements(cm.ref("com.github.yulichang.base.MPJBaseMapper").narrow(this.entityClass));
     }
 
     protected void processDao() {
@@ -154,10 +154,30 @@ public class MybatisPlusCodeGenerator extends BaseCMGenerator {
             throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
         }
         this.addClassDeclaration(this.daoClass);
-        this.daoClass._implements(cm.ref("com.baomidou.mybatisplus.extension.service.IService").narrow(this.entityClass));
+        this.daoClass._implements(cm.ref("com.github.yulichang.base.MPJBaseService").narrow(this.entityClass));
     }
 
     protected void processDaoImpl() {
+
+        String className = this.packageNamePrefix + PACKAGE_DAO_IMPL_NAME + fjTable.getClassName()+"DaoImpl";
+
+        try {
+            this.daoImplClass = cm._class(className);
+
+        } catch (JCodeModelException e) {
+            String msg = "fjTable class：" + fjTable.getName() + "DaoImpl is already exists.";
+            log.error(msg, e);
+            throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
+        }
+        this.addClassDeclaration(this.daoImplClass);
+        this.daoImplClass.annotate(cm.ref("org.springframework.stereotype.Repository"));
+        this.daoImplClass._extends(
+                cm.ref("com.github.yulichang.base.MPJBaseServiceImpl").
+                        narrow(this.mapperClass).narrow(this.entityClass));
+        this.daoImplClass._implements(this.daoClass);
+    }
+
+    protected void processMPJMapper() {
 
         String className = this.packageNamePrefix + PACKAGE_DAO_IMPL_NAME + fjTable.getClassName()+"DaoImpl";
 

@@ -24,6 +24,10 @@
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.yulichang</groupId>
+            <artifactId>mybatis-plus-join</artifactId>
+        </dependency>
         <!-- swagger -->
         <dependency>
             <groupId>io.springfox</groupId>
