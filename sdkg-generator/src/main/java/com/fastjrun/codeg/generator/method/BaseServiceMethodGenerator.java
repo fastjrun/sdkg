@@ -38,7 +38,7 @@ public abstract class BaseServiceMethodGenerator extends AbstractMethodGenerator
     public abstract void doParse();
 
     public void processServiceMethod() {
-        if (!this.commonMethod.isNeedApi()) {
+        if (this.isApi()) {
             return;
         }
         this.jServiceMethod =
