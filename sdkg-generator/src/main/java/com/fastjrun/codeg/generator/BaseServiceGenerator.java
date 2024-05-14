@@ -31,35 +31,6 @@ public abstract class BaseServiceGenerator extends BaseCMGenerator {
 
     protected Map<CommonMethod, BaseServiceMethodGenerator> serviceMethodGeneratorMap;
 
-    public Map<CommonMethod, BaseServiceMethodGenerator> getServiceMethodGeneratorMap() {
-        return serviceMethodGeneratorMap;
-    }
-
-    public CommonService getCommonService() {
-        return commonService;
-    }
-
-    public void setCommonService(CommonService commonService) {
-        this.commonService = commonService;
-    }
-
-    public JDefinedClass getServiceClass() {
-        return serviceClass;
-    }
-
-    public void setServiceClass(JDefinedClass serviceClass) {
-        this.serviceClass = serviceClass;
-    }
-
-    public JDefinedClass getServiceMockClass() {
-        return serviceMockClass;
-    }
-
-    public void setServiceMockClass(JDefinedClass serviceMockClass) {
-        this.serviceMockClass = serviceMockClass;
-    }
-
-
     protected void processService() {
         try {
             this.serviceClass =
@@ -93,7 +64,7 @@ public abstract class BaseServiceGenerator extends BaseCMGenerator {
         this.init();
         if (!this.isApi()) {
             this.processService();
-            if (mockModel != MockModel.MockModel_Common) {
+            if (this.isMock()) {
                 this.processServiceMock();
             }
         }
@@ -101,10 +72,10 @@ public abstract class BaseServiceGenerator extends BaseCMGenerator {
         for (CommonMethod commonMethod : this.commonService.getMethods()) {
             BaseServiceMethodGenerator serviceMethodGenerator = new DefaultServiceMethodGenerator();
             serviceMethodGenerator.setPackageNamePrefix(packageNamePrefix);
-            serviceMethodGenerator.setMockModel(mockModel);
             serviceMethodGenerator.setAuthor(author);
             serviceMethodGenerator.setCompany(company);
             serviceMethodGenerator.setApi(this.isApi());
+            serviceMethodGenerator.setMock(this.isMock());
             serviceMethodGenerator.setServiceGenerator(this);
             serviceMethodGenerator.setCommonMethod(commonMethod);
             serviceMethodGenerator.setCm(cm);

@@ -452,7 +452,7 @@ public abstract class BaseServiceMethodGenerator extends AbstractMethodGenerator
         this.doParse();
         if (!this.isApi()) {
             this.processServiceMethod();
-            if (mockModel != CodeGConstants.MockModel.MockModel_Common) {
+            if (this.isMock()) {
                 this.processServiceMockMethod();
             }
         }

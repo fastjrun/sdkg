@@ -27,4 +27,6 @@ base-sdkg/*-sdkg/*-codeg/*-mp-base/src
 base-sdkg/*-sdkg/*-codeg/*-api/src
 base-sdkg/*-sdkg/*-codeg/*-bundle/src
 base-sdkg/*-sdkg/*-codeg/*-bundle-mock/src
+base-sdkg/*-sdkg/*-codeg/*-bundle-swagger2/src
+base-sdkg/*-sdkg/*-codeg/*-bundle-mock-swagger2/src
 base-sdkg/*-sdkg/*-codeg/*-client/src

@@ -21,7 +21,8 @@ public abstract class BaseCMGenerator extends BaseGenerator implements Cloneable
     public static String MOCK_PACKAGE_NAME = "com.fastjrun.mock.";
     public static String JSONOBJECTCLASS_NAME = "com.fasterxml.jackson.databind.JsonNode";
     protected JCodeModel cm;
-    protected MockModel mockModel = MockModel.MockModel_Common;
+    protected SwaggerVersion swaggerVersion = SwaggerVersion.Swagger3;
+    private boolean mock = false;
     private boolean api = false;
 
     protected void addClassDeclaration(JDefinedClass jClass) {

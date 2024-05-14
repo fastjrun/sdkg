@@ -106,11 +106,19 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
         methodPath =
                 methodPath
                         + this.exchangeProcessor.processHTTPRequest(
-                        jcontrollerMethod, jInvocation, mockModel, this.cm);
-        this.jcontrollerMethod
-                .annotate(cm.ref("io.swagger.annotations.ApiOperation"))
-                .param("value", methodRemark)
-                .param("notes", methodRemark);
+                        jcontrollerMethod, jInvocation, swaggerVersion, this.cm);
+        if(this.swaggerVersion==SwaggerVersion.Swagger2){
+            this.jcontrollerMethod
+                    .annotate(cm.ref("io.swagger.annotations.ApiOperation"))
+                    .param("value", methodRemark)
+                    .param("notes", methodRemark);
+        } else if (this.swaggerVersion==SwaggerVersion.Swagger3) {
+            this.jcontrollerMethod
+                    .annotate(cm.ref("io.swagger.v3.oas.annotations.Operation"))
+                    .param("summary", methodRemark);
+
+        }
+
 
         // headParams
         List<PacketField> headVariables =
@@ -144,11 +152,14 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
                         .param(pathVariable.getFieldName());
 
                 jInvocation.arg(pathVariableJVar);
-                pathVariableJVar
-                        .annotate(cm.ref("io.swagger.annotations.ApiParam"))
-                        .param("name", pathVariable.getFieldName())
-                        .param("value", pathVariable.getRemark())
-                        .param("required", !pathVariable.isCanBeNull());
+                if(this.swaggerVersion==SwaggerVersion.Swagger2){
+                    pathVariableJVar
+                            .annotate(cm.ref("io.swagger.annotations.ApiParam"))
+                            .param("name", pathVariable.getFieldName())
+                            .param("value", pathVariable.getRemark())
+                            .param("required", !pathVariable.isCanBeNull());
+                }
+
                 methodPath = methodPath.replaceFirst("\\{\\}", "{" + pathVariable.getFieldName() + "}");
             }
         }
@@ -179,11 +190,14 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
                         .param("required", !parameter.isCanBeNull());
 
                 jInvocation.arg(parameterJVar);
-                parameterJVar
-                        .annotate(cm.ref("io.swagger.annotations.ApiParam"))
-                        .param("name", parameter.getFieldName())
-                        .param("value", parameter.getRemark())
-                        .param("required", !parameter.isCanBeNull());
+                if(this.swaggerVersion==SwaggerVersion.Swagger2){
+                    parameterJVar
+                            .annotate(cm.ref("io.swagger.annotations.ApiParam"))
+                            .param("name", parameter.getFieldName())
+                            .param("value", parameter.getRemark())
+                            .param("required", !parameter.isCanBeNull());
+                }
+
             }
         }
         JAnnotationUse jAnnotationUse =
@@ -215,11 +229,14 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
                         .param("name", cookieVariable.getFieldName())
                         .param("required", !cookieVariable.isCanBeNull());
                 jInvocation.arg(cookieJVar);
-                cookieJVar
-                        .annotate(cm.ref("io.swagger.annotations.ApiParam"))
-                        .param("name", cookieVariable.getFieldName())
-                        .param("value", "cookie:" + cookieVariable.getRemark())
-                        .param("required", !cookieVariable.isCanBeNull());
+                if(this.swaggerVersion==SwaggerVersion.Swagger2){
+                    cookieJVar
+                            .annotate(cm.ref("io.swagger.annotations.ApiParam"))
+                            .param("name", cookieVariable.getFieldName())
+                            .param("value", "cookie:" + cookieVariable.getRemark())
+                            .param("required", !cookieVariable.isCanBeNull());
+                }
+
                 controllerMethodBlk.add(
                         JExpr.ref("log")
                                 .invoke("debug")

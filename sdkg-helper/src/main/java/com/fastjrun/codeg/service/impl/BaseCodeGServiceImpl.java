@@ -48,17 +48,19 @@ public abstract class BaseCodeGServiceImpl implements CodeGConstants {
 
     protected Map<String, CommonController> generateApiCode(String bundleFiles) {
         return this.generateCode(
-                bundleFiles, MockModel.MockModel_Common, true);
+                bundleFiles, null, false,true);
     }
 
     protected Map<String, CommonController> generateBundleCode(
-            String bundleFiles, MockModel mockModel) {
-        return this.generateCode(bundleFiles, mockModel, false);
+            String bundleFiles,
+            SwaggerVersion swaggerVersion, boolean isMock) {
+        return this.generateCode(bundleFiles, swaggerVersion,isMock, false);
     }
 
     private Map<String, CommonController> generateCode(
             String bundleFiles,
-            MockModel mockModel,
+            SwaggerVersion swaggerVersion,
+            boolean isMock,
             boolean isApi) {
 
         JCodeModel cm = new JCodeModel();
@@ -78,9 +80,11 @@ public abstract class BaseCodeGServiceImpl implements CodeGConstants {
         for (PacketObject packetObject : packetAllMap.values()) {
             PacketGenerator packetGenerator =
                     CodeGeneratorFactory.createPacketGenerator(
-                            this.packageNamePrefix, mockModel, this.author, this.company);
+                            this.packageNamePrefix, swaggerVersion, this.author, this.company);
             packetGenerator.setCm(cm);
             packetGenerator.setPacketObject(packetObject);
+            packetGenerator.setApi(isApi);
+            packetGenerator.setSwaggerVersion(swaggerVersion);
             packetGenerator.generate();
         }
 
@@ -89,14 +93,16 @@ public abstract class BaseCodeGServiceImpl implements CodeGConstants {
         for (CommonController commonController : controllerAllMap.values()) {
             BaseControllerGenerator baseControllerGenerator =
                     CodeGeneratorFactory.createBaseControllerGenerator(
-                            this.packageNamePrefix, mockModel, this.author, this.company, commonController);
+                            this.packageNamePrefix, swaggerVersion, this.author, this.company, commonController);
             baseControllerGenerator.setApi(isApi);
+            baseControllerGenerator.setMock(isMock);
             CommonService commonService = commonController.getService();
             BaseServiceGenerator serviceGenerator =
                     CodeGeneratorFactory.createServiceGenerator(
-                            this.packageNamePrefix, mockModel, this.author, this.company, commonController);
+                            this.packageNamePrefix, swaggerVersion, this.author, this.company, commonController);
             serviceGenerator.setCommonService(commonService);
             serviceGenerator.setApi(isApi);
+            serviceGenerator.setMock(isMock);
             serviceGenerator.setCm(cm);
             serviceGenerator.generate();
             serviceGeneratorMap.put(commonService, serviceGenerator);

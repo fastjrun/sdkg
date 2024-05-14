@@ -24,8 +24,8 @@ public class DefaultExchangeProcessor<T extends BaseRequestProcessor, V extends 
     }
 
     @Override
-    public String processHTTPRequest(JMethod jMethod, JInvocation jInvocation, CodeGConstants.MockModel mockModel, JCodeModel cm) {
-        return this.requestProcessor.processHTTPRequest(jMethod, jInvocation, mockModel, cm);
+    public String processHTTPRequest(JMethod jMethod, JInvocation jInvocation, CodeGConstants.SwaggerVersion swaggerVersion, JCodeModel cm) {
+        return this.requestProcessor.processHTTPRequest(jMethod, jInvocation, swaggerVersion, cm);
     }
 
     @Override

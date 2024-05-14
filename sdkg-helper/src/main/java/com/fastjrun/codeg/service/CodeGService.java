@@ -12,9 +12,9 @@ public interface CodeGService extends CodeGConstants {
 
     boolean generateAPI(String bundleFiles, String moduleName);
 
-    boolean generateProvider(String bundleFiles, String moduleName);
+    boolean generateProvider(String bundleFiles, String moduleName, SwaggerVersion swaggerVersion);
 
-    boolean generateProviderMock(String bundleFiles, String moduleName, MockModel mockModel);
+    boolean generateProviderMock(String bundleFiles, String moduleName, SwaggerVersion swaggerVersion);
 
-    boolean generateMybatisPlus(String sqlFile, String moduleName);
+    boolean generateMybatisPlus(String sqlFile, String moduleName, SwaggerVersion swaggerVersion);
 }

@@ -34,7 +34,7 @@ public class ExampleCodeGTest extends AbstractTestNGTest implements CodeGConstan
     DefaultCodeGService codeGService = new DefaultCodeGService();
     codeGService.setPackageNamePrefix(packagePrefix);
     try {
-      codeGService.generateProvider(bundleFiles, moduleName);
+      codeGService.generateProvider(bundleFiles, moduleName,SwaggerVersion.Swagger2);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -48,7 +48,7 @@ public class ExampleCodeGTest extends AbstractTestNGTest implements CodeGConstan
     DefaultCodeGService codeGService = new DefaultCodeGService();
     codeGService.setPackageNamePrefix(packagePrefix);
     try {
-      codeGService.generateProviderMock(bundleFiles, moduleName, MockModel.MockModel_Swagger);
+      codeGService.generateProviderMock(bundleFiles, moduleName,SwaggerVersion.Swagger2);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -62,7 +62,7 @@ public class ExampleCodeGTest extends AbstractTestNGTest implements CodeGConstan
     DefaultCodeGService codeGService = new DefaultCodeGService();
     codeGService.setPackageNamePrefix(packagePrefix);
     try {
-      codeGService.generateMybatisPlus(sqlFile, moduleName);
+      codeGService.generateMybatisPlus(sqlFile, moduleName,SwaggerVersion.Swagger2);
     } catch (Exception e) {
       e.printStackTrace();
     }

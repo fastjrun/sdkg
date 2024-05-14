@@ -27,12 +27,13 @@ public interface CodeGConstants {
   }
 
   // 0:common;1:swagger
-  enum MockModel {
-    MockModel_Common(0),
-    MockModel_Swagger(1);
-    public int value;
 
-    MockModel(int value) {
+  enum SwaggerVersion {
+    Swagger2("swagger2"),
+    Swagger3("swagger3");
+    public String value;
+
+    SwaggerVersion(String value) {
       this.value = value;
     }
   }

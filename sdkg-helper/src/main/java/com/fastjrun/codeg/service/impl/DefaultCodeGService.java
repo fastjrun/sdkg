@@ -14,9 +14,7 @@ import com.helger.jcodemodel.JDefinedClass;
 import com.helger.jcodemodel.writer.AbstractCodeWriter;
 import com.helger.jcodemodel.writer.FileCodeWriter;
 import com.helger.jcodemodel.writer.JCMWriter;
-import org.springframework.util.FileSystemUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -35,30 +33,14 @@ public class DefaultCodeGService extends BaseCodeGServiceImpl implements CodeGSe
 
         Date end = new Date();
 
-        log.info("end genreate at " + end + ",cost " + String.valueOf(
+        log.info("end genreate at " + end + ",cost " + (
                 end.getTime() - begin.getTime()) + " ms");
 
         return true;
     }
 
-    private boolean generateBundle(String bundleFiles, String moduleName, CodeGConstants.MockModel mockModel) {
-        Date begin = new Date();
-        log.info("begin genreate at " + begin);
-        this.beforeGenerate(moduleName);
-
-
-        this.generateBundleCode(bundleFiles, mockModel);
-
-
-        Date end = new Date();
-
-        log.info("end genreate at " + end + ",cost " + String.valueOf(
-                end.getTime() - begin.getTime()) + " ms");
-
-        return true;
-    }
-
-    protected boolean generateMybatisPlusCode(String sqlFile, String moduleName) {
+    protected boolean generateMybatisPlusCode(String sqlFile, String moduleName,
+                                              CodeGConstants.SwaggerVersion swaggerVersion) {
 
         this.beforeGenerate(moduleName);
 
@@ -76,6 +58,7 @@ public class DefaultCodeGService extends BaseCodeGServiceImpl implements CodeGSe
                     CodeGeneratorFactory.createMybatisPlusGenerator(this.packageNamePrefix, this.author,
                             this.company, fjTable);
             mybatisPlusGenerator.setCm(cm);
+            mybatisPlusGenerator.setSwaggerVersion(swaggerVersion);
             mybatisPlusGenerator.generate();
             mapperClassList.add(mybatisPlusGenerator.getMapperClass());
         }
@@ -105,27 +88,56 @@ public class DefaultCodeGService extends BaseCodeGServiceImpl implements CodeGSe
     }
 
     @Override
-    public boolean generateProvider(String bundleFiles, String moduleName) {
-        return this.generateBundle(bundleFiles, moduleName, CodeGConstants.MockModel.MockModel_Common);
-    }
-
-    @Override
-    public boolean generateProviderMock(String bundleFiles, String moduleName,
-                                        CodeGConstants.MockModel mockModel) {
-        return this.generateBundle(bundleFiles, moduleName, mockModel);
-    }
-
-    @Override
-    public boolean generateMybatisPlus(String sqlFile, String moduleName) {
+    public boolean generateProvider(String bundleFiles, String moduleName,
+                                    SwaggerVersion swaggerVersion) {
         Date begin = new Date();
         log.info("begin genreate at " + begin);
         this.beforeGenerate(moduleName);
 
-        this.generateMybatisPlusCode(sqlFile, moduleName);
+
+        this.generateBundleCode(bundleFiles, swaggerVersion,false);
+
 
         Date end = new Date();
 
-        log.info("end genreate at " + end + ",cost " + String.valueOf(
+        log.info("end genreate at " + end + ",cost " + (
+                end.getTime() - begin.getTime()) + " ms");
+
+        return true;
+    }
+
+    @Override
+    public boolean generateProviderMock(String bundleFiles, String moduleName,
+                                        SwaggerVersion swaggerVersion) {
+
+        Date begin = new Date();
+        log.info("begin genreate at " + begin);
+        this.beforeGenerate(moduleName);
+
+
+        this.generateBundleCode(bundleFiles, swaggerVersion,true);
+
+
+        Date end = new Date();
+
+        log.info("end genreate at " + end + ",cost " + (
+                end.getTime() - begin.getTime()) + " ms");
+
+        return true;
+    }
+
+    @Override
+    public boolean generateMybatisPlus(String sqlFile, String moduleName,
+                                       SwaggerVersion swaggerVersion) {
+        Date begin = new Date();
+        log.info("begin genreate at " + begin);
+        this.beforeGenerate(moduleName);
+
+        this.generateMybatisPlusCode(sqlFile, moduleName,swaggerVersion);
+
+        Date end = new Date();
+
+        log.info("end genreate at " + end + ",cost " + (
                 end.getTime() - begin.getTime()) + " ms");
 
         return true;

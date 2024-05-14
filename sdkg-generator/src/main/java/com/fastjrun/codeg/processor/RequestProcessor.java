@@ -10,7 +10,7 @@ import com.helger.jcodemodel.JMethod;
 
 public interface RequestProcessor extends CodeGConstants {
 
-    String processHTTPRequest(JMethod method, JInvocation jInvocation, MockModel mockModel, JCodeModel cm);
+    String processHTTPRequest(JMethod method, JInvocation jInvocation, SwaggerVersion swaggerVersion, JCodeModel cm);
 
     void parseRequestClass(JCodeModel cm);
 

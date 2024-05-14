@@ -13,19 +13,19 @@ public abstract class CodeGeneratorFactory implements CodeGConstants {
 
     private static PacketGenerator packetGenerator;
 
-    private static PacketGenerator getPacketGeneratorInstance(String packageNamePrefix, MockModel mockModel, String
+    private static PacketGenerator getPacketGeneratorInstance(String packageNamePrefix, SwaggerVersion swaggerVersion, String
             author, String company) {
         if (packetGenerator == null) {
             packetGenerator = new PacketGenerator();
             packetGenerator.setPackageNamePrefix(packageNamePrefix);
-            packetGenerator.setMockModel(mockModel);
+            packetGenerator.setSwaggerVersion(swaggerVersion);
             packetGenerator.setAuthor(author);
             packetGenerator.setCompany(company);
         }
         return packetGenerator;
     }
 
-    private static BaseServiceGenerator getServiceGeneratorInstance(String packageNamePrefix, MockModel mockModel, String
+    private static BaseServiceGenerator getServiceGeneratorInstance(String packageNamePrefix, SwaggerVersion swaggerVersion, String
             author, String company,
                                                                     CommonController commonController) {
         BaseServiceGenerator serviceGenerator;
@@ -40,16 +40,15 @@ public abstract class CodeGeneratorFactory implements CodeGConstants {
                     "不支持这个生成器" + commonController.getControllerType().generatorName, e);
         }
         serviceGenerator.setPackageNamePrefix(packageNamePrefix);
-        serviceGenerator.setMockModel(mockModel);
+        serviceGenerator.setSwaggerVersion(swaggerVersion);
         serviceGenerator.setAuthor(author);
         serviceGenerator.setCompany(company);
         return serviceGenerator;
     }
 
-    public static PacketGenerator createPacketGenerator(String packageNamePrefix,
-                                                        MockModel mockModel, String
+    public static PacketGenerator createPacketGenerator(String packageNamePrefix,SwaggerVersion swaggerVersion, String
                                                                 author, String company) {
-        PacketGenerator packetGenerator = getPacketGeneratorInstance(packageNamePrefix, mockModel, author, company);
+        PacketGenerator packetGenerator = getPacketGeneratorInstance(packageNamePrefix, swaggerVersion, author, company);
         try {
             PacketGenerator packetGeneratorTmp = (PacketGenerator) packetGenerator.clone();
             return packetGeneratorTmp;
@@ -59,11 +58,10 @@ public abstract class CodeGeneratorFactory implements CodeGConstants {
 
     }
 
-    public static BaseServiceGenerator createServiceGenerator(String packageNamePrefix,
-                                                              MockModel mockModel, String
+    public static BaseServiceGenerator createServiceGenerator(String packageNamePrefix, SwaggerVersion swaggerVersion, String
                                                                       author, String company,
                                                               CommonController commonController) {
-        BaseServiceGenerator serviceGenerator = getServiceGeneratorInstance(packageNamePrefix, mockModel, author, company, commonController);
+        BaseServiceGenerator serviceGenerator = getServiceGeneratorInstance(packageNamePrefix, swaggerVersion, author, company, commonController);
         try {
             BaseServiceGenerator serviceGeneratorTmp = (BaseServiceGenerator) serviceGenerator.clone();
             return serviceGeneratorTmp;
@@ -73,8 +71,7 @@ public abstract class CodeGeneratorFactory implements CodeGConstants {
 
     }
 
-    public static BaseControllerGenerator createBaseControllerGenerator(String packageNamePrefix,
-                                                                        MockModel mockModel, String
+    public static BaseControllerGenerator createBaseControllerGenerator(String packageNamePrefix, SwaggerVersion swaggerVersion, String
                                                                                 author, String company,
                                                                         CommonController commonController) {
         BaseControllerGenerator baseControllerGenerator;
@@ -90,7 +87,7 @@ public abstract class CodeGeneratorFactory implements CodeGConstants {
         }
         baseControllerGenerator.setCommonController(commonController);
         baseControllerGenerator.setPackageNamePrefix(packageNamePrefix);
-        baseControllerGenerator.setMockModel(mockModel);
+        baseControllerGenerator.setSwaggerVersion(swaggerVersion);
         baseControllerGenerator.setAuthor(author);
         baseControllerGenerator.setCompany(company);
         return baseControllerGenerator;

@@ -6,10 +6,11 @@ if [ "local_plugin" = $1 ] ; then
 elif [ "publish_plugin" = $1 ] ; then
   mvn clean deploy -DskipTests=true -Prelease -pl sdkg-plugin,base-sdkg/base-sdkg-provider,base-sdkg/base-sdkg-sb2-test,base-sdkg/example-sdkg/example-sdkg-provider,base-sdkg/example-sdkg/example-sdkg-generator -am
 elif [ "package_example" = $1 ] ; then
-  mvn compile -pl base-sdkg/example-sdkg/example-codeg/example-api -am -Dapigc.skip=false
-  mvn compile -pl base-sdkg/example-sdkg/example-codeg/example-mp-base -am -Dmpgc.skip=false
-  mvn compile -pl base-sdkg/example-sdkg/example-codeg/example-bundle -am -Dbdgc.skip=false
-  mvn compile -pl base-sdkg/example-sdkg/example-codeg/example-bundle-mock -am -Dbdmgc.skip=false
-  mvn package -pl base-sdkg/example-sdkg/example-codeg/example-api,base-sdkg/example-sdkg/example-codeg/example-mp-base,base-sdkg/example-sdkg/example-codeg/example-bundle-mock -am
+  mvn clean package -pl base-sdkg/example-sdkg/example-codeg/example-api -Dapigc.skip=false
+  mvn clean package -pl base-sdkg/example-sdkg/example-codeg/example-mp-base -Dmpgc.skip=false
+  mvn clean package -pl base-sdkg/example-sdkg/example-codeg/example-bundle -Dbdgc.skip=false
+  mvn clean package -pl base-sdkg/example-sdkg/example-codeg/example-bundle-mock,base-sdkg/example-sdkg/example-codeg/example-mock-server -Dbdmgc.skip=false
+elif [ "start_example_mock_server" = $1 ] ; then
+  java -jar base-sdkg/example-sdkg/example-codeg/example-mock-server/target/example-mock-server.jar
 fi
 echo "build done."

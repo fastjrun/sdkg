@@ -67,7 +67,9 @@ public class MybatisPlusCodeGenerator extends BaseCMGenerator {
             throw new CodeGException(CodeGMsgContants.CODEG_CLASS_EXISTS, msg, e);
         }
         this.addClassDeclaration(this.entityClass);
-        this.entityClass.annotate(cm.ref("lombok.Data"));
+        this.entityClass.annotate(cm.ref("lombok.Getter"));
+        this.entityClass.annotate(cm.ref("lombok.Setter"));
+        this.entityClass.annotate(cm.ref("lombok.ToString"));
         this.entityClass.annotate(cm.ref("com.baomidou.mybatisplus.annotation.TableName")).param(fjTable.getName());
         Map<String, FJColumn> columns = fjTable.getColumns();
         List<FJColumn> sortedList = new ArrayList<>(columns.values());
@@ -110,9 +112,15 @@ public class MybatisPlusCodeGenerator extends BaseCMGenerator {
                 fieldVar.annotate(cm.ref("com.baomidou.mybatisplus.annotation.TableField"))
                         .param("fill", fieldFill);
             }
-            fieldVar.annotate(cm.ref("io.swagger.annotations.ApiModelProperty")).
-                    param("value",JExpr.lit(comment)).
-                    param("position",index++);
+            if(this.swaggerVersion==SwaggerVersion.Swagger2){
+                fieldVar.annotate(cm.ref("io.swagger.annotations.ApiModelProperty")).
+                        param("value",JExpr.lit(comment)).
+                        param("position",index++);
+            }else if(this.swaggerVersion==SwaggerVersion.Swagger3){
+                fieldVar.annotate(cm.ref("io.swagger.v3.oas.annotations.media.Schema")).
+                        param("description",JExpr.lit(comment));
+            }
+
 
             JDocComment jdoc = fieldVar.javadoc();
             // 成员变量注释

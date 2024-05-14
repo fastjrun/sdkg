@@ -23,10 +23,16 @@ public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
     protected String module;
 
     /**
-     * 0:common;1:swagger
+     * 0:common;1:mack
      */
-    @Parameter(property = "codeg.mockModel", defaultValue = "swagger2")
-    protected String mockModel;
+    @Parameter(property = "codeg.mock", defaultValue = "false")
+    protected boolean mock;
+
+    /**
+     * swagger2;swagger3
+     */
+    @Parameter(property = "codeg.swaggerVersion", defaultValue = "swagger2")
+    protected String swaggerVersion;
 
     @Parameter(property = "codeg.author", defaultValue = "cuiyingfeng")
     protected String author;
@@ -73,32 +79,35 @@ public abstract class CodeGMogo extends AbstractMojo implements CodeGConstants {
 
         getLog().info(packagePrefix);
         getLog().info(module);
+        getLog().info(swaggerVersion);
 
         DefaultCodeGService codeGService = new DefaultCodeGService();
         codeGService.setPackageNamePrefix(packagePrefix);
         codeGService.setAuthor(author);
         codeGService.setCompany(company);
 
+
+        SwaggerVersion swaggerVersion1 = SwaggerVersion.Swagger3;
+        switch (swaggerVersion) {
+            case "swagger2":
+                swaggerVersion1 = SwaggerVersion.Swagger2;
+                break;
+            default:
+                break;
+        }
+
         switch (codeGCommand) {
             case BundleMockG:
-                getLog().info(mockModel);
-                MockModel mockModelTemp = MockModel.MockModel_Swagger;
-                switch (mockModel) {
-                    case "swagger2":
-                        break;
-                    default:
-                        break;
-                }
-                codeGService.generateProviderMock(bundleFiles, module, mockModelTemp);
+                codeGService.generateProviderMock(bundleFiles, module, swaggerVersion1);
                 break;
             case BundleG:
-                codeGService.generateProvider(bundleFiles, module);
+                codeGService.generateProvider(bundleFiles, module, swaggerVersion1);
                 break;
             case ApiG:
                 codeGService.generateAPI(bundleFiles, module);
                 break;
             case MpG:
-                codeGService.generateMybatisPlus(sqlFile, module);
+                codeGService.generateMybatisPlus(sqlFile, module, swaggerVersion1);
                 break;
             default:
                 break;

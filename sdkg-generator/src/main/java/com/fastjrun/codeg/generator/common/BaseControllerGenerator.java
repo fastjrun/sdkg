@@ -37,7 +37,7 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
 
         String controllerPackageName = this.packageNamePrefix + WEB_PACKAGE_NAME;
 
-        if (this.getMockModel() != CodeGConstants.MockModel.MockModel_Common) {
+        if (this.isMock()) {
             controllerPackageName = MOCK_PACKAGE_NAME + WEB_PACKAGE_NAME;
         }
 
@@ -60,8 +60,14 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
         this.controlllerClass.annotate(
           cm.ref("org.springframework.web.bind.annotation.RequestMapping")).param("value",
           this.controllerPath);
-        this.controlllerClass.annotate(cm.ref("io.swagger.annotations.Api")).param("value",
-                commonController.getRemark()).paramArray("tags", commonController.getTags());
+        if(this.swaggerVersion==SwaggerVersion.Swagger2){
+            this.controlllerClass.annotate(cm.ref("io.swagger.annotations.Api")).param("value",
+                    commonController.getRemark()).paramArray("tags", commonController.getTags());
+        }else if(this.swaggerVersion==SwaggerVersion.Swagger3){
+            this.controlllerClass.annotate(cm.ref("io.swagger.v3.oas.annotations.tags.Tag"))
+                    .param("name", commonController.getRemark());
+        }
+
         this.addClassDeclaration(this.controlllerClass);
 
         String serviceName = commonController.getServiceName();

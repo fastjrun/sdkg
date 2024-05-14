@@ -3,6 +3,8 @@
 - 引入lombok，简化代码
 - jcodemodel升级至3.4.1
 - *-sdkg和sdkg统一版本号
+- 支持swagger3
+- 示例引入knife4j-4.5.0
 
 ### 4.3.0-alpha
 - log4j2 升级到2.23.1

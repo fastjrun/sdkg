@@ -15,6 +15,11 @@
     </parent>
     <artifactId>example-bundle</artifactId>
     <dependencies>
+        <!-- lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.fastjrun.codeg.example</groupId>
             <artifactId>example-sdkg-provider</artifactId>

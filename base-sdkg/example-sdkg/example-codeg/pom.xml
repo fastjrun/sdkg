@@ -7,12 +7,6 @@
         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
         xmlns="http://maven.apache.org/POM/4.0.0">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.4.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
-    </parent>
     <groupId>com.fastjrun.codeg.example</groupId>
     <version>1.0-SNAPSHOT</version>
     <artifactId>example-codeg</artifactId>
@@ -46,7 +40,7 @@
                 <artifactId>validation-api</artifactId>
                 <version>${javax.validation.version}</version>
             </dependency>
-            <!-- swagger -->
+            <!-- knife4j -->
             <dependency>
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger2</artifactId>
@@ -56,6 +50,21 @@
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger-ui</artifactId>
                 <version>${swagger2.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>io.swagger</groupId>
+                        <artifactId>swagger-models</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>io.swagger</groupId>
+                        <artifactId>swagger-annotations</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>io.swagger</groupId>
+                <artifactId>swagger-models</artifactId>
+                <version>${swagger-models.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
@@ -81,6 +90,17 @@
                 <groupId>com.fastjrun.codeg</groupId>
                 <artifactId>sdkg-client</artifactId>
                 <version>${sdkg.version}</version>
+            </dependency>
+            <!-- knife4j -->
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-openapi2-spring-boot-starter</artifactId>
+                <version>${knife4j-openapi2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-web</artifactId>
+                <version>${spring-web.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -120,9 +140,10 @@
         <example-sdkg.version>4.4.0-SNAPSHOT</example-sdkg.version>
         <lombok.versin>1.18.22</lombok.versin>
         <javax.servlet-api.version>3.1.0</javax.servlet-api.version>
-        <swagger2.version>3.0.0</swagger2.version>
-        <knife4j.version>2.0.9</knife4j.version>
+        <swagger2.version>2.10.5</swagger2.version>
+        <swagger-models.version>1.6.6</swagger-models.version>
+        <knife4j-openapi2.version>4.5.0</knife4j-openapi2.version>
         <javax.validation.version>2.0.1.Final</javax.validation.version>
-        <spring-boot.version>2.2.4.RELEASE</spring-boot.version>
+        <spring-web.version>5.3.22</spring-web.version>
     </properties>
 </project>

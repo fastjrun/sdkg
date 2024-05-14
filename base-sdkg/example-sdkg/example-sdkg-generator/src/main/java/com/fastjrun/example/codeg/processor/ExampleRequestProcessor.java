@@ -8,7 +8,7 @@ import com.helger.jcodemodel.JMethod;
 public class ExampleRequestProcessor extends BaseRequestProcessor {
 
     @Override
-    public String processHTTPRequest(JMethod method, JInvocation jInvocation, MockModel mockModel,
+    public String processHTTPRequest(JMethod method, JInvocation jInvocation, SwaggerVersion swaggerVersion,
                                      JCodeModel cm) {
         return "";
     }
