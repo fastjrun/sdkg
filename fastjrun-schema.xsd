@@ -69,6 +69,8 @@
     <xs:complexType name="bodyObject">
         <xs:attribute name="class" type="xs:string" use="required"/>
         <xs:attribute name="name" type="xs:string"/>
+        <xs:attribute name="body" type="xs:boolean"/>
+        <xs:attribute name="remark" type="xs:string"/>
     </xs:complexType>
     <xs:complexType name="commonService">
         <xs:sequence>
@@ -76,6 +78,8 @@
         </xs:sequence>
         <xs:attribute name="name" type="xs:string" use="required"/>
         <xs:attribute name="class" type="xs:string" use="required"/>
+        <xs:attribute name="body" type="xs:boolean"/>
+        <xs:attribute name="remark" type="xs:string"/>
     </xs:complexType>
     <xs:complexType name="commonMethod">
         <xs:sequence>

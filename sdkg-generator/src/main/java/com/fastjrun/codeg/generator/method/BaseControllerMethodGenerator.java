@@ -9,11 +9,15 @@ import com.fastjrun.codeg.generator.common.BaseControllerGenerator;
 import com.fastjrun.codeg.processor.ExchangeProcessor;
 import com.fastjrun.codeg.helper.StringHelper;
 import com.helger.jcodemodel.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
 
+@Getter
+@Setter
 public abstract class BaseControllerMethodGenerator extends AbstractMethodGenerator {
 
     protected JMethod jClientMethod;
@@ -25,34 +29,6 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
     protected BaseServiceMethodGenerator serviceMethodGenerator;
 
     protected BaseControllerGenerator baseControllerGenerator;
-
-    public void setServiceMethodGenerator(BaseServiceMethodGenerator serviceMethodGenerator) {
-        this.serviceMethodGenerator = serviceMethodGenerator;
-    }
-
-    public void setBaseControllerGenerator(BaseControllerGenerator baseControllerGenerator) {
-        this.baseControllerGenerator = baseControllerGenerator;
-    }
-
-    public void setExchangeProcessor(ExchangeProcessor exchangeProcessor) {
-        this.exchangeProcessor = exchangeProcessor;
-    }
-
-    public JMethod getjClientMethod() {
-        return jClientMethod;
-    }
-
-    public void setjClientMethod(JMethod jClientMethod) {
-        this.jClientMethod = jClientMethod;
-    }
-
-    public JMethod getJcontrollerMethod() {
-        return jcontrollerMethod;
-    }
-
-    public void setJcontrollerMethod(JMethod jcontrollerMethod) {
-        this.jcontrollerMethod = jcontrollerMethod;
-    }
 
     public void processControllerMethod(
             CommonController commonController, JDefinedClass controllerClass) {
@@ -283,7 +259,9 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
             JVar requestParam =
                     this.jcontrollerMethod.param(
                             this.serviceMethodGenerator.getRequestBodyClass(), varName);
-            requestParam.annotate(cm.ref("org.springframework.web.bind.annotation.RequestBody"));
+            if(this.serviceMethodGenerator.commonMethod.isRequestIsBody()){
+                requestParam.annotate(cm.ref("org.springframework.web.bind.annotation.RequestBody"));
+            }
             requestParam.annotate(cm.ref("javax.validation.Valid"));
             jInvocation.arg(requestParam);
         }

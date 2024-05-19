@@ -10,16 +10,16 @@ import com.fastjrun.codeg.common.PacketObject;
 import com.fastjrun.codeg.generator.common.BaseCMGenerator;
 import com.fastjrun.codeg.utils.JacksonUtils;
 import com.helger.jcodemodel.AbstractJClass;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Map;
 
+@Getter
+@Setter
 public abstract class AbstractMethodGenerator extends BaseCMGenerator {
 
     protected ObjectNode methodParamInJsonObject;
-
-    public void setMethodParamInJsonObject(ObjectNode methodParamInJsonObject) {
-        this.methodParamInJsonObject = methodParamInJsonObject;
-    }
 
     protected ObjectNode composeRequestBody(PacketObject requestBody) {
         ObjectNode jsonRequestBody = this.composeRequestBodyField(requestBody);

@@ -453,6 +453,15 @@ public class BundleXMLParser implements CodeGConstants {
             String requestName = eleRequest.attributeValue("name");
             method.setRequestName(requestName);
 
+            String body = eleRequest.attributeValue("body");
+
+            if (StringUtils.isNotBlank(body)) {
+                method.setRequestIsBody(Boolean.parseBoolean(body));
+            }
+            method.setRequestName(requestName);
+
+
+
         }
         Element eleResponse = eleMethod.element("response");
         if (eleResponse != null) {
