@@ -63,7 +63,7 @@
         </service>
     </services>
     <controllers>
-        <controller type="Example" name="RmsServerController" path="/api/itrms/server" clientName="RmsServerClient" remark="服务器管理" tags="服务器管理,IT资源管理">
+        <controller type="Example" name="RmsServerController" path="/api/itrms/server" remark="服务器管理" tags="服务器管理,IT资源管理">
             <service name="rmsServerControllerService" ref="rmsServerControllerService"/>
         </controller>
     </controllers>
