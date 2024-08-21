@@ -4,7 +4,6 @@ package com.fastjrun.codeg.generator;
 import com.helger.jcodemodel.JDefinedClass;
 import lombok.Setter;
 import org.w3c.dom.Document;
-import org.w3c.dom.DocumentType;
 import org.w3c.dom.Element;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -18,11 +17,6 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.util.List;
 
-/**
- * @Author： fastjrun
- * @Date： 2024/4/6 13:45
- * @Describe：
- */
 @Setter
 public class MybatisPlusMapperXmlGenerator {
 

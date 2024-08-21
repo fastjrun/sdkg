@@ -16,10 +16,6 @@ import lombok.Setter;
 
 import java.util.*;
 
-/**
- * Mybatis Plus FrameWork
- * @author fastjrun
- */
 @Setter
 @Getter
 public class MybatisPlusCodeGenerator extends BaseCMGenerator {

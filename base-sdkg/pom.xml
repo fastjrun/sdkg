@@ -10,7 +10,7 @@
     <parent>
         <groupId>com.fastjrun.codeg</groupId>
         <artifactId>sdkg-parent</artifactId>
-        <version>4.4.0-SNAPSHOT</version>
+        <version>4.4.0</version>
     </parent>
     <groupId>com.fastjrun.codeg</groupId>
     <artifactId>base-sdkg</artifactId>
