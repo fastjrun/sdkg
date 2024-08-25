@@ -3,7 +3,6 @@
  */
 package com.fastjrun.codeg.generator;
 
-import com.fastjrun.codeg.generator.common.BaseControllerGenerator;
 import com.fastjrun.codeg.generator.method.BaseControllerMethodGenerator;
 import com.fastjrun.codeg.generator.method.BaseServiceMethodGenerator;
 

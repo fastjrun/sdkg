@@ -1,4 +1,7 @@
-### 4.4.0--SNAPSHOT
+### 4.4.0.1
+- fix bug
+
+### 4.4.0
 - 新增mabatis-plus-generator,引入mybatis-plus-join
 - 引入lombok，简化代码
 - jcodemodel升级至3.4.1

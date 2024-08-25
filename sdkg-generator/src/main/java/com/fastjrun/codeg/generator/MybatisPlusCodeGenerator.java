@@ -16,10 +16,6 @@ import lombok.Setter;
 
 import java.util.*;
 
-/**
- * Mybatis Plus FrameWork
- * @author fastjrun
- */
 @Setter
 @Getter
 public class MybatisPlusCodeGenerator extends BaseCMGenerator {
@@ -71,6 +67,7 @@ public class MybatisPlusCodeGenerator extends BaseCMGenerator {
         this.entityClass.annotate(cm.ref("lombok.Setter"));
         this.entityClass.annotate(cm.ref("lombok.ToString"));
         this.entityClass.annotate(cm.ref("com.baomidou.mybatisplus.annotation.TableName")).param(fjTable.getName());
+        this.entityClass._implements(cm.ref("java.io.Serializable"));
         Map<String, FJColumn> columns = fjTable.getColumns();
         List<FJColumn> sortedList = new ArrayList<>(columns.values());
         Collections.sort(sortedList, (o1, o2) -> {

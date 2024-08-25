@@ -11,7 +11,7 @@
     <parent>
         <groupId>com.fastjrun.codeg.example</groupId>
         <artifactId>example-codeg</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>4.4.0.1</version>
     </parent>
     <artifactId>example-api</artifactId>
     <dependencies>

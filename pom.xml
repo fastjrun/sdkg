@@ -6,7 +6,7 @@
     <groupId>com.fastjrun.codeg</groupId>
     <artifactId>sdkg-parent</artifactId>
     <packaging>pom</packaging>
-    <version>4.4.0-SNAPSHOT</version>
+    <version>4.4.0.1</version>
     <name>sdkg</name>
     <description>快嘉代码生成Maven插件</description>
     <url>http://fastjrun.com/</url>
@@ -26,7 +26,7 @@
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>${lombok.versin}</version>
+                <version>${lombok.version}</version>
             </dependency>
 
 
@@ -281,15 +281,29 @@
                             </execution>
                         </executions>
                     </plugin>
+                    <!-- 发布到私服时需要注释掉下面两个插件 -->
+                    <!--staging puglin,用于自动执行发布阶段(免手动)-->
                     <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.5.0</version>
                         <extensions>true</extensions>
                         <configuration>
-                            <serverId>sonatype-nexus-staging</serverId>
-                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                            <!-- 这里的publishingServerId是在settings.xml中配置的server认证信息 -->
+                            <publishingServerId>maven-central</publishingServerId>
+                            <!-- 这里的autoPublish是自动发布，而不是手动发布 -->
+                            <autoPublish>true</autoPublish>
+                            <!-- 这里的waitUntil配置为published是等待发布完成，因为发布完成的时间比较长，所以可以不加这个参数 -->
+                            <waitUntil>published</waitUntil>
+                            <!-- 这里的deploymentName是发布到中央仓库的名称 -->
+                            <deploymentName>${project.groupId}:${project.artifactId}:${project.version}</deploymentName>
                         </configuration>
+                    </plugin>
+                    <!-- release plugin,用于发布到release仓库部署插件 -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-release-plugin</artifactId>
+                        <version>2.5.3</version>
                     </plugin>
                 </plugins>
             </build>
@@ -307,7 +321,7 @@
         <mycompany-nexus>http://www.mycompany.com</mycompany-nexus>
         <mycompany-snapshots-url-suffix>/repository/maven-snapshots/</mycompany-snapshots-url-suffix>
         <mycompany-releases-url-suffix>/repository/maven-releases/</mycompany-releases-url-suffix>
-        <lombok.versin>1.18.22</lombok.versin>
+        <lombok.version>1.18.30</lombok.version>
         <mybatis-plus.version>3.5.3.1</mybatis-plus.version>
         <jcodemodel.version>3.4.1</jcodemodel.version>
         <dom4j.version>2.1.4</dom4j.version>
