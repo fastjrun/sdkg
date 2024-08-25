@@ -20,7 +20,7 @@ import java.util.List;
 @Setter
 public class MybatisPlusMapperXmlGenerator {
 
-    static String PACKAGE_MAPPER_MAPPING_DIR = "mapper/mapping.";
+    static String PACKAGE_MAPPER_MAPPING_DIR = "mapper/mapping";
     private String moduleName;
     private String packageNamePrefix;
 

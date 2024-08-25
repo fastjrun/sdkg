@@ -8,7 +8,7 @@
         xmlns="http://maven.apache.org/POM/4.0.0">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.fastjrun.codeg.example</groupId>
-    <version>1.0-SNAPSHOT</version>
+    <version>4.4.0.1</version>
     <artifactId>example-codeg</artifactId>
     <packaging>pom</packaging>
     <dependencyManagement>
@@ -17,7 +17,7 @@
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>${lombok.versin}</version>
+                <version>${lombok.version}</version>
             </dependency>
             <!-- mybatis-plus -->
             <dependency>
@@ -138,7 +138,7 @@
         <company>快嘉</company>
         <sdkg.version>4.4.0</sdkg.version>
         <example-sdkg.version>4.4.0</example-sdkg.version>
-        <lombok.versin>1.18.22</lombok.versin>
+        <lombok.version>1.18.30</lombok.version>
         <javax.servlet-api.version>3.1.0</javax.servlet-api.version>
         <swagger2.version>2.10.5</swagger2.version>
         <swagger-models.version>1.6.6</swagger-models.version>

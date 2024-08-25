@@ -6,7 +6,7 @@
     <groupId>com.fastjrun.codeg</groupId>
     <artifactId>sdkg-parent</artifactId>
     <packaging>pom</packaging>
-    <version>4.4.0</version>
+    <version>4.4.0.1</version>
     <name>sdkg</name>
     <description>快嘉代码生成Maven插件</description>
     <url>http://fastjrun.com/</url>
@@ -26,7 +26,7 @@
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>${lombok.versin}</version>
+                <version>${lombok.version}</version>
             </dependency>
 
 
@@ -321,7 +321,7 @@
         <mycompany-nexus>http://www.mycompany.com</mycompany-nexus>
         <mycompany-snapshots-url-suffix>/repository/maven-snapshots/</mycompany-snapshots-url-suffix>
         <mycompany-releases-url-suffix>/repository/maven-releases/</mycompany-releases-url-suffix>
-        <lombok.versin>1.18.22</lombok.versin>
+        <lombok.version>1.18.30</lombok.version>
         <mybatis-plus.version>3.5.3.1</mybatis-plus.version>
         <jcodemodel.version>3.4.1</jcodemodel.version>
         <dom4j.version>2.1.4</dom4j.version>
