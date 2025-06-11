@@ -36,6 +36,6 @@
         </dependency>
     </dependencies>
     <properties>
-        <springframework5.version>6.1.14</springframework5.version>
+        <springframework5.version>6.1.20</springframework5.version>
     </properties>
 </project>
