@@ -40,18 +40,18 @@ import java.util.Date;
  *
  * <p>
  * The variant field contains a value which identifies the layout of the
- * <tt>UUID</tt>. The bit layout described above is valid only for a
- * <tt>UUID</tt> with a variant value of 2, which indicates the Leach-Salz
+ * <code>UUID</code>. The bit layout described above is valid only for a
+ * <code>UUID</code> with a variant value of 2, which indicates the Leach-Salz
  * variant.
  *
  * <p>
- * The version field holds a value that describes the type of this <tt>UUID</tt>.
+ * The version field holds a value that describes the type of this <code>UUID</code>.
  * There are four different basic types of UUIDs: time-based, DCE security,
  * name-based, and randomly generated UUIDs. These types have a version value of
  * 1, 2, 3 and 4, respectively.
  *
  * <p>
- * For more information including algorithms used to create <tt>UUID</tt>s,
+ * For more information including algorithms used to create <code>UUID</code>s,
  * see the Internet-Draft <a
  * href="http://www.ietf.org/internet-drafts/draft-mealling-uuid-urn-03.txt">UUIDs
  * and GUIDs</a> or the standards body definition at <a
@@ -128,10 +128,10 @@ public final class UUID implements java.io.Serializable, Comparable {
     }
 
     /**
-     * Constructs a new <tt>UUID</tt> using the specified data.
-     * <tt>mostSigBits</tt> is used for the most significant 64 bits of the
-     * <tt>UUID</tt> and <tt>leastSigBits</tt> becomes the least significant
-     * 64 bits of the <tt>UUID</tt>.
+     * Constructs a new <code>UUID</code> using the specified data.
+     * <code>mostSigBits</code> is used for the most significant 64 bits of the
+     * <code>UUID</code> and <code>leastSigBits</code> becomes the least significant
+     * 64 bits of the <code>UUID</code>.
      *
      * @param mostSigBits  mostSigBits
      * @param leastSigBits leastSigBits
@@ -165,7 +165,7 @@ public final class UUID implements java.io.Serializable, Comparable {
      * The <code>UUID</code> is generated using a cryptographically strong
      * pseudo random number generator.
      *
-     * @return a randomly generated <tt>UUID</tt>.
+     * @return a randomly generated <code>UUID</code>.
      */
     public static UUID randomUUID() {
         SecureRandom ng = numberGenerator;
@@ -183,12 +183,12 @@ public final class UUID implements java.io.Serializable, Comparable {
     }
 
     /**
-     * Static factory to retrieve a type 3 (name based) <tt>UUID</tt> based on
+     * Static factory to retrieve a type 3 (name based) <code>UUID</code> based on
      * the specified byte array.
      *
-     * @param name a byte array to be used to construct a <tt>UUID</tt>.
+     * @param name a byte array to be used to construct a <code>UUID</code>.
      *
-     * @return a <tt>UUID</tt> generated from the specified array.
+     * @return a <code>UUID</code> generated from the specified array.
      */
     public static UUID nameUUIDFromBytes(byte[] name) {
         MessageDigest md;
@@ -206,12 +206,12 @@ public final class UUID implements java.io.Serializable, Comparable {
     }
 
     /**
-     * Creates a <tt>UUID</tt> from the string standard representation as
+     * Creates a <code>UUID</code> from the string standard representation as
      * described in the {@link #toString} method.
      *
-     * @param name a string that specifies a <tt>UUID</tt>.
+     * @param name a string that specifies a <code>UUID</code>.
      *
-     * @return a <tt>UUID</tt> with the specified value.
+     * @return a <code>UUID</code> with the specified value.
      *
      * @throws IllegalArgumentException if name does not conform to the string representation as
      *                                  described in {@link #toString}.
@@ -267,8 +267,8 @@ public final class UUID implements java.io.Serializable, Comparable {
     }
 
     /**
-     * The version number associated with this <tt>UUID</tt>. The version
-     * number describes how this <tt>UUID</tt> was generated.
+     * The version number associated with this <code>UUID</code>. The version
+     * number describes how this <code>UUID</code> was generated.
      * <p>
      * The version number has the following meaning:
      * <p>
@@ -279,7 +279,7 @@ public final class UUID implements java.io.Serializable, Comparable {
      * <li>4 Randomly generated UUID
      * </ul>
      *
-     * @return the version number of this <tt>UUID</tt>.
+     * @return the version number of this <code>UUID</code>.
      */
     public int version() {
         if (version < 0) {
@@ -290,8 +290,8 @@ public final class UUID implements java.io.Serializable, Comparable {
     }
 
     /**
-     * The variant number associated with this <tt>UUID</tt>. The variant
-     * number describes the layout of the <tt>UUID</tt>.
+     * The variant number associated with this <code>UUID</code>. The variant
+     * number describes the layout of the <code>UUID</code>.
      * <p>
      * The variant number has the following meaning:
      * <p>
@@ -302,7 +302,7 @@ public final class UUID implements java.io.Serializable, Comparable {
      * <li>7 Reserved for future definition
      * </ul>
      *
-     * @return the variant number of this <tt>UUID</tt>.
+     * @return the variant number of this <code>UUID</code>.
      */
     public int variant() {
         if (variant < 0) {
@@ -323,11 +323,11 @@ public final class UUID implements java.io.Serializable, Comparable {
      *
      * <p>
      * The 60 bit timestamp value is constructed from the time_low, time_mid,
-     * and time_hi fields of this <tt>UUID</tt>. The resulting timestamp is
+     * and time_hi fields of this <code>UUID</code>. The resulting timestamp is
      * measured in 100-nanosecond units since midnight, October 15, 1582 UTC.
      * <p>
      * The timestamp value is only meaningful in a time-based UUID, which has
-     * version type 1. If this <tt>UUID</tt> is not a time-based UUID then
+     * version type 1. If this <code>UUID</code> is not a time-based UUID then
      * this method throws UnsupportedOperationException.
      *
      * @return long
@@ -360,7 +360,7 @@ public final class UUID implements java.io.Serializable, Comparable {
      * has version type 1. If this UUID is not a time-based UUID then this
      * method throws UnsupportedOperationException.
      *
-     * @return the clock sequence of this <tt>UUID</tt>.
+     * @return the clock sequence of this <code>UUID</code>.
      *
      * @throws UnsupportedOperationException if this UUID is not a version 1 UUID.
      */
@@ -388,7 +388,7 @@ public final class UUID implements java.io.Serializable, Comparable {
      * type 1. If this UUID is not a time-based UUID then this method throws
      * UnsupportedOperationException.
      *
-     * @return the node value of this <tt>UUID</tt>.
+     * @return the node value of this <code>UUID</code>.
      *
      * @throws UnsupportedOperationException if this UUID is not a version 1 UUID.
      */
@@ -427,7 +427,7 @@ public final class UUID implements java.io.Serializable, Comparable {
      *        | &quot;A&quot; | &quot;B&quot; | &quot;C&quot; | &quot;D&quot; | &quot;E&quot; | &quot;F&quot;
      * </pre>
      *
-     * @return a string representation of this <tt>UUID</tt>.
+     * @return a string representation of this <code>UUID</code>.
      */
     public String toString() {
         return (digits(mostSigBits >> 32, 8) + "-"
@@ -439,7 +439,7 @@ public final class UUID implements java.io.Serializable, Comparable {
     /**
      * Returns a hash code for this <code>UUID</code>.
      *
-     * @return a hash code value for this <tt>UUID</tt>.
+     * @return a hash code value for this <code>UUID</code>.
      */
     public int hashCode() {
         if (hashCode == -1) {
@@ -450,10 +450,10 @@ public final class UUID implements java.io.Serializable, Comparable {
     }
 
     /**
-     * Compares this object to the specified object. The result is <tt>true</tt>
-     * if and only if the argument is not <tt>null</tt>, is a <tt>UUID</tt>
+     * Compares this object to the specified object. The result is <code>true</code>
+     * if and only if the argument is not <code>null</code>, is a <code>UUID</code>
      * object, has the same variant, and contains the same value, bit for bit,
-     * as this <tt>UUID</tt>.
+     * as this <code>UUID</code>.
      *
      * @param obj the object to compare with.
      *
@@ -480,11 +480,11 @@ public final class UUID implements java.io.Serializable, Comparable {
      * The first of two UUIDs follows the second if the most significant field
      * in which the UUIDs differ is greater for the first UUID.
      *
-     * @param o <tt>UUID</tt> to which this <tt>UUID</tt> is to be
+     * @param o <code>UUID</code> to which this <code>UUID</code> is to be
      *          compared.
      *
-     * @return -1, 0 or 1 as this <tt>UUID</tt> is less than, equal to, or
-     * greater than <tt>val</tt>.
+     * @return -1, 0 or 1 as this <code>UUID</code> is less than, equal to, or
+     * greater than <code>val</code>.
      */
     public int compareTo(Object o) {
         UUID val = (UUID) o;
@@ -497,7 +497,7 @@ public final class UUID implements java.io.Serializable, Comparable {
     }
 
     /**
-     * Reconstitute the <tt>UUID</tt> instance from a stream (that is,
+     * Reconstitute the <code>UUID</code> instance from a stream (that is,
      * deserialize it). This is necessary to set the transient fields to their
      * correct uninitialized value so they will be recomputed on demand.
      *
