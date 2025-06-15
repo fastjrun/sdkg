@@ -20,6 +20,7 @@ create table t_user
    email                char(30) comment '邮件',
    createTime           datetime,
    lastModifyTime       datetime,
+   isAdmin              boolean default false comment '是否管理员，0：否；1：是',
    lastLoginTime        char(17),
    loginErrCount        smallint default 0,
    lastRecordLoginErrTime char(17),

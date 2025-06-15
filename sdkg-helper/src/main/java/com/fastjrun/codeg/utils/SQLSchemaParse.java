@@ -154,7 +154,7 @@ public class SQLSchemaParse {
         // java.lang.Boolean if the configuration property tinyInt1isBit is set to true (the default) and the storage
         // size is 1, or java.lang.Integer if not.
         if (dataType.toUpperCase().contains("BOOL")) {
-            fjColumn.setDatatype("String");
+            fjColumn.setDatatype("Boolean");
         } else if (dataType.toUpperCase().contains("VARCHAR2")) {
             fjColumn.setDatatype("String");
         } else if (dataType.toUpperCase().contains("CHAR")) {
