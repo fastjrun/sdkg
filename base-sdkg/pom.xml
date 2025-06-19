@@ -69,6 +69,5 @@
         <module>base-sdkg-common</module>
         <module>base-sdkg-service</module>
         <module>base-sdkg-provider</module>
-        <module>example-sdkg</module>
     </modules>
 </project>

@@ -53,8 +53,8 @@
         </plugins>
     </build>
     <properties>
-        <maven-plugin-api.version>3.5.2</maven-plugin-api.version>
-        <maven-plugin-plugin.version>3.5.2</maven-plugin-plugin.version>
+        <maven-plugin-api.version>3.8.2</maven-plugin-api.version>
+        <maven-plugin-plugin.version>3.8.2</maven-plugin-plugin.version>
     </properties>
 </project>
 

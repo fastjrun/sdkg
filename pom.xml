@@ -131,8 +131,10 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <compilerArgs>
+                        <arg>-Xlint:unchecked</arg>
+                        <arg>-Xlint:deprecation</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
             <plugin>
@@ -317,9 +319,13 @@
         <log4j2.version>2.23.1</log4j2.version>
         <slf4j.version>1.7.25</slf4j.version>
         <testng.version>7.4.0</testng.version>
+        <!-- Java 版本 -->
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.release>17</maven.compiler.release>
         <maven-scm-provider-gitexe.version>1.10.0</maven-scm-provider-gitexe.version>
         <springframework.version>4.3.15.RELEASE</springframework.version>
-        <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
         <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
         <maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
         <maven-jar-plugin.version>3.1.0</maven-jar-plugin.version>

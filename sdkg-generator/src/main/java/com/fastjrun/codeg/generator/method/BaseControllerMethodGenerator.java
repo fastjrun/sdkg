@@ -109,11 +109,20 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
                         .param("name", headVariable.getFieldName())
                         .param("required", !headVariable.isCanBeNull());
                 jInvocation.arg(headVariableJVar);
-                headVariableJVar
-                        .annotate(cm.ref("io.swagger.annotations.ApiParam"))
-                        .param("name", headVariable.getFieldName())
-                        .param("value", headVariable.getRemark())
-                        .param("required", !headVariable.isCanBeNull());
+                if(this.swaggerVersion==SwaggerVersion.Swagger2){
+                    headVariableJVar
+                            .annotate(cm.ref("io.swagger.annotations.ApiParam"))
+                            .param("name", headVariable.getFieldName())
+                            .param("value", headVariable.getRemark())
+                            .param("required", !headVariable.isCanBeNull());
+                }else{
+                    headVariableJVar
+                            .annotate(cm.ref("io.swagger.v3.oas.annotations.Parameter"))
+                            .param("name", headVariable.getFieldName())
+                            .param("description", headVariable.getRemark())
+                            .param("required", !headVariable.isCanBeNull());
+                }
+
             }
         }
         List<PacketField> pathVariables =
@@ -133,6 +142,12 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
                             .annotate(cm.ref("io.swagger.annotations.ApiParam"))
                             .param("name", pathVariable.getFieldName())
                             .param("value", pathVariable.getRemark())
+                            .param("required", !pathVariable.isCanBeNull());
+                }else{
+                    pathVariableJVar
+                            .annotate(cm.ref("io.swagger.v3.oas.annotations.Parameter"))
+                            .param("name", pathVariable.getFieldName())
+                            .param("description", pathVariable.getRemark())
                             .param("required", !pathVariable.isCanBeNull());
                 }
 
@@ -160,9 +175,17 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
                 }
                 JVar parameterJVar = this.jcontrollerMethod.param(jClass, parameter.getFieldName());
 
-                parameterJVar
-                        .annotate(cm.ref("org.springframework.web.bind.annotation.RequestParam"))
-                        .param("name", parameter.getFieldName())
+                JAnnotationUse jAnnotationUse=null;
+
+                if(jClass.name().endsWith("MultipartFile")){
+                    jAnnotationUse = parameterJVar
+                            .annotate(cm.ref("org.springframework.web.bind.annotation.RequestParam"));
+                }else{
+                    jAnnotationUse = parameterJVar
+                            .annotate(cm.ref("org.springframework.web.bind.annotation.RequestPart"));
+                }
+
+                jAnnotationUse.param("name", parameter.getFieldName())
                         .param("required", !parameter.isCanBeNull());
 
                 jInvocation.arg(parameterJVar);
@@ -172,8 +195,13 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
                             .param("name", parameter.getFieldName())
                             .param("value", parameter.getRemark())
                             .param("required", !parameter.isCanBeNull());
+                }else{
+                    parameterJVar
+                            .annotate(cm.ref("io.swagger.v3.oas.annotations.Parameter"))
+                            .param("name", parameter.getFieldName())
+                            .param("description", parameter.getRemark())
+                            .param("required", !parameter.isCanBeNull());
                 }
-
             }
         }
         JAnnotationUse jAnnotationUse =
