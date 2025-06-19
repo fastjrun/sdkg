@@ -108,20 +108,8 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
                         .annotate(cm.ref("org.springframework.web.bind.annotation.RequestHeader"))
                         .param("name", headVariable.getFieldName())
                         .param("required", !headVariable.isCanBeNull());
+                processParameter(headVariableJVar, headVariable);
                 jInvocation.arg(headVariableJVar);
-                if(this.swaggerVersion==SwaggerVersion.Swagger2){
-                    headVariableJVar
-                            .annotate(cm.ref("io.swagger.annotations.ApiParam"))
-                            .param("name", headVariable.getFieldName())
-                            .param("value", headVariable.getRemark())
-                            .param("required", !headVariable.isCanBeNull());
-                }else{
-                    headVariableJVar
-                            .annotate(cm.ref("io.swagger.v3.oas.annotations.Parameter"))
-                            .param("name", headVariable.getFieldName())
-                            .param("description", headVariable.getRemark())
-                            .param("required", !headVariable.isCanBeNull());
-                }
 
             }
         }
@@ -136,20 +124,8 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
                         .annotate(cm.ref("org.springframework.web.bind.annotation.PathVariable"))
                         .param(pathVariable.getFieldName());
 
+                processParameter(pathVariableJVar, pathVariable);
                 jInvocation.arg(pathVariableJVar);
-                if(this.swaggerVersion==SwaggerVersion.Swagger2){
-                    pathVariableJVar
-                            .annotate(cm.ref("io.swagger.annotations.ApiParam"))
-                            .param("name", pathVariable.getFieldName())
-                            .param("value", pathVariable.getRemark())
-                            .param("required", !pathVariable.isCanBeNull());
-                }else{
-                    pathVariableJVar
-                            .annotate(cm.ref("io.swagger.v3.oas.annotations.Parameter"))
-                            .param("name", pathVariable.getFieldName())
-                            .param("description", pathVariable.getRemark())
-                            .param("required", !pathVariable.isCanBeNull());
-                }
 
                 methodPath = methodPath.replaceFirst("\\{\\}", "{" + pathVariable.getFieldName() + "}");
             }
@@ -188,20 +164,10 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
                 jAnnotationUse.param("name", parameter.getFieldName())
                         .param("required", !parameter.isCanBeNull());
 
+
+                processParameter(parameterJVar, parameter);
+
                 jInvocation.arg(parameterJVar);
-                if(this.swaggerVersion==SwaggerVersion.Swagger2){
-                    parameterJVar
-                            .annotate(cm.ref("io.swagger.annotations.ApiParam"))
-                            .param("name", parameter.getFieldName())
-                            .param("value", parameter.getRemark())
-                            .param("required", !parameter.isCanBeNull());
-                }else{
-                    parameterJVar
-                            .annotate(cm.ref("io.swagger.v3.oas.annotations.Parameter"))
-                            .param("name", parameter.getFieldName())
-                            .param("description", parameter.getRemark())
-                            .param("required", !parameter.isCanBeNull());
-                }
             }
         }
         JAnnotationUse jAnnotationUse =
@@ -232,14 +198,8 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
                         .annotate(cm.ref("org.springframework.web.bind.annotation.CookieValue"))
                         .param("name", cookieVariable.getFieldName())
                         .param("required", !cookieVariable.isCanBeNull());
+                processParameter(cookieJVar, cookieVariable);
                 jInvocation.arg(cookieJVar);
-                if(this.swaggerVersion==SwaggerVersion.Swagger2){
-                    cookieJVar
-                            .annotate(cm.ref("io.swagger.annotations.ApiParam"))
-                            .param("name", cookieVariable.getFieldName())
-                            .param("value", "cookie:" + cookieVariable.getRemark())
-                            .param("required", !cookieVariable.isCanBeNull());
-                }
 
                 controllerMethodBlk.add(
                         JExpr.ref("log")
@@ -294,5 +254,27 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
             jInvocation.arg(requestParam);
         }
         this.exchangeProcessor.processResponse(controllerMethodBlk, jInvocation, this.cm);
+    }
+
+    private void processParameter(JVar parameterJVar, PacketField parameter) {
+        if (StringUtils.isBlank(parameter.getRemark())) {
+            parameter.setRemark(parameter.getFieldName());
+        }
+        if (StringUtils.isBlank(parameter.getFieldName())) {
+            parameter.setFieldName(parameter.getName());
+        }
+        if(this.swaggerVersion==SwaggerVersion.Swagger2){
+            parameterJVar
+                    .annotate(cm.ref("io.swagger.annotations.ApiParam"))
+                    .param("name", parameter.getFieldName())
+                    .param("value", parameter.getRemark())
+                    .param("required", !parameter.isCanBeNull());
+        }else{
+            parameterJVar
+                    .annotate(cm.ref("io.swagger.v3.oas.annotations.Parameter"))
+                    .param("name", parameter.getFieldName())
+                    .param("description", parameter.getRemark())
+                    .param("required", !parameter.isCanBeNull());
+        }
     }
 }
