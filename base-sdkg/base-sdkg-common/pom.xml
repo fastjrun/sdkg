@@ -7,9 +7,10 @@
     <parent>
         <groupId>com.fastjrun.codeg</groupId>
         <artifactId>base-sdkg</artifactId>
-        <version>5.0-SNAPSHOT</version>
+        <version>5.0.1</version>
     </parent>
     <artifactId>base-sdkg-common</artifactId>
+    <name>base-sdkg-common</name>
     <dependencies>
         <dependency>
             <groupId>org.slf4j</groupId>

@@ -15,6 +15,8 @@ public class CommonMethod {
 
     private String remark;
 
+    private String[] tags;
+
     private List<PacketField> parameters;
 
     private List<PacketField> pathVariables;

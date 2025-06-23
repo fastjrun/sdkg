@@ -13,7 +13,7 @@ public class SQLSchemaParseTest {
 
     @Test
     public void testProcess() {
-        String sqlFile = "base-sdkg/example-sdkg/example-codeg/fast-demo.sql";
+        String sqlFile = "fast-demo.sql";
         DataBaseObject dataBaseObject =
           SQLSchemaParse.process(SQLSchemaParse.TargetType.TargetType_Mysql, sqlFile);
         System.out.println(dataBaseObject.getTargetType());

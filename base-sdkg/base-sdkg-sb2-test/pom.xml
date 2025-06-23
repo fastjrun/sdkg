@@ -10,9 +10,10 @@
     <parent>
         <groupId>com.fastjrun.codeg</groupId>
         <artifactId>base-sdkg</artifactId>
-        <version>5.0-SNAPSHOT</version>
+        <version>5.0.1</version>
     </parent>
     <artifactId>base-sdkg-sb2-test</artifactId>
+    <name>base-sdkg-sb2-test</name>
     <dependencies>
         <dependency>
             <groupId>com.fastjrun.codeg</groupId>

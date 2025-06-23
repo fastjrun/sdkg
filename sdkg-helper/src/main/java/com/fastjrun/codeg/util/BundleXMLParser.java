@@ -416,6 +416,7 @@ public class BundleXMLParser implements CodeGConstants {
         String version = eleMethod.attributeValue("version");
         String path = eleMethod.attributeValue("path");
         String remark = eleMethod.attributeValue("remark");
+        String tags = eleMethod.attributeValue("tags");
         String httpMethod = eleMethod.attributeValue("method");
         String reqType = eleMethod.attributeValue("reqType");
         String resType = eleMethod.attributeValue("resType");
@@ -427,6 +428,9 @@ public class BundleXMLParser implements CodeGConstants {
         method.setVersion(version);
         method.setPath(path);
         method.setRemark(remark);
+        if(StringUtils.isNotBlank(tags)) {
+            method.setTags(tags.split(","));
+        }
         if (httpMethod != null && !httpMethod.equals("")) {
             method.setHttpMethod(httpMethod);
         } else {

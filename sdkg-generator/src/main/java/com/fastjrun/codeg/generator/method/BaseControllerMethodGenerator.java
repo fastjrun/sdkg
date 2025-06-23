@@ -92,8 +92,17 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
             this.jcontrollerMethod
                     .annotate(cm.ref("io.swagger.v3.oas.annotations.Operation"))
                     .param("summary", methodRemark);
+            if(this.serviceMethodGenerator.getCommonMethod().getTags()!=null && this.serviceMethodGenerator.getCommonMethod().getTags().length>0){
+                for(String tag:this.serviceMethodGenerator.getCommonMethod().getTags()){
+                    if(tag!=null && !tag.equals("")) {
+                        this.jcontrollerMethod.annotate(cm.ref("io.swagger.v3.oas.annotations.tags.Tag"))
+                                .param("name", tag);
+                    }
+                }
+            }
 
-        }
+
+            }
 
 
         // headParams

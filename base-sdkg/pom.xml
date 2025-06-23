@@ -10,10 +10,11 @@
     <parent>
         <groupId>com.fastjrun.codeg</groupId>
         <artifactId>sdkg-parent</artifactId>
-        <version>5.0-SNAPSHOT</version>
+        <version>5.0.1</version>
     </parent>
     <groupId>com.fastjrun.codeg</groupId>
     <artifactId>base-sdkg</artifactId>
+    <name>base-sdkg</name>
     <packaging>pom</packaging>
     <properties>
         <skipTests>true</skipTests>
@@ -69,5 +70,6 @@
         <module>base-sdkg-common</module>
         <module>base-sdkg-service</module>
         <module>base-sdkg-provider</module>
+        <module>example-sdkg</module>
     </modules>
 </project>

@@ -125,6 +125,7 @@
         <xs:attribute name="version" type="xs:string" use="required"/>
         <xs:attribute name="path" type="xs:string"/>
         <xs:attribute name="remark" type="xs:string" use="required"/>
+        <xs:attribute name="tags" type="xs:string"/>
         <xs:attribute name="method" type="methodType" default="POST"/>
         <xs:attribute name="reqType" type="contentType" default="json"/>
         <xs:attribute name="resType" type="contentType" default="json"/>

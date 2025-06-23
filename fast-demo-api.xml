@@ -51,8 +51,8 @@
             <method name="createServer" version="" remark="新建服务器" path="">
                 <request class="dto.ServerDTO"/>
             </method>
-            <method name="updateServer" version="" remark="修改服务器" path="" method="PUT">
-                <request class="dto.ServerDTO"/>
+            <method name="updateServer" version="" remark="修改服务器" path="" method="PUT" tags="需求23,bug299">
+                <request class="dto.ServerDTO" />
             </method>
             <method name="deleteServer" version="" remark="删除服务器" path="" method="DELETE">
                 <parameters>
