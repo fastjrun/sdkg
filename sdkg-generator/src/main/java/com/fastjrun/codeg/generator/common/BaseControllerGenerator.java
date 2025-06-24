@@ -64,8 +64,12 @@ public abstract class BaseControllerGenerator extends BaseCMGenerator {
             this.controlllerClass.annotate(cm.ref("io.swagger.annotations.Api")).param("value",
                     commonController.getRemark()).paramArray("tags", commonController.getTags());
         }else if(this.swaggerVersion==SwaggerVersion.Swagger3){
-            this.controlllerClass.annotate(cm.ref("io.swagger.v3.oas.annotations.tags.Tag"))
-                    .param("name", commonController.getRemark());
+            for(String tag:this.commonController.getTags()){
+                if(tag!=null && !tag.equals("")) {
+                    this.controlllerClass.annotate(cm.ref("io.swagger.v3.oas.annotations.tags.Tag"))
+                            .param("name", tag);
+                }
+            }
         }
 
         this.addClassDeclaration(this.controlllerClass);

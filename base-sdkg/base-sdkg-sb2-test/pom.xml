@@ -10,7 +10,7 @@
     <parent>
         <groupId>com.fastjrun.codeg</groupId>
         <artifactId>base-sdkg</artifactId>
-        <version>5.0.1</version>
+        <version>5.0.2</version>
     </parent>
     <artifactId>base-sdkg-sb2-test</artifactId>
     <name>base-sdkg-sb2-test</name>
@@ -28,15 +28,15 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <version>${springframework5.version}</version>
+            <version>${springframework6.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>${springframework5.version}</version>
+            <version>${springframework6.version}</version>
         </dependency>
     </dependencies>
     <properties>
-        <springframework5.version>6.1.14</springframework5.version>
+        <springframework6.version>6.1.20</springframework6.version>
     </properties>
 </project>
