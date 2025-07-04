@@ -164,10 +164,10 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
 
                 if(jClass.name().endsWith("MultipartFile")){
                     jAnnotationUse = parameterJVar
-                            .annotate(cm.ref("org.springframework.web.bind.annotation.RequestParam"));
+                            .annotate(cm.ref("org.springframework.web.bind.annotation.RequestPart"));
                 }else{
                     jAnnotationUse = parameterJVar
-                            .annotate(cm.ref("org.springframework.web.bind.annotation.RequestPart"));
+                            .annotate(cm.ref("org.springframework.web.bind.annotation.RequestParam"));
                 }
 
                 jAnnotationUse.param("name", parameter.getFieldName())
