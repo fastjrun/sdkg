@@ -2,6 +2,7 @@
 - 主版本迁移至17，后续不再对以下版本做兼容，请使用者自行解决
 - 适配maven主仓库的snapshot类型发布流程
 - basse-sdkg/example-sdkg/example-codeg不再维护
+- 升级jsqlparser至5.3
 
 
 ### 4.4.0.1

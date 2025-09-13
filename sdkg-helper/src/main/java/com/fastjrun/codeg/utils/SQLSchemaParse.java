@@ -4,6 +4,7 @@
 package com.fastjrun.codeg.utils;
 
 import com.fastjrun.codeg.common.*;
+import com.helger.jcodemodel.JContinue;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
@@ -62,8 +63,9 @@ public class SQLSchemaParse {
             FJTable fjTable = parseTable(createTable);
             createTable.getColumnDefinitions().forEach(it -> {
                 FJColumn field = parseColumn("mysql", it);
-
-                columns.put(field.getName(), field);
+                if (field != null) {
+                    columns.put(field.getName(), field);
+                }
             });
             fjTable.setColumns(columns);
             tableMap.put(fjTable.getName(), fjTable);
@@ -126,6 +128,11 @@ public class SQLSchemaParse {
         FJColumn fjColumn = new FJColumn();
 
         String columnName = columnDefinition.getColumnName().replace("`", "");
+
+        // 过滤全文索引字段
+        if(columnName.equalsIgnoreCase("FULLTEXT")){
+            return null;
+        }
         // 字段名称
         fjColumn.setName(columnName);
         fjColumn.setFieldName(parseFieldName(columnName));

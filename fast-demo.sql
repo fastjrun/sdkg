@@ -25,6 +25,7 @@ create table t_user
    loginErrCount        smallint default 0,
    lastRecordLoginErrTime char(17),
    status               char(1) default '1' comment '1：正常；2：密码锁定；3：人工锁定',
+   FULLTEXT idx_search (loginName, email),
    primary key (id)
 );
 
