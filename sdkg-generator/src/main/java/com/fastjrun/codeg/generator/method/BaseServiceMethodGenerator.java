@@ -187,7 +187,7 @@ public abstract class BaseServiceMethodGenerator extends AbstractMethodGenerator
                             this.composeResponseBody(
                                     0, serviceMockMethodBlock, this.commonMethod.getResponse(), this.elementClass);
                     serviceMockMethodBlock.add(listVar.invoke("add").arg(responseBodyVar));
-                    serviceMockMethodBlock.assign(responseVar, cm.ref(this.serviceGenerator.getMockHelperName()).staticInvoke("geObject").arg(listVar));
+                    serviceMockMethodBlock.assign(responseVar, cm.ref(this.serviceGenerator.getMockHelperName()).staticInvoke("geObjectPage").arg(listVar));
                     serviceMockMethodBlock._return(responseVar);
                 }
             } else {

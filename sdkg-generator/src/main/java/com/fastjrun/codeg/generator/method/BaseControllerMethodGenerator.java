@@ -3,6 +3,7 @@
  */
 package com.fastjrun.codeg.generator.method;
 
+import com.baomidou.mybatisplus.core.injector.methods.Delete;
 import com.fastjrun.codeg.common.CommonController;
 import com.fastjrun.codeg.common.PacketField;
 import com.fastjrun.codeg.generator.common.BaseControllerGenerator;
@@ -12,9 +13,16 @@ import com.helger.jcodemodel.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
+
+import javax.sound.midi.Patch;
 
 @Getter
 @Setter
@@ -33,29 +41,7 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
     public void processControllerMethod(
             CommonController commonController, JDefinedClass controllerClass) {
 
-        RequestMethod requestMethod = RequestMethod.POST;
-        switch (this.serviceMethodGenerator.getCommonMethod().getHttpMethod().toUpperCase()) {
-            case "GET":
-                requestMethod = RequestMethod.GET;
-                break;
-            case "PUT":
-                requestMethod = RequestMethod.PUT;
-                break;
-            case "DELETE":
-                requestMethod = RequestMethod.DELETE;
-                break;
-            case "PATCH":
-                requestMethod = RequestMethod.PATCH;
-                break;
-            case "HEAD":
-                requestMethod = RequestMethod.HEAD;
-                break;
-            case "OPTIONS":
-                requestMethod = RequestMethod.OPTIONS;
-                break;
-            default:
-                break;
-        }
+        
         this.jcontrollerMethod =
                 controllerClass.method(
                         JMod.PUBLIC,
@@ -64,11 +50,11 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
         String methodRemark = this.serviceMethodGenerator.getCommonMethod().getRemark();
         this.jcontrollerMethod.javadoc().append(methodRemark);
         String methodPath = this.serviceMethodGenerator.getCommonMethod().getPath();
-        if (methodPath != null && methodPath.equals("null")) {
+        if (StringUtils.isEmpty(methodPath) || methodPath.equals("null")) {
             methodPath = "/" + this.serviceMethodGenerator.getCommonMethod().getName();
         }
         String methodVersion = this.serviceMethodGenerator.getCommonMethod().getVersion();
-        if (methodVersion != null && !methodVersion.equals("")) {
+        if (StringUtils.isNotEmpty(methodPath)) {
             methodPath = methodPath + "/" + methodVersion;
         }
 
@@ -102,7 +88,7 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
             }
 
 
-            }
+        }
 
 
         // headParams
@@ -179,10 +165,30 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
                 jInvocation.arg(parameterJVar);
             }
         }
+
+        String requestMapping = "PostMapping";
+        switch (this.serviceMethodGenerator.getCommonMethod().getHttpMethod().toUpperCase()) {
+            case "GET":
+                requestMapping = "GetMapping";
+                break;
+            case "PUT":
+                requestMapping = "PutMapping";
+                break;
+            case "DELETE":
+                requestMapping = "DeleteMapping";
+                break;
+            case "PATCH":
+                requestMapping = "PatchMapping";
+                break;
+            default:
+                break;
+        }
+
+
         JAnnotationUse jAnnotationUse =
                 this.jcontrollerMethod.annotate(
-                        cm.ref("org.springframework.web.bind.annotation.RequestMapping"));
-        jAnnotationUse.param("value", methodPath).param("method", requestMethod);
+                        cm.ref("org.springframework.web.bind.annotation."+requestMapping));
+        jAnnotationUse.param("value", methodPath);
 
         String[] resTypes = this.serviceMethodGenerator.getCommonMethod().getResType().split(",");
         if (resTypes.length == 1) {

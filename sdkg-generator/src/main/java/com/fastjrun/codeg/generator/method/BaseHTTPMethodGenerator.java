@@ -3,12 +3,6 @@
  */
 package com.fastjrun.codeg.generator.method;
 
-import com.fastjrun.codeg.common.PacketField;
-import com.fastjrun.codeg.helper.StringHelper;
-import com.helger.jcodemodel.*;
-
-import java.util.List;
-
 public abstract class BaseHTTPMethodGenerator extends BaseControllerMethodGenerator {
 
     @Override

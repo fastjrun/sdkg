@@ -3,16 +3,7 @@
  */
 package com.fastjrun.codeg.generator.method;
 
-import com.fastjrun.codeg.common.CodeGException;
-import com.fastjrun.codeg.common.CommonMethod;
-import com.fastjrun.codeg.common.PacketField;
 import com.fastjrun.codeg.common.PacketObject;
-import com.fastjrun.codeg.generator.BaseServiceGenerator;
-import com.fastjrun.codeg.helper.StringHelper;
-import com.helger.jcodemodel.*;
-import org.apache.commons.lang.StringUtils;
-
-import java.util.Map;
 
 public class DefaultServiceMethodGenerator extends BaseServiceMethodGenerator {
 
