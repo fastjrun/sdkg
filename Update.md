@@ -3,8 +3,7 @@
 - 适配maven主仓库的snapshot类型发布流程
 - basse-sdkg/example-sdkg/example-codeg不再维护
 - 升级jsqlparser至5.3
-
-
+- 控制器注解处理逻辑的重构
 
 ### 4.4.0.1
 - fix bug
