@@ -54,7 +54,7 @@ public abstract class BaseControllerMethodGenerator extends AbstractMethodGenera
             methodPath = "/" + this.serviceMethodGenerator.getCommonMethod().getName();
         }
         String methodVersion = this.serviceMethodGenerator.getCommonMethod().getVersion();
-        if (StringUtils.isNotEmpty(methodPath)) {
+        if (StringUtils.isNotEmpty(methodVersion)) {
             methodPath = methodPath + "/" + methodVersion;
         }
 

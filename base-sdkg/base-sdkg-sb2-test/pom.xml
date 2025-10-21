@@ -10,7 +10,7 @@
     <parent>
         <groupId>com.fastjrun.codeg</groupId>
         <artifactId>base-sdkg</artifactId>
-        <version>5.0.5</version>
+        <version>5.0.6</version>
     </parent>
     <artifactId>base-sdkg-sb2-test</artifactId>
     <name>base-sdkg-sb2-test</name>
