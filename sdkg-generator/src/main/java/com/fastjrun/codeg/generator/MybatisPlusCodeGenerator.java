@@ -107,7 +107,10 @@ public class MybatisPlusCodeGenerator extends BaseCMGenerator {
 
             if(fieldFill!=null){
                 fieldVar.annotate(cm.ref("com.baomidou.mybatisplus.annotation.TableField"))
-                        .param("fill", fieldFill);
+                        .param("fill", fieldFill).param("value",fjColumn.getName());
+            }else{
+                fieldVar.annotate(cm.ref("com.baomidou.mybatisplus.annotation.TableField"))
+                        .param("value",fjColumn.getName());
             }
             if(this.swaggerVersion==SwaggerVersion.Swagger2){
                 fieldVar.annotate(cm.ref("io.swagger.annotations.ApiModelProperty")).
