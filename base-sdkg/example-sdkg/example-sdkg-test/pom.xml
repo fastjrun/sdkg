@@ -11,7 +11,7 @@
     <parent>
         <groupId>com.fastjrun.codeg.example</groupId>
         <artifactId>example-sdkg</artifactId>
-        <version>5.0.7-SNAPSHOT</version>
+        <version>5.0.9</version>
     </parent>
     <artifactId>example-sdkg-test</artifactId>
     <name>Example SDKG Test</name>

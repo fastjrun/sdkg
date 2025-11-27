@@ -167,7 +167,7 @@ public class SQLSchemaParse {
         } else if (dataType.equalsIgnoreCase("TIMESTAMP")) {
             // Time
             fjColumn.setDatatype("java.util.Date");
-        } else if (dataType.equalsIgnoreCase("DATETIME")) {
+        } else if (dataType.toUpperCase().contains("DATETIME")) {
             // DATETIME
             fjColumn.setDatatype("java.util.Date");
         } else if (dataType.toUpperCase().indexOf("BLOB") > 0) {

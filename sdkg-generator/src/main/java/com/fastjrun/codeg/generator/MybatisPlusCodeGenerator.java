@@ -94,24 +94,27 @@ public class MybatisPlusCodeGenerator extends BaseCMGenerator {
 
 
             if(fjTable.getPrimaryKeyColumnNames().contains(fjColumn.getName())){
-                fieldVar.annotate(cm.ref("com.baomidou.mybatisplus.annotation.TableId"));
-            }
-            FieldFill fieldFill = null;
-            if(needAutoInsertColumnNames.contains(fjColumn.getFieldName().toLowerCase())) {
-                fieldFill = FieldFill.INSERT;
-            }else if(needAutoUpdateColumnNames.contains(fjColumn.getFieldName().toLowerCase())) {
-                fieldFill = FieldFill.UPDATE;
-            }else if(needlogicDeleteColumnNames.contains(fjColumn.getFieldName().toLowerCase())) {
-                fieldFill = FieldFill.INSERT;
-            }
-
-            if(fieldFill!=null){
-                fieldVar.annotate(cm.ref("com.baomidou.mybatisplus.annotation.TableField"))
-                        .param("fill", fieldFill).param("value",fjColumn.getName());
+                fieldVar.annotate(cm.ref("com.baomidou.mybatisplus.annotation.TableId"))
+                    .param("value",fjColumn.getName());
             }else{
-                fieldVar.annotate(cm.ref("com.baomidou.mybatisplus.annotation.TableField"))
-                        .param("value",fjColumn.getName());
+                FieldFill fieldFill = null;
+                if(needAutoInsertColumnNames.contains(fjColumn.getFieldName().toLowerCase())) {
+                    fieldFill = FieldFill.INSERT;
+                }else if(needAutoUpdateColumnNames.contains(fjColumn.getFieldName().toLowerCase())) {
+                    fieldFill = FieldFill.UPDATE;
+                }else if(needlogicDeleteColumnNames.contains(fjColumn.getFieldName().toLowerCase())) {
+                    fieldFill = FieldFill.INSERT;
+                }
+
+                if(fieldFill!=null){
+                    fieldVar.annotate(cm.ref("com.baomidou.mybatisplus.annotation.TableField"))
+                            .param("fill", fieldFill).param("value",fjColumn.getName());
+                }else{
+                    fieldVar.annotate(cm.ref("com.baomidou.mybatisplus.annotation.TableField"))
+                            .param("value",fjColumn.getName());
+                }
             }
+            
             if(this.swaggerVersion==SwaggerVersion.Swagger2){
                 fieldVar.annotate(cm.ref("io.swagger.annotations.ApiModelProperty")).
                         param("value",JExpr.lit(comment)).
